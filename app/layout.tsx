@@ -19,7 +19,6 @@ export default function RootLayout({
       signInUrl={process.env.NEXT_PUBLIC_CLERK_SIGN_IN_URL || ""}
       signUpUrl={process.env.NEXT_PUBLIC_CLERK_SIGN_UP_URL || ""}
     >
-    >
       <html lang="de-CH">
         <body className="min-h-screen bg-neutral-950 text-neutral-100 antialiased">
           {children}
