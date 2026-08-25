@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { ClerkProvider } from "@clerk/nextjs";
 import AppShell from "@/components/AppShell";
+import { clerkAppearance, clerkLocalization } from "@/lib/clerk";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -21,7 +22,8 @@ export default function RootLayout({
       signInFallbackRedirectUrl="/dashboard"
       signUpFallbackRedirectUrl="/dashboard"
       afterSignOutUrl="/"
-      appearance={{ variables: { colorPrimary: "#F97316" } }}
+      localization={clerkLocalization}
+      appearance={clerkAppearance}
     >
       <html lang="de-CH">
         <body className="min-h-screen bg-navy-950 text-slate-100 antialiased">
