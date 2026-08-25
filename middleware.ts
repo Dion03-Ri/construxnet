@@ -25,20 +25,11 @@ const isPublicRoute = createRouteMatcher([
   "/api/webhooks(.*)",
 ]);
 
-export default clerkMiddleware(
-  (auth, req) => {
-    if (!isPublicRoute(req)) {
-      auth.protect();
-    }
-  },
-  {
-    isSatellite: process.env.NEXT_PUBLIC_CLERK_IS_SATELLITE === "true",
-    domain: process.env.NEXT_PUBLIC_CLERK_DOMAIN,
-    signInUrl: process.env.NEXT_PUBLIC_CLERK_SIGN_IN_URL,
-    signUpUrl: process.env.NEXT_PUBLIC_CLERK_SIGN_UP_URL,
+export default clerkMiddleware((auth, req) => {
+  if (!isPublicRoute(req)) {
+    auth.protect();
   }
-);
-
+});
 export const config = {
   matcher: [
     "/((?!_next|.*\\..*).*)",
