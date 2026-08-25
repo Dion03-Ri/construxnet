@@ -4,11 +4,19 @@ import { useMemo } from "react";
 import { useSession } from "@clerk/nextjs";
 import { createClient } from "@supabase/supabase-js";
 
-// Trailing-Slashes entfernen (siehe lib/supabase.ts) — verhindert
+// Nur Origin verwenden (siehe lib/supabase.ts) — verhindert
 // "Invalid path specified in request URL".
-const SUPABASE_URL = (process.env.NEXT_PUBLIC_SUPABASE_URL ?? "")
-  .trim()
-  .replace(/\/+$/, "");
+function cleanUrl(raw?: string): string {
+  const v = (raw ?? "").trim();
+  if (!v) return "";
+  try {
+    return new URL(v).origin;
+  } catch {
+    return v.replace(/\/+$/, "");
+  }
+}
+
+const SUPABASE_URL = cleanUrl(process.env.NEXT_PUBLIC_SUPABASE_URL);
 const SUPABASE_ANON_KEY = (process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? "").trim();
 
 /**

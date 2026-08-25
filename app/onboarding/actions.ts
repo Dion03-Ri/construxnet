@@ -2,7 +2,7 @@
 
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
-import { supabaseAdmin } from "@/lib/supabase";
+import { supabaseAdmin, cleanSupabaseUrl } from "@/lib/supabase";
 
 export type OnboardingState = { error?: string };
 
@@ -18,6 +18,22 @@ export async function createCompany(
 ): Promise<OnboardingState> {
   const { userId } = await auth();
   if (!userId) return { error: "Nicht eingeloggt." };
+
+  // Konfigurations-Diagnose: die häufigste Ursache für
+  // "Invalid path specified in request URL" ist eine fehlende/leere URL.
+  const supaUrl = cleanSupabaseUrl(process.env.NEXT_PUBLIC_SUPABASE_URL);
+  if (!supaUrl) {
+    return {
+      error:
+        "Server-Konfiguration: NEXT_PUBLIC_SUPABASE_URL fehlt oder ist leer (in Vercel setzen).",
+    };
+  }
+  if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
+    return {
+      error:
+        "Server-Konfiguration: SUPABASE_SERVICE_ROLE_KEY fehlt (in Vercel setzen).",
+    };
+  }
 
   const company_name = String(formData.get("company_name") ?? "").trim();
   const uid_number = String(formData.get("uid_number") ?? "").trim();
