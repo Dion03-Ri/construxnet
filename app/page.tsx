@@ -1,142 +1,246 @@
 import Link from "next/link";
 import {
   ArrowRight,
+  Users,
+  MessagesSquare,
+  ShoppingCart,
   Layers,
-  ShieldCheck,
-  FileText,
-  ScanLine,
+  LineChart,
+  BadgeCheck,
+  MapPin,
   TrendingDown,
-  Building2,
-  Factory,
-  Gauge,
+  Clock,
 } from "lucide-react";
+import KbobWidget from "@/components/KbobWidget";
 
-const FEATURES = [
+/* Kernfunktionen — alle gleichwertig */
+const CORE = [
+  {
+    icon: Users,
+    title: "Vernetzen",
+    text: "Firmenprofile, Verified-Badge (CHE-Nummer) und Connect zwischen Bauunternehmen und Baustoffwerken.",
+    href: "/feed",
+  },
+  {
+    icon: MessagesSquare,
+    title: "Chatten & Verhandeln",
+    text: "Direktnachrichten zwischen verbundenen Firmen — Angebote und Gegenangebote direkt im Chat.",
+    href: "/messages",
+  },
+  {
+    icon: ShoppingCart,
+    title: "Beschaffen",
+    text: "Material direkt bestellen — mit optionaler „Smart Bündeln“-Checkbox für Volumenrabatte.",
+    href: "/dashboard",
+  },
   {
     icon: Layers,
-    title: "Smart Pools",
-    text: "Regionale Bündelung von Materialbedarf (Beton, Armierungsstahl, Kies) zu Grossmengen — für Volumenrabatte bis 20 %.",
+    title: "Bündeln",
+    text: "Preistreppe, Sealed-Bid und garantierter Tier-Rabatt für regionale Smart Pools.",
+    href: "/pools",
   },
   {
-    icon: ShieldCheck,
-    title: "WEKO-konform",
-    text: "Strikte Anonymität: Teilnehmer sehen nur aggregierte Poolvolumen, nie einzelne Mitbewerber.",
-  },
-  {
-    icon: FileText,
-    title: "SIA-118 Verträge",
-    text: "Automatisierte Vertragsgenerierung nach Schweizer Norm bei Pool-Abschluss.",
-  },
-  {
-    icon: ScanLine,
-    title: "Lieferschein-OCR",
-    text: "Lieferscheine fotografieren, automatisch erfassen und mit Vertrag abgleichen.",
+    icon: LineChart,
+    title: "Preisindex",
+    text: "KBOB-Index vs. Smart-Pool-Durchschnittspreise — nach Material und Region.",
+    href: "/kbob",
   },
 ];
 
-const ROLES = [
-  {
-    href: "/buyer",
-    icon: Building2,
-    title: "Bauunternehmer",
-    text: "Pools beitreten, Tier-Fortschritt verfolgen, Lieferscheine erfassen.",
-  },
-  {
-    href: "/supplier",
-    icon: Factory,
-    title: "Lieferant",
-    text: "Regionale Bündel-Ausschreibungen, Sealed-Bid-Gebote, Kapazitätsplanung.",
-  },
-  {
-    href: "/admin",
-    icon: Gauge,
-    title: "Admin / Gap-Closer",
-    text: "Pools nahe der Schwelle überwachen und gezielt aktivieren.",
-  },
+/* Mock: aktive Pools für den Ticker */
+const POOLS = [
+  { material: "Beton C25/30", region: "Zürich", volume: "180 m³", tier: "12 %", deadline: "4 Tage" },
+  { material: "Bewehrungsstahl B500B", region: "Bern", volume: "48 t", tier: "12 %", deadline: "9 Tage" },
+  { material: "Koffer-/Wandkies 0/45", region: "Nordwestschweiz", volume: "320 t", tier: "20 %", deadline: "2 Tage" },
+  { material: "Beton C30/37", region: "Innerschweiz", volume: "90 m³", tier: "5 %", deadline: "12 Tage" },
+];
+
+/* Mock: Firmen-Vorschau fürs Netzwerk */
+const COMPANIES = [
+  { name: "Bätschmann Bau AG", city: "Zürich", uid: "CHE-102.345.678", cat: "Bauunternehmen" },
+  { name: "Kies + Beton Mittelland", city: "Bern", uid: "CHE-114.987.221", cat: "Baustoffwerk" },
+  { name: "Rhomberg Hochbau", city: "Luzern", uid: "CHE-108.556.019", cat: "Bauunternehmen" },
 ];
 
 export default function Home() {
   return (
     <main className="mx-auto max-w-6xl px-4 sm:px-6">
       {/* Hero */}
-      <section className="flex flex-col items-center gap-6 py-20 text-center sm:py-28">
-        <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-1.5 text-xs font-medium text-neutral-300">
-          <TrendingDown className="h-3.5 w-3.5 text-pool-green" />
-          Volumenrabatte für den Schweizer Bau
-        </span>
-        <h1 className="max-w-3xl text-4xl font-semibold tracking-tight text-neutral-50 sm:text-6xl">
-          Baumaterial gemeinsam einkaufen.{" "}
-          <span className="text-kbob-blue">Günstiger bauen.</span>
-        </h1>
-        <p className="max-w-2xl text-lg text-neutral-400">
-          ConstruxNet bündelt den Materialbedarf Schweizer Bauunternehmen zu
-          regionalen Smart Pools — für Grossmengenrabatte, die sonst nur
-          Konzernen offenstehen. WEKO-konform, anonym, mit automatischer
-          SIA-118-Vertragsabwicklung.
-        </p>
-        <div className="flex flex-col gap-3 sm:flex-row">
-          <Link
-            href="/preise"
-            className="inline-flex items-center justify-center gap-2 rounded-xl bg-kbob-blue px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-kbob-blue/30 transition-colors hover:bg-kbob-blue/90"
-          >
-            Preisvergleich ansehen
-            <ArrowRight className="h-4 w-4" />
-          </Link>
-          <Link
-            href="/buyer"
-            className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/5 px-6 py-3 text-sm font-semibold text-neutral-100 transition-colors hover:bg-white/10"
-          >
-            Als Bauunternehmer starten
-          </Link>
-        </div>
-      </section>
-
-      {/* Features */}
-      <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {FEATURES.map((f) => (
-          <div
-            key={f.title}
-            className="rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur"
-          >
-            <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-kbob-blue/15 text-kbob-blue">
-              <f.icon className="h-5 w-5" />
-            </span>
-            <h3 className="mt-4 font-semibold text-neutral-100">{f.title}</h3>
-            <p className="mt-1.5 text-sm text-neutral-400">{f.text}</p>
-          </div>
-        ))}
-      </section>
-
-      {/* Roles */}
-      <section className="py-20 sm:py-24">
-        <h2 className="text-center text-2xl font-semibold tracking-tight text-neutral-100">
-          Drei Rollen, eine Plattform
-        </h2>
-        <p className="mx-auto mt-2 max-w-xl text-center text-neutral-400">
-          Jeder Marktteilnehmer erhält sein eigenes Cockpit.
-        </p>
-        <div className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-3">
-          {ROLES.map((r) => (
+      <section className="grid grid-cols-1 items-center gap-10 py-16 lg:grid-cols-2 lg:py-24">
+        <div>
+          <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-1.5 text-xs font-medium text-slate-300">
+            <Users className="h-3.5 w-3.5 text-brand" />
+            Das B2B-Netzwerk der Schweizer Baubranche
+          </span>
+          <h1 className="mt-5 text-4xl font-semibold tracking-tight text-slate-50 sm:text-5xl">
+            Vernetzen, verhandeln,{" "}
+            <span className="text-brand">beschaffen.</span>
+          </h1>
+          <p className="mt-4 max-w-xl text-lg text-slate-400">
+            ConstruxNet verbindet Bauunternehmen und Baustoffwerke auf einer
+            Plattform: Firmenprofile und Connections, Direktverhandlungen im
+            Chat und Materialbeschaffung — optional gebündelt zu Smart Pools für
+            spürbare Volumenrabatte.
+          </p>
+          <div className="mt-7 flex flex-col gap-3 sm:flex-row">
             <Link
-              key={r.href}
-              href={r.href}
-              className="group rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur transition-colors hover:border-kbob-blue/40 hover:bg-white/[0.08]"
+              href="/dashboard"
+              className="inline-flex items-center justify-center gap-2 rounded-xl bg-brand px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-brand/30 transition-colors hover:bg-brand-600"
             >
-              <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-white/10 text-neutral-100">
-                <r.icon className="h-5 w-5" />
+              Netzwerk beitreten
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+            <Link
+              href="/feed"
+              className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/5 px-6 py-3 text-sm font-semibold text-slate-100 transition-colors hover:bg-white/10"
+            >
+              Netzwerk entdecken
+            </Link>
+          </div>
+        </div>
+
+        <KbobWidget />
+      </section>
+
+      {/* Kernfunktionen */}
+      <section>
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {CORE.map((f) => (
+            <Link
+              key={f.title}
+              href={f.href}
+              className="group rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur transition-colors hover:border-brand/40 hover:bg-white/[0.08]"
+            >
+              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand/15 text-brand">
+                <f.icon className="h-5 w-5" />
               </span>
-              <h3 className="mt-4 flex items-center gap-1.5 font-semibold text-neutral-100">
-                {r.title}
+              <h3 className="mt-4 flex items-center gap-1.5 font-semibold text-slate-100">
+                {f.title}
                 <ArrowRight className="h-4 w-4 -translate-x-1 opacity-0 transition-all group-hover:translate-x-0 group-hover:opacity-100" />
               </h3>
-              <p className="mt-1.5 text-sm text-neutral-400">{r.text}</p>
+              <p className="mt-1.5 text-sm text-slate-400">{f.text}</p>
             </Link>
           ))}
         </div>
       </section>
 
-      <footer className="border-t border-white/10 py-8 text-center text-sm text-neutral-600">
-        ConstruxNet — Smart Bündelung für Schweizer Baumaterialien
+      {/* Pool-Ticker */}
+      <section className="py-16 sm:py-20">
+        <div className="mb-4 flex items-center justify-between">
+          <h2 className="text-xl font-semibold tracking-tight text-slate-100">
+            Aktive Smart Pools
+          </h2>
+          <Link
+            href="/pools"
+            className="text-sm font-medium text-brand hover:text-brand-600"
+          >
+            Alle ansehen →
+          </Link>
+        </div>
+        <div className="flex gap-3 overflow-x-auto pb-2">
+          {POOLS.map((p, i) => (
+            <div
+              key={i}
+              className="w-64 shrink-0 rounded-2xl border border-white/10 bg-white/5 p-4 backdrop-blur"
+            >
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-semibold text-slate-100">
+                  {p.material}
+                </span>
+                <span className="rounded-full bg-emerald/15 px-2 py-0.5 text-[11px] font-semibold text-emerald">
+                  {p.tier}
+                </span>
+              </div>
+              <div className="mt-2 flex items-center gap-1.5 text-xs text-slate-400">
+                <MapPin className="h-3.5 w-3.5" />
+                {p.region}
+              </div>
+              <div className="mt-3 flex items-center justify-between text-xs text-slate-400">
+                <span className="font-medium text-slate-200">{p.volume}</span>
+                <span className="inline-flex items-center gap-1">
+                  <Clock className="h-3.5 w-3.5" />
+                  {p.deadline}
+                </span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Netzwerk-Vorschau */}
+      <section className="pb-16 sm:pb-20">
+        <div className="mb-4 flex items-center justify-between">
+          <h2 className="text-xl font-semibold tracking-tight text-slate-100">
+            Firmen im Netzwerk
+          </h2>
+          <Link
+            href="/feed"
+            className="text-sm font-medium text-brand hover:text-brand-600"
+          >
+            Zum Netzwerk →
+          </Link>
+        </div>
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+          {COMPANIES.map((c) => (
+            <div
+              key={c.uid}
+              className="rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur"
+            >
+              <div className="flex items-start justify-between">
+                <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-navy-800 text-sm font-semibold text-slate-200">
+                  {c.name
+                    .split(" ")
+                    .slice(0, 2)
+                    .map((w) => w[0])
+                    .join("")}
+                </span>
+                <span className="inline-flex items-center gap-1 rounded-full bg-emerald/15 px-2 py-0.5 text-[11px] font-medium text-emerald">
+                  <BadgeCheck className="h-3.5 w-3.5" />
+                  Verifiziert
+                </span>
+              </div>
+              <h3 className="mt-3 font-semibold text-slate-100">{c.name}</h3>
+              <p className="text-xs text-slate-500">
+                {c.cat} · {c.city}
+              </p>
+              <p className="mt-0.5 text-[11px] text-slate-600">{c.uid}</p>
+              <button
+                type="button"
+                className="mt-4 w-full rounded-lg border border-brand/40 bg-brand/10 px-3 py-2 text-sm font-medium text-brand transition-colors hover:bg-brand/20"
+              >
+                + Vernetzen
+              </button>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ROI-Teaser */}
+      <section className="pb-20">
+        <div className="flex flex-col items-center gap-4 rounded-3xl border border-white/10 bg-gradient-to-b from-white/[0.06] to-white/[0.02] p-8 text-center backdrop-blur sm:p-12">
+          <span className="inline-flex items-center gap-2 rounded-full bg-emerald/15 px-3 py-1 text-xs font-medium text-emerald">
+            <TrendingDown className="h-3.5 w-3.5" />
+            12–15 % typische Ersparnis
+          </span>
+          <h2 className="max-w-2xl text-2xl font-semibold tracking-tight text-slate-50 sm:text-3xl">
+            Wie viel spart dein Betrieb mit Smart Pools?
+          </h2>
+          <p className="max-w-xl text-slate-400">
+            Der ROI-Rechner ermittelt aus deinem Jahresmaterialbudget die
+            realistische Ersparnis über ConstruxNet.
+          </p>
+          <Link
+            href="/kbob"
+            className="mt-2 inline-flex items-center justify-center gap-2 rounded-xl bg-brand px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-brand/30 transition-colors hover:bg-brand-600"
+          >
+            Preisvergleich ansehen
+            <ArrowRight className="h-4 w-4" />
+          </Link>
+        </div>
+      </section>
+
+      <footer className="border-t border-white/10 py-8 text-center text-sm text-slate-600">
+        ConstruxNet — Das B2B-Netzwerk der Schweizer Baubranche
       </footer>
     </main>
   );

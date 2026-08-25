@@ -97,7 +97,7 @@ function MaterialSelect({
           "flex w-full min-w-[240px] items-center justify-between gap-3 rounded-xl",
           "border border-white/10 bg-white/5 px-4 py-2.5 text-left backdrop-blur",
           "transition-colors hover:border-white/20 hover:bg-white/[0.08]",
-          "focus:outline-none focus-visible:ring-2 focus-visible:ring-kbob-blue/60",
+          "focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/60",
         )}
       >
         <span className="flex flex-col leading-tight">
@@ -145,7 +145,7 @@ function MaterialSelect({
                     className={cn(
                       "flex w-full items-center justify-between gap-3 px-4 py-2.5 text-left",
                       "transition-colors hover:bg-white/[0.06]",
-                      active && "bg-kbob-blue/10",
+                      active && "bg-brand/10",
                     )}
                   >
                     <span className="flex flex-col leading-tight">
@@ -157,7 +157,7 @@ function MaterialSelect({
                       </span>
                     </span>
                     {active && (
-                      <Check className="h-4 w-4 shrink-0 text-kbob-blue" />
+                      <Check className="h-4 w-4 shrink-0 text-brand" />
                     )}
                   </button>
                 </li>
@@ -193,7 +193,7 @@ function Segmented({
           className={cn(
             "rounded-lg px-3 py-1.5 text-xs font-medium transition-colors",
             value === opt.key
-              ? "bg-kbob-blue text-white shadow-sm shadow-kbob-blue/30"
+              ? "bg-brand text-white shadow-sm shadow-brand/30"
               : "text-neutral-400 hover:text-neutral-100",
           )}
         >
