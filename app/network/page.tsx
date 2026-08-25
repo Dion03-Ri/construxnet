@@ -18,10 +18,10 @@ export default async function NetworkPage() {
           <Users className="h-6 w-6" />
         </span>
         <div>
-          <h1 className="text-3xl font-semibold tracking-tight text-slate-50 sm:text-4xl">
+          <h1 className="text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
             Netzwerk
           </h1>
-          <p className="mt-2 max-w-2xl text-slate-400">
+          <p className="mt-2 max-w-2xl text-slate-500">
             Bauunternehmen und Baustoffwerke der Schweizer Baubranche — verbinden
             und direkt verhandeln.
           </p>

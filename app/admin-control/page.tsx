@@ -33,10 +33,10 @@ export default function AdminControlPage() {
           <Gauge className="h-6 w-6" />
         </span>
         <div>
-          <h1 className="text-3xl font-semibold tracking-tight text-slate-50 sm:text-4xl">
+          <h1 className="text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
             Gap-Closer Control Center
           </h1>
-          <p className="mt-2 max-w-2xl text-slate-400">
+          <p className="mt-2 max-w-2xl text-slate-500">
             Interner Admin-Bereich — Pools nahe der nächsten Rabattschwelle
             überwachen und gezielt aktivieren.
           </p>
@@ -52,9 +52,9 @@ export default function AdminControlPage() {
         {MODULES.map((m) => (
           <div
             key={m.title}
-            className="rounded-2xl border border-dashed border-white/15 bg-white/[0.03] p-5"
+            className="rounded-2xl border border-dashed border-slate-200 bg-slate-50 p-5"
           >
-            <h3 className="font-semibold text-slate-200">{m.title}</h3>
+            <h3 className="font-semibold text-slate-700">{m.title}</h3>
             <p className="mt-1.5 text-sm text-slate-500">{m.text}</p>
           </div>
         ))}

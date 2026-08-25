@@ -68,15 +68,15 @@ export default function Home() {
       {/* Hero */}
       <section className="grid grid-cols-1 items-center gap-10 py-16 lg:grid-cols-2 lg:py-24">
         <div>
-          <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-1.5 text-xs font-medium text-slate-300">
+          <span className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-1.5 text-xs font-medium text-slate-600">
             <Users className="h-3.5 w-3.5 text-brand" />
             Das B2B-Netzwerk der Schweizer Baubranche
           </span>
-          <h1 className="mt-5 text-4xl font-semibold tracking-tight text-slate-50 sm:text-5xl">
+          <h1 className="mt-5 text-4xl font-semibold tracking-tight text-slate-900 sm:text-5xl">
             Vernetzen, verhandeln,{" "}
             <span className="text-brand">beschaffen.</span>
           </h1>
-          <p className="mt-4 max-w-xl text-lg text-slate-400">
+          <p className="mt-4 max-w-xl text-lg text-slate-500">
             ConstruxNet verbindet Bauunternehmen und Baustoffwerke auf einer
             Plattform: Firmenprofile und Connections, Direktverhandlungen im
             Chat und Materialbeschaffung — optional gebündelt zu Smart Pools für
@@ -92,7 +92,7 @@ export default function Home() {
             </Link>
             <Link
               href="/feed"
-              className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/5 px-6 py-3 text-sm font-semibold text-slate-100 transition-colors hover:bg-white/10"
+              className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-6 py-3 text-sm font-semibold text-slate-900 transition-colors hover:bg-slate-100"
             >
               Netzwerk entdecken
             </Link>
@@ -109,16 +109,16 @@ export default function Home() {
             <Link
               key={f.title}
               href={f.href}
-              className="group rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur transition-colors hover:border-brand/40 hover:bg-white/[0.08]"
+              className="group rounded-2xl border border-slate-200 bg-white p-5 backdrop-blur transition-colors hover:border-brand/40 hover:bg-slate-50"
             >
               <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand/15 text-brand">
                 <f.icon className="h-5 w-5" />
               </span>
-              <h3 className="mt-4 flex items-center gap-1.5 font-semibold text-slate-100">
+              <h3 className="mt-4 flex items-center gap-1.5 font-semibold text-slate-900">
                 {f.title}
                 <ArrowRight className="h-4 w-4 -translate-x-1 opacity-0 transition-all group-hover:translate-x-0 group-hover:opacity-100" />
               </h3>
-              <p className="mt-1.5 text-sm text-slate-400">{f.text}</p>
+              <p className="mt-1.5 text-sm text-slate-500">{f.text}</p>
             </Link>
           ))}
         </div>
@@ -127,7 +127,7 @@ export default function Home() {
       {/* Pool-Ticker */}
       <section className="py-16 sm:py-20">
         <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-xl font-semibold tracking-tight text-slate-100">
+          <h2 className="text-xl font-semibold tracking-tight text-slate-900">
             Aktive Smart Pools
           </h2>
           <Link
@@ -141,22 +141,22 @@ export default function Home() {
           {POOLS.map((p, i) => (
             <div
               key={i}
-              className="w-64 shrink-0 rounded-2xl border border-white/10 bg-white/5 p-4 backdrop-blur"
+              className="w-64 shrink-0 rounded-2xl border border-slate-200 bg-white p-4 backdrop-blur"
             >
               <div className="flex items-center justify-between">
-                <span className="text-sm font-semibold text-slate-100">
+                <span className="text-sm font-semibold text-slate-900">
                   {p.material}
                 </span>
                 <span className="rounded-full bg-emerald/15 px-2 py-0.5 text-[11px] font-semibold text-emerald">
                   {p.tier}
                 </span>
               </div>
-              <div className="mt-2 flex items-center gap-1.5 text-xs text-slate-400">
+              <div className="mt-2 flex items-center gap-1.5 text-xs text-slate-500">
                 <MapPin className="h-3.5 w-3.5" />
                 {p.region}
               </div>
-              <div className="mt-3 flex items-center justify-between text-xs text-slate-400">
-                <span className="font-medium text-slate-200">{p.volume}</span>
+              <div className="mt-3 flex items-center justify-between text-xs text-slate-500">
+                <span className="font-medium text-slate-700">{p.volume}</span>
                 <span className="inline-flex items-center gap-1">
                   <Clock className="h-3.5 w-3.5" />
                   {p.deadline}
@@ -170,7 +170,7 @@ export default function Home() {
       {/* Netzwerk-Vorschau */}
       <section className="pb-16 sm:pb-20">
         <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-xl font-semibold tracking-tight text-slate-100">
+          <h2 className="text-xl font-semibold tracking-tight text-slate-900">
             Firmen im Netzwerk
           </h2>
           <Link
@@ -184,10 +184,10 @@ export default function Home() {
           {COMPANIES.map((c) => (
             <div
               key={c.uid}
-              className="rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur"
+              className="rounded-2xl border border-slate-200 bg-white p-5 backdrop-blur"
             >
               <div className="flex items-start justify-between">
-                <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-navy-800 text-sm font-semibold text-slate-200">
+                <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-slate-100 text-sm font-semibold text-slate-700">
                   {c.name
                     .split(" ")
                     .slice(0, 2)
@@ -199,7 +199,7 @@ export default function Home() {
                   Verifiziert
                 </span>
               </div>
-              <h3 className="mt-3 font-semibold text-slate-100">{c.name}</h3>
+              <h3 className="mt-3 font-semibold text-slate-900">{c.name}</h3>
               <p className="text-xs text-slate-500">
                 {c.cat} · {c.city}
               </p>
@@ -217,15 +217,15 @@ export default function Home() {
 
       {/* ROI-Teaser */}
       <section className="pb-20">
-        <div className="flex flex-col items-center gap-4 rounded-3xl border border-white/10 bg-gradient-to-b from-white/[0.06] to-white/[0.02] p-8 text-center backdrop-blur sm:p-12">
+        <div className="flex flex-col items-center gap-4 rounded-3xl border border-slate-200 bg-white p-8 text-center backdrop-blur sm:p-12">
           <span className="inline-flex items-center gap-2 rounded-full bg-emerald/15 px-3 py-1 text-xs font-medium text-emerald">
             <TrendingDown className="h-3.5 w-3.5" />
             12–15 % typische Ersparnis
           </span>
-          <h2 className="max-w-2xl text-2xl font-semibold tracking-tight text-slate-50 sm:text-3xl">
+          <h2 className="max-w-2xl text-2xl font-semibold tracking-tight text-slate-900 sm:text-3xl">
             Wie viel spart dein Betrieb mit Smart Pools?
           </h2>
-          <p className="max-w-xl text-slate-400">
+          <p className="max-w-xl text-slate-500">
             Der ROI-Rechner ermittelt aus deinem Jahresmaterialbudget die
             realistische Ersparnis über ConstruxNet.
           </p>
@@ -239,7 +239,7 @@ export default function Home() {
         </div>
       </section>
 
-      <footer className="border-t border-white/10 py-8 text-center text-sm text-slate-600">
+      <footer className="border-t border-slate-200 py-8 text-center text-sm text-slate-600">
         ConstruxNet — Das B2B-Netzwerk der Schweizer Baubranche
       </footer>
     </main>

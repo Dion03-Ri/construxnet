@@ -16,7 +16,7 @@ const ROLES = [
 ];
 
 const inputClass =
-  "w-full rounded-lg border border-white/10 bg-navy-800 px-3 py-2.5 text-sm text-slate-100 placeholder:text-slate-500 focus:border-brand/50 focus:outline-none";
+  "w-full rounded-lg border border-slate-200 bg-slate-100 px-3 py-2.5 text-sm text-slate-900 placeholder:text-slate-500 focus:border-brand/50 focus:outline-none";
 const labelClass =
   "mb-1.5 block text-xs font-medium uppercase tracking-wider text-slate-500";
 
@@ -35,7 +35,7 @@ export default function OnboardingForm() {
           {ROLES.map((r, i) => (
             <label
               key={r.key}
-              className="group relative cursor-pointer rounded-xl border border-white/10 bg-white/5 p-4 transition-colors hover:border-brand/40 has-[:checked]:border-brand has-[:checked]:bg-brand/10"
+              className="group relative cursor-pointer rounded-xl border border-slate-200 bg-white p-4 transition-colors hover:border-brand/40 has-[:checked]:border-brand has-[:checked]:bg-brand/10"
             >
               <input
                 type="radio"
@@ -44,10 +44,10 @@ export default function OnboardingForm() {
                 defaultChecked={i === 0}
                 className="peer sr-only"
               />
-              <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-navy-800 text-slate-300 peer-checked:bg-brand/20 peer-checked:text-brand">
+              <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-slate-100 text-slate-600 peer-checked:bg-brand/20 peer-checked:text-brand">
                 <r.icon className="h-5 w-5" />
               </span>
-              <div className="mt-2 text-sm font-semibold text-slate-100">
+              <div className="mt-2 text-sm font-semibold text-slate-900">
                 {r.label}
               </div>
               <div className="text-xs text-slate-500">{r.hint}</div>

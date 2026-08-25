@@ -26,7 +26,7 @@ export default function RootLayout({
       appearance={clerkAppearance}
     >
       <html lang="de-CH">
-        <body className="min-h-screen bg-navy-950 text-slate-100 antialiased">
+        <body className="min-h-screen text-slate-900 antialiased">
           <AppShell>{children}</AppShell>
         </body>
       </html>

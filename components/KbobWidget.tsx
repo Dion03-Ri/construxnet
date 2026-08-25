@@ -78,21 +78,21 @@ export default function KbobWidget() {
   return (
     <Link
       href="/kbob"
-      className="group block rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur transition-colors hover:border-brand/40 hover:bg-white/[0.08]"
+      className="group block rounded-2xl border border-slate-200 bg-white p-5 shadow-card transition-all duration-300 hover:-translate-y-0.5 hover:border-brand/40 hover:shadow-cardhover"
     >
       <div className="flex items-center justify-between">
         <div>
-          <div className="text-[11px] font-medium uppercase tracking-wider text-slate-500">
+          <div className="text-[11px] font-medium uppercase tracking-wider text-slate-400">
             KBOB Index · {material.label}
           </div>
           <div className="mt-1 flex items-baseline gap-1.5">
-            <span className="text-2xl font-semibold text-slate-50">
+            <span className="text-2xl font-semibold text-slate-900">
               CHF {chf(last.kbob)}
             </span>
-            <span className="text-sm text-slate-500">/ {material.unit}</span>
+            <span className="text-sm text-slate-400">/ {material.unit}</span>
           </div>
         </div>
-        <ArrowUpRight className="h-4 w-4 text-slate-500 transition-colors group-hover:text-brand" />
+        <ArrowUpRight className="h-4 w-4 text-slate-400 transition-colors group-hover:text-brand" />
       </div>
 
       <svg

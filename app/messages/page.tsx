@@ -13,10 +13,10 @@ export default function MessagesPage() {
           <MessageSquare className="h-6 w-6" />
         </span>
         <div>
-          <h1 className="text-3xl font-semibold tracking-tight text-slate-50 sm:text-4xl">
+          <h1 className="text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
             Nachrichten
           </h1>
-          <p className="mt-2 text-slate-400">
+          <p className="mt-2 text-slate-500">
             Direktnachrichten und Verhandlungen zwischen verbundenen Firmen —
             inklusive Angebote und Gegenangebote direkt im Chat.
           </p>

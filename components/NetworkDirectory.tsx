@@ -83,7 +83,7 @@ function ConnectButton({
   }
   if (conn?.status === "PENDING" && conn.direction === "outgoing") {
     return (
-      <span className="inline-flex w-full items-center justify-center gap-1.5 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm font-medium text-slate-400">
+      <span className="inline-flex w-full items-center justify-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-500">
         <Clock className="h-4 w-4" />
         Angefragt
       </span>
@@ -244,7 +244,7 @@ export default function NetworkDirectory() {
                 "rounded-full px-3 py-1 text-xs font-medium transition-colors",
                 role === r.key
                   ? "bg-brand text-white"
-                  : "border border-white/10 bg-white/5 text-slate-400 hover:text-slate-100",
+                  : "border border-slate-200 bg-white text-slate-500 hover:text-slate-900",
               )}
             >
               {r.label}
@@ -258,13 +258,13 @@ export default function NetworkDirectory() {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Firma, Ort, Kanton …"
-            className="w-full rounded-lg border border-white/10 bg-navy-800 py-2 pl-9 pr-3 text-sm text-slate-100 placeholder:text-slate-500 focus:border-brand/50 focus:outline-none"
+            className="w-full rounded-lg border border-slate-200 bg-slate-100 py-2 pl-9 pr-3 text-sm text-slate-900 placeholder:text-slate-500 focus:border-brand/50 focus:outline-none"
           />
         </div>
       </div>
 
       {loading ? (
-        <div className="flex items-center justify-center gap-2 rounded-2xl border border-white/10 bg-white/5 py-12 text-sm text-slate-400">
+        <div className="flex items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white py-12 text-sm text-slate-500">
           <Loader2 className="h-4 w-4 animate-spin" />
           Firmen werden geladen …
         </div>
@@ -281,7 +281,7 @@ export default function NetworkDirectory() {
           </div>
         </div>
       ) : filtered.length === 0 ? (
-        <div className="rounded-2xl border border-dashed border-white/15 bg-white/[0.03] py-12 text-center text-sm text-slate-400">
+        <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50 py-12 text-center text-sm text-slate-500">
           Keine Firmen gefunden.
         </div>
       ) : (
@@ -289,10 +289,10 @@ export default function NetworkDirectory() {
           {filtered.map((c) => (
             <div
               key={c.id}
-              className="flex flex-col rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur"
+              className="flex flex-col rounded-2xl border border-slate-200 bg-white p-5 backdrop-blur"
             >
               <div className="flex items-start justify-between">
-                <span className="flex h-12 w-12 items-center justify-center overflow-hidden rounded-xl bg-navy-800 text-sm font-semibold text-slate-200">
+                <span className="flex h-12 w-12 items-center justify-center overflow-hidden rounded-xl bg-slate-100 text-sm font-semibold text-slate-700">
                   {c.logo_url ? (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img
@@ -314,7 +314,7 @@ export default function NetworkDirectory() {
 
               <Link
                 href={`/company/${c.id}`}
-                className="mt-3 font-semibold text-slate-100 hover:text-brand"
+                className="mt-3 font-semibold text-slate-900 hover:text-brand"
               >
                 {c.company_name}
               </Link>
@@ -329,7 +329,7 @@ export default function NetworkDirectory() {
               </p>
 
               {c.bio && (
-                <p className="mt-3 line-clamp-3 text-sm text-slate-400">
+                <p className="mt-3 line-clamp-3 text-sm text-slate-500">
                   {c.bio}
                 </p>
               )}

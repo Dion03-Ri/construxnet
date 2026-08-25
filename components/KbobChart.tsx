@@ -95,20 +95,20 @@ function MaterialSelect({
         aria-expanded={open}
         className={cn(
           "flex w-full min-w-[240px] items-center justify-between gap-3 rounded-xl",
-          "border border-white/10 bg-white/5 px-4 py-2.5 text-left backdrop-blur",
-          "transition-colors hover:border-white/20 hover:bg-white/[0.08]",
+          "border border-slate-200 bg-white px-4 py-2.5 text-left backdrop-blur",
+          "transition-colors hover:border-slate-300 hover:bg-slate-50",
           "focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/60",
         )}
       >
         <span className="flex flex-col leading-tight">
-          <span className="text-sm font-semibold text-neutral-100">
+          <span className="text-sm font-semibold text-slate-800">
             {current.label}
           </span>
-          <span className="text-[11px] text-neutral-500">{current.spec}</span>
+          <span className="text-[11px] text-slate-500">{current.spec}</span>
         </span>
         <ChevronDown
           className={cn(
-            "h-4 w-4 shrink-0 text-neutral-400 transition-transform",
+            "h-4 w-4 shrink-0 text-slate-500 transition-transform",
             open && "rotate-180",
           )}
         />
@@ -125,8 +125,8 @@ function MaterialSelect({
           <ul
             role="listbox"
             className={cn(
-              "absolute z-50 mt-2 w-full overflow-hidden rounded-xl border border-white/10",
-              "bg-neutral-900/95 shadow-2xl shadow-black/50 backdrop-blur-xl",
+              "absolute z-50 mt-2 w-full overflow-hidden rounded-xl border border-slate-200",
+              "bg-white shadow-2xl shadow-slate-900/10 backdrop-blur-xl",
             )}
           >
             {MATERIAL_KEYS.map((key) => {
@@ -144,15 +144,15 @@ function MaterialSelect({
                     }}
                     className={cn(
                       "flex w-full items-center justify-between gap-3 px-4 py-2.5 text-left",
-                      "transition-colors hover:bg-white/[0.06]",
+                      "transition-colors hover:bg-slate-50",
                       active && "bg-brand/10",
                     )}
                   >
                     <span className="flex flex-col leading-tight">
-                      <span className="text-sm font-medium text-neutral-100">
+                      <span className="text-sm font-medium text-slate-800">
                         {m.label}
                       </span>
-                      <span className="text-[11px] text-neutral-500">
+                      <span className="text-[11px] text-slate-500">
                         {m.spec}
                       </span>
                     </span>
@@ -184,7 +184,7 @@ function Segmented({
   onChange: (v: string) => void;
 }) {
   return (
-    <div className="inline-flex rounded-xl border border-white/10 bg-white/5 p-1 backdrop-blur">
+    <div className="inline-flex rounded-xl border border-slate-200 bg-white p-1 backdrop-blur">
       {options.map((opt) => (
         <button
           key={opt.key}
@@ -194,7 +194,7 @@ function Segmented({
             "rounded-lg px-3 py-1.5 text-xs font-medium transition-colors",
             value === opt.key
               ? "bg-brand text-white shadow-sm shadow-brand/30"
-              : "text-neutral-400 hover:text-neutral-100",
+              : "text-slate-500 hover:text-slate-800",
           )}
         >
           {opt.label}
@@ -224,31 +224,31 @@ function ChartTooltip({
   const savingsPct = (savings / row.kbob) * 100;
 
   return (
-    <div className="rounded-xl border border-white/10 bg-neutral-900/95 px-4 py-3 shadow-2xl shadow-black/50 backdrop-blur-xl">
-      <div className="mb-2 text-xs font-semibold text-neutral-300">
+    <div className="rounded-xl border border-slate-200 bg-white px-4 py-3 shadow-2xl shadow-slate-900/10 backdrop-blur-xl">
+      <div className="mb-2 text-xs font-semibold text-slate-600">
         {q} {year}
       </div>
       <div className="space-y-1.5 text-sm">
         <div className="flex items-center justify-between gap-6">
-          <span className="flex items-center gap-2 text-neutral-400">
+          <span className="flex items-center gap-2 text-slate-500">
             <span className="h-2 w-2 rounded-full bg-kbob-blue" />
             KBOB Index
           </span>
-          <span className="font-mono font-medium text-neutral-100">
+          <span className="font-mono font-medium text-slate-800">
             CHF {chf(row.kbob)} / {unit}
           </span>
         </div>
         <div className="flex items-center justify-between gap-6">
-          <span className="flex items-center gap-2 text-neutral-400">
+          <span className="flex items-center gap-2 text-slate-500">
             <span className="h-2 w-2 rounded-full bg-pool-green" />
             Smart Pool
           </span>
-          <span className="font-mono font-medium text-neutral-100">
+          <span className="font-mono font-medium text-slate-800">
             CHF {chf(row.pool)} / {unit}
           </span>
         </div>
-        <div className="mt-2 flex items-center justify-between gap-6 border-t border-white/10 pt-2">
-          <span className="text-neutral-400">Ersparnis</span>
+        <div className="mt-2 flex items-center justify-between gap-6 border-t border-slate-200 pt-2">
+          <span className="text-slate-500">Ersparnis</span>
           <span className="font-mono font-semibold text-pool-green">
             −CHF {chf(savings)} ({savingsPct.toFixed(1)}%)
           </span>
@@ -270,8 +270,8 @@ function Kpi({
   children: React.ReactNode;
 }) {
   return (
-    <div className="rounded-2xl border border-white/10 bg-white/5 p-4 backdrop-blur">
-      <div className="text-[11px] font-medium uppercase tracking-wider text-neutral-500">
+    <div className="rounded-2xl border border-slate-200 bg-white p-4 backdrop-blur">
+      <div className="text-[11px] font-medium uppercase tracking-wider text-slate-500">
         {label}
       </div>
       <div className="mt-1.5">{children}</div>
@@ -313,14 +313,14 @@ export default function KbobChart() {
   const tickInterval = Math.max(0, Math.floor(chartData.length / 7) - 1);
 
   return (
-    <section className="w-full rounded-3xl border border-white/10 bg-gradient-to-b from-white/[0.06] to-white/[0.02] p-5 shadow-2xl shadow-black/30 backdrop-blur-xl sm:p-7">
+    <section className="w-full rounded-3xl border border-slate-200 bg-white p-5 shadow-2xl shadow-slate-900/10 backdrop-blur-xl sm:p-7">
       {/* Header row: title + material select */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>
-          <h2 className="text-lg font-semibold tracking-tight text-neutral-100">
+          <h2 className="text-lg font-semibold tracking-tight text-slate-800">
             KBOB Preisindex vs. Smart Pool
           </h2>
-          <p className="mt-1 flex items-center gap-1.5 text-sm text-neutral-500">
+          <p className="mt-1 flex items-center gap-1.5 text-sm text-slate-500">
             <MapPin className="h-3.5 w-3.5" />
             {regionLabel} · Stand {data.meta.updated}
           </p>
@@ -330,7 +330,7 @@ export default function KbobChart() {
 
       {/* Region filter */}
       <div className="mt-5 flex flex-wrap items-center gap-2">
-        <span className="mr-1 text-[11px] font-medium uppercase tracking-wider text-neutral-500">
+        <span className="mr-1 text-[11px] font-medium uppercase tracking-wider text-slate-500">
           Region
         </span>
         <Segmented
@@ -344,10 +344,10 @@ export default function KbobChart() {
       <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-3">
         <Kpi label={`Marktpreis (KBOB)`}>
           <div className="flex items-baseline gap-1.5">
-            <span className="text-2xl font-semibold text-neutral-50">
+            <span className="text-2xl font-semibold text-slate-900">
               CHF {chf(kpis.current)}
             </span>
-            <span className="text-sm text-neutral-500">/ {unit}</span>
+            <span className="text-sm text-slate-500">/ {unit}</span>
           </div>
         </Kpi>
 
@@ -374,7 +374,7 @@ export default function KbobChart() {
             <span className="text-2xl font-semibold text-pool-green">
               ~ CHF {chf(kpis.savings)}
             </span>
-            <span className="text-sm text-neutral-500">/ {unit}</span>
+            <span className="text-sm text-slate-500">/ {unit}</span>
           </div>
         </Kpi>
       </div>
@@ -397,7 +397,7 @@ export default function KbobChart() {
             </defs>
             <CartesianGrid
               strokeDasharray="3 3"
-              stroke="rgba(255,255,255,0.06)"
+              stroke="rgba(15,23,42,0.06)"
               vertical={false}
             />
             <XAxis
@@ -406,7 +406,7 @@ export default function KbobChart() {
               interval={tickInterval}
               tick={{ fill: "#9ca3af", fontSize: 11 }}
               tickLine={false}
-              axisLine={{ stroke: "rgba(255,255,255,0.08)" }}
+              axisLine={{ stroke: "rgba(15,23,42,0.10)" }}
               tickMargin={10}
             />
             <YAxis
@@ -419,7 +419,7 @@ export default function KbobChart() {
             />
             <Tooltip
               content={<ChartTooltip unit={unit} />}
-              cursor={{ stroke: "rgba(255,255,255,0.15)", strokeWidth: 1 }}
+              cursor={{ stroke: "rgba(15,23,42,0.18)", strokeWidth: 1 }}
             />
             <Line
               type="monotone"
@@ -449,7 +449,7 @@ export default function KbobChart() {
 
       {/* Footer: legend + time range */}
       <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex items-center gap-5 text-xs text-neutral-400">
+        <div className="flex items-center gap-5 text-xs text-slate-500">
           <span className="flex items-center gap-2">
             <span className="h-0.5 w-6 rounded bg-kbob-blue" />
             Offizieller KBOB Index
@@ -473,7 +473,7 @@ export default function KbobChart() {
         />
       </div>
 
-      <p className="mt-4 text-[11px] text-neutral-600">{data.meta.source}</p>
+      <p className="mt-4 text-[11px] text-slate-400">{data.meta.source}</p>
     </section>
   );
 }

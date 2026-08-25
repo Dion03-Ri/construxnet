@@ -5,27 +5,26 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { useAuth } from "@clerk/nextjs";
 import {
-  Heart,
+  ThumbsUp,
   MessageCircle,
   Share2,
-  Layers,
+  Rocket,
   BadgeCheck,
   MapPin,
   Loader2,
   AlertTriangle,
   Megaphone,
-  ScanLine,
+  Package,
   Newspaper,
+  ImageIcon,
   Send,
   X,
-  ImageIcon,
+  MoreHorizontal,
 } from "lucide-react";
 import { useSupabaseBrowser } from "@/lib/supabase-browser";
+import { SAMPLE_POSTS, type MockPost } from "@/data/feedMock";
+import { CARD } from "@/lib/ui";
 import { cn } from "@/lib/utils";
-
-/* -------------------------------------------------------------------------- */
-/*  Konfiguration                                                             */
-/* -------------------------------------------------------------------------- */
 
 const REGIONS = ["Zürich", "Bern", "Nordwestschweiz", "Innerschweiz"] as const;
 
@@ -37,28 +36,7 @@ const POST_TYPES: Record<string, { label: string }> = {
   ANNOUNCEMENT: { label: "Ankündigung" },
 };
 
-const CARD =
-  "rounded-2xl border border-slate-800 bg-slate-900/70 backdrop-blur transition-colors";
-
-type Company = {
-  company_name: string;
-  city: string | null;
-  verified: boolean;
-  logo_url: string | null;
-};
-
-type Post = {
-  id: string;
-  post_type: string;
-  title: string | null;
-  content: string;
-  region: string | null;
-  media_url: string | null;
-  likes_count: number;
-  created_at: string;
-  company_id: string;
-  companies: Company | null;
-};
+type Post = MockPost;
 
 function timeAgo(iso: string) {
   const diff = Date.now() - new Date(iso).getTime();
@@ -94,7 +72,6 @@ function Composer({ onCreated }: { onCreated: () => void }) {
     company_name: string;
     logo_url: string | null;
   } | null>(null);
-  const [checked, setChecked] = useState(false);
 
   const [postType, setPostType] = useState("UPDATE");
   const [region, setRegion] = useState("");
@@ -104,10 +81,7 @@ function Composer({ onCreated }: { onCreated: () => void }) {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!isSignedIn || !userId) {
-      setChecked(true);
-      return;
-    }
+    if (!isSignedIn || !userId) return;
     let cancelled = false;
     (async () => {
       const { data } = await supabase
@@ -115,10 +89,7 @@ function Composer({ onCreated }: { onCreated: () => void }) {
         .select("id, company_name, logo_url")
         .eq("clerk_user_id", userId)
         .maybeSingle();
-      if (!cancelled) {
-        setCompany((data as typeof company) ?? null);
-        setChecked(true);
-      }
+      if (!cancelled) setCompany((data as typeof company) ?? null);
     })();
     return () => {
       cancelled = true;
@@ -154,26 +125,24 @@ function Composer({ onCreated }: { onCreated: () => void }) {
     onCreated();
   }
 
-  if (checked && (!isSignedIn || !company)) {
-    return (
-      <div className={cn(CARD, "p-4 text-sm text-slate-400")}>
-        {isSignedIn
-          ? "Lege zuerst ein Firmenprofil an, um Beiträge zu teilen."
-          : "Melde dich an, um Beiträge im Netzwerk zu teilen."}
-      </div>
-    );
-  }
-
   const avatar = (
-    <span className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full bg-navy-800 text-sm font-semibold text-slate-200">
+    <span className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full bg-slate-100 text-sm font-semibold text-slate-700">
       {company?.logo_url ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img src={company.logo_url} alt="" className="h-full w-full object-cover" />
       ) : company ? (
         initials(company.company_name)
-      ) : null}
+      ) : (
+        <ImageIcon className="h-5 w-5 text-slate-400" />
+      )}
     </span>
   );
+
+  const actions = [
+    { key: "MATERIAL_OFFER", label: "Material-Ausschreibung", icon: Megaphone, color: "text-brand", onClick: () => start("MATERIAL_OFFER") },
+    { key: "PROJECT", label: "Projekt-News", icon: Newspaper, color: "text-accent", onClick: () => start("PROJECT") },
+    { key: "POOL", label: "Smart Pool", icon: Package, color: "text-emerald", href: "/pools" },
+  ];
 
   return (
     <div className={cn(CARD, "p-4")}>
@@ -184,51 +153,47 @@ function Composer({ onCreated }: { onCreated: () => void }) {
             <button
               type="button"
               onClick={() => setOpen(true)}
-              className="h-11 flex-1 rounded-full border border-slate-700 bg-slate-800/60 px-4 text-left text-sm text-slate-400 transition-colors hover:bg-slate-800"
+              disabled={!company}
+              className="h-11 flex-1 rounded-full border border-slate-200 bg-slate-50 px-4 text-left text-sm text-slate-500 transition-colors hover:bg-slate-100 disabled:opacity-60"
             >
-              Bedarf oder Projekt teilen …
+              {company ? "Bedarf oder Projekt teilen …" : "Firmenprofil nötig, um zu posten"}
             </button>
           </div>
-          <div className="mt-3 flex items-center justify-between gap-1 border-t border-slate-800 pt-2">
-            <button
-              type="button"
-              onClick={() => start("MATERIAL_OFFER")}
-              className="inline-flex flex-1 items-center justify-center gap-2 rounded-lg px-2 py-2 text-[13px] font-medium text-slate-300 transition-colors hover:bg-slate-800/70"
-            >
-              <Megaphone className="h-4 w-4 text-brand" />
-              <span className="hidden sm:inline">Material-Ausschreibung</span>
-              <span className="sm:hidden">Ausschreibung</span>
-            </button>
-            <Link
-              href="/delivery-notes"
-              className="inline-flex flex-1 items-center justify-center gap-2 rounded-lg px-2 py-2 text-[13px] font-medium text-slate-300 transition-colors hover:bg-slate-800/70"
-            >
-              <ScanLine className="h-4 w-4 text-emerald" />
-              <span className="hidden sm:inline">Lieferschein-Scan</span>
-              <span className="sm:hidden">Scan</span>
-            </Link>
-            <button
-              type="button"
-              onClick={() => start("PROJECT")}
-              className="inline-flex flex-1 items-center justify-center gap-2 rounded-lg px-2 py-2 text-[13px] font-medium text-slate-300 transition-colors hover:bg-slate-800/70"
-            >
-              <Newspaper className="h-4 w-4 text-sky-400" />
-              <span className="hidden sm:inline">Projekt-News</span>
-              <span className="sm:hidden">Projekt</span>
-            </button>
+          <div className="mt-3 flex items-center justify-between gap-1 border-t border-slate-100 pt-2">
+            {actions.map((a) =>
+              a.href ? (
+                <Link
+                  key={a.key}
+                  href={a.href}
+                  className="inline-flex flex-1 items-center justify-center gap-2 rounded-lg px-2 py-2 text-[13px] font-medium text-slate-600 transition-colors hover:bg-slate-100"
+                >
+                  <a.icon className={cn("h-4 w-4", a.color)} />
+                  <span className="hidden sm:inline">{a.label}</span>
+                </Link>
+              ) : (
+                <button
+                  key={a.key}
+                  type="button"
+                  onClick={a.onClick}
+                  disabled={!company}
+                  className="inline-flex flex-1 items-center justify-center gap-2 rounded-lg px-2 py-2 text-[13px] font-medium text-slate-600 transition-colors hover:bg-slate-100 disabled:opacity-50"
+                >
+                  <a.icon className={cn("h-4 w-4", a.color)} />
+                  <span className="hidden sm:inline">{a.label}</span>
+                </button>
+              ),
+            )}
           </div>
         </>
       ) : (
         <div>
           <div className="mb-3 flex items-center gap-3">
             {avatar}
-            <span className="text-sm font-semibold text-slate-100">
-              {company?.company_name}
-            </span>
+            <span className="text-sm font-semibold text-slate-900">{company?.company_name}</span>
             <button
               type="button"
               onClick={() => setOpen(false)}
-              className="ml-auto rounded-lg p-1 text-slate-400 hover:bg-slate-800"
+              className="ml-auto rounded-lg p-1 text-slate-400 hover:bg-slate-100"
               aria-label="Schliessen"
             >
               <X className="h-4 w-4" />
@@ -239,7 +204,7 @@ function Composer({ onCreated }: { onCreated: () => void }) {
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder="Titel (optional)"
-            className="mb-2 w-full rounded-lg border border-slate-700 bg-slate-800/60 px-3 py-2 text-sm text-slate-100 placeholder:text-slate-500 outline-none focus:border-brand/50"
+            className="mb-2 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 outline-none focus:border-brand/50"
           />
           <textarea
             value={content}
@@ -247,30 +212,26 @@ function Composer({ onCreated }: { onCreated: () => void }) {
             placeholder="Teile ein Update, ein Material-Angebot oder eine Ausschreibung …"
             rows={4}
             autoFocus
-            className="w-full resize-none rounded-lg border border-slate-700 bg-slate-800/60 px-3 py-2 text-sm text-slate-100 placeholder:text-slate-500 outline-none focus:border-brand/50"
+            className="w-full resize-none rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 outline-none focus:border-brand/50"
           />
           <div className="mt-3 flex flex-wrap items-center gap-2">
             <select
               value={postType}
               onChange={(e) => setPostType(e.target.value)}
-              className="rounded-lg border border-slate-700 bg-slate-800/60 px-2.5 py-1.5 text-xs text-slate-200 outline-none focus:border-brand/50"
+              className="rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-xs text-slate-700 outline-none focus:border-brand/50"
             >
               {Object.entries(POST_TYPES).map(([k, v]) => (
-                <option key={k} value={k}>
-                  {v.label}
-                </option>
+                <option key={k} value={k}>{v.label}</option>
               ))}
             </select>
             <select
               value={region}
               onChange={(e) => setRegion(e.target.value)}
-              className="rounded-lg border border-slate-700 bg-slate-800/60 px-2.5 py-1.5 text-xs text-slate-200 outline-none focus:border-brand/50"
+              className="rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-xs text-slate-700 outline-none focus:border-brand/50"
             >
               <option value="">Region (optional)</option>
               {REGIONS.map((r) => (
-                <option key={r} value={r}>
-                  {r}
-                </option>
+                <option key={r} value={r}>{r}</option>
               ))}
             </select>
             <button
@@ -283,7 +244,7 @@ function Composer({ onCreated }: { onCreated: () => void }) {
               Beitrag teilen
             </button>
           </div>
-          {error && <p className="mt-2 text-xs text-rose-400">Fehler: {error}</p>}
+          {error && <p className="mt-2 text-xs text-rose-500">Fehler: {error}</p>}
         </div>
       )}
     </div>
@@ -301,7 +262,7 @@ function EngagementButton({
   accent,
   onClick,
 }: {
-  icon: typeof Heart;
+  icon: typeof ThumbsUp;
   label: string;
   active?: boolean;
   accent?: string;
@@ -312,8 +273,8 @@ function EngagementButton({
       type="button"
       onClick={onClick}
       className={cn(
-        "inline-flex flex-1 items-center justify-center gap-2 rounded-lg py-2 text-[13px] font-medium transition-colors hover:bg-slate-800/70",
-        active ? accent : "text-slate-400",
+        "inline-flex flex-1 items-center justify-center gap-2 rounded-lg py-2 text-[13px] font-medium transition-colors hover:bg-slate-100",
+        active ? accent : "text-slate-500",
       )}
     >
       <Icon className="h-4 w-4" />
@@ -333,12 +294,12 @@ function PostCard({ post, index }: { post: Post; index: number }) {
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.25, delay: Math.min(index * 0.04, 0.24), ease: "easeOut" }}
-      className={cn(CARD, "p-5 hover:border-brand/40")}
+      className={cn(CARD, "p-4 sm:p-5")}
     >
       <div className="flex items-center gap-3">
         <Link
           href={`/company/${post.company_id}`}
-          className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full bg-navy-800 text-sm font-semibold text-slate-200"
+          className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full bg-slate-100 text-sm font-semibold text-slate-700"
         >
           {c?.logo_url ? (
             // eslint-disable-next-line @next/next/no-img-element
@@ -349,15 +310,12 @@ function PostCard({ post, index }: { post: Post; index: number }) {
         </Link>
         <div className="min-w-0">
           <div className="flex items-center gap-1.5">
-            <Link
-              href={`/company/${post.company_id}`}
-              className="truncate font-semibold text-slate-100 hover:text-brand"
-            >
+            <Link href={`/company/${post.company_id}`} className="truncate font-semibold text-slate-900 hover:text-brand">
               {name}
             </Link>
             {c?.verified && <BadgeCheck className="h-4 w-4 shrink-0 text-emerald" />}
           </div>
-          <div className="flex items-center gap-2 text-xs text-slate-500">
+          <div className="flex items-center gap-2 text-xs text-slate-400">
             {c?.city && (
               <span className="inline-flex items-center gap-1">
                 <MapPin className="h-3 w-3" />
@@ -367,39 +325,47 @@ function PostCard({ post, index }: { post: Post; index: number }) {
             <span>· {timeAgo(post.created_at)}</span>
           </div>
         </div>
-        <span className="ml-auto shrink-0 rounded-full bg-brand/15 px-2.5 py-0.5 text-[11px] font-medium text-brand">
+        <span className="ml-auto shrink-0 rounded-full bg-brand/10 px-2.5 py-0.5 text-[11px] font-medium text-brand">
           {POST_TYPES[post.post_type]?.label ?? post.post_type}
         </span>
+        <button type="button" className="rounded-lg p-1 text-slate-400 hover:bg-slate-100" aria-label="Optionen">
+          <MoreHorizontal className="h-4 w-4" />
+        </button>
       </div>
 
-      {post.title && <h3 className="mt-3 font-semibold text-slate-50">{post.title}</h3>}
-      <p className="mt-1.5 whitespace-pre-wrap text-[15px] leading-relaxed text-slate-300">
+      {post.title && <h3 className="mt-3 font-semibold text-slate-900">{post.title}</h3>}
+      <p className="mt-1.5 whitespace-pre-wrap text-[15px] leading-relaxed text-slate-700">
         {post.content}
       </p>
 
-      {post.media_url && (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img src={post.media_url} alt="" className="mt-3 max-h-96 w-full rounded-xl object-cover" />
+      {post.gradient && (
+        <div className={cn("mt-3 flex h-44 items-center justify-center rounded-xl bg-gradient-to-br", post.gradient)}>
+          <Package className="h-10 w-10 text-white/70" />
+        </div>
       )}
 
       {post.region && (
-        <div className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-slate-800/60 px-2.5 py-1 text-[11px] text-slate-400">
+        <div className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-slate-100 px-2.5 py-1 text-[11px] font-medium text-slate-500">
           <MapPin className="h-3 w-3" />
           {post.region}
         </div>
       )}
 
-      {/* Social-Engagement-Bar */}
-      <div className="mt-4 flex items-center gap-1 border-t border-slate-800 pt-2">
+      <div className="mt-3 flex items-center justify-between text-[11px] text-slate-400">
+        <span>{likeCount} Reaktionen</span>
+        <span>{post.comments_count} Kommentare</span>
+      </div>
+
+      <div className="mt-1 flex items-center gap-1 border-t border-slate-100 pt-1">
         <EngagementButton
-          icon={Heart}
-          label={likeCount > 0 ? `Gefällt mir · ${likeCount}` : "Gefällt mir"}
+          icon={ThumbsUp}
+          label="Gefällt mir"
           active={liked}
-          accent="text-rose-400"
+          accent="text-brand"
           onClick={() => setLiked((v) => !v)}
         />
-        <EngagementButton icon={MessageCircle} label="Kommentar" />
-        <EngagementButton icon={Layers} label="Bündel beitreten" accent="text-brand" />
+        <EngagementButton icon={MessageCircle} label="Kommentieren" />
+        <EngagementButton icon={Rocket} label="Pool beitreten" accent="text-emerald" />
         <EngagementButton icon={Share2} label="Teilen" />
       </div>
     </motion.article>
@@ -427,10 +393,10 @@ function ChipRow({
           type="button"
           onClick={() => onChange(o.key)}
           className={cn(
-            "rounded-full px-3 py-1 text-xs font-medium transition-colors",
+            "rounded-full px-3 py-1.5 text-xs font-medium transition-colors",
             value === o.key
-              ? "bg-brand text-white"
-              : "border border-slate-800 bg-slate-900/70 text-slate-400 hover:text-slate-100",
+              ? "bg-brand text-white shadow-sm shadow-brand/30"
+              : "border border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:text-slate-900",
           )}
         >
           {o.label}
@@ -444,15 +410,15 @@ function SkeletonCard() {
   return (
     <div className={cn(CARD, "animate-pulse p-5")}>
       <div className="flex items-center gap-3">
-        <div className="h-11 w-11 rounded-full bg-slate-800" />
+        <div className="h-11 w-11 rounded-full bg-slate-100" />
         <div className="space-y-2">
-          <div className="h-3 w-40 rounded bg-slate-800" />
-          <div className="h-2.5 w-24 rounded bg-slate-800" />
+          <div className="h-3 w-40 rounded bg-slate-100" />
+          <div className="h-2.5 w-24 rounded bg-slate-100" />
         </div>
       </div>
       <div className="mt-4 space-y-2">
-        <div className="h-3 w-full rounded bg-slate-800" />
-        <div className="h-3 w-3/4 rounded bg-slate-800" />
+        <div className="h-3 w-full rounded bg-slate-100" />
+        <div className="h-3 w-3/4 rounded bg-slate-100" />
       </div>
     </div>
   );
@@ -462,6 +428,7 @@ export default function NetworkFeed() {
   const supabase = useSupabaseBrowser();
 
   const [posts, setPosts] = useState<Post[]>([]);
+  const [isDemo, setIsDemo] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [region, setRegion] = useState("ALL");
@@ -485,7 +452,16 @@ export default function NetworkFeed() {
       setError(error.message);
       setPosts([]);
     } else {
-      setPosts((data ?? []) as unknown as Post[]);
+      const rows = (data ?? []) as unknown as Post[];
+      if (rows.length === 0 && region === "ALL" && type === "ALL") {
+        setPosts(SAMPLE_POSTS);
+        setIsDemo(true);
+      } else {
+        setPosts(
+          rows.map((r) => ({ ...r, comments_count: r.comments_count ?? 0 })),
+        );
+        setIsDemo(false);
+      }
     }
     setLoading(false);
   }, [supabase, region, type]);
@@ -496,7 +472,10 @@ export default function NetworkFeed() {
 
   const typeOptions = [
     { key: "ALL", label: "Alle" },
-    ...Object.entries(POST_TYPES).map(([k, v]) => ({ key: k, label: v.label })),
+    { key: "MATERIAL_OFFER", label: "Material-Angebote" },
+    { key: "PROJECT", label: "Projekte" },
+    { key: "JOB", label: "Stellen" },
+    { key: "ANNOUNCEMENT", label: "Ausschreibungen" },
   ];
   const regionOptions = [
     { key: "ALL", label: "Alle Regionen" },
@@ -504,7 +483,7 @@ export default function NetworkFeed() {
   ];
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
       <Composer onCreated={load} />
 
       <div className="space-y-2">
@@ -512,22 +491,28 @@ export default function NetworkFeed() {
         <ChipRow options={regionOptions} value={region} onChange={setRegion} />
       </div>
 
+      {isDemo && (
+        <p className="px-1 text-[11px] text-slate-400">
+          Beispiel-Beiträge — dein erster eigener Beitrag ersetzt diese Vorschau.
+        </p>
+      )}
+
       {loading ? (
         <>
           <SkeletonCard />
           <SkeletonCard />
         </>
       ) : error ? (
-        <div className="flex items-start gap-2 rounded-2xl border border-rose-400/20 bg-rose-400/5 p-4 text-sm text-rose-300">
+        <div className="flex items-start gap-2 rounded-2xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-700">
           <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />
           <div>
             <p className="font-medium">Feed konnte nicht geladen werden.</p>
-            <p className="mt-0.5 text-rose-300/80">{error}</p>
+            <p className="mt-0.5 text-rose-600">{error}</p>
           </div>
         </div>
       ) : posts.length === 0 ? (
         <div className={cn(CARD, "border-dashed py-12 text-center text-sm text-slate-400")}>
-          Noch keine Beiträge — sei die erste Firma, die etwas teilt.
+          Keine Beiträge in dieser Auswahl.
         </div>
       ) : (
         posts.map((p, i) => <PostCard key={p.id} post={p} index={i} />)
