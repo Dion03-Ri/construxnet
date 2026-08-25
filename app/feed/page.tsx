@@ -1,13 +1,17 @@
 import Link from "next/link";
 import { Rss, Users } from "lucide-react";
 import NetworkFeed from "@/components/NetworkFeed";
+import { requireCompanyOrOnboard } from "@/lib/company";
+
+export const dynamic = "force-dynamic";
 
 export const metadata = {
   title: "Netzwerk Feed · ConstruxNet",
   description: "B2B-Aktivitätsstream der Schweizer Baubranche",
 };
 
-export default function FeedPage() {
+export default async function FeedPage() {
+  await requireCompanyOrOnboard();
   return (
     <main className="mx-auto max-w-3xl px-4 py-10 sm:px-6 sm:py-14">
       <header className="mb-8 flex items-start gap-4">

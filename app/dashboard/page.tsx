@@ -1,11 +1,15 @@
 import DashboardTabs from "@/components/DashboardTabs";
+import { requireCompanyOrOnboard } from "@/lib/company";
+
+export const dynamic = "force-dynamic";
 
 export const metadata = {
   title: "Dashboard · ConstruxNet",
   description: "Rollen-Cockpits: Bauunternehmer, Baustoffwerk, Admin",
 };
 
-export default function DashboardPage() {
+export default async function DashboardPage() {
+  await requireCompanyOrOnboard();
   return (
     <main className="mx-auto max-w-5xl px-4 py-10 sm:px-6 sm:py-14">
       <header className="mb-8">
