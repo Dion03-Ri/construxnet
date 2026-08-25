@@ -34,6 +34,19 @@ export async function createCompany(
         "Server-Konfiguration: SUPABASE_SERVICE_ROLE_KEY fehlt (in Vercel setzen).",
     };
   }
+  // Die URL muss die Supabase-API-URL sein (https://<ref>.supabase.co),
+  // NICHT die Dashboard-URL. Falscher Host => "Invalid path ...".
+  let supaHost = "";
+  try {
+    supaHost = new URL(supaUrl).host;
+  } catch {
+    /* ungültige URL */
+  }
+  if (!supaHost.endsWith(".supabase.co")) {
+    return {
+      error: `NEXT_PUBLIC_SUPABASE_URL zeigt auf "${supaHost || supaUrl}" — erwartet wird die API-URL https://<ref>.supabase.co (Vercel-Env korrigieren).`,
+    };
+  }
 
   const company_name = String(formData.get("company_name") ?? "").trim();
   const uid_number = String(formData.get("uid_number") ?? "").trim();
@@ -72,7 +85,7 @@ export async function createCompany(
     if (error.code === "23505") {
       return { error: "Diese UID-Nummer ist bereits registriert." };
     }
-    return { error: error.message };
+    return { error: `${error.message} · (Host: ${supaHost})` };
   }
 
   redirect("/feed");
