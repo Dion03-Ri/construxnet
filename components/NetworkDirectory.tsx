@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import Link from "next/link";
 import { useAuth } from "@clerk/nextjs";
 import {
   BadgeCheck,
@@ -311,9 +312,12 @@ export default function NetworkDirectory() {
                 )}
               </div>
 
-              <h3 className="mt-3 font-semibold text-slate-100">
+              <Link
+                href={`/company/${c.id}`}
+                className="mt-3 font-semibold text-slate-100 hover:text-brand"
+              >
                 {c.company_name}
-              </h3>
+              </Link>
               <p className="text-xs text-slate-500">
                 {ROLE_LABEL[c.role] ?? c.role}
                 {c.city ? ` · ${c.city}` : ""}
