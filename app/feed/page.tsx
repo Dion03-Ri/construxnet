@@ -1,4 +1,5 @@
-import { Rss, Construction } from "lucide-react";
+import { Rss } from "lucide-react";
+import NetworkFeed from "@/components/NetworkFeed";
 
 export const metadata = {
   title: "Netzwerk Feed · ConstruxNet",
@@ -22,11 +23,7 @@ export default function FeedPage() {
         </div>
       </header>
 
-      <div className="flex items-center gap-2 rounded-xl border border-brand/20 bg-brand/5 px-4 py-3 text-sm text-brand/90">
-        <Construction className="h-4 w-4 shrink-0" />
-        In Aufbau — der Aktivitätsstream mit Filtern und Post-Erstellung folgt
-        als nächstes Modul.
-      </div>
+      <NetworkFeed />
     </main>
   );
 }
