@@ -1,5 +1,6 @@
 import { createClient } from "@supabase/supabase-js";
 import { auth } from "@clerk/nextjs/server";
+import { sanitizeAccessToken } from "./token";
 
 // Eigenständiges ConstruxNet Supabase-Projekt — bewusst getrennt
 // von SourceOn's Supabase-Instanz. Keine Cross-Project-Queries.
@@ -33,7 +34,12 @@ const SUPABASE_ANON_KEY = (process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? "").trim
 export function createServerSupabaseClient() {
   return createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
     async accessToken() {
-      return (await auth()).getToken();
+      try {
+        const a = await auth();
+        return sanitizeAccessToken(await a.getToken());
+      } catch {
+        return null;
+      }
     },
   });
 }
