@@ -1,4 +1,5 @@
-import { Rss } from "lucide-react";
+import Link from "next/link";
+import { Rss, Users } from "lucide-react";
 import NetworkFeed from "@/components/NetworkFeed";
 
 export const metadata = {
@@ -13,7 +14,7 @@ export default function FeedPage() {
         <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-brand/15 text-brand">
           <Rss className="h-6 w-6" />
         </span>
-        <div>
+        <div className="flex-1">
           <h1 className="text-3xl font-semibold tracking-tight text-slate-50 sm:text-4xl">
             Netzwerk Feed
           </h1>
@@ -21,6 +22,13 @@ export default function FeedPage() {
             B2B-Aktivitätsstream der Schweizer Baubranche.
           </p>
         </div>
+        <Link
+          href="/network"
+          className="mt-1 hidden shrink-0 items-center gap-1.5 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm font-medium text-slate-200 transition-colors hover:bg-white/10 sm:inline-flex"
+        >
+          <Users className="h-4 w-4" />
+          Firmen entdecken
+        </Link>
       </header>
 
       <NetworkFeed />
