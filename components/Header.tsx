@@ -3,15 +3,15 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-import { Boxes, Menu, X } from "lucide-react";
+import { HardHat, Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const NAV_ITEMS = [
-  { href: "/preise", label: "Preise" },
-  { href: "/buendel", label: "Bündel" },
-  { href: "/buyer", label: "Bauunternehmer" },
-  { href: "/supplier", label: "Lieferant" },
-  { href: "/admin", label: "Admin" },
+  { href: "/feed", label: "Netzwerk Feed" },
+  { href: "/pools", label: "Smart Pools" },
+  { href: "/kbob", label: "KBOB Index" },
+  { href: "/messages", label: "Nachrichten" },
+  { href: "/dashboard", label: "Dashboard" },
 ];
 
 export default function Header() {
@@ -22,7 +22,7 @@ export default function Header() {
     pathname === href || pathname.startsWith(href + "/");
 
   return (
-    <header className="sticky top-0 z-50 border-b border-white/10 bg-neutral-950/80 backdrop-blur-xl">
+    <header className="sticky top-0 z-50 border-b border-white/10 bg-navy-950/80 backdrop-blur-xl">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
         {/* Logo */}
         <Link
@@ -30,11 +30,11 @@ export default function Header() {
           className="flex items-center gap-2 font-semibold tracking-tight"
           onClick={() => setOpen(false)}
         >
-          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-kbob-blue/15 text-kbob-blue">
-            <Boxes className="h-5 w-5" />
+          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand/15 text-brand">
+            <HardHat className="h-5 w-5" />
           </span>
-          <span className="text-neutral-50">
-            Construx<span className="text-kbob-blue">Net</span>
+          <span className="text-slate-50">
+            Construx<span className="text-brand">Net</span>
           </span>
         </Link>
 
@@ -47,8 +47,8 @@ export default function Header() {
               className={cn(
                 "rounded-lg px-3 py-2 text-sm font-medium transition-colors",
                 isActive(item.href)
-                  ? "bg-white/10 text-neutral-50"
-                  : "text-neutral-400 hover:text-neutral-100",
+                  ? "bg-white/10 text-slate-50"
+                  : "text-slate-400 hover:text-slate-100",
               )}
             >
               {item.label}
@@ -59,8 +59,8 @@ export default function Header() {
         {/* Desktop CTA */}
         <div className="hidden md:block">
           <Link
-            href="/buyer"
-            className="rounded-lg bg-kbob-blue px-4 py-2 text-sm font-medium text-white shadow-sm shadow-kbob-blue/30 transition-colors hover:bg-kbob-blue/90"
+            href="/dashboard"
+            className="rounded-lg bg-brand px-4 py-2 text-sm font-medium text-white shadow-sm shadow-brand/30 transition-colors hover:bg-brand-600"
           >
             Login
           </Link>
@@ -69,7 +69,7 @@ export default function Header() {
         {/* Mobile toggle */}
         <button
           type="button"
-          className="rounded-lg p-2 text-neutral-300 hover:bg-white/10 md:hidden"
+          className="rounded-lg p-2 text-slate-300 hover:bg-white/10 md:hidden"
           aria-label="Menü"
           aria-expanded={open}
           onClick={() => setOpen((o) => !o)}
@@ -80,7 +80,7 @@ export default function Header() {
 
       {/* Mobile menu */}
       {open && (
-        <nav className="border-t border-white/10 bg-neutral-950/95 px-4 py-3 md:hidden">
+        <nav className="border-t border-white/10 bg-navy-950/95 px-4 py-3 md:hidden">
           <div className="flex flex-col gap-1">
             {NAV_ITEMS.map((item) => (
               <Link
@@ -90,17 +90,17 @@ export default function Header() {
                 className={cn(
                   "rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
                   isActive(item.href)
-                    ? "bg-white/10 text-neutral-50"
-                    : "text-neutral-300 hover:bg-white/5",
+                    ? "bg-white/10 text-slate-50"
+                    : "text-slate-300 hover:bg-white/5",
                 )}
               >
                 {item.label}
               </Link>
             ))}
             <Link
-              href="/buyer"
+              href="/dashboard"
               onClick={() => setOpen(false)}
-              className="mt-1 rounded-lg bg-kbob-blue px-3 py-2.5 text-center text-sm font-medium text-white"
+              className="mt-1 rounded-lg bg-brand px-3 py-2.5 text-center text-sm font-medium text-white"
             >
               Login
             </Link>

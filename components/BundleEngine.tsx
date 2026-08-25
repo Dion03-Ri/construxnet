@@ -113,7 +113,7 @@ function Stat({
     accent === "green"
       ? "text-pool-green"
       : accent === "blue"
-        ? "text-kbob-blue"
+        ? "text-brand"
         : "text-neutral-50";
   return (
     <div className="rounded-xl border border-white/10 bg-white/5 p-4">
@@ -148,7 +148,7 @@ function PhaseStepper({ current }: { current: string }) {
             <span
               className={cn(
                 "inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-xs font-medium",
-                active && "bg-kbob-blue/15 text-kbob-blue",
+                active && "bg-brand/15 text-brand",
                 done && "bg-pool-green/10 text-pool-green",
                 !active && !done && "bg-white/5 text-neutral-500",
               )}
@@ -279,7 +279,7 @@ export default function BundleEngine() {
             <h2 className="text-lg font-semibold tracking-tight text-neutral-100">
               Smart Bündel · Preistreppe
             </h2>
-            <span className="rounded-full bg-kbob-blue/15 px-2 py-0.5 text-[11px] font-medium text-kbob-blue">
+            <span className="rounded-full bg-brand/15 px-2 py-0.5 text-[11px] font-medium text-brand">
               OPEN
             </span>
           </div>
@@ -307,7 +307,7 @@ export default function BundleEngine() {
               className={cn(
                 "rounded-lg px-3 py-1.5 text-xs font-medium transition-colors",
                 m.key === materialKey
-                  ? "bg-kbob-blue text-white shadow-sm shadow-kbob-blue/30"
+                  ? "bg-brand text-white shadow-sm shadow-brand/30"
                   : "text-neutral-400 hover:text-neutral-100",
               )}
             >
@@ -444,7 +444,7 @@ export default function BundleEngine() {
             <div className="text-[11px] uppercase tracking-wider text-neutral-500">
               Plattform-Umsatz
             </div>
-            <div className="mt-1 text-lg font-semibold text-kbob-blue">
+            <div className="mt-1 text-lg font-semibold text-brand">
               CHF {chf(calc.totalFee, 0)}
             </div>
           </div>

@@ -5,7 +5,8 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "ConstruxNet",
-  description: "Smart Bündelung für Schweizer Baumaterialien",
+  description:
+    "Das B2B-Netzwerk der Schweizer Baubranche — Vernetzung, Feed und Smart Pools.",
 };
 
 export default function RootLayout({
@@ -16,7 +17,7 @@ export default function RootLayout({
   return (
         <ClerkProvider>
       <html lang="de-CH">
-        <body className="min-h-screen bg-neutral-950 text-neutral-100 antialiased">
+        <body className="min-h-screen bg-navy-950 text-slate-100 antialiased">
           <Header />
           {children}
         </body>
