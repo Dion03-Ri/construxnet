@@ -4,12 +4,20 @@ import { auth } from "@clerk/nextjs/server";
 // Eigenständiges ConstruxNet Supabase-Projekt — bewusst getrennt
 // von SourceOn's Supabase-Instanz. Keine Cross-Project-Queries.
 
-// Abschliessende Slashes entfernen — ein Trailing-Slash in der Env-Var
-// erzeugt sonst "//rest/v1/..." und Supabase antwortet mit
-// "Invalid path specified in request URL".
-const SUPABASE_URL = (process.env.NEXT_PUBLIC_SUPABASE_URL ?? "")
-  .trim()
-  .replace(/\/+$/, "");
+// Nur Origin (scheme://host) verwenden — entfernt Trailing-Slashes UND
+// versehentliche Pfad-Anhaenge (z. B. /rest/v1), die sonst zu
+// "Invalid path specified in request URL" fuehren.
+export function cleanSupabaseUrl(raw?: string): string {
+  const v = (raw ?? "").trim();
+  if (!v) return "";
+  try {
+    return new URL(v).origin;
+  } catch {
+    return v.replace(/\/+$/, "");
+  }
+}
+
+const SUPABASE_URL = cleanSupabaseUrl(process.env.NEXT_PUBLIC_SUPABASE_URL);
 const SUPABASE_ANON_KEY = (process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? "").trim();
 
 /**
