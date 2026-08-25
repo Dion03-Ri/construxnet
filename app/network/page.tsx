@@ -1,12 +1,16 @@
 import { Users } from "lucide-react";
 import NetworkDirectory from "@/components/NetworkDirectory";
+import { requireCompanyOrOnboard } from "@/lib/company";
+
+export const dynamic = "force-dynamic";
 
 export const metadata = {
   title: "Netzwerk · ConstruxNet",
   description: "Firmenverzeichnis der Schweizer Baubranche — verbinden & verhandeln",
 };
 
-export default function NetworkPage() {
+export default async function NetworkPage() {
+  await requireCompanyOrOnboard();
   return (
     <main className="mx-auto max-w-5xl px-4 py-10 sm:px-6 sm:py-14">
       <header className="mb-8 flex items-start gap-4">
