@@ -1,21 +1,22 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 
 // ============================================================
-// SATELLITE-DOMAIN-SETUP für Shared Login mit SourceOn.
-// ConstruxNet verwendet dieselbe Clerk-Instanz wie SourceOn,
-// meldet sich aber als "Satellite" an — SourceOn bleibt die
-// Primary Domain. Beim ersten Besuch macht Clerk automatisch
-// einen Redirect-Handshake, um die bestehende Session zu
-// übernehmen (kein Cookie-Sharing nötig, funktioniert auch mit
-// zwei unabhängigen Vercel-Subdomains).
+// EIGENER LOGIN (kein Satellite-Modus).
+// ConstruxNet nutzt eine eigenständige Clerk-Instanz mit
+// selbst-gehosteten Login-Seiten unter /sign-in und /sign-up.
+// Die Sign-in/Sign-up-URLs sind im ClerkProvider (app/layout.tsx)
+// gesetzt; diese Routen sind unten als public freigegeben.
 //
 // ENV-Variablen (siehe .env.example):
-//   NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY   -> gleicher Key wie SourceOn
-//   CLERK_SECRET_KEY                    -> gleicher Key wie SourceOn
-//   NEXT_PUBLIC_CLERK_IS_SATELLITE=true
-//   NEXT_PUBLIC_CLERK_DOMAIN            -> diese ConstruxNet-Domain
-//   NEXT_PUBLIC_CLERK_SIGN_IN_URL       -> https://<sourceon-domain>/sign-in
-//   NEXT_PUBLIC_CLERK_SIGN_UP_URL       -> https://<sourceon-domain>/sign-up
+//   NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
+//   CLERK_SECRET_KEY
+//   NEXT_PUBLIC_SUPABASE_URL / NEXT_PUBLIC_SUPABASE_ANON_KEY
+//   SUPABASE_SERVICE_ROLE_KEY
+//
+// WICHTIG: KEINE Satellite-Variablen setzen — falls noch vorhanden,
+// auf Vercel entfernen: NEXT_PUBLIC_CLERK_IS_SATELLITE,
+// NEXT_PUBLIC_CLERK_DOMAIN sowie auf SourceOn zeigende
+// NEXT_PUBLIC_CLERK_SIGN_IN_URL / NEXT_PUBLIC_CLERK_SIGN_UP_URL.
 // ============================================================
 
 const isPublicRoute = createRouteMatcher([

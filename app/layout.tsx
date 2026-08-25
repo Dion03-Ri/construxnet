@@ -15,7 +15,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-        <ClerkProvider>
+    <ClerkProvider
+      signInUrl="/sign-in"
+      signUpUrl="/sign-up"
+      signInFallbackRedirectUrl="/dashboard"
+      signUpFallbackRedirectUrl="/dashboard"
+      afterSignOutUrl="/"
+      appearance={{ variables: { colorPrimary: "#F97316" } }}
+    >
       <html lang="de-CH">
         <body className="min-h-screen bg-navy-950 text-slate-100 antialiased">
           <Header />

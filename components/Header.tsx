@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
+import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 import { HardHat, Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -57,13 +58,24 @@ export default function Header() {
         </nav>
 
         {/* Desktop CTA */}
-        <div className="hidden md:block">
-          <Link
-            href="/dashboard"
-            className="rounded-lg bg-brand px-4 py-2 text-sm font-medium text-white shadow-sm shadow-brand/30 transition-colors hover:bg-brand-600"
-          >
-            Login
-          </Link>
+        <div className="hidden items-center gap-3 md:flex">
+          <SignedOut>
+            <Link
+              href="/sign-in"
+              className="rounded-lg bg-brand px-4 py-2 text-sm font-medium text-white shadow-sm shadow-brand/30 transition-colors hover:bg-brand-600"
+            >
+              Login
+            </Link>
+          </SignedOut>
+          <SignedIn>
+            <Link
+              href="/dashboard"
+              className="text-sm font-medium text-slate-300 hover:text-slate-100"
+            >
+              Dashboard
+            </Link>
+            <UserButton afterSignOutUrl="/" />
+          </SignedIn>
         </div>
 
         {/* Mobile toggle */}
@@ -97,13 +109,21 @@ export default function Header() {
                 {item.label}
               </Link>
             ))}
-            <Link
-              href="/dashboard"
-              onClick={() => setOpen(false)}
-              className="mt-1 rounded-lg bg-brand px-3 py-2.5 text-center text-sm font-medium text-white"
-            >
-              Login
-            </Link>
+            <SignedOut>
+              <Link
+                href="/sign-in"
+                onClick={() => setOpen(false)}
+                className="mt-1 rounded-lg bg-brand px-3 py-2.5 text-center text-sm font-medium text-white"
+              >
+                Login
+              </Link>
+            </SignedOut>
+            <SignedIn>
+              <div className="mt-1 flex items-center gap-3 px-3 py-2">
+                <UserButton afterSignOutUrl="/" />
+                <span className="text-sm text-slate-400">Mein Konto</span>
+              </div>
+            </SignedIn>
           </div>
         </nav>
       )}
