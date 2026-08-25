@@ -1,41 +1,61 @@
-import Link from "next/link";
-import { Rss, Users } from "lucide-react";
 import NetworkFeed from "@/components/NetworkFeed";
+import FeedProfileCard from "@/components/feed/FeedProfileCard";
+import MarketNews from "@/components/feed/MarketNews";
+import RecommendedPartners from "@/components/feed/RecommendedPartners";
+import KbobWidget from "@/components/KbobWidget";
 import { requireCompanyOrOnboard } from "@/lib/company";
+import { createServerSupabaseClient } from "@/lib/supabase";
 
 export const dynamic = "force-dynamic";
 
 export const metadata = {
-  title: "Netzwerk Feed · ConstruxNet",
+  title: "Feed · ConstruxNet",
   description: "B2B-Aktivitätsstream der Schweizer Baubranche",
 };
 
 export default async function FeedPage() {
-  await requireCompanyOrOnboard();
-  return (
-    <main className="mx-auto max-w-3xl px-4 py-10 sm:px-6 sm:py-14">
-      <header className="mb-8 flex items-start gap-4">
-        <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-brand/15 text-brand">
-          <Rss className="h-6 w-6" />
-        </span>
-        <div className="flex-1">
-          <h1 className="text-3xl font-semibold tracking-tight text-slate-50 sm:text-4xl">
-            Netzwerk Feed
-          </h1>
-          <p className="mt-2 text-slate-400">
-            B2B-Aktivitätsstream der Schweizer Baubranche.
-          </p>
-        </div>
-        <Link
-          href="/network"
-          className="mt-1 hidden shrink-0 items-center gap-1.5 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm font-medium text-slate-200 transition-colors hover:bg-white/10 sm:inline-flex"
-        >
-          <Users className="h-4 w-4" />
-          Firmen entdecken
-        </Link>
-      </header>
+  const company = await requireCompanyOrOnboard();
+  const supabase = createServerSupabaseClient();
 
-      <NetworkFeed />
+  const [{ count: connCount }, { count: poolCount }] = await Promise.all([
+    supabase
+      .from("connections")
+      .select("id", { count: "exact", head: true })
+      .eq("status", "CONNECTED"),
+    supabase
+      .from("bundle_participations")
+      .select("id", { count: "exact", head: true })
+      .eq("buyer_company_id", company.id),
+  ]);
+
+  return (
+    <main className="mx-auto max-w-6xl px-4 py-6 sm:px-6">
+      <div className="grid grid-cols-1 gap-5 lg:grid-cols-[250px_minmax(0,1fr)_320px]">
+        {/* Left */}
+        <aside className="hidden lg:block">
+          <div className="sticky top-[72px]">
+            <FeedProfileCard
+              company={company}
+              connections={connCount ?? 0}
+              pools={poolCount ?? 0}
+            />
+          </div>
+        </aside>
+
+        {/* Center */}
+        <div className="min-w-0">
+          <NetworkFeed />
+        </div>
+
+        {/* Right */}
+        <aside className="hidden lg:block">
+          <div className="sticky top-[72px] space-y-4">
+            <KbobWidget />
+            <MarketNews />
+            <RecommendedPartners />
+          </div>
+        </aside>
+      </div>
     </main>
   );
 }
