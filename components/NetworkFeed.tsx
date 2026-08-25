@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import Link from "next/link";
 import { useAuth } from "@clerk/nextjs";
 import {
   Heart,
@@ -317,7 +318,12 @@ function PostCard({ post }: { post: Post }) {
         </span>
         <div className="min-w-0">
           <div className="flex items-center gap-1.5">
-            <span className="truncate font-semibold text-slate-100">{name}</span>
+            <Link
+              href={`/company/${post.company_id}`}
+              className="truncate font-semibold text-slate-100 hover:text-brand"
+            >
+              {name}
+            </Link>
             {c?.verified && (
               <BadgeCheck className="h-4 w-4 shrink-0 text-emerald" />
             )}
