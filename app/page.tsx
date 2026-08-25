@@ -174,7 +174,7 @@ export default function Home() {
             Firmen im Netzwerk
           </h2>
           <Link
-            href="/feed"
+            href="/network"
             className="text-sm font-medium text-brand hover:text-brand-600"
           >
             Zum Netzwerk →
