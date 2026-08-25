@@ -98,10 +98,10 @@ export default async function CompanyPage({
   return (
     <main className="mx-auto max-w-3xl px-4 py-10 sm:px-6 sm:py-14">
       {/* Profil-Header */}
-      <section className="rounded-3xl border border-white/10 bg-gradient-to-b from-white/[0.06] to-white/[0.02] p-6 backdrop-blur sm:p-8">
+      <section className="rounded-3xl border border-slate-200 bg-white p-6 backdrop-blur sm:p-8">
         <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
           <div className="flex items-start gap-4">
-            <span className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-navy-800 text-lg font-semibold text-slate-200">
+            <span className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-slate-100 text-lg font-semibold text-slate-700">
               {company.logo_url ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
@@ -115,14 +115,14 @@ export default async function CompanyPage({
             </span>
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="text-2xl font-semibold tracking-tight text-slate-50">
+                <h1 className="text-2xl font-semibold tracking-tight text-slate-900">
                   {company.company_name}
                 </h1>
                 {company.verified && (
                   <BadgeCheck className="h-5 w-5 text-emerald" />
                 )}
               </div>
-              <p className="mt-1 text-sm text-slate-400">
+              <p className="mt-1 text-sm text-slate-500">
                 {ROLE_LABEL[company.role] ?? company.role}
                 {company.city ? ` · ${company.city}` : ""}
                 {company.canton ? ` (${company.canton})` : ""}
@@ -138,18 +138,18 @@ export default async function CompanyPage({
         </div>
 
         {company.bio && (
-          <p className="mt-5 whitespace-pre-wrap text-sm text-slate-300">
+          <p className="mt-5 whitespace-pre-wrap text-sm text-slate-600">
             {company.bio}
           </p>
         )}
       </section>
 
       {/* Beiträge */}
-      <h2 className="mb-3 mt-8 text-lg font-semibold tracking-tight text-slate-100">
+      <h2 className="mb-3 mt-8 text-lg font-semibold tracking-tight text-slate-900">
         Beiträge
       </h2>
       {posts.length === 0 ? (
-        <div className="rounded-2xl border border-dashed border-white/15 bg-white/[0.03] py-10 text-center text-sm text-slate-400">
+        <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50 py-10 text-center text-sm text-slate-500">
           Noch keine Beiträge.
         </div>
       ) : (
@@ -157,7 +157,7 @@ export default async function CompanyPage({
           {posts.map((p) => (
             <article
               key={p.id}
-              className="rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur"
+              className="rounded-2xl border border-slate-200 bg-white p-5 backdrop-blur"
             >
               <div className="flex items-center justify-between">
                 <span className="rounded-full bg-brand/15 px-2.5 py-0.5 text-[11px] font-medium text-brand">
@@ -172,9 +172,9 @@ export default async function CompanyPage({
                 </span>
               </div>
               {p.title && (
-                <h3 className="mt-2 font-semibold text-slate-50">{p.title}</h3>
+                <h3 className="mt-2 font-semibold text-slate-900">{p.title}</h3>
               )}
-              <p className="mt-1.5 whitespace-pre-wrap text-sm text-slate-300">
+              <p className="mt-1.5 whitespace-pre-wrap text-sm text-slate-600">
                 {p.content}
               </p>
               <div className="mt-3 flex items-center gap-4 text-xs text-slate-500">

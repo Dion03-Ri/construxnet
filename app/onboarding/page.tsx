@@ -20,15 +20,15 @@ export default async function OnboardingPage() {
         <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-brand/15 text-brand">
           <HardHat className="h-6 w-6" />
         </span>
-        <h1 className="mt-4 text-2xl font-semibold tracking-tight text-slate-50 sm:text-3xl">
+        <h1 className="mt-4 text-2xl font-semibold tracking-tight text-slate-900 sm:text-3xl">
           Willkommen bei ConstruxNet
         </h1>
-        <p className="mt-2 text-slate-400">
+        <p className="mt-2 text-slate-500">
           Lege dein Firmenprofil an, um Feed, Netzwerk und Dashboard zu nutzen.
         </p>
       </header>
 
-      <div className="rounded-3xl border border-white/10 bg-white/5 p-6 backdrop-blur sm:p-8">
+      <div className="rounded-3xl border border-slate-200 bg-white p-6 backdrop-blur sm:p-8">
         <OnboardingForm />
       </div>
     </main>

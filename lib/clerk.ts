@@ -27,23 +27,23 @@ export const clerkLocalization = {
 };
 
 /**
- * Navy/Orange-Look für alle Clerk-Komponenten (kein Standard-Weiss).
+ * Heller Soft-Glass-Look für alle Clerk-Komponenten.
  */
 export const clerkAppearance: Appearance = {
   variables: {
     colorPrimary: "#F97316", // Brand-Orange
-    colorBackground: "#0F172A", // Navy-Card
-    colorInputBackground: "#1E293B", // Navy-800
-    colorInputText: "#F1F5F9",
-    colorText: "#F1F5F9",
-    colorTextSecondary: "#94A3B8",
+    colorBackground: "#FFFFFF",
+    colorInputBackground: "#FFFFFF",
+    colorInputText: "#0F172A",
+    colorText: "#0F172A",
+    colorTextSecondary: "#64748B",
     colorTextOnPrimaryBackground: "#FFFFFF",
-    colorDanger: "#F43F5E",
+    colorDanger: "#E11D48",
     colorSuccess: "#10B981",
-    borderRadius: "0.75rem",
+    borderRadius: "0.9rem",
   },
   elements: {
-    card: "border border-white/10 shadow-2xl shadow-black/40",
+    card: "border border-slate-200 shadow-xl shadow-slate-900/5",
     formButtonPrimary:
       "bg-brand hover:bg-brand-600 transition-colors normal-case",
     footerActionLink: "text-brand hover:text-brand-600",
