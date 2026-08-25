@@ -13,12 +13,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-        <ClerkProvider
-      isSatellite={process.env.NEXT_PUBLIC_CLERK_IS_SATELLITE === "true"}
-      domain={process.env.NEXT_PUBLIC_CLERK_DOMAIN || ""}
-      signInUrl={process.env.NEXT_PUBLIC_CLERK_SIGN_IN_URL || ""}
-      signUpUrl={process.env.NEXT_PUBLIC_CLERK_SIGN_UP_URL || ""}
-    >
+        <ClerkProvider>
       <html lang="de-CH">
         <body className="min-h-screen bg-neutral-950 text-neutral-100 antialiased">
           {children}
