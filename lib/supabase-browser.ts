@@ -3,6 +3,7 @@
 import { useMemo } from "react";
 import { useSession } from "@clerk/nextjs";
 import { createClient } from "@supabase/supabase-js";
+import { sanitizeAccessToken } from "./token";
 
 // Nur Origin verwenden (siehe lib/supabase.ts) — verhindert
 // "Invalid path specified in request URL".
@@ -33,7 +34,12 @@ export function useSupabaseBrowser() {
     () =>
       createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
         async accessToken() {
-          return session ? ((await session.getToken()) ?? null) : null;
+          try {
+            if (!session) return null;
+            return sanitizeAccessToken(await session.getToken());
+          } catch {
+            return null;
+          }
         },
       }),
     [session],
