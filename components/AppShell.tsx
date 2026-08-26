@@ -10,11 +10,11 @@ import {
   Package,
   LineChart,
   MessageSquare,
-  Search,
-  Bell,
   type LucideIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import NotificationBell from "@/components/header/NotificationBell";
+import GlobalSearch from "@/components/header/GlobalSearch";
 
 type NavItem = { href: string; label: string; icon: LucideIcon };
 
@@ -51,14 +51,7 @@ function TopBar() {
       <div className="mx-auto flex h-14 max-w-7xl items-center gap-3 px-4 sm:px-6">
         <Logo />
 
-        <div className="relative hidden w-full max-w-xs md:block">
-          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-          <input
-            type="search"
-            placeholder="Firmen, Pools, Materialien …"
-            className="w-full rounded-full border border-slate-200 bg-slate-100/70 py-2 pl-9 pr-3 text-[13px] text-slate-800 placeholder:text-slate-400 outline-none transition-colors focus:border-brand/50 focus:bg-white"
-          />
-        </div>
+        <GlobalSearch />
 
         <nav className="ml-auto hidden items-stretch gap-1 md:flex">
           {NAV.map((item) => {
@@ -86,14 +79,7 @@ function TopBar() {
         </nav>
 
         <div className="ml-auto flex items-center gap-1.5 md:ml-2">
-          <button
-            type="button"
-            aria-label="Benachrichtigungen"
-            className="relative rounded-full p-2 text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-900"
-          >
-            <Bell className="h-5 w-5" />
-            <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-brand ring-2 ring-white" />
-          </button>
+          <NotificationBell />
           <UserButton
             afterSignOutUrl="/"
             appearance={{ elements: { avatarBox: "h-8 w-8" } }}
