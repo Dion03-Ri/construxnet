@@ -1,4 +1,5 @@
 import NetworkFeed from "@/components/NetworkFeed";
+import ProfileHero from "@/components/feed/ProfileHero";
 import FeedProfileCard from "@/components/feed/FeedProfileCard";
 import MarketNews from "@/components/feed/MarketNews";
 import RecommendedPartners from "@/components/feed/RecommendedPartners";
@@ -28,16 +29,24 @@ export default async function FeedPage() {
       .eq("buyer_company_id", company.id),
   ]);
 
+  const connections = connCount ?? 0;
+  const pools = poolCount ?? 0;
+
   return (
     <main className="mx-auto max-w-6xl px-4 py-6 sm:px-6">
+      {/* Profil-Hero (Bild 1) – volle Breite */}
+      <div className="mb-5">
+        <ProfileHero company={company} connections={connections} pools={pools} />
+      </div>
+
       <div className="grid grid-cols-1 gap-5 lg:grid-cols-[250px_minmax(0,1fr)_320px]">
         {/* Left */}
         <aside className="hidden lg:block">
           <div className="sticky top-[72px]">
             <FeedProfileCard
               company={company}
-              connections={connCount ?? 0}
-              pools={poolCount ?? 0}
+              connections={connections}
+              pools={pools}
             />
           </div>
         </aside>

@@ -1,34 +1,31 @@
 import { Users } from "lucide-react";
-import NetworkDirectory from "@/components/NetworkDirectory";
+import NetworkHub from "@/components/network/NetworkHub";
 import { requireCompanyOrOnboard } from "@/lib/company";
 
 export const dynamic = "force-dynamic";
 
 export const metadata = {
   title: "Netzwerk · ConstruxNet",
-  description: "Firmenverzeichnis der Schweizer Baubranche — verbinden & verhandeln",
+  description: "Verbundene Firmen auf der Karte, offene Anfragen & Empfehlungen",
 };
 
 export default async function NetworkPage() {
   await requireCompanyOrOnboard();
   return (
-    <main className="mx-auto max-w-5xl px-4 py-10 sm:px-6 sm:py-14">
-      <header className="mb-8 flex items-start gap-4">
-        <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-brand/15 text-brand">
+    <main className="mx-auto max-w-6xl px-4 py-6 sm:px-6">
+      <header className="mb-5 flex items-center gap-3">
+        <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-brand/15 text-brand">
           <Users className="h-6 w-6" />
         </span>
         <div>
-          <h1 className="text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
-            Netzwerk
-          </h1>
-          <p className="mt-2 max-w-2xl text-slate-500">
-            Bauunternehmen und Baustoffwerke der Schweizer Baubranche — verbinden
-            und direkt verhandeln.
+          <h1 className="text-2xl font-bold tracking-tight text-slate-900">Mein Netzwerk</h1>
+          <p className="text-sm text-slate-500">
+            Verbundene Bauunternehmen & Baustoffwerke der Schweiz — vernetzen und verhandeln.
           </p>
         </div>
       </header>
 
-      <NetworkDirectory />
+      <NetworkHub />
     </main>
   );
 }

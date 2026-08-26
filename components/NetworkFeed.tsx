@@ -261,24 +261,35 @@ function EngagementButton({
   active,
   accent,
   onClick,
+  href,
 }: {
   icon: typeof ThumbsUp;
   label: string;
   active?: boolean;
   accent?: string;
   onClick?: () => void;
+  href?: string;
 }) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className={cn(
-        "inline-flex flex-1 items-center justify-center gap-2 rounded-lg py-2 text-[13px] font-medium transition-colors hover:bg-slate-100",
-        active ? accent : "text-slate-500",
-      )}
-    >
+  const cls = cn(
+    "inline-flex flex-1 items-center justify-center gap-2 rounded-lg py-2 text-[13px] font-medium transition-colors hover:bg-slate-100",
+    active ? accent : "text-slate-500",
+  );
+  const inner = (
+    <>
       <Icon className="h-4 w-4" />
       <span className="hidden sm:inline">{label}</span>
+    </>
+  );
+  if (href) {
+    return (
+      <Link href={href} className={cls}>
+        {inner}
+      </Link>
+    );
+  }
+  return (
+    <button type="button" onClick={onClick} className={cls}>
+      {inner}
     </button>
   );
 }
@@ -287,7 +298,12 @@ function PostCard({ post, index }: { post: Post; index: number }) {
   const c = post.companies;
   const name = c?.company_name ?? "Unbekannte Firma";
   const [liked, setLiked] = useState(false);
+  const [expanded, setExpanded] = useState(false);
   const likeCount = post.likes_count + (liked ? 1 : 0);
+
+  const LIMIT = 220;
+  const isLong = post.content.length > LIMIT;
+  const shown = isLong && !expanded ? post.content.slice(0, LIMIT).trimEnd() + "…" : post.content;
 
   return (
     <motion.article
@@ -335,7 +351,16 @@ function PostCard({ post, index }: { post: Post; index: number }) {
 
       {post.title && <h3 className="mt-3 font-semibold text-slate-900">{post.title}</h3>}
       <p className="mt-1.5 whitespace-pre-wrap text-[15px] leading-relaxed text-slate-700">
-        {post.content}
+        {shown}
+        {isLong && (
+          <button
+            type="button"
+            onClick={() => setExpanded((v) => !v)}
+            className="ml-1 font-medium text-brand hover:underline"
+          >
+            {expanded ? "weniger" : "mehr"}
+          </button>
+        )}
       </p>
 
       {post.gradient && (
@@ -365,7 +390,7 @@ function PostCard({ post, index }: { post: Post; index: number }) {
           onClick={() => setLiked((v) => !v)}
         />
         <EngagementButton icon={MessageCircle} label="Kommentieren" />
-        <EngagementButton icon={Rocket} label="Pool beitreten" accent="text-emerald" />
+        <EngagementButton icon={Rocket} label="Pool beitreten" accent="text-emerald" href="/pools" />
         <EngagementButton icon={Share2} label="Teilen" />
       </div>
     </motion.article>

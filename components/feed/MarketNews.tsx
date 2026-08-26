@@ -1,4 +1,7 @@
-import { Newspaper, ChevronRight } from "lucide-react";
+"use client";
+
+import { useState } from "react";
+import { Newspaper, ChevronDown } from "lucide-react";
 import { CARD } from "@/lib/ui";
 import { cn } from "@/lib/utils";
 
@@ -7,9 +10,15 @@ const NEWS = [
   { title: "Armierungsstahl: Nachfrage zieht in der Zentralschweiz an", tag: "Beschaffung", readers: "860 Leser" },
   { title: "Neue SIA-118-Vorlagen für Rahmenverträge verfügbar", tag: "Recht", readers: "540 Leser" },
   { title: "Smart Pools: Rekord-Bündelvolumen im Raum Zürich", tag: "ConstruxNet", readers: "2'100 Leser" },
+  { title: "Dämmstoffe: Lieferzeiten normalisieren sich nach Q2-Engpass", tag: "Markt", readers: "710 Leser" },
+  { title: "RC-Beton: Kantone Bern & Aargau erhöhen Recycling-Quote", tag: "Nachhaltigkeit", readers: "430 Leser" },
+  { title: "Transportbeton: Diesel-Zuschlag sinkt erstmals seit 2024", tag: "Logistik", readers: "980 Leser" },
 ];
 
 export default function MarketNews() {
+  const [expanded, setExpanded] = useState(false);
+  const visible = expanded ? NEWS : NEWS.slice(0, 4);
+
   return (
     <div className={cn(CARD, "p-4")}>
       <div className="mb-3 flex items-center gap-2">
@@ -17,8 +26,8 @@ export default function MarketNews() {
         <h3 className="text-[15px] font-semibold text-slate-900">ConstruxNet Market News</h3>
       </div>
       <ul className="space-y-3">
-        {NEWS.map((n) => (
-          <li key={n.title} className="group flex gap-2">
+        {visible.map((n) => (
+          <li key={n.title} className="group flex cursor-pointer gap-2">
             <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-brand" />
             <div className="min-w-0">
               <p className="text-[13px] font-medium leading-snug text-slate-800 group-hover:text-brand">
@@ -33,9 +42,11 @@ export default function MarketNews() {
       </ul>
       <button
         type="button"
+        onClick={() => setExpanded((v) => !v)}
         className="mt-3 inline-flex items-center gap-1 text-[13px] font-medium text-slate-500 transition-colors hover:text-brand"
       >
-        Mehr anzeigen <ChevronRight className="h-3.5 w-3.5" />
+        {expanded ? "Weniger anzeigen" : "Mehr anzeigen"}
+        <ChevronDown className={cn("h-3.5 w-3.5 transition-transform", expanded && "rotate-180")} />
       </button>
     </div>
   );
