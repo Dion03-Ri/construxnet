@@ -13,7 +13,6 @@ import {
   Megaphone,
   Search,
   ArrowUpRight,
-  ShieldCheck,
   Users,
   Sparkles,
 } from "lucide-react";
@@ -121,8 +120,8 @@ export default function ProfileHero({
       transition={{ duration: 0.35, ease: "easeOut" }}
       className={cn(CARD, "overflow-hidden")}
     >
-      {/* Cover */}
-      <div className="relative h-32 bg-gradient-to-r from-brand via-brand-600 to-emerald sm:h-40">
+      {/* Cover — sauberes 120px-Banner, keine schwebenden Textboxen */}
+      <div className="relative h-[120px] bg-gradient-to-r from-brand via-brand-600 to-emerald">
         <div
           className="absolute inset-0 opacity-[0.18]"
           style={{
@@ -132,19 +131,13 @@ export default function ProfileHero({
           }}
         />
         <div className="absolute -right-10 -top-10 h-48 w-48 rounded-full bg-white/20 blur-2xl" />
-        <div className="absolute bottom-3 right-3 flex items-center gap-2">
-          <span className="inline-flex items-center gap-1.5 rounded-md bg-white/15 px-3 py-1 text-[11px] font-semibold text-white backdrop-blur-sm">
-            <ShieldCheck className="h-3.5 w-3.5" />
-            {company.verified ? "Verifizierter Baupartner" : "Profil in Verifizierung"}
-          </span>
-          <button
-            type="button"
-            className="grid h-8 w-8 place-items-center rounded-full bg-white/15 text-white backdrop-blur-sm transition-colors hover:bg-white/25"
-            aria-label="Cover bearbeiten"
-          >
-            <Camera className="h-4 w-4" />
-          </button>
-        </div>
+        <button
+          type="button"
+          className="absolute bottom-3 right-3 grid h-8 w-8 place-items-center rounded-md bg-white/15 text-white backdrop-blur-sm transition-colors hover:bg-white/25"
+          aria-label="Cover bearbeiten"
+        >
+          <Camera className="h-4 w-4" />
+        </button>
       </div>
 
       <div className="px-4 pb-5 sm:px-6">
