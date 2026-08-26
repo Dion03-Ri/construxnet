@@ -101,13 +101,13 @@ export default function KbobWidget() {
         preserveAspectRatio="none"
       >
         <Sparkline values={kbobVals} color="#254D7A" min={min} max={max} />
-        <Sparkline values={poolVals} color="#10B981" dashed min={min} max={max} />
+        <Sparkline values={poolVals} color="#254D7A" dashed min={min} max={max} />
       </svg>
 
       <div className="mt-3 flex items-center justify-between text-xs">
         <span
           className={`inline-flex items-center gap-1 font-medium ${
-            change >= 0 ? "text-rose-400" : "text-emerald"
+            change >= 0 ? "text-rose-400" : "text-accent"
           }`}
         >
           {change >= 0 ? (
@@ -118,7 +118,7 @@ export default function KbobWidget() {
           {change >= 0 ? "+" : ""}
           {change.toFixed(1)}% ggü. Vorquartal
         </span>
-        <span className="font-medium text-emerald">
+        <span className="font-medium text-accent">
           Pool −CHF {chf(savings)}
         </span>
       </div>

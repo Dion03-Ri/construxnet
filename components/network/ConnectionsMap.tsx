@@ -70,9 +70,9 @@ export default function ConnectionsMap({
               <stop offset="0%" stopColor="#D99000" stopOpacity="0.55" />
               <stop offset="100%" stopColor="#D99000" stopOpacity="0" />
             </radialGradient>
-            <radialGradient id="glow-emerald" cx="50%" cy="50%" r="50%">
-              <stop offset="0%" stopColor="#10B981" stopOpacity="0.5" />
-              <stop offset="100%" stopColor="#10B981" stopOpacity="0" />
+            <radialGradient id="glow-accent" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stopColor="#254D7A" stopOpacity="0.5" />
+              <stop offset="100%" stopColor="#254D7A" stopOpacity="0" />
             </radialGradient>
           </defs>
 
@@ -83,8 +83,8 @@ export default function ConnectionsMap({
             if (!hub) return null;
             const r = radius(n.companies.length);
             const supplierMajority = n.suppliers >= n.companies.length / 2;
-            const fill = supplierMajority ? "url(#glow-brand)" : "url(#glow-emerald)";
-            const dot = supplierMajority ? "#D99000" : "#10B981";
+            const fill = supplierMajority ? "url(#glow-brand)" : "url(#glow-accent)";
+            const dot = supplierMajority ? "#D99000" : "#254D7A";
             const isHover = hover === n.canton;
             return (
               <g
@@ -129,7 +129,7 @@ export default function ConnectionsMap({
               {hovered.companies.slice(0, 4).map((c) => (
                 <li key={c.id} className="flex items-center gap-1 text-xs text-slate-600">
                   <span className="truncate">{c.company_name}</span>
-                  {c.verified && <ShieldCheck className="h-3 w-3 shrink-0 text-emerald" />}
+                  {c.verified && <ShieldCheck className="h-3 w-3 shrink-0 text-accent" />}
                 </li>
               ))}
               {hovered.companies.length > 4 && (
@@ -147,7 +147,7 @@ export default function ConnectionsMap({
             <span className="h-2.5 w-2.5 rounded-full bg-brand" /> Lieferanten
           </span>
           <span className="inline-flex items-center gap-1.5">
-            <span className="h-2.5 w-2.5 rounded-full bg-emerald" /> Bauunternehmen
+            <span className="h-2.5 w-2.5 rounded-full bg-accent" /> Bauunternehmen
           </span>
         </div>
       </div>

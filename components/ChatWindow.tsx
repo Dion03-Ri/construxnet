@@ -320,7 +320,7 @@ export default function ChatWindow({ initialTo }: { initialTo?: string }) {
                     <span className="min-w-0 flex-1">
                       <span className="flex items-center gap-1 text-[13px] font-semibold text-slate-900">
                         <span className="truncate">{c.company_name}</span>
-                        {c.verified && <BadgeCheck className="h-3.5 w-3.5 shrink-0 text-emerald" />}
+                        {c.verified && <BadgeCheck className="h-3.5 w-3.5 shrink-0 text-accent" />}
                       </span>
                       <span className="block truncate text-[11px] text-slate-400">
                         {last ? (last.is_negotiation_offer ? "💬 Angebot" : last.content) : "Neue Konversation"}
@@ -348,7 +348,7 @@ export default function ChatWindow({ initialTo }: { initialTo?: string }) {
               <div>
                 <div className="flex items-center gap-1 text-sm font-semibold text-slate-900">
                   {activeCompany.company_name}
-                  {activeCompany.verified && <BadgeCheck className="h-4 w-4 text-emerald" />}
+                  {activeCompany.verified && <BadgeCheck className="h-4 w-4 text-accent" />}
                 </div>
                 <div className="text-[11px] text-slate-400">{activeCompany.city}</div>
               </div>
@@ -371,7 +371,7 @@ export default function ChatWindow({ initialTo }: { initialTo?: string }) {
                         </div>
                         {!mine && (
                           <div className="mt-3 flex gap-2">
-                            <button type="button" onClick={() => acceptOffer(m.offer_amount ?? 0)} className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-md bg-emerald px-3 py-2 text-[11px] font-bold uppercase tracking-wider text-white transition-colors hover:brightness-95">
+                            <button type="button" onClick={() => acceptOffer(m.offer_amount ?? 0)} className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-md bg-accent px-3 py-2 text-[11px] font-bold uppercase tracking-wider text-white transition-colors hover:brightness-95">
                               <Check className="h-4 w-4" /> Angebot annehmen
                             </button>
                             <button type="button" onClick={() => { setOfferMode(true); setOfferPrice(String(m.offer_amount ?? "")); }} className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-md border border-slate-300 px-3 py-2 text-[11px] font-bold uppercase tracking-wider text-slate-600 transition-colors hover:bg-slate-100">
@@ -514,7 +514,7 @@ function ContactPanel({ company, onOffer }: { company: Company; onOffer: () => v
           <div className="min-w-0">
             <div className="flex items-center gap-1 text-sm font-bold text-slate-900">
               <span className="truncate">{company.company_name}</span>
-              {company.verified && <BadgeCheck className="h-4 w-4 shrink-0 text-emerald" />}
+              {company.verified && <BadgeCheck className="h-4 w-4 shrink-0 text-accent" />}
             </div>
             <p className="truncate text-[11px] text-slate-400">
               {company.role ? ROLE_LABEL[company.role] ?? company.role : "Firma"}
@@ -523,7 +523,7 @@ function ContactPanel({ company, onOffer }: { company: Company; onOffer: () => v
           </div>
         </div>
         {company.verified && (
-          <div className="mt-3 inline-flex items-center gap-1.5 rounded-md bg-emerald/10 px-2.5 py-1 text-[11px] font-semibold text-emerald">
+          <div className="mt-3 inline-flex items-center gap-1.5 rounded-md bg-accent/10 px-2.5 py-1 text-[11px] font-semibold text-accent">
             <ShieldCheck className="h-3.5 w-3.5" /> Verifizierter Baupartner
           </div>
         )}

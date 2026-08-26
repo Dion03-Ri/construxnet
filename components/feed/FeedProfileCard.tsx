@@ -28,7 +28,7 @@ export default function FeedProfileCard({
     <div className="space-y-3">
       {/* Profilkarte */}
       <div className={cn(CARD, "overflow-hidden")}>
-        <div className="h-16 bg-gradient-to-r from-accent-600 via-accent-500 to-emerald" />
+        <div className="h-16 bg-gradient-to-r from-accent-600 via-accent-500 to-accent" />
         <div className="px-4 pb-4">
           <Link href={`/company/${company.id}`} className="group block">
             <div className="-mt-9 flex h-16 w-16 items-center justify-center overflow-hidden rounded-lg border-4 border-white bg-slate-100 text-lg font-semibold text-slate-700 shadow-sm">
@@ -43,7 +43,7 @@ export default function FeedProfileCard({
               <h2 className="font-semibold leading-tight text-slate-900 group-hover:text-brand">
                 {company.company_name}
               </h2>
-              {company.verified && <BadgeCheck className="h-4 w-4 shrink-0 text-emerald" />}
+              {company.verified && <BadgeCheck className="h-4 w-4 shrink-0 text-accent" />}
             </div>
           </Link>
           <p className="mt-0.5 text-[13px] text-slate-500">

@@ -77,7 +77,7 @@ export default function SupplierMap() {
             </div>
             <div className="mt-1 flex items-baseline gap-2">
               <span className="text-xl font-bold text-slate-900 sm:text-2xl">{k.value}</span>
-              <span className="inline-flex items-center gap-0.5 text-xs font-semibold text-emerald">
+              <span className="inline-flex items-center gap-0.5 text-xs font-semibold text-accent">
                 <TrendingUp className="h-3 w-3" />
                 {k.delta}
               </span>
@@ -151,7 +151,7 @@ export default function SupplierMap() {
                   <b className="text-brand">{hovered.suppliers}</b> Lieferanten
                 </span>
                 <span className="inline-flex items-center gap-1">
-                  <ShieldCheck className="h-3 w-3 text-emerald" />
+                  <ShieldCheck className="h-3 w-3 text-accent" />
                   {hovered.verified}
                 </span>
               </div>

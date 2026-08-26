@@ -119,7 +119,7 @@ export default async function CompanyPage({
                   {company.company_name}
                 </h1>
                 {company.verified && (
-                  <BadgeCheck className="h-5 w-5 text-emerald" />
+                  <BadgeCheck className="h-5 w-5 text-accent" />
                 )}
               </div>
               <p className="mt-1 text-sm text-slate-500">

@@ -97,7 +97,7 @@ export default function BeschaffungFlow() {
   if (done) {
     return (
       <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className={cn(CARD, "p-8 text-center")}>
-        <div className="mx-auto grid h-14 w-14 place-items-center rounded-lg bg-emerald/10 text-emerald">
+        <div className="mx-auto grid h-14 w-14 place-items-center rounded-lg bg-accent/10 text-accent">
           <Check className="h-7 w-7" />
         </div>
         <h2 className="mt-4 text-xl font-bold text-slate-900">Bedarf gemeldet</h2>
@@ -141,7 +141,7 @@ export default function BeschaffungFlow() {
                     <span
                       className={cn(
                         "grid h-7 w-7 shrink-0 place-items-center rounded-md text-[13px] font-bold",
-                        state === "done" && "bg-emerald text-white",
+                        state === "done" && "bg-accent text-white",
                         state === "active" && "bg-brand text-white",
                         state === "todo" && "border border-slate-300 bg-white text-slate-400",
                       )}
@@ -158,7 +158,7 @@ export default function BeschaffungFlow() {
                     </span>
                   </div>
                   {i < STEPS.length - 1 && (
-                    <span className={cn("mx-2 h-[2px] flex-1", i < step ? "bg-emerald" : "bg-slate-200")} />
+                    <span className={cn("mx-2 h-[2px] flex-1", i < step ? "bg-accent" : "bg-slate-200")} />
                   )}
                 </li>
               );
@@ -232,7 +232,7 @@ export default function BeschaffungFlow() {
                       <div className="flex items-center gap-2 rounded-md border border-slate-200 bg-slate-50 px-3 py-2 text-sm">
                         <FileText className="h-4 w-4 text-brand" />
                         <span className="min-w-0 flex-1 truncate text-slate-700">{file}</span>
-                        <span className={badge("emerald", true)}>erkannt</span>
+                        <span className={badge("accent", true)}>erkannt</span>
                         <button type="button" onClick={() => setFile(null)} className="rounded p-1 text-slate-400 hover:bg-slate-200">
                           <X className="h-4 w-4" />
                         </button>
@@ -327,19 +327,19 @@ export default function BeschaffungFlow() {
                     onClick={() => setPool((v) => !v)}
                     className={cn(
                       "mt-4 flex w-full items-start gap-3 rounded-lg border p-4 text-left transition-colors",
-                      pool ? "border-emerald bg-emerald/[0.05] ring-1 ring-emerald/30" : "border-slate-200 hover:border-slate-300",
+                      pool ? "border-accent bg-accent/[0.05] ring-1 ring-accent/30" : "border-slate-200 hover:border-slate-300",
                     )}
                   >
-                    <span className={cn("mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-md border", pool ? "border-emerald bg-emerald text-white" : "border-slate-300 bg-white")}>
+                    <span className={cn("mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-md border", pool ? "border-accent bg-accent text-white" : "border-slate-300 bg-white")}>
                       {pool && <Check className="h-4 w-4" />}
                     </span>
                     <span>
                       <span className="flex items-center gap-2 text-[15px] font-semibold text-slate-900">
-                        <Sparkles className="h-4 w-4 text-emerald" /> Smart Pool aktivieren
+                        <Sparkles className="h-4 w-4 text-accent" /> Smart Pool aktivieren
                       </span>
                       <span className="mt-1 block text-[13px] leading-relaxed text-slate-500">
                         Bündle deine Bestellung mit anderen Bauunternehmen in deiner Region und erhalte
-                        automatisch bis zu <b className="text-emerald">20 % Rabatt</b> — garantierter Tier-Rabatt
+                        automatisch bis zu <b className="text-accent">20 % Rabatt</b> — garantierter Tier-Rabatt
                         für alle Teilnehmer, unabhängig vom Beitrittszeitpunkt.
                       </span>
                     </span>
@@ -354,11 +354,11 @@ export default function BeschaffungFlow() {
                           key={x.t}
                           className={cn(
                             "rounded-lg border p-3 text-center",
-                            active ? "border-emerald bg-emerald/[0.06]" : "border-slate-200 bg-white",
+                            active ? "border-accent bg-accent/[0.06]" : "border-slate-200 bg-white",
                           )}
                         >
                           <div className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">Tier {x.t}</div>
-                          <div className={cn("mt-0.5 text-xl font-bold", active ? "text-emerald" : "text-slate-900")}>{x.d}%</div>
+                          <div className={cn("mt-0.5 text-xl font-bold", active ? "text-accent" : "text-slate-900")}>{x.d}%</div>
                           <div className="text-[11px] text-slate-400">{x.r} {material.unit}</div>
                         </div>
                       );
@@ -392,15 +392,15 @@ export default function BeschaffungFlow() {
                       <dt className="text-slate-500">Smart Pool</dt>
                       <dd>
                         {pool
-                          ? <span className={badge("emerald", true)}><Sparkles className="h-3 w-3" /> aktiviert</span>
+                          ? <span className={badge("accent", true)}><Sparkles className="h-3 w-3" /> aktiviert</span>
                           : <span className={badge("slate", true)}>Einzelbestellung</span>}
                       </dd>
                     </div>
                   </dl>
 
                   {calc && pool && (
-                    <div className="mt-4 flex items-center gap-3 rounded-lg border border-emerald/30 bg-emerald/[0.05] p-4">
-                      <span className="grid h-9 w-9 shrink-0 place-items-center rounded-md bg-emerald/15 text-emerald">
+                    <div className="mt-4 flex items-center gap-3 rounded-lg border border-accent/30 bg-accent/[0.05] p-4">
+                      <span className="grid h-9 w-9 shrink-0 place-items-center rounded-md bg-accent/15 text-accent">
                         <TrendingDown className="h-5 w-5" />
                       </span>
                       <div className="text-sm">
@@ -476,7 +476,7 @@ export default function BeschaffungFlow() {
             </div>
           )}
 
-          <div className={cn(CARD, "bg-gradient-to-br from-brand/5 to-emerald/5 p-4")}>
+          <div className={cn(CARD, "bg-gradient-to-br from-brand/5 to-accent/5 p-4")}>
             <p className="text-[13px] leading-relaxed text-slate-600">
               Schon Mitglieder in deiner Region? <Link href="/network" className="font-semibold text-brand hover:underline">Netzwerk ansehen</Link> und direkt verhandeln.
             </p>
@@ -491,7 +491,7 @@ function Row({ k, v, bold, accent }: { k: string; v: string; bold?: boolean; acc
   return (
     <div className="flex items-center justify-between">
       <span className="text-slate-500">{k}</span>
-      <span className={cn("tabular-nums", accent ? "font-semibold text-emerald" : bold ? "font-bold text-slate-900" : "text-slate-700")}>{v}</span>
+      <span className={cn("tabular-nums", accent ? "font-semibold text-accent" : bold ? "font-bold text-slate-900" : "text-slate-700")}>{v}</span>
     </div>
   );
 }
