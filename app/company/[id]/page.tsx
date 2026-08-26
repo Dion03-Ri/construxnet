@@ -160,7 +160,7 @@ export default async function CompanyPage({
               className="rounded-lg border border-slate-200 bg-white p-5 backdrop-blur"
             >
               <div className="flex items-center justify-between">
-                <span className="rounded-full bg-brand/15 px-2.5 py-0.5 text-[11px] font-medium text-brand">
+                <span className="rounded-md bg-brand/15 px-2.5 py-0.5 text-[11px] font-medium text-brand">
                   {POST_TYPE_LABEL[p.post_type] ?? p.post_type}
                 </span>
                 <span className="text-xs text-slate-500">

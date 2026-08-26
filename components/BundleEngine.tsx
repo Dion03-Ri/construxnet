@@ -190,7 +190,7 @@ export default function BundleEngine() {
         <div>
           <div className="flex items-center gap-2">
             <h2 className="text-lg font-semibold tracking-tight text-slate-900">Smart Bündel · Preistreppe</h2>
-            <span className="rounded-full bg-brand/10 px-2 py-0.5 text-[11px] font-medium text-brand">OPEN</span>
+            <span className="rounded-md bg-brand/10 px-2 py-0.5 text-[11px] font-medium text-brand">OPEN</span>
           </div>
           <div className="mt-3 flex flex-wrap gap-2">
             <SpecPill icon={FileText}>{material.spec}</SpecPill>

@@ -371,10 +371,10 @@ export default function ChatWindow({ initialTo }: { initialTo?: string }) {
                         </div>
                         {!mine && (
                           <div className="mt-3 flex gap-2">
-                            <button type="button" onClick={() => acceptOffer(m.offer_amount ?? 0)} className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-lg bg-emerald px-3 py-2 text-sm font-medium text-white transition-colors hover:brightness-95">
-                              <Check className="h-4 w-4" /> Annehmen
+                            <button type="button" onClick={() => acceptOffer(m.offer_amount ?? 0)} className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-md bg-emerald px-3 py-2 text-[11px] font-bold uppercase tracking-wider text-white transition-colors hover:brightness-95">
+                              <Check className="h-4 w-4" /> Angebot annehmen
                             </button>
-                            <button type="button" onClick={() => { setOfferMode(true); setOfferPrice(String(m.offer_amount ?? "")); }} className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-slate-200 px-3 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-100">
+                            <button type="button" onClick={() => { setOfferMode(true); setOfferPrice(String(m.offer_amount ?? "")); }} className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-md border border-slate-300 px-3 py-2 text-[11px] font-bold uppercase tracking-wider text-slate-600 transition-colors hover:bg-slate-100">
                               <Repeat className="h-4 w-4" /> Gegenangebot
                             </button>
                           </div>
@@ -417,9 +417,9 @@ export default function ChatWindow({ initialTo }: { initialTo?: string }) {
                   onChange={(e) => setText(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && !offerMode && send()}
                   placeholder={offerMode ? "Optionale Notiz zum Angebot …" : "Nachricht schreiben …"}
-                  className="h-11 flex-1 rounded-full border border-slate-200 bg-slate-50 px-4 text-sm text-slate-900 placeholder:text-slate-400 outline-none focus:border-brand/50 focus:bg-white"
+                  className="h-11 flex-1 rounded-md border border-slate-200 bg-slate-50 px-4 text-sm text-slate-900 placeholder:text-slate-400 outline-none focus:border-brand/50 focus:bg-white"
                 />
-                <button type="button" onClick={send} disabled={!canSend || sending} className="inline-flex h-11 items-center gap-2 rounded-full bg-brand px-5 text-sm font-semibold text-white transition-colors hover:bg-brand-600 disabled:opacity-50">
+                <button type="button" onClick={send} disabled={!canSend || sending} className="inline-flex h-11 items-center gap-2 rounded-md bg-brand px-5 text-sm font-semibold text-white transition-colors hover:bg-brand-600 disabled:opacity-50">
                   {sending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
                 </button>
               </div>
@@ -523,7 +523,7 @@ function ContactPanel({ company, onOffer }: { company: Company; onOffer: () => v
           </div>
         </div>
         {company.verified && (
-          <div className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-emerald/10 px-2.5 py-1 text-[11px] font-semibold text-emerald">
+          <div className="mt-3 inline-flex items-center gap-1.5 rounded-md bg-emerald/10 px-2.5 py-1 text-[11px] font-semibold text-emerald">
             <ShieldCheck className="h-3.5 w-3.5" /> Verifizierter Baupartner
           </div>
         )}
@@ -549,13 +549,13 @@ function ContactPanel({ company, onOffer }: { company: Company; onOffer: () => v
         <button
           type="button"
           onClick={onOffer}
-          className="inline-flex w-full items-center justify-center gap-1.5 rounded-full bg-brand px-3 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-brand-600"
+          className="inline-flex w-full items-center justify-center gap-1.5 rounded-md bg-brand px-3 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-brand-600"
         >
           <Tag className="h-4 w-4" /> Angebot senden
         </button>
         <Link
           href={`/company/${company.id}`}
-          className="inline-flex w-full items-center justify-center gap-1.5 rounded-full border border-slate-200 px-3 py-2.5 text-sm font-semibold text-slate-600 transition-colors hover:bg-slate-50"
+          className="inline-flex w-full items-center justify-center gap-1.5 rounded-md border border-slate-200 px-3 py-2.5 text-sm font-semibold text-slate-600 transition-colors hover:bg-slate-50"
         >
           <Building2 className="h-4 w-4" /> Profil ansehen
           <ExternalLink className="h-3.5 w-3.5 text-slate-400" />

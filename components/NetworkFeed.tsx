@@ -23,7 +23,7 @@ import {
 } from "lucide-react";
 import { useSupabaseBrowser } from "@/lib/supabase-browser";
 import { SAMPLE_POSTS, type MockPost } from "@/data/feedMock";
-import { CARD } from "@/lib/ui";
+import { CARD, badge } from "@/lib/ui";
 import { cn } from "@/lib/utils";
 
 const REGIONS = ["Zürich", "Bern", "Nordwestschweiz", "Innerschweiz"] as const;
@@ -154,7 +154,7 @@ function Composer({ onCreated }: { onCreated: () => void }) {
               type="button"
               onClick={() => setOpen(true)}
               disabled={!company}
-              className="h-11 flex-1 rounded-full border border-slate-200 bg-slate-50 px-4 text-left text-sm text-slate-500 transition-colors hover:bg-slate-100 disabled:opacity-60"
+              className="h-11 flex-1 rounded-md border border-slate-200 bg-slate-50 px-4 text-left text-sm text-slate-500 transition-colors hover:bg-slate-100 disabled:opacity-60"
             >
               {company ? "Bedarf oder Projekt teilen …" : "Firmenprofil nötig, um zu posten"}
             </button>
@@ -238,7 +238,7 @@ function Composer({ onCreated }: { onCreated: () => void }) {
               type="button"
               onClick={submit}
               disabled={submitting || !content.trim()}
-              className="ml-auto inline-flex items-center gap-2 rounded-full bg-brand px-5 py-2 text-sm font-semibold text-white shadow-sm shadow-brand/30 transition-colors hover:bg-brand-600 disabled:cursor-not-allowed disabled:opacity-50"
+              className="ml-auto inline-flex items-center gap-2 rounded-md bg-brand px-5 py-2 text-sm font-semibold text-white shadow-sm shadow-brand/30 transition-colors hover:bg-brand-600 disabled:cursor-not-allowed disabled:opacity-50"
             >
               {submitting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
               Beitrag teilen
@@ -341,7 +341,7 @@ function PostCard({ post, index }: { post: Post; index: number }) {
             <span>· {timeAgo(post.created_at)}</span>
           </div>
         </div>
-        <span className="ml-auto shrink-0 rounded-full bg-brand/10 px-2.5 py-0.5 text-[11px] font-medium text-brand">
+        <span className={cn("ml-auto shrink-0", badge("gold", true))}>
           {POST_TYPES[post.post_type]?.label ?? post.post_type}
         </span>
         <button type="button" className="rounded-lg p-1 text-slate-400 hover:bg-slate-100" aria-label="Optionen">
@@ -370,7 +370,7 @@ function PostCard({ post, index }: { post: Post; index: number }) {
       )}
 
       {post.region && (
-        <div className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-slate-100 px-2.5 py-1 text-[11px] font-medium text-slate-500">
+        <div className={cn("mt-3", badge("slate"))}>
           <MapPin className="h-3 w-3" />
           {post.region}
         </div>
@@ -411,17 +411,17 @@ function ChipRow({
   onChange: (v: string) => void;
 }) {
   return (
-    <div className="flex flex-wrap gap-1.5">
+    <div className="flex flex-wrap gap-1 rounded-md border border-slate-200 bg-slate-50 p-1">
       {options.map((o) => (
         <button
           key={o.key}
           type="button"
           onClick={() => onChange(o.key)}
           className={cn(
-            "rounded-full px-3 py-1.5 text-xs font-medium transition-colors",
+            "rounded-[5px] px-3 py-1.5 text-xs font-medium transition-colors",
             value === o.key
-              ? "bg-brand text-white shadow-sm shadow-brand/30"
-              : "border border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:text-slate-900",
+              ? "bg-white text-brand shadow-sm"
+              : "text-slate-500 hover:text-slate-900",
           )}
         >
           {o.label}

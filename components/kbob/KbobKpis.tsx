@@ -42,7 +42,7 @@ function Badge({ delta }: { delta: number }) {
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-semibold",
+        "inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-xs font-semibold",
         up ? "bg-emerald/10 text-emerald" : "bg-rose-100 text-rose-600",
       )}
     >

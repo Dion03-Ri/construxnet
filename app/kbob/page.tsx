@@ -24,7 +24,7 @@ export default function KbobPage() {
         </div>
         <Link
           href="/map"
-          className="inline-flex shrink-0 items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-card transition-colors hover:border-brand/40 hover:text-brand"
+          className="inline-flex shrink-0 items-center gap-2 rounded-md border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-card transition-colors hover:border-brand/40 hover:text-brand"
         >
           <MapIcon className="h-4 w-4" />
           Geo-Dashboard

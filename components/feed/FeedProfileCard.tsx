@@ -77,7 +77,7 @@ export default function FeedProfileCard({
           {GEWERKE.map((g) => (
             <span
               key={g}
-              className="rounded-full bg-slate-100 px-2.5 py-1 text-[11px] font-medium text-slate-600 transition-colors hover:bg-brand/10 hover:text-brand"
+              className="rounded-md bg-slate-100 px-2.5 py-1 text-[11px] font-medium text-slate-600 transition-colors hover:bg-brand/10 hover:text-brand"
             >
               {g}
             </span>
