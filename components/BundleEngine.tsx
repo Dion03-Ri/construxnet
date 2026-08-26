@@ -79,7 +79,7 @@ function SpecPill({ icon: Icon, children }: { icon: typeof MapPin; children: Rea
 }
 
 function Stat({ label, value, sub, accent }: { label: string; value: React.ReactNode; sub?: string; accent?: "green" | "brand" | "neutral" }) {
-  const color = accent === "green" ? "text-emerald" : accent === "brand" ? "text-brand" : "text-slate-900";
+  const color = accent === "green" ? "text-accent" : accent === "brand" ? "text-brand" : "text-slate-900";
   return (
     <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
       <div className="text-[11px] font-medium uppercase tracking-wider text-slate-400">{label}</div>
@@ -108,7 +108,7 @@ function PhaseStepper({ current }: { current: string }) {
               className={cn(
                 "inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-xs font-medium",
                 active && "bg-brand/10 text-brand",
-                done && "bg-emerald/10 text-emerald",
+                done && "bg-accent/10 text-accent",
                 !active && !done && "bg-slate-100 text-slate-400",
               )}
             >
@@ -116,7 +116,7 @@ function PhaseStepper({ current }: { current: string }) {
               {p.label}
             </span>
             {i < PHASES.length - 1 && (
-              <span className={cn("h-px w-4", i < idx ? "bg-emerald/40" : "bg-slate-200")} />
+              <span className={cn("h-px w-4", i < idx ? "bg-accent/40" : "bg-slate-200")} />
             )}
           </div>
         );
@@ -139,12 +139,12 @@ function Preistreppe({ activeTier, unit }: { activeTier: number; unit: string })
             transition={{ type: "spring", stiffness: 300, damping: 20 }}
             className={cn(
               "flex flex-col justify-end rounded-lg border p-3 transition-colors",
-              active ? "border-emerald/50 bg-emerald/10" : reached ? "border-slate-300 bg-slate-100" : "border-slate-200 bg-slate-50",
+              active ? "border-accent/50 bg-accent/10" : reached ? "border-slate-300 bg-slate-100" : "border-slate-200 bg-slate-50",
             )}
             style={{ minHeight: `${64 + t.tier * 26}px` }}
           >
             <div className="text-[11px] uppercase tracking-wider text-slate-400">Tier {t.tier}</div>
-            <div className={cn("text-2xl font-semibold", active ? "text-emerald" : "text-slate-700")}>{t.discount}%</div>
+            <div className={cn("text-2xl font-semibold", active ? "text-accent" : "text-slate-700")}>{t.discount}%</div>
             <div className="mt-0.5 text-[11px] text-slate-500">{range}</div>
           </motion.div>
         );
@@ -263,7 +263,7 @@ export default function BundleEngine() {
           {/* Tier badge */}
           <div className="text-right">
             <div className="text-[11px] font-medium uppercase tracking-wider text-slate-400">Erreichter Tier</div>
-            <motion.div key={calc.tier.tier} initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="mt-1 text-3xl font-bold text-emerald">
+            <motion.div key={calc.tier.tier} initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="mt-1 text-3xl font-bold text-accent">
               {calc.tier.discount}%
             </motion.div>
           </div>
@@ -273,7 +273,7 @@ export default function BundleEngine() {
         <div className="mt-4">
           <div className="h-2.5 w-full overflow-hidden rounded-full bg-slate-200">
             <motion.div
-              className="h-full rounded-full bg-gradient-to-r from-emerald to-emerald/70"
+              className="h-full rounded-full bg-gradient-to-r from-accent to-accent/70"
               animate={{ width: `${calc.progress}%` }}
               transition={{ type: "spring", stiffness: 120, damping: 20 }}
             />
@@ -288,7 +288,7 @@ export default function BundleEngine() {
             Noch <span className="font-semibold text-slate-900">{chf(calc.toNext.needed, 0)} {unit}</span> bis Tier {calc.toNext.tier} ({calc.toNext.disc}% Rabatt).
           </p>
         ) : (
-          <p className="mt-3 text-sm font-medium text-emerald">Höchste Rabattstufe erreicht — Tier 3 (20%).</p>
+          <p className="mt-3 text-sm font-medium text-accent">Höchste Rabattstufe erreicht — Tier 3 (20%).</p>
         )}
       </div>
 
@@ -297,7 +297,7 @@ export default function BundleEngine() {
         <div className="mb-2 text-[11px] font-medium uppercase tracking-wider text-slate-400">Preistreppe</div>
         <Preistreppe activeTier={calc.tier.tier} unit={unit} />
         <p className="mt-3 flex items-start gap-2 text-xs text-slate-500">
-          <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-emerald" />
+          <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-accent" />
           Garantierter Tier-Rabatt: Alle Teilnehmer erhalten den bei Pool-Abschluss erreichten Endrabatt — unabhängig vom Beitrittszeitpunkt.
         </p>
       </div>
@@ -323,7 +323,7 @@ export default function BundleEngine() {
         <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-3">
           <div className="rounded-lg border border-slate-200 bg-white p-4">
             <div className="text-[11px] uppercase tracking-wider text-slate-400">Ersparnis pro {unit}</div>
-            <div className="mt-1 text-lg font-semibold text-emerald">CHF {chf(calc.savingsUnit)}</div>
+            <div className="mt-1 text-lg font-semibold text-accent">CHF {chf(calc.savingsUnit)}</div>
             <div className="mt-0.5 text-[11px] text-slate-500">vs. KBOB CHF {chf(kbobPrice)}</div>
           </div>
           <div className="rounded-lg border border-slate-200 bg-white p-4">
@@ -333,11 +333,11 @@ export default function BundleEngine() {
             </motion.div>
             <div className="mt-0.5 text-[11px] text-slate-500">auf {chf(Math.max(0, qty), 0)} {unit}</div>
           </div>
-          <div className="rounded-lg border border-emerald/30 bg-emerald/5 p-4">
+          <div className="rounded-lg border border-accent/30 bg-accent/5 p-4">
             <div className="flex items-center gap-1.5 text-[11px] uppercase tracking-wider text-slate-400">
-              <TrendingDown className="h-3.5 w-3.5 text-emerald" /> Gesamtersparnis Pool
+              <TrendingDown className="h-3.5 w-3.5 text-accent" /> Gesamtersparnis Pool
             </div>
-            <motion.div key={Math.round(calc.totalSavings)} initial={{ opacity: 0.4 }} animate={{ opacity: 1 }} className="mt-1 text-lg font-semibold text-emerald">
+            <motion.div key={Math.round(calc.totalSavings)} initial={{ opacity: 0.4 }} animate={{ opacity: 1 }} className="mt-1 text-lg font-semibold text-accent">
               CHF {chf(calc.totalSavings, 0)}
             </motion.div>
             <div className="mt-0.5 text-[11px] text-slate-500">auf {chf(total, 0)} {unit}</div>

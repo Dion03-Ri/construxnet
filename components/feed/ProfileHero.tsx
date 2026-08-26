@@ -100,8 +100,8 @@ export default function ProfileHero({
       value: fmt(impressions),
       trend: `+${seeded(company.id, 43, 3, 18)}%`,
       icon: Megaphone,
-      tint: "from-emerald/10 to-emerald/5",
-      ring: "text-emerald",
+      tint: "from-accent/10 to-accent/5",
+      ring: "text-accent",
     },
     {
       label: "Such-Treffer",
@@ -121,7 +121,7 @@ export default function ProfileHero({
       className={cn(CARD, "overflow-hidden")}
     >
       {/* Cover — sauberes 120px-Banner, keine schwebenden Textboxen */}
-      <div className="relative h-[120px] bg-gradient-to-r from-brand via-brand-600 to-emerald">
+      <div className="relative h-[120px] bg-gradient-to-r from-brand via-brand-600 to-accent">
         <div
           className="absolute inset-0 opacity-[0.18]"
           style={{
@@ -156,7 +156,7 @@ export default function ProfileHero({
               <h1 className="truncate text-xl font-bold tracking-tight text-slate-900 sm:text-2xl">
                 {company.company_name}
               </h1>
-              {company.verified && <BadgeCheck className="h-5 w-5 shrink-0 text-emerald" />}
+              {company.verified && <BadgeCheck className="h-5 w-5 shrink-0 text-accent" />}
             </div>
             <p className="mt-0.5 text-sm text-slate-500">
               {ROLE_LABEL[company.role] ?? company.role}
@@ -174,7 +174,7 @@ export default function ProfileHero({
                 {connections >= 500 ? "500+" : connections} Verbindungen
               </Link>
               <span className="inline-flex items-center gap-1">
-                <Sparkles className="h-3.5 w-3.5 text-emerald" />
+                <Sparkles className="h-3.5 w-3.5 text-accent" />
                 {pools} aktive Pools
               </span>
             </div>
@@ -188,11 +188,11 @@ export default function ProfileHero({
               className={cn(
                 "inline-flex items-center gap-1.5 rounded-md px-4 py-2 text-sm font-semibold transition-colors",
                 openForWork
-                  ? "bg-emerald text-white shadow-sm shadow-emerald/30 hover:bg-emerald-500"
+                  ? "bg-accent text-white shadow-sm shadow-accent/30 hover:bg-accent-500"
                   : "border border-slate-200 text-slate-600 hover:bg-slate-50",
               )}
             >
-              <span className={cn("h-2 w-2 rounded-full", openForWork ? "bg-white" : "bg-emerald")} />
+              <span className={cn("h-2 w-2 rounded-full", openForWork ? "bg-white" : "bg-accent")} />
               Offen für Aufträge
             </button>
             <Link
@@ -225,7 +225,7 @@ export default function ProfileHero({
               initial={{ width: 0 }}
               animate={{ width: `${pct}%` }}
               transition={{ duration: 0.7, ease: "easeOut" }}
-              className="h-full rounded-full bg-gradient-to-r from-brand to-emerald"
+              className="h-full rounded-full bg-gradient-to-r from-brand to-accent"
             />
           </div>
           {pct < 100 && (
@@ -251,7 +251,7 @@ export default function ProfileHero({
               >
                 <div className="flex items-center justify-between">
                   <k.icon className={cn("h-4 w-4", k.ring)} />
-                  <span className="inline-flex items-center gap-0.5 text-[10px] font-semibold text-emerald">
+                  <span className="inline-flex items-center gap-0.5 text-[10px] font-semibold text-accent">
                     <ArrowUpRight className="h-3 w-3" />
                     {k.trend}
                   </span>

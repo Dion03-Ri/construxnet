@@ -104,7 +104,7 @@ export default function RecommendedPartners() {
                 className="flex items-center gap-1 truncate text-[13px] font-semibold text-slate-800 hover:text-brand"
               >
                 <span className="truncate">{c.company_name}</span>
-                {c.verified && <BadgeCheck className="h-3.5 w-3.5 shrink-0 text-emerald" />}
+                {c.verified && <BadgeCheck className="h-3.5 w-3.5 shrink-0 text-accent" />}
               </Link>
               <p className="truncate text-[11px] text-slate-400">
                 {ROLE_LABEL[c.role] ?? c.role}

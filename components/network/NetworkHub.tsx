@@ -252,7 +252,7 @@ export default function NetworkHub() {
             </div>
           </div>
 
-          <div className={cn(CARD, "bg-gradient-to-br from-brand/5 to-emerald/5 p-4")}>
+          <div className={cn(CARD, "bg-gradient-to-br from-brand/5 to-accent/5 p-4")}>
             <div className="flex items-center gap-2 text-[13px] font-semibold text-slate-900">
               <Sparkles className="h-4 w-4 text-brand" /> Smart Pools starten
             </div>
@@ -302,7 +302,7 @@ export default function NetworkHub() {
                       className="flex items-center gap-1 truncate text-sm font-semibold text-slate-900 hover:text-brand"
                     >
                       {company.company_name}
-                      {company.verified && <BadgeCheck className="h-4 w-4 shrink-0 text-emerald" />}
+                      {company.verified && <BadgeCheck className="h-4 w-4 shrink-0 text-accent" />}
                     </Link>
                     <p className="truncate text-xs text-slate-400">
                       {ROLE_LABEL[company.role] ?? company.role}
@@ -379,7 +379,7 @@ export default function NetworkHub() {
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
               {suggestions.map((c) => (
                 <div key={c.id} className={cn(CARD, "flex flex-col overflow-hidden")}>
-                  <div className="h-12 bg-gradient-to-r from-brand/20 via-brand/10 to-emerald/15" />
+                  <div className="h-12 bg-gradient-to-r from-brand/20 via-brand/10 to-accent/15" />
                   <div className="flex flex-1 flex-col px-4 pb-4">
                     <Link
                       href={`/company/${c.id}`}
@@ -397,7 +397,7 @@ export default function NetworkHub() {
                       className="mt-2 flex items-center gap-1 text-[15px] font-semibold text-slate-900 hover:text-brand"
                     >
                       <span className="truncate">{c.company_name}</span>
-                      {c.verified && <BadgeCheck className="h-4 w-4 shrink-0 text-emerald" />}
+                      {c.verified && <BadgeCheck className="h-4 w-4 shrink-0 text-accent" />}
                     </Link>
                     <p className="text-xs text-slate-500">{ROLE_LABEL[c.role] ?? c.role}</p>
                     <p className="mt-0.5 flex items-center gap-1 text-[11px] text-slate-400">

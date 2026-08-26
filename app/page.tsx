@@ -48,7 +48,7 @@ const TRUST = ["KIBAG", "Vigier Beton", "Implenia", "Losinger Marazzi", "Holcim"
 function HeroMock() {
   return (
     <div className="relative">
-      <div className="pointer-events-none absolute -inset-6 -z-10 rounded-[28px] bg-gradient-to-br from-brand/20 via-emerald/10 to-transparent blur-2xl" />
+      <div className="pointer-events-none absolute -inset-6 -z-10 rounded-[28px] bg-gradient-to-br from-brand/20 via-accent/10 to-transparent blur-2xl" />
       <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-[0_20px_50px_-12px_rgba(15,34,56,0.25)]">
         {/* Browser-Chrome */}
         <div className="flex items-center gap-2 border-b border-slate-200 bg-slate-50 px-3 py-2.5">
@@ -62,16 +62,16 @@ function HeroMock() {
         <div className="space-y-3 p-4">
           {/* Profil-Streifen */}
           <div className="overflow-hidden rounded-lg border border-slate-200">
-            <div className="h-10 bg-gradient-to-r from-brand via-brand-600 to-emerald" />
+            <div className="h-10 bg-gradient-to-r from-brand via-brand-600 to-accent" />
             <div className="flex items-center gap-2.5 px-3 pb-3">
               <div className="-mt-4 grid h-9 w-9 place-items-center rounded-lg border-2 border-white bg-navy text-[11px] font-bold text-white">BB</div>
               <div className="min-w-0">
                 <div className="flex items-center gap-1 text-[12px] font-semibold text-slate-900">
-                  Bätschmann Bau AG <BadgeCheck className="h-3 w-3 text-emerald" />
+                  Bätschmann Bau AG <BadgeCheck className="h-3 w-3 text-accent" />
                 </div>
                 <div className="text-[10px] text-slate-400">Bauunternehmen · Zürich</div>
               </div>
-              <span className="ml-auto rounded-sm border border-emerald-500/30 bg-emerald-50 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-emerald-700">
+              <span className="ml-auto rounded-sm border border-accent-500/30 bg-accent-50 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-accent-700">
                 Offen für Aufträge
               </span>
             </div>
@@ -87,7 +87,7 @@ function HeroMock() {
                 <div className="text-[13px] font-bold text-slate-900">{k.v}</div>
                 <div className="flex items-center justify-between">
                   <span className="text-[9px] text-slate-400">{k.l}</span>
-                  <span className="inline-flex items-center text-[9px] font-semibold text-emerald">
+                  <span className="inline-flex items-center text-[9px] font-semibold text-accent">
                     <ArrowUpRight className="h-2.5 w-2.5" />{k.d}
                   </span>
                 </div>
@@ -99,10 +99,10 @@ function HeroMock() {
             <div className="rounded-lg border border-slate-200 p-2.5">
               <div className="flex items-center justify-between">
                 <span className="text-[11px] font-semibold text-slate-800">Beton C25/30</span>
-                <span className="rounded-sm border border-emerald-500/30 bg-emerald-50 px-1 py-0.5 text-[8px] font-bold uppercase tracking-wider text-emerald-700">Tier 2</span>
+                <span className="rounded-sm border border-accent-500/30 bg-accent-50 px-1 py-0.5 text-[8px] font-bold uppercase tracking-wider text-accent-700">Tier 2</span>
               </div>
               <div className="mt-2 h-1.5 w-full overflow-hidden rounded-sm bg-slate-100">
-                <div className="h-full w-[77%] rounded-sm bg-gradient-to-r from-emerald to-emerald/70" />
+                <div className="h-full w-[77%] rounded-sm bg-gradient-to-r from-accent to-accent/70" />
               </div>
               <div className="mt-1.5 text-[9px] text-slate-400">230 / 300 m³ · Raum Zürich</div>
             </div>
@@ -128,7 +128,7 @@ export default function Home() {
         <div className="mx-auto grid max-w-6xl grid-cols-1 items-center gap-12 px-4 pb-14 pt-12 sm:px-6 lg:grid-cols-[1.05fr_1fr] lg:pb-20 lg:pt-16">
           <div>
             <span className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1 text-[12px] font-medium text-slate-600">
-              <span className="h-1.5 w-1.5 rounded-full bg-emerald" />
+              <span className="h-1.5 w-1.5 rounded-full bg-accent" />
               Das B2B-Netzwerk der Schweizer Baubranche
             </span>
             <h1 className="mt-5 text-[2.6rem] font-bold leading-[1.05] tracking-[-0.03em] text-slate-900 sm:text-6xl">
@@ -214,7 +214,7 @@ export default function Home() {
           {/* CTA-Kachel */}
           <Link
             href="/beschaffung"
-            className="group flex flex-col justify-between rounded-lg border border-brand/30 bg-gradient-to-br from-brand/10 to-emerald/10 p-5 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-cardhover"
+            className="group flex flex-col justify-between rounded-lg border border-brand/30 bg-gradient-to-br from-brand/10 to-accent/10 p-5 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-cardhover"
           >
             <span className="grid h-11 w-11 place-items-center rounded-lg bg-brand text-white">
               <Megaphone className="h-5 w-5" />
@@ -319,7 +319,7 @@ export default function Home() {
                     <MapPin className="h-3 w-3" /> {p.region} · {p.volume}
                   </div>
                 </div>
-                <span className="shrink-0 rounded-sm border border-emerald-500/30 bg-emerald-50 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-emerald-700">
+                <span className="shrink-0 rounded-sm border border-accent-500/30 bg-accent-50 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-accent-700">
                   −{p.tier}
                 </span>
                 <span className="hidden shrink-0 items-center gap-1 text-[11px] text-slate-400 sm:inline-flex">
@@ -346,7 +346,7 @@ export default function Home() {
                 </span>
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-1 truncate text-[13px] font-semibold text-slate-800">
-                    {c.name} <BadgeCheck className="h-3.5 w-3.5 shrink-0 text-emerald" />
+                    {c.name} <BadgeCheck className="h-3.5 w-3.5 shrink-0 text-accent" />
                   </div>
                   <div className="truncate text-[11px] text-slate-400">{c.cat} · {c.city} · {c.uid}</div>
                 </div>
@@ -367,7 +367,7 @@ export default function Home() {
         <div className="relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-8 sm:p-12">
           <div className="pointer-events-none absolute -right-16 -top-16 h-64 w-64 rounded-full bg-brand/10 blur-3xl" />
           <div className="relative flex flex-col items-start gap-4 sm:max-w-2xl">
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/30 bg-emerald-50 px-3 py-1 text-[12px] font-semibold text-emerald-700">
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-accent-500/30 bg-accent-50 px-3 py-1 text-[12px] font-semibold text-accent-700">
               <TrendingDown className="h-3.5 w-3.5" /> 12–20 % typische Ersparnis
             </span>
             <h2 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">

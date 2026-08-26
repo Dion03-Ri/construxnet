@@ -26,26 +26,28 @@ const config: Config = {
           800: "#0C1824",
           700: "#111F2E",
         },
-        // Primär / Marke: SourceOn-Gold (--gold #D99000, dunkler #9A6A00)
+        // Primär / Marke: SourceOn-Gold (--gold #D99000, heller/dunkler)
         brand: {
           DEFAULT: "#D99000",
+          50: "#FBF3E2",
+          100: "#F6E6C2",
           500: "#D99000",
-          600: "#9A6A00",
+          600: "#B8770A",
+          700: "#9A6A00",
         },
-        // Ersparnisse / positiv: SourceOn-Grün
-        emerald: {
-          DEFAULT: "#10B981",
-          500: "#10B981",
-        },
-        // Sekundär-Akzent: SourceOn-Navy (--navy #1B3A5C / --navy-md #254D7A)
+        // Sekundär-Akzent: SourceOn-Blau/Navy — volle Skala (KEIN Grün mehr)
         accent: {
           DEFAULT: "#1B3A5C",
+          50: "#EEF3F8",
+          100: "#DCE7F1",
+          200: "#BCD0E4",
           500: "#254D7A",
           600: "#1B3A5C",
+          700: "#16314F",
         },
-        // Datenlinien (nur Visualisierung) — SourceOn-Navy
+        // Datenlinien (nur Visualisierung) — SourceOn-Blau
         "kbob-blue": "#254D7A",
-        "pool-green": "#10B981",
+        "pool-green": "#254D7A",
       },
       boxShadow: {
         // Präzise, flache Enterprise-Elevation (Stripe/Salesforce-Stil)

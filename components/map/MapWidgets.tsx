@@ -31,7 +31,7 @@ function MiniSpark({ values }: { values: number[] }) {
     .join(" ");
   return (
     <svg viewBox="0 0 60 20" className="h-5 w-16">
-      <polyline points={pts} fill="none" stroke="#10B981" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" />
+      <polyline points={pts} fill="none" stroke="#254D7A" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }

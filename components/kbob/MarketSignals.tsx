@@ -14,21 +14,21 @@ type Signal = {
   label: string;
   sub: string;
   score: number;
-  tone: "emerald" | "brand" | "accent" | "rose";
+  tone: "accent" | "brand" | "navy" | "rose";
 };
 
 const TONE: Record<Signal["tone"], { chip: string; bar: string; text: string }> = {
-  emerald: { chip: "bg-emerald/10 text-emerald", bar: "bg-emerald", text: "text-emerald" },
+  accent: { chip: "bg-accent-50 text-accent", bar: "bg-accent-500", text: "text-accent" },
   brand: { chip: "bg-brand/10 text-brand", bar: "bg-brand", text: "text-brand" },
-  accent: { chip: "bg-accent/10 text-accent", bar: "bg-accent", text: "text-accent" },
+  navy: { chip: "bg-accent/10 text-accent-700", bar: "bg-accent-700", text: "text-accent-700" },
   rose: { chip: "bg-rose-100 text-rose-600", bar: "bg-rose-500", text: "text-rose-600" },
 };
 
 const SIGNALS: Signal[] = [
-  { icon: Activity, label: "Zementpreis-Stabilität", sub: "Raum Zürich · 30 T.", score: 92.4, tone: "emerald" },
-  { icon: Truck, label: "Lieferkapazität", sub: "Baustoffwerke Region ZH", score: 87.2, tone: "emerald" },
+  { icon: Activity, label: "Zementpreis-Stabilität", sub: "Raum Zürich · 30 T.", score: 92.4, tone: "accent" },
+  { icon: Truck, label: "Lieferkapazität", sub: "Baustoffwerke Region ZH", score: 87.2, tone: "navy" },
   { icon: TrendingDown, label: "Ø Pool-Ersparnis", sub: "letzte 12 Bündel", score: 13.8, tone: "brand" },
-  { icon: Boxes, label: "Nachfrage Armierungsstahl", sub: "Zentralschweiz", score: 64.0, tone: "accent" },
+  { icon: Boxes, label: "Nachfrage Armierungsstahl", sub: "Zentralschweiz", score: 64.0, tone: "navy" },
   { icon: Fuel, label: "Diesel-/Transportindex", sub: "Volatilität hoch", score: 42.0, tone: "rose" },
 ];
 

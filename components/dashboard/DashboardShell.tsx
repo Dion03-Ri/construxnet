@@ -46,8 +46,9 @@ import { cn } from "@/lib/utils";
 
 const C = {
   brand: "#D99000",
-  emerald: "#10B981",
-  accent: "#1B3A5C",
+  brandLight: "#E8A94A",
+  accent: "#254D7A",
+  navy: "#1B3A5C",
   slate: "#94A3B8",
   slateLight: "#E2E8F0",
 };
@@ -72,12 +73,12 @@ const KPIS: Record<"buyer" | "supplier", Kpi[]> = {
   buyer: [
     { label: "Beschaffungsvolumen", value: "CHF 4.2 Mio.", delta: 12.4, series: [18, 22, 20, 26, 24, 30, 34], color: C.brand },
     { label: "Aktive Bestellungen", value: "1'847", delta: 8.1, series: [12, 14, 13, 16, 18, 17, 21], color: C.accent },
-    { label: "Ø Ersparnis (Pools)", value: "13.8 %", delta: 2.3, series: [9, 10, 11, 10, 12, 13, 14], color: C.emerald },
+    { label: "Ø Ersparnis (Pools)", value: "13.8 %", delta: 2.3, series: [9, 10, 11, 10, 12, 13, 14], color: C.accent },
     { label: "Offene Ausschreibungen", value: "7", delta: -1.2, series: [10, 9, 11, 8, 9, 7, 7], color: C.slate },
   ],
   supplier: [
     { label: "Zugesprochenes Volumen", value: "CHF 3.7 Mio.", delta: 9.6, series: [14, 16, 15, 19, 22, 24, 27], color: C.brand },
-    { label: "Gewonnene Zuschläge", value: "24", delta: 6.4, series: [8, 9, 11, 10, 12, 13, 15], color: C.emerald },
+    { label: "Gewonnene Zuschläge", value: "24", delta: 6.4, series: [8, 9, 11, 10, 12, 13, 15], color: C.accent },
     { label: "Aktive Gebote", value: "12", delta: 4.1, series: [6, 7, 6, 8, 9, 10, 12], color: C.accent },
     { label: "Plattform-Gebühr", value: "CHF 8'420", delta: -0.8, series: [9, 8, 9, 8, 8, 8, 8], color: C.slate },
   ],
@@ -96,14 +97,14 @@ const WEEK_BARS = [
 const PLANNED = [
   { name: "Beton C25/30", amount: 220_000, pct: 74, color: C.brand },
   { name: "Armierungsstahl B500B", amount: 180_000, pct: 67, color: C.accent },
-  { name: "Koffer-/Wandkies", amount: 96_000, pct: 70, color: C.emerald },
+  { name: "Koffer-/Wandkies", amount: 96_000, pct: 70, color: C.navy },
   { name: "Transport / Diesel", amount: 62_000, pct: 52, color: C.slate },
 ];
 
 const DONUT = [
   { name: "Beton", value: 40, color: C.brand },
   { name: "Armierungsstahl", value: 34, color: C.accent },
-  { name: "Kies", value: 18, color: C.emerald },
+  { name: "Kies", value: 18, color: C.navy },
   { name: "Transport", value: 8, color: C.slate },
 ];
 
@@ -177,7 +178,7 @@ function KpiCard({ k }: { k: Kpi }) {
         <span
           className={cn(
             "inline-flex items-center gap-0.5 text-[11px] font-semibold",
-            up ? "text-emerald" : "text-rose-500",
+            up ? "text-accent" : "text-rose-500",
           )}
         >
           {up ? <ArrowUpRight className="h-3 w-3" /> : <ArrowDownRight className="h-3 w-3" />}
@@ -367,7 +368,7 @@ function OverviewPanel({ role }: { role: "buyer" | "supplier" }) {
       <div className={cn(CARD, "p-5")}>
         <div className="flex flex-wrap items-center justify-between gap-2">
           <h3 className="text-[15px] font-semibold text-slate-900">Umsatz vs. Kosten (2026)</h3>
-          <span className="inline-flex items-center gap-1 rounded-md bg-emerald/10 px-2.5 py-1 text-xs font-semibold text-emerald">
+          <span className="inline-flex items-center gap-1 rounded-md bg-accent/10 px-2.5 py-1 text-xs font-semibold text-accent">
             <ArrowUpRight className="h-3.5 w-3.5" /> {margin}% Marge
           </span>
         </div>
@@ -400,7 +401,7 @@ function OverviewPanel({ role }: { role: "buyer" | "supplier" }) {
         <OrdersPanel compact />
         <div className="relative overflow-hidden rounded-lg bg-gradient-to-br from-navy-900 via-navy-800 to-navy p-6 text-white shadow-cardhover">
           <div className="absolute -right-8 -top-8 h-40 w-40 rounded-full bg-brand/30 blur-3xl" />
-          <div className="absolute -bottom-10 -left-6 h-40 w-40 rounded-full bg-emerald/20 blur-3xl" />
+          <div className="absolute -bottom-10 -left-6 h-40 w-40 rounded-full bg-accent/20 blur-3xl" />
           <div className="relative">
             <span className="inline-flex items-center gap-1.5 rounded-md bg-white/10 px-2.5 py-1 text-[11px] font-semibold backdrop-blur-sm">
               <Sparkles className="h-3.5 w-3.5" /> ConstruxNet KI
@@ -450,7 +451,7 @@ function OrdersPanel({ compact }: { compact?: boolean }) {
                 <td className="py-2.5 tabular-nums text-slate-700">{o.amount}</td>
                 <td className="hidden py-2.5 text-slate-500 sm:table-cell">{o.date}</td>
                 <td className="py-2.5 text-right">
-                  <span className={badge(o.status === "Abgeschlossen" ? "emerald" : "gold", true)}>
+                  <span className={badge(o.status === "Abgeschlossen" ? "accent" : "gold", true)}>
                     {o.status}
                   </span>
                 </td>
@@ -492,7 +493,7 @@ function TendersPanel() {
                   <div className="text-[11px] text-slate-500">{t.region} · {t.vol} · KBOB-Ref CHF {chf(t.kbob)}/{t.unit}</div>
                 </div>
                 {done ? (
-                  <span className="inline-flex items-center gap-1 rounded-md bg-emerald/10 px-3 py-1 text-xs font-medium text-emerald">
+                  <span className="inline-flex items-center gap-1 rounded-md bg-accent/10 px-3 py-1 text-xs font-medium text-accent">
                     <Check className="h-3.5 w-3.5" /> Gebot CHF {done}
                   </span>
                 ) : (
@@ -550,9 +551,9 @@ function ContractsPanel() {
                 </div>
                 <div className="mt-3 flex items-center gap-3">
                   <div className="h-2 flex-1 overflow-hidden rounded-full bg-slate-100">
-                    <div className="h-full rounded-full bg-gradient-to-r from-emerald to-emerald/70" style={{ width: `${pct}%` }} />
+                    <div className="h-full rounded-full bg-gradient-to-r from-accent to-accent/70" style={{ width: `${pct}%` }} />
                   </div>
-                  <span className="shrink-0 rounded-md bg-emerald/10 px-2 py-0.5 text-[11px] font-semibold text-emerald">
+                  <span className="shrink-0 rounded-md bg-accent/10 px-2 py-0.5 text-[11px] font-semibold text-accent">
                     Tier {p.tier} · {p.disc}%
                   </span>
                 </div>
@@ -587,7 +588,7 @@ function ContractsPanel() {
                   <td className="hidden py-2.5 text-slate-500 sm:table-cell">{c.vol}</td>
                   <td className="py-2.5 tabular-nums text-slate-600">{c.price}</td>
                   <td className="py-2.5 text-right">
-                    <span className={badge(c.status === "Aktiv" ? "emerald" : "slate", true)}>
+                    <span className={badge(c.status === "Aktiv" ? "accent" : "slate", true)}>
                       {c.status}
                     </span>
                   </td>
@@ -714,7 +715,7 @@ export default function DashboardShell({ company }: { company: Company }) {
           <h2 className="text-lg font-bold tracking-tight text-slate-900">{title}</h2>
           <div className="flex items-center gap-2">
             <span className="hidden items-center gap-1 rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs text-slate-500 sm:inline-flex">
-              <Coins className="h-3.5 w-3.5 text-emerald" /> KBOB-Index aktuell
+              <Coins className="h-3.5 w-3.5 text-accent" /> KBOB-Index aktuell
             </span>
             <button type="button" className="inline-flex items-center gap-1.5 rounded-lg bg-brand px-3 py-1.5 text-sm font-semibold text-white transition-colors hover:bg-brand-600">
               <Download className="h-4 w-4" /> Export

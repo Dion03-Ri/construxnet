@@ -141,7 +141,7 @@ function Composer({ onCreated }: { onCreated: () => void }) {
   const actions = [
     { key: "MATERIAL_OFFER", label: "Material-Ausschreibung", icon: Megaphone, color: "text-brand", href: "/beschaffung" },
     { key: "PROJECT", label: "Projekt-News", icon: Newspaper, color: "text-accent", onClick: () => start("PROJECT") },
-    { key: "POOL", label: "Smart Pool", icon: Package, color: "text-emerald", href: "/pools" },
+    { key: "POOL", label: "Smart Pool", icon: Package, color: "text-accent", href: "/pools" },
   ];
 
   return (
@@ -329,7 +329,7 @@ function PostCard({ post, index }: { post: Post; index: number }) {
             <Link href={`/company/${post.company_id}`} className="truncate font-semibold text-slate-900 hover:text-brand">
               {name}
             </Link>
-            {c?.verified && <BadgeCheck className="h-4 w-4 shrink-0 text-emerald" />}
+            {c?.verified && <BadgeCheck className="h-4 w-4 shrink-0 text-accent" />}
           </div>
           <div className="flex items-center gap-2 text-xs text-slate-400">
             {c?.city && (
@@ -390,7 +390,7 @@ function PostCard({ post, index }: { post: Post; index: number }) {
           onClick={() => setLiked((v) => !v)}
         />
         <EngagementButton icon={MessageCircle} label="Kommentieren" />
-        <EngagementButton icon={Rocket} label="Pool beitreten" accent="text-emerald" href="/pools" />
+        <EngagementButton icon={Rocket} label="Pool beitreten" accent="text-accent" href="/pools" />
         <EngagementButton icon={Share2} label="Teilen" />
       </div>
     </motion.article>
@@ -512,7 +512,7 @@ export default function NetworkFeed() {
       {/* Prominenter Beschaffungs-CTA */}
       <Link
         href="/beschaffung"
-        className="flex items-center gap-3 rounded-lg border border-brand/30 bg-gradient-to-r from-brand/10 to-emerald/10 p-4 transition-colors hover:border-brand/50"
+        className="flex items-center gap-3 rounded-lg border border-brand/30 bg-gradient-to-r from-brand/10 to-accent/10 p-4 transition-colors hover:border-brand/50"
       >
         <span className="grid h-10 w-10 shrink-0 place-items-center rounded-md bg-brand text-white">
           <Megaphone className="h-5 w-5" />

@@ -43,7 +43,7 @@ function Badge({ delta }: { delta: number }) {
     <span
       className={cn(
         "inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-xs font-semibold",
-        up ? "bg-emerald/10 text-emerald" : "bg-rose-100 text-rose-600",
+        up ? "bg-accent/10 text-accent" : "bg-rose-100 text-rose-600",
       )}
     >
       {up ? <TrendingUp className="h-3.5 w-3.5" /> : <TrendingDown className="h-3.5 w-3.5" />}
@@ -73,7 +73,7 @@ export default function KbobKpis() {
           segments={[
             { label: "Beton", value: 72, color: "bg-accent" },
             { label: "Stahl", value: 64, color: "bg-brand" },
-            { label: "Kies", value: 81, color: "bg-emerald" },
+            { label: "Kies", value: 81, color: "bg-accent" },
           ]}
         />
       </div>
@@ -81,7 +81,7 @@ export default function KbobKpis() {
       {/* Beschaffungsvolumen */}
       <div className={cn(CARD, "p-5")}>
         <div className="flex items-center gap-2 text-[13px] font-medium text-slate-500">
-          <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-emerald/10 text-emerald">
+          <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-accent/10 text-accent">
             <Wallet className="h-4 w-4" />
           </span>
           Beschaffungsvolumen (12 Mt.)
@@ -97,7 +97,7 @@ export default function KbobKpis() {
           segments={[
             { label: "Beton", value: 48, color: "bg-accent" },
             { label: "Stahl", value: 34, color: "bg-brand" },
-            { label: "Kies", value: 18, color: "bg-emerald" },
+            { label: "Kies", value: 18, color: "bg-accent" },
           ]}
         />
       </div>

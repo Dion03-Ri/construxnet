@@ -28,7 +28,7 @@ type Notice = {
 
 const NOTICES: Notice[] = [
   { id: "n1", cat: "pool", icon: Package, tone: "text-brand bg-brand/10", text: "KIBAG Baustoffe hat den Pool „Beton C25/30“ bestätigt.", time: "vor 12 Min.", href: "/pools" },
-  { id: "n2", cat: "pool", icon: TrendingUp, tone: "text-emerald bg-emerald/10", text: "Neuer Rabatt-Tier 2 erreicht (−12 %) im Pool Beton C25/30.", time: "vor 1 Std.", href: "/pools" },
+  { id: "n2", cat: "pool", icon: TrendingUp, tone: "text-accent bg-accent/10", text: "Neuer Rabatt-Tier 2 erreicht (−12 %) im Pool Beton C25/30.", time: "vor 1 Std.", href: "/pools" },
   { id: "n3", cat: "offer", icon: Tag, tone: "text-accent bg-accent/10", text: "Vigier Beton Mittelland: neues Angebot 145.20 CHF/m³.", time: "vor 3 Std.", href: "/messages" },
   { id: "n4", cat: "network", icon: UserPlus, tone: "text-slate-600 bg-slate-100", text: "Gebr. Meier Hochbau möchte sich mit dir vernetzen.", time: "vor 5 Std.", href: "/network" },
   { id: "n5", cat: "pool", icon: Gavel, tone: "text-brand bg-brand/10", text: "Sealed-Bid-Phase für „Kies 0/45 Nordwestschweiz“ startet in 2 Tagen.", time: "gestern", href: "/pools" },

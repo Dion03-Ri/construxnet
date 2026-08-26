@@ -438,7 +438,7 @@ export default function KbobChart({ initialMaterial }: { initialMaterial?: strin
               type="monotone"
               dataKey="pool"
               name="Smart Pool"
-              stroke="#10B981"
+              stroke="#254D7A"
               strokeWidth={2.5}
               strokeDasharray="6 4"
               dot={false}
@@ -461,7 +461,7 @@ export default function KbobChart({ initialMaterial }: { initialMaterial?: strin
               className="h-0.5 w-6 rounded bg-pool-green"
               style={{
                 backgroundImage:
-                  "repeating-linear-gradient(90deg,#10B981 0 6px,transparent 6px 10px)",
+                  "repeating-linear-gradient(90deg,#254D7A 0 6px,transparent 6px 10px)",
                 backgroundColor: "transparent",
               }}
             />
