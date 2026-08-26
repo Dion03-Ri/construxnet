@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { useAuth } from "@clerk/nextjs";
+import Link from "next/link";
 import {
   Send,
   Tag,
@@ -12,12 +13,31 @@ import {
   BadgeCheck,
   MessageSquare,
   X,
+  Mail,
+  Phone,
+  MapPin,
+  Globe,
+  Building2,
+  ExternalLink,
+  ShieldCheck,
 } from "lucide-react";
 import { useSupabaseBrowser } from "@/lib/supabase-browser";
 import { CARD } from "@/lib/ui";
 import { cn } from "@/lib/utils";
 
-type Company = { id: string; company_name: string; logo_url: string | null; city: string | null; verified: boolean };
+type Company = {
+  id: string;
+  company_name: string;
+  logo_url: string | null;
+  city: string | null;
+  verified: boolean;
+  role?: string | null;
+  canton?: string | null;
+  email?: string | null;
+  phone?: string | null;
+  address?: string | null;
+  website?: string | null;
+};
 type Msg = {
   id: string;
   sender_company_id: string;
@@ -31,9 +51,45 @@ type Msg = {
 const DEMO_ID = "demo";
 
 const DEMO_THREADS: Company[] = [
-  { id: "d-kibag", company_name: "KIBAG Baustoffe", logo_url: null, city: "Zürich", verified: true },
-  { id: "d-vigier", company_name: "Vigier Beton Mittelland", logo_url: null, city: "Bern", verified: true },
-  { id: "d-eberhard", company_name: "Eberhard Bau AG", logo_url: null, city: "Kloten", verified: false },
+  {
+    id: "d-kibag",
+    company_name: "KIBAG Baustoffe",
+    logo_url: null,
+    city: "Zürich",
+    verified: true,
+    role: "SUPPLIER",
+    canton: "ZH",
+    email: "beton@kibag.ch",
+    phone: "+41 44 733 22 11",
+    address: "Seestrasse 404, 8038 Zürich",
+    website: "www.kibag.ch",
+  },
+  {
+    id: "d-vigier",
+    company_name: "Vigier Beton Mittelland",
+    logo_url: null,
+    city: "Bern",
+    verified: true,
+    role: "SUPPLIER",
+    canton: "BE",
+    email: "mittelland@vigier-beton.ch",
+    phone: "+41 32 328 28 28",
+    address: "Höheweg 27, 2504 Biel/Bienne",
+    website: "www.vigier-beton.ch",
+  },
+  {
+    id: "d-eberhard",
+    company_name: "Eberhard Bau AG",
+    logo_url: null,
+    city: "Kloten",
+    verified: false,
+    role: "BUYER",
+    canton: "ZH",
+    email: "info@eberhard.ch",
+    phone: "+41 44 815 66 00",
+    address: "Steinackerstrasse 56, 8302 Kloten",
+    website: "www.eberhard.ch",
+  },
 ];
 
 function demoMsgs(counterId: string, meId: string): Msg[] {
@@ -126,11 +182,22 @@ export default function ChatWindow({ initialTo }: { initialTo?: string }) {
       return;
     }
 
-    const { data: companies } = await supabase
+    // Kontaktfelder mitladen; falls Migration 04 noch nicht lief, Fallback.
+    const ids = [...counterIds];
+    const full = await supabase
       .from("companies")
-      .select("id, company_name, logo_url, city, verified")
-      .in("id", [...counterIds]);
-    const list = (companies ?? []) as Company[];
+      .select("id, company_name, logo_url, city, verified, role, canton, email, phone, address, website")
+      .in("id", ids);
+    const list = (
+      full.error
+        ? (
+            await supabase
+              .from("companies")
+              .select("id, company_name, logo_url, city, verified, role, canton")
+              .in("id", ids)
+          ).data ?? []
+        : full.data ?? []
+    ) as Company[];
     const map: Record<string, Msg[]> = {};
     for (const id of counterIds) map[id] = [];
     for (const m of allMsgs) {
@@ -222,7 +289,7 @@ export default function ChatWindow({ initialTo }: { initialTo?: string }) {
   }
 
   return (
-    <div className={cn(CARD, "grid h-[calc(100vh-9rem)] grid-cols-1 overflow-hidden sm:grid-cols-[280px_1fr]")}>
+    <div className={cn(CARD, "grid h-[calc(100vh-9rem)] grid-cols-1 overflow-hidden sm:grid-cols-[280px_1fr] lg:grid-cols-[260px_minmax(0,1fr)_290px]")}>
       {/* Thread list */}
       <aside className={cn("border-r border-slate-200", active && "hidden sm:block")}>
         <div className="border-b border-slate-200 px-4 py-3">
@@ -365,6 +432,135 @@ export default function ChatWindow({ initialTo }: { initialTo?: string }) {
           </div>
         )}
       </section>
+
+      {/* Kontakt-/Deal-Panel */}
+      <aside className="hidden min-h-0 flex-col overflow-y-auto border-l border-slate-200 bg-slate-50/40 lg:flex">
+        {activeCompany ? (
+          <ContactPanel company={activeCompany} onOffer={() => setOfferMode(true)} />
+        ) : (
+          <div className="flex flex-1 items-center justify-center px-4 text-center text-xs text-slate-400">
+            Firmen-Kontaktdaten erscheinen hier, sobald du eine Konversation öffnest.
+          </div>
+        )}
+      </aside>
+    </div>
+  );
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Kontakt-/Deal-Panel                                                        */
+/* -------------------------------------------------------------------------- */
+
+const ROLE_LABEL: Record<string, string> = {
+  BUYER: "Bauunternehmen",
+  SUPPLIER: "Baustoffwerk / Lieferant",
+};
+
+function ContactRow({
+  icon: Icon,
+  label,
+  value,
+  href,
+}: {
+  icon: typeof Mail;
+  label: string;
+  value: string | null | undefined;
+  href?: string;
+}) {
+  const missing = !value;
+  const body = (
+    <div className="flex items-start gap-2.5">
+      <span className="mt-0.5 grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-white text-slate-400 shadow-sm">
+        <Icon className="h-4 w-4" />
+      </span>
+      <div className="min-w-0">
+        <div className="text-[10px] font-medium uppercase tracking-wider text-slate-400">{label}</div>
+        <div className={cn("truncate text-[13px]", missing ? "text-slate-300" : "font-medium text-slate-700")}>
+          {value ?? "Nicht hinterlegt"}
+        </div>
+      </div>
+    </div>
+  );
+  if (href && !missing) {
+    return (
+      <a href={href} className="block rounded-lg p-1 transition-colors hover:bg-white">
+        {body}
+      </a>
+    );
+  }
+  return <div className="p-1">{body}</div>;
+}
+
+function ContactPanel({ company, onOffer }: { company: Company; onOffer: () => void }) {
+  const hasContact = company.email || company.phone || company.address || company.website;
+  const site = company.website
+    ? company.website.startsWith("http")
+      ? company.website
+      : `https://${company.website}`
+    : null;
+
+  return (
+    <div className="flex min-h-0 flex-col">
+      <div className="border-b border-slate-200 bg-white px-4 py-4">
+        <div className="flex items-center gap-3">
+          <span className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-slate-100 text-sm font-semibold text-slate-700">
+            {company.logo_url ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={company.logo_url} alt={company.company_name} className="h-full w-full object-cover" />
+            ) : (
+              initials(company.company_name)
+            )}
+          </span>
+          <div className="min-w-0">
+            <div className="flex items-center gap-1 text-sm font-bold text-slate-900">
+              <span className="truncate">{company.company_name}</span>
+              {company.verified && <BadgeCheck className="h-4 w-4 shrink-0 text-emerald" />}
+            </div>
+            <p className="truncate text-[11px] text-slate-400">
+              {company.role ? ROLE_LABEL[company.role] ?? company.role : "Firma"}
+              {company.city ? ` · ${company.city}` : ""}
+            </p>
+          </div>
+        </div>
+        {company.verified && (
+          <div className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-emerald/10 px-2.5 py-1 text-[11px] font-semibold text-emerald">
+            <ShieldCheck className="h-3.5 w-3.5" /> Verifizierter Baupartner
+          </div>
+        )}
+      </div>
+
+      <div className="space-y-1 px-3 py-3">
+        <div className="px-1 pb-1 text-[10px] font-semibold uppercase tracking-wider text-slate-400">
+          Kontakt · deal-ready
+        </div>
+        <ContactRow icon={Mail} label="E-Mail" value={company.email} href={company.email ? `mailto:${company.email}` : undefined} />
+        <ContactRow icon={Phone} label="Telefon" value={company.phone} href={company.phone ? `tel:${company.phone.replace(/\s/g, "")}` : undefined} />
+        <ContactRow icon={MapPin} label="Adresse" value={company.address} />
+        <ContactRow icon={Globe} label="Website" value={company.website} href={site ?? undefined} />
+      </div>
+
+      {!hasContact && (
+        <p className="px-4 pb-2 text-[11px] leading-relaxed text-slate-400">
+          Diese Firma hat noch keine Kontaktdaten hinterlegt.
+        </p>
+      )}
+
+      <div className="mt-auto space-y-2 border-t border-slate-200 bg-white p-3">
+        <button
+          type="button"
+          onClick={onOffer}
+          className="inline-flex w-full items-center justify-center gap-1.5 rounded-full bg-brand px-3 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-brand-600"
+        >
+          <Tag className="h-4 w-4" /> Angebot senden
+        </button>
+        <Link
+          href={`/company/${company.id}`}
+          className="inline-flex w-full items-center justify-center gap-1.5 rounded-full border border-slate-200 px-3 py-2.5 text-sm font-semibold text-slate-600 transition-colors hover:bg-slate-50"
+        >
+          <Building2 className="h-4 w-4" /> Profil ansehen
+          <ExternalLink className="h-3.5 w-3.5 text-slate-400" />
+        </Link>
+      </div>
     </div>
   );
 }
