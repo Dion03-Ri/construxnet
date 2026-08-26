@@ -1,8 +1,15 @@
 import type { Metadata } from "next";
+import { Inter } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
 import AppShell from "@/components/AppShell";
 import { clerkAppearance, clerkLocalization } from "@/lib/clerk";
 import "./globals.css";
+
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-sans",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "ConstruxNet",
@@ -25,8 +32,8 @@ export default function RootLayout({
       localization={clerkLocalization}
       appearance={clerkAppearance}
     >
-      <html lang="de-CH">
-        <body className="min-h-screen text-slate-900 antialiased">
+      <html lang="de-CH" className={inter.variable}>
+        <body className="min-h-screen font-sans text-slate-900 antialiased">
           <AppShell>{children}</AppShell>
         </body>
       </html>
