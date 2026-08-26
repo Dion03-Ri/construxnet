@@ -224,7 +224,7 @@ function ChartTooltip({
   const savingsPct = (savings / row.kbob) * 100;
 
   return (
-    <div className="rounded-lg border border-slate-200 bg-white px-4 py-3 shadow-2xl shadow-slate-900/10 backdrop-blur-xl">
+    <div className="rounded-md border border-slate-200 bg-white px-4 py-3 shadow-cardhover">
       <div className="mb-2 text-xs font-semibold text-slate-600">
         {q} {year}
       </div>
@@ -313,7 +313,7 @@ export default function KbobChart() {
   const tickInterval = Math.max(0, Math.floor(chartData.length / 7) - 1);
 
   return (
-    <section className="w-full rounded-lg border border-slate-200 bg-white p-5 shadow-2xl shadow-slate-900/10 backdrop-blur-xl sm:p-7">
+    <section className="w-full rounded-lg border border-slate-200 bg-white p-5 shadow-card sm:p-7">
       {/* Header row: title + material select */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>

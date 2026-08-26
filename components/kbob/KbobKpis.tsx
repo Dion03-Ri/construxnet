@@ -15,7 +15,7 @@ function SegmentBar({ segments }: { segments: Segment[] }) {
   const total = segments.reduce((s, x) => s + x.value, 0) || 1;
   return (
     <>
-      <div className="mt-4 flex h-2.5 w-full overflow-hidden rounded-full bg-slate-100">
+      <div className="mt-4 flex h-2.5 w-full overflow-hidden rounded-sm bg-slate-100">
         {segments.map((s) => (
           <div
             key={s.label}
