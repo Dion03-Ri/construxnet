@@ -283,8 +283,10 @@ function Kpi({
 /*  Main component                                                             */
 /* -------------------------------------------------------------------------- */
 
-export default function KbobChart() {
-  const [material, setMaterial] = useState(MATERIAL_KEYS[0]);
+export default function KbobChart({ initialMaterial }: { initialMaterial?: string }) {
+  const [material, setMaterial] = useState(
+    initialMaterial && MATERIAL_KEYS.includes(initialMaterial) ? initialMaterial : MATERIAL_KEYS[0],
+  );
   const [region, setRegion] = useState(REGION_KEYS[0]);
   const [range, setRange] = useState<string>("3J");
 

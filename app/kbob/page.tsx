@@ -9,7 +9,12 @@ export const metadata = {
   description: "KBOB-Preisindex vs. Smart-Pool-Durchschnittspreis",
 };
 
-export default function KbobPage() {
+export default async function KbobPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ material?: string }>;
+}) {
+  const { material } = await searchParams;
   return (
     <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
       <header className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
@@ -36,7 +41,7 @@ export default function KbobPage() {
 
       {/* Chart + Signale */}
       <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,1fr)_340px]">
-        <KbobChart />
+        <KbobChart initialMaterial={material} />
         <MarketSignals />
       </div>
     </main>
