@@ -115,7 +115,7 @@ export default function RecommendedPartners() {
               type="button"
               onClick={() => connect(c.id)}
               disabled={pending[c.id] || demo}
-              className="inline-flex shrink-0 items-center gap-1 rounded-full border border-brand/50 px-3 py-1 text-xs font-semibold text-brand transition-colors hover:bg-brand/10 disabled:opacity-60"
+              className="inline-flex shrink-0 items-center gap-1 rounded-md border border-brand/50 px-3 py-1 text-xs font-semibold text-brand transition-colors hover:bg-brand/10 disabled:opacity-60"
             >
               {pending[c.id] ? (
                 <>

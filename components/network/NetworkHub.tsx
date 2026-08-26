@@ -244,7 +244,7 @@ export default function NetworkHub() {
               {GEWERKE.map((g) => (
                 <span
                   key={g}
-                  className="rounded-full bg-slate-100 px-2.5 py-1 text-[11px] font-medium text-slate-600 transition-colors hover:bg-brand/10 hover:text-brand"
+                  className="rounded-md bg-slate-100 px-2.5 py-1 text-[11px] font-medium text-slate-600 transition-colors hover:bg-brand/10 hover:text-brand"
                 >
                   {g}
                 </span>
@@ -261,7 +261,7 @@ export default function NetworkHub() {
             </p>
             <Link
               href="/pools"
-              className="mt-3 inline-flex items-center gap-1 rounded-full bg-brand px-3 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-brand-600"
+              className="mt-3 inline-flex items-center gap-1 rounded-md bg-brand px-3 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-brand-600"
             >
               Zu Smart Pools
             </Link>
@@ -312,14 +312,14 @@ export default function NetworkHub() {
                   <button
                     type="button"
                     onClick={() => ignore(conn.id)}
-                    className="rounded-full border border-slate-200 px-3.5 py-1.5 text-sm font-semibold text-slate-500 transition-colors hover:bg-slate-50"
+                    className="rounded-md border border-slate-200 px-3.5 py-1.5 text-sm font-semibold text-slate-500 transition-colors hover:bg-slate-50"
                   >
                     Ignorieren
                   </button>
                   <button
                     type="button"
                     onClick={() => accept(conn.id)}
-                    className="inline-flex items-center gap-1 rounded-full bg-brand px-3.5 py-1.5 text-sm font-semibold text-white transition-colors hover:bg-brand-600"
+                    className="inline-flex items-center gap-1 rounded-md bg-brand px-3.5 py-1.5 text-sm font-semibold text-white transition-colors hover:bg-brand-600"
                   >
                     <Check className="h-4 w-4" /> Annehmen
                   </button>
@@ -343,7 +343,7 @@ export default function NetworkHub() {
                     type="button"
                     onClick={() => setRole(r.key)}
                     className={cn(
-                      "rounded-full px-3 py-1 text-xs font-medium transition-colors",
+                      "rounded-md px-3 py-1 text-xs font-medium transition-colors",
                       role === r.key
                         ? "bg-brand text-white"
                         : "border border-slate-200 bg-white text-slate-500 hover:text-slate-900",
@@ -411,7 +411,7 @@ export default function NetworkHub() {
                         type="button"
                         onClick={() => connect(c.id)}
                         disabled={!myCompanyId}
-                        className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-full border border-brand/40 bg-brand/10 px-3 py-2 text-sm font-semibold text-brand transition-colors hover:bg-brand/20 disabled:cursor-not-allowed disabled:opacity-50"
+                        className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-md border border-brand/40 bg-brand/10 px-3 py-2 text-sm font-semibold text-brand transition-colors hover:bg-brand/20 disabled:cursor-not-allowed disabled:opacity-50"
                       >
                         <UserPlus className="h-4 w-4" /> Vernetzen
                       </button>

@@ -66,7 +66,7 @@ export default function NotificationBell() {
       >
         <Bell className="h-5 w-5" />
         {unread > 0 && (
-          <span className="absolute -right-0.5 -top-0.5 grid h-4 min-w-4 place-items-center rounded-full bg-brand px-1 text-[10px] font-bold text-white ring-2 ring-white">
+          <span className="absolute -right-0.5 -top-0.5 grid h-4 min-w-4 place-items-center rounded-md bg-brand px-1 text-[10px] font-bold text-white ring-2 ring-white">
             {unread}
           </span>
         )}
@@ -103,7 +103,7 @@ export default function NotificationBell() {
                     type="button"
                     onClick={() => setTab(t.key)}
                     className={cn(
-                      "rounded-full px-3 py-1 text-xs font-medium transition-colors",
+                      "rounded-md px-3 py-1 text-xs font-medium transition-colors",
                       tab === t.key ? "bg-brand text-white" : "text-slate-500 hover:bg-slate-100",
                     )}
                   >

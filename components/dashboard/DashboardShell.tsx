@@ -41,7 +41,7 @@ import {
   ChevronRight,
 } from "lucide-react";
 import type { Company } from "@/lib/company";
-import { CARD } from "@/lib/ui";
+import { CARD, badge } from "@/lib/ui";
 import { cn } from "@/lib/utils";
 
 const C = {
@@ -367,7 +367,7 @@ function OverviewPanel({ role }: { role: "buyer" | "supplier" }) {
       <div className={cn(CARD, "p-5")}>
         <div className="flex flex-wrap items-center justify-between gap-2">
           <h3 className="text-[15px] font-semibold text-slate-900">Umsatz vs. Kosten (2026)</h3>
-          <span className="inline-flex items-center gap-1 rounded-full bg-emerald/10 px-2.5 py-1 text-xs font-semibold text-emerald">
+          <span className="inline-flex items-center gap-1 rounded-md bg-emerald/10 px-2.5 py-1 text-xs font-semibold text-emerald">
             <ArrowUpRight className="h-3.5 w-3.5" /> {margin}% Marge
           </span>
         </div>
@@ -402,7 +402,7 @@ function OverviewPanel({ role }: { role: "buyer" | "supplier" }) {
           <div className="absolute -right-8 -top-8 h-40 w-40 rounded-full bg-brand/30 blur-3xl" />
           <div className="absolute -bottom-10 -left-6 h-40 w-40 rounded-full bg-emerald/20 blur-3xl" />
           <div className="relative">
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-2.5 py-1 text-[11px] font-semibold backdrop-blur-sm">
+            <span className="inline-flex items-center gap-1.5 rounded-md bg-white/10 px-2.5 py-1 text-[11px] font-semibold backdrop-blur-sm">
               <Sparkles className="h-3.5 w-3.5" /> ConstruxNet KI
             </span>
             <h3 className="mt-3 text-xl font-bold leading-tight">
@@ -413,7 +413,7 @@ function OverviewPanel({ role }: { role: "buyer" | "supplier" }) {
             </p>
             <Link
               href="/pools"
-              className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-white px-4 py-2 text-sm font-semibold text-navy-900 transition-transform hover:scale-[1.02]"
+              className="mt-4 inline-flex items-center gap-1.5 rounded-md bg-white px-4 py-2 text-sm font-semibold text-navy-900 transition-transform hover:scale-[1.02]"
             >
               Jetzt bündeln <ChevronRight className="h-4 w-4" />
             </Link>
@@ -450,12 +450,7 @@ function OrdersPanel({ compact }: { compact?: boolean }) {
                 <td className="py-2.5 tabular-nums text-slate-700">{o.amount}</td>
                 <td className="hidden py-2.5 text-slate-500 sm:table-cell">{o.date}</td>
                 <td className="py-2.5 text-right">
-                  <span
-                    className={cn(
-                      "rounded-full px-2 py-0.5 text-[11px] font-medium",
-                      o.status === "Abgeschlossen" ? "bg-emerald/10 text-emerald" : "bg-brand/10 text-brand",
-                    )}
-                  >
+                  <span className={badge(o.status === "Abgeschlossen" ? "emerald" : "gold", true)}>
                     {o.status}
                   </span>
                 </td>
@@ -497,11 +492,11 @@ function TendersPanel() {
                   <div className="text-[11px] text-slate-500">{t.region} · {t.vol} · KBOB-Ref CHF {chf(t.kbob)}/{t.unit}</div>
                 </div>
                 {done ? (
-                  <span className="inline-flex items-center gap-1 rounded-full bg-emerald/10 px-3 py-1 text-xs font-medium text-emerald">
+                  <span className="inline-flex items-center gap-1 rounded-md bg-emerald/10 px-3 py-1 text-xs font-medium text-emerald">
                     <Check className="h-3.5 w-3.5" /> Gebot CHF {done}
                   </span>
                 ) : (
-                  <button type="button" onClick={() => { setOpenForm(openForm === t.id ? null : t.id); setDraft(""); }} className="rounded-full bg-brand px-4 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-brand-600">
+                  <button type="button" onClick={() => { setOpenForm(openForm === t.id ? null : t.id); setDraft(""); }} className="rounded-md bg-brand px-4 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-brand-600">
                     Gebot abgeben
                   </button>
                 )}
@@ -542,9 +537,9 @@ function ContractsPanel() {
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <div className="flex items-center gap-2">
                     <span className="font-medium text-slate-900">{p.material}</span>
-                    <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[11px] text-slate-500">{p.region}</span>
+                    <span className="rounded-md bg-slate-100 px-2 py-0.5 text-[11px] text-slate-500">{p.region}</span>
                     {p.coupled && (
-                      <span className="inline-flex items-center gap-1 rounded-full bg-accent/10 px-2 py-0.5 text-[11px] font-medium text-accent">
+                      <span className="inline-flex items-center gap-1 rounded-md bg-accent/10 px-2 py-0.5 text-[11px] font-medium text-accent">
                         <Link2 className="h-3 w-3" /> Koppelung: {p.coupled}
                       </span>
                     )}
@@ -557,7 +552,7 @@ function ContractsPanel() {
                   <div className="h-2 flex-1 overflow-hidden rounded-full bg-slate-100">
                     <div className="h-full rounded-full bg-gradient-to-r from-emerald to-emerald/70" style={{ width: `${pct}%` }} />
                   </div>
-                  <span className="shrink-0 rounded-full bg-emerald/10 px-2 py-0.5 text-[11px] font-semibold text-emerald">
+                  <span className="shrink-0 rounded-md bg-emerald/10 px-2 py-0.5 text-[11px] font-semibold text-emerald">
                     Tier {p.tier} · {p.disc}%
                   </span>
                 </div>
@@ -592,7 +587,7 @@ function ContractsPanel() {
                   <td className="hidden py-2.5 text-slate-500 sm:table-cell">{c.vol}</td>
                   <td className="py-2.5 tabular-nums text-slate-600">{c.price}</td>
                   <td className="py-2.5 text-right">
-                    <span className={cn("rounded-full px-2 py-0.5 text-[11px] font-medium", c.status === "Aktiv" ? "bg-emerald/10 text-emerald" : "bg-slate-100 text-slate-500")}>
+                    <span className={badge(c.status === "Aktiv" ? "emerald" : "slate", true)}>
                       {c.status}
                     </span>
                   </td>
@@ -675,7 +670,7 @@ export default function DashboardShell({ company }: { company: Company }) {
                 <n.icon className="h-4 w-4 shrink-0" />
                 <span className="flex-1 text-left">{n.label}</span>
                 {n.badge && (
-                  <span className={cn("rounded-full px-1.5 py-0.5 text-[10px] font-semibold", active ? "bg-brand text-white" : "bg-rose-100 text-rose-600")}>
+                  <span className={cn("rounded-md px-1.5 py-0.5 text-[10px] font-semibold", active ? "bg-brand text-white" : "bg-rose-100 text-rose-600")}>
                     {n.badge}
                   </span>
                 )}

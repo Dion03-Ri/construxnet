@@ -68,7 +68,7 @@ export default function Home() {
       {/* Hero */}
       <section className="grid grid-cols-1 items-center gap-10 py-16 lg:grid-cols-2 lg:py-24">
         <div>
-          <span className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-1.5 text-xs font-medium text-slate-600">
+          <span className="inline-flex items-center gap-2 rounded-md border border-slate-200 bg-white px-4 py-1.5 text-xs font-medium text-slate-600">
             <Users className="h-3.5 w-3.5 text-brand" />
             Das B2B-Netzwerk der Schweizer Baubranche
           </span>
@@ -147,7 +147,7 @@ export default function Home() {
                 <span className="text-sm font-semibold text-slate-900">
                   {p.material}
                 </span>
-                <span className="rounded-full bg-emerald/15 px-2 py-0.5 text-[11px] font-semibold text-emerald">
+                <span className="rounded-md bg-emerald/15 px-2 py-0.5 text-[11px] font-semibold text-emerald">
                   {p.tier}
                 </span>
               </div>
@@ -194,7 +194,7 @@ export default function Home() {
                     .map((w) => w[0])
                     .join("")}
                 </span>
-                <span className="inline-flex items-center gap-1 rounded-full bg-emerald/15 px-2 py-0.5 text-[11px] font-medium text-emerald">
+                <span className="inline-flex items-center gap-1 rounded-md bg-emerald/15 px-2 py-0.5 text-[11px] font-medium text-emerald">
                   <BadgeCheck className="h-3.5 w-3.5" />
                   Verifiziert
                 </span>
@@ -218,7 +218,7 @@ export default function Home() {
       {/* ROI-Teaser */}
       <section className="pb-20">
         <div className="flex flex-col items-center gap-4 rounded-lg border border-slate-200 bg-white p-8 text-center backdrop-blur sm:p-12">
-          <span className="inline-flex items-center gap-2 rounded-full bg-emerald/15 px-3 py-1 text-xs font-medium text-emerald">
+          <span className="inline-flex items-center gap-2 rounded-md bg-emerald/15 px-3 py-1 text-xs font-medium text-emerald">
             <TrendingDown className="h-3.5 w-3.5" />
             12–15 % typische Ersparnis
           </span>

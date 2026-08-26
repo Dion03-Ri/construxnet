@@ -35,11 +35,11 @@ export default async function FeedPage() {
   return (
     <main className="mx-auto max-w-6xl px-4 py-6 sm:px-6">
       {/* Profil-Hero (Bild 1) – volle Breite */}
-      <div className="mb-5">
+      <div className="mb-6">
         <ProfileHero company={company} connections={connections} pools={pools} />
       </div>
 
-      <div className="grid grid-cols-1 gap-5 lg:grid-cols-[250px_minmax(0,1fr)_320px]">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-[250px_minmax(0,1fr)_320px]">
         {/* Left */}
         <aside className="hidden lg:block">
           <div className="sticky top-[72px]">

@@ -133,7 +133,7 @@ export default function ProfileHero({
         />
         <div className="absolute -right-10 -top-10 h-48 w-48 rounded-full bg-white/20 blur-2xl" />
         <div className="absolute bottom-3 right-3 flex items-center gap-2">
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 text-[11px] font-semibold text-white backdrop-blur-sm">
+          <span className="inline-flex items-center gap-1.5 rounded-md bg-white/15 px-3 py-1 text-[11px] font-semibold text-white backdrop-blur-sm">
             <ShieldCheck className="h-3.5 w-3.5" />
             {company.verified ? "Verifizierter Baupartner" : "Profil in Verifizierung"}
           </span>
@@ -193,7 +193,7 @@ export default function ProfileHero({
               type="button"
               onClick={() => setOpenForWork((v) => !v)}
               className={cn(
-                "inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-sm font-semibold transition-colors",
+                "inline-flex items-center gap-1.5 rounded-md px-4 py-2 text-sm font-semibold transition-colors",
                 openForWork
                   ? "bg-emerald text-white shadow-sm shadow-emerald/30 hover:bg-emerald-500"
                   : "border border-slate-200 text-slate-600 hover:bg-slate-50",
@@ -204,7 +204,7 @@ export default function ProfileHero({
             </button>
             <Link
               href={`/company/${company.id}`}
-              className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-600 transition-colors hover:bg-slate-50"
+              className="inline-flex items-center gap-1.5 rounded-md border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-600 transition-colors hover:bg-slate-50"
             >
               <Pencil className="h-4 w-4" />
               Profil bearbeiten
