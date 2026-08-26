@@ -67,8 +67,8 @@ export default function ConnectionsMap({
         <svg viewBox={CH_VIEWBOX} className="h-auto w-full">
           <defs>
             <radialGradient id="glow-brand" cx="50%" cy="50%" r="50%">
-              <stop offset="0%" stopColor="#F97316" stopOpacity="0.55" />
-              <stop offset="100%" stopColor="#F97316" stopOpacity="0" />
+              <stop offset="0%" stopColor="#D99000" stopOpacity="0.55" />
+              <stop offset="100%" stopColor="#D99000" stopOpacity="0" />
             </radialGradient>
             <radialGradient id="glow-emerald" cx="50%" cy="50%" r="50%">
               <stop offset="0%" stopColor="#10B981" stopOpacity="0.5" />
@@ -84,7 +84,7 @@ export default function ConnectionsMap({
             const r = radius(n.companies.length);
             const supplierMajority = n.suppliers >= n.companies.length / 2;
             const fill = supplierMajority ? "url(#glow-brand)" : "url(#glow-emerald)";
-            const dot = supplierMajority ? "#F97316" : "#10B981";
+            const dot = supplierMajority ? "#D99000" : "#10B981";
             const isHover = hover === n.canton;
             return (
               <g
