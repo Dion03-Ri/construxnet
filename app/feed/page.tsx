@@ -1,5 +1,4 @@
 import NetworkFeed from "@/components/NetworkFeed";
-import ProfileHero from "@/components/feed/ProfileHero";
 import FeedProfileCard from "@/components/feed/FeedProfileCard";
 import MarketNews from "@/components/feed/MarketNews";
 import RecommendedPartners from "@/components/feed/RecommendedPartners";
@@ -34,11 +33,6 @@ export default async function FeedPage() {
 
   return (
     <main className="mx-auto max-w-6xl px-4 py-6 sm:px-6">
-      {/* Profil-Hero (Bild 1) – volle Breite */}
-      <div className="mb-6">
-        <ProfileHero company={company} connections={connections} pools={pools} />
-      </div>
-
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-[250px_minmax(0,1fr)_320px]">
         {/* Left */}
         <aside className="hidden lg:block">
