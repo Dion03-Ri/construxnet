@@ -94,7 +94,7 @@ function MaterialSelect({
         aria-haspopup="listbox"
         aria-expanded={open}
         className={cn(
-          "flex w-full min-w-[240px] items-center justify-between gap-3 rounded-xl",
+          "flex w-full min-w-[240px] items-center justify-between gap-3 rounded-lg",
           "border border-slate-200 bg-white px-4 py-2.5 text-left backdrop-blur",
           "transition-colors hover:border-slate-300 hover:bg-slate-50",
           "focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/60",
@@ -125,7 +125,7 @@ function MaterialSelect({
           <ul
             role="listbox"
             className={cn(
-              "absolute z-50 mt-2 w-full overflow-hidden rounded-xl border border-slate-200",
+              "absolute z-50 mt-2 w-full overflow-hidden rounded-lg border border-slate-200",
               "bg-white shadow-2xl shadow-slate-900/10 backdrop-blur-xl",
             )}
           >
@@ -184,7 +184,7 @@ function Segmented({
   onChange: (v: string) => void;
 }) {
   return (
-    <div className="inline-flex rounded-xl border border-slate-200 bg-white p-1 backdrop-blur">
+    <div className="inline-flex rounded-lg border border-slate-200 bg-white p-1 backdrop-blur">
       {options.map((opt) => (
         <button
           key={opt.key}
@@ -224,7 +224,7 @@ function ChartTooltip({
   const savingsPct = (savings / row.kbob) * 100;
 
   return (
-    <div className="rounded-xl border border-slate-200 bg-white px-4 py-3 shadow-2xl shadow-slate-900/10 backdrop-blur-xl">
+    <div className="rounded-lg border border-slate-200 bg-white px-4 py-3 shadow-2xl shadow-slate-900/10 backdrop-blur-xl">
       <div className="mb-2 text-xs font-semibold text-slate-600">
         {q} {year}
       </div>
@@ -270,7 +270,7 @@ function Kpi({
   children: React.ReactNode;
 }) {
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-4 backdrop-blur">
+    <div className="rounded-lg border border-slate-200 bg-white p-4 backdrop-blur">
       <div className="text-[11px] font-medium uppercase tracking-wider text-slate-500">
         {label}
       </div>
@@ -313,7 +313,7 @@ export default function KbobChart() {
   const tickInterval = Math.max(0, Math.floor(chartData.length / 7) - 1);
 
   return (
-    <section className="w-full rounded-3xl border border-slate-200 bg-white p-5 shadow-2xl shadow-slate-900/10 backdrop-blur-xl sm:p-7">
+    <section className="w-full rounded-lg border border-slate-200 bg-white p-5 shadow-2xl shadow-slate-900/10 backdrop-blur-xl sm:p-7">
       {/* Header row: title + material select */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>

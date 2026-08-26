@@ -78,7 +78,7 @@ export default function KbobWidget() {
   return (
     <Link
       href="/kbob"
-      className="group block rounded-2xl border border-slate-200 bg-white p-5 shadow-card transition-all duration-300 hover:-translate-y-0.5 hover:border-brand/40 hover:shadow-cardhover"
+      className="group block rounded-lg border border-slate-200 bg-white p-5 shadow-card transition-all duration-300 hover:-translate-y-0.5 hover:border-brand/40 hover:shadow-cardhover"
     >
       <div className="flex items-center justify-between">
         <div>

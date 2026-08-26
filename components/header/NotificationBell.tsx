@@ -81,7 +81,7 @@ export default function NotificationBell() {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -6, scale: 0.98 }}
               transition={{ duration: 0.15 }}
-              className="absolute right-0 z-50 mt-2 w-[340px] overflow-hidden rounded-2xl border border-slate-200 bg-white/90 shadow-cardhover backdrop-blur-xl"
+              className="absolute right-0 z-50 mt-2 w-[340px] overflow-hidden rounded-lg border border-slate-200 bg-white/90 shadow-cardhover backdrop-blur-xl"
             >
               <div className="flex items-center justify-between border-b border-slate-100 px-4 py-3">
                 <span className="text-sm font-semibold text-slate-900">Benachrichtigungen</span>
@@ -128,7 +128,7 @@ export default function NotificationBell() {
                             !isRead && "bg-brand/[0.03]",
                           )}
                         >
-                          <span className={cn("flex h-9 w-9 shrink-0 items-center justify-center rounded-xl", n.tone)}>
+                          <span className={cn("flex h-9 w-9 shrink-0 items-center justify-center rounded-lg", n.tone)}>
                             <n.icon className="h-4 w-4" />
                           </span>
                           <div className="min-w-0">

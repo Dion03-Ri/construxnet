@@ -29,7 +29,7 @@ export default function AdminControlPage() {
   return (
     <main className="mx-auto max-w-5xl px-4 py-10 sm:px-6 sm:py-14">
       <header className="mb-8 flex items-start gap-4">
-        <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-brand/15 text-brand">
+        <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-brand/15 text-brand">
           <Gauge className="h-6 w-6" />
         </span>
         <div>
@@ -43,7 +43,7 @@ export default function AdminControlPage() {
         </div>
       </header>
 
-      <div className="mb-6 flex items-center gap-2 rounded-xl border border-brand/20 bg-brand/5 px-4 py-3 text-sm text-brand/90">
+      <div className="mb-6 flex items-center gap-2 rounded-lg border border-brand/20 bg-brand/5 px-4 py-3 text-sm text-brand/90">
         <Construction className="h-4 w-4 shrink-0" />
         In Aufbau — die folgenden Module folgen in den nächsten Iterationen.
       </div>
@@ -52,7 +52,7 @@ export default function AdminControlPage() {
         {MODULES.map((m) => (
           <div
             key={m.title}
-            className="rounded-2xl border border-dashed border-slate-200 bg-slate-50 p-5"
+            className="rounded-lg border border-dashed border-slate-200 bg-slate-50 p-5"
           >
             <h3 className="font-semibold text-slate-700">{m.title}</h3>
             <p className="mt-1.5 text-sm text-slate-500">{m.text}</p>

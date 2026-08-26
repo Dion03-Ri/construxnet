@@ -14,7 +14,7 @@ export default async function NetworkPage() {
   return (
     <main className="mx-auto max-w-6xl px-4 py-6 sm:px-6">
       <header className="mb-5 flex items-center gap-3">
-        <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-brand/15 text-brand">
+        <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-brand/15 text-brand">
           <Users className="h-6 w-6" />
         </span>
         <div>

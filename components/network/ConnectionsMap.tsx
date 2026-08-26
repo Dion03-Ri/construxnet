@@ -120,7 +120,7 @@ export default function ConnectionsMap({
         </svg>
 
         {hovered && (
-          <div className="pointer-events-none absolute left-4 top-4 max-w-[240px] rounded-xl border border-slate-200 bg-white px-4 py-3 shadow-cardhover">
+          <div className="pointer-events-none absolute left-4 top-4 max-w-[240px] rounded-lg border border-slate-200 bg-white px-4 py-3 shadow-cardhover">
             <div className="flex items-center gap-1.5 text-sm font-semibold text-slate-900">
               <Building2 className="h-3.5 w-3.5 text-brand" />
               {CANTON_XY[hovered.canton]?.label}

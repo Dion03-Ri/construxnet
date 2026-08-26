@@ -34,7 +34,7 @@ function useActive() {
 function Logo({ href = "/feed" }: { href?: string }) {
   return (
     <Link href={href} className="flex items-center gap-2 font-semibold tracking-tight">
-      <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-brand to-brand-600 text-white shadow-sm shadow-brand/30">
+      <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-brand to-brand-600 text-white shadow-sm shadow-brand/30">
         <HardHat className="h-5 w-5" />
       </span>
       <span className="hidden text-[15px] text-slate-900 sm:block">
@@ -61,15 +61,15 @@ function TopBar() {
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  "group relative flex w-[68px] flex-col items-center justify-center gap-0.5 pt-1 text-[11px] font-medium transition-colors",
-                  active ? "text-brand" : "text-slate-500 hover:text-slate-900",
+                  "group relative flex w-[68px] flex-col items-center justify-center gap-0.5 pt-1 text-[11px] transition-colors",
+                  active ? "font-semibold text-brand" : "font-medium text-slate-500 hover:text-slate-900",
                 )}
               >
                 <item.icon className="h-5 w-5" />
                 {item.label}
                 <span
                   className={cn(
-                    "absolute -bottom-[9px] h-0.5 w-full rounded-full transition-colors",
+                    "absolute -bottom-[10px] h-[2px] w-full transition-colors",
                     active ? "bg-brand" : "bg-transparent",
                   )}
                 />
@@ -122,13 +122,13 @@ function MarketingHeader() {
         <div className="flex items-center gap-2">
           <Link
             href="/sign-in"
-            className="rounded-full px-4 py-2 text-sm font-medium text-slate-600 transition-colors hover:text-slate-900"
+            className="rounded-md px-4 py-2 text-sm font-medium text-slate-600 transition-colors hover:text-slate-900"
           >
             Login
           </Link>
           <Link
             href="/sign-up"
-            className="rounded-full bg-brand px-4 py-2 text-sm font-medium text-white shadow-sm shadow-brand/30 transition-colors hover:bg-brand-600"
+            className="rounded-md bg-brand px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-brand-600"
           >
             Registrieren
           </Link>

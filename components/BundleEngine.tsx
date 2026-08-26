@@ -81,7 +81,7 @@ function SpecPill({ icon: Icon, children }: { icon: typeof MapPin; children: Rea
 function Stat({ label, value, sub, accent }: { label: string; value: React.ReactNode; sub?: string; accent?: "green" | "brand" | "neutral" }) {
   const color = accent === "green" ? "text-emerald" : accent === "brand" ? "text-brand" : "text-slate-900";
   return (
-    <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+    <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
       <div className="text-[11px] font-medium uppercase tracking-wider text-slate-400">{label}</div>
       <div className={cn("mt-1.5 text-xl font-semibold tabular-nums", color)}>{value}</div>
       {sub && <div className="mt-0.5 text-xs text-slate-500">{sub}</div>}
@@ -138,7 +138,7 @@ function Preistreppe({ activeTier, unit }: { activeTier: number; unit: string })
             animate={{ scale: active ? 1.02 : 1 }}
             transition={{ type: "spring", stiffness: 300, damping: 20 }}
             className={cn(
-              "flex flex-col justify-end rounded-xl border p-3 transition-colors",
+              "flex flex-col justify-end rounded-lg border p-3 transition-colors",
               active ? "border-emerald/50 bg-emerald/10" : reached ? "border-slate-300 bg-slate-100" : "border-slate-200 bg-slate-50",
             )}
             style={{ minHeight: `${64 + t.tier * 26}px` }}
@@ -204,7 +204,7 @@ export default function BundleEngine() {
       {/* Material */}
       <div className="mt-6 flex flex-wrap items-center gap-2">
         <span className="mr-1 text-[11px] font-medium uppercase tracking-wider text-slate-400">Material</span>
-        <div className="inline-flex flex-wrap rounded-xl border border-slate-200 bg-slate-50 p-1">
+        <div className="inline-flex flex-wrap rounded-lg border border-slate-200 bg-slate-50 p-1">
           {MATERIALS.map((m) => (
             <button
               key={m.key}
@@ -222,14 +222,14 @@ export default function BundleEngine() {
       </div>
 
       {/* Volume selector */}
-      <div className="mt-6 rounded-2xl border border-slate-200 bg-slate-50 p-5">
+      <div className="mt-6 rounded-lg border border-slate-200 bg-slate-50 p-5">
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-[auto_1fr_auto] sm:items-end">
           {/* Input */}
           <div>
             <label className="text-[11px] font-medium uppercase tracking-wider text-slate-400">
               Deine Menge ({unit})
             </label>
-            <div className="mt-1 inline-flex items-center rounded-xl border border-slate-200 bg-white">
+            <div className="mt-1 inline-flex items-center rounded-lg border border-slate-200 bg-white">
               <button type="button" onClick={() => setQty((q) => Math.max(0, q - 10))} className="grid h-11 w-11 place-items-center rounded-l-xl text-slate-500 transition-colors hover:bg-slate-100" aria-label="weniger">
                 <Minus className="h-4 w-4" />
               </button>
@@ -321,19 +321,19 @@ export default function BundleEngine() {
         </div>
 
         <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-3">
-          <div className="rounded-xl border border-slate-200 bg-white p-4">
+          <div className="rounded-lg border border-slate-200 bg-white p-4">
             <div className="text-[11px] uppercase tracking-wider text-slate-400">Ersparnis pro {unit}</div>
             <div className="mt-1 text-lg font-semibold text-emerald">CHF {chf(calc.savingsUnit)}</div>
             <div className="mt-0.5 text-[11px] text-slate-500">vs. KBOB CHF {chf(kbobPrice)}</div>
           </div>
-          <div className="rounded-xl border border-slate-200 bg-white p-4">
+          <div className="rounded-lg border border-slate-200 bg-white p-4">
             <div className="text-[11px] uppercase tracking-wider text-slate-400">Deine Ersparnis</div>
             <motion.div key={Math.round(calc.yourSavings)} initial={{ opacity: 0.4 }} animate={{ opacity: 1 }} className="mt-1 text-lg font-semibold text-slate-900">
               CHF {chf(calc.yourSavings, 0)}
             </motion.div>
             <div className="mt-0.5 text-[11px] text-slate-500">auf {chf(Math.max(0, qty), 0)} {unit}</div>
           </div>
-          <div className="rounded-xl border border-emerald/30 bg-emerald/5 p-4">
+          <div className="rounded-lg border border-emerald/30 bg-emerald/5 p-4">
             <div className="flex items-center gap-1.5 text-[11px] uppercase tracking-wider text-slate-400">
               <TrendingDown className="h-3.5 w-3.5 text-emerald" /> Gesamtersparnis Pool
             </div>

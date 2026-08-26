@@ -45,7 +45,7 @@ export default function MarketSignals() {
           const t = TONE[s.tone];
           return (
             <li key={s.label} className="flex items-center gap-3">
-              <span className={cn("flex h-9 w-9 shrink-0 items-center justify-center rounded-xl", t.chip)}>
+              <span className={cn("flex h-9 w-9 shrink-0 items-center justify-center rounded-lg", t.chip)}>
                 <s.icon className="h-4 w-4" />
               </span>
               <div className="min-w-0 flex-1">

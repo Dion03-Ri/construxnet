@@ -98,10 +98,10 @@ export default async function CompanyPage({
   return (
     <main className="mx-auto max-w-3xl px-4 py-10 sm:px-6 sm:py-14">
       {/* Profil-Header */}
-      <section className="rounded-3xl border border-slate-200 bg-white p-6 backdrop-blur sm:p-8">
+      <section className="rounded-lg border border-slate-200 bg-white p-6 backdrop-blur sm:p-8">
         <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
           <div className="flex items-start gap-4">
-            <span className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-slate-100 text-lg font-semibold text-slate-700">
+            <span className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-slate-100 text-lg font-semibold text-slate-700">
               {company.logo_url ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
@@ -149,7 +149,7 @@ export default async function CompanyPage({
         Beiträge
       </h2>
       {posts.length === 0 ? (
-        <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50 py-10 text-center text-sm text-slate-500">
+        <div className="rounded-lg border border-dashed border-slate-200 bg-slate-50 py-10 text-center text-sm text-slate-500">
           Noch keine Beiträge.
         </div>
       ) : (
@@ -157,7 +157,7 @@ export default async function CompanyPage({
           {posts.map((p) => (
             <article
               key={p.id}
-              className="rounded-2xl border border-slate-200 bg-white p-5 backdrop-blur"
+              className="rounded-lg border border-slate-200 bg-white p-5 backdrop-blur"
             >
               <div className="flex items-center justify-between">
                 <span className="rounded-full bg-brand/15 px-2.5 py-0.5 text-[11px] font-medium text-brand">

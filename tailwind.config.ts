@@ -36,9 +36,9 @@ const config: Config = {
         "pool-green": "#10B981",
       },
       boxShadow: {
-        card: "0 1px 2px 0 rgb(15 23 42 / 0.04), 0 1px 3px 0 rgb(15 23 42 / 0.06)",
-        cardhover:
-          "0 10px 24px -6px rgb(15 23 42 / 0.12), 0 4px 8px -4px rgb(15 23 42 / 0.08)",
+        // Präzise, flache Enterprise-Elevation (Stripe/Salesforce-Stil)
+        card: "0 1px 3px 0 rgb(15 23 42 / 0.05)",
+        cardhover: "0 4px 12px -2px rgb(15 23 42 / 0.10), 0 2px 4px -2px rgb(15 23 42 / 0.06)",
       },
     },
   },
