@@ -212,7 +212,7 @@ export default function NetworkHub() {
   ];
 
   return (
-    <div className="grid grid-cols-1 gap-5 lg:grid-cols-[260px_minmax(0,1fr)]">
+    <div className="grid grid-cols-1 gap-6 lg:grid-cols-[260px_minmax(0,1fr)]">
       {/* Left rail */}
       <aside className="hidden lg:block">
         <div className="sticky top-[72px] space-y-4">
