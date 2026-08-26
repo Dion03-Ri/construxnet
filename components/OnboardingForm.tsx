@@ -127,7 +127,7 @@ export default function OnboardingForm() {
       </div>
 
       {state.error && (
-        <div className="flex items-start gap-2 rounded-lg border border-rose-400/20 bg-rose-400/5 p-3 text-sm text-rose-300">
+        <div className="flex items-start gap-2 rounded-lg border border-rose-200 bg-rose-50 p-3 text-sm text-rose-700">
           <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />
           {state.error}
         </div>
