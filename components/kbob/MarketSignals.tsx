@@ -34,31 +34,32 @@ const SIGNALS: Signal[] = [
 
 export default function MarketSignals() {
   return (
-    <div className={cn(CARD, "p-5")}>
-      <h3 className="text-[15px] font-semibold text-slate-900">
-        Markt-Monitore &amp; Signale
-      </h3>
-      <p className="mt-0.5 text-xs text-slate-400">Live-Indikatoren aus dem Netzwerk</p>
+    <div className={cn(CARD, "overflow-hidden")}>
+      <div className="border-b border-slate-200 px-5 py-3.5">
+        <h3 className="text-[15px] font-semibold text-slate-900">Markt-Monitore &amp; Signale</h3>
+        <p className="mt-0.5 text-[11px] font-medium uppercase tracking-wider text-slate-400">
+          Live-Indikatoren aus dem Netzwerk
+        </p>
+      </div>
 
-      <ul className="mt-4 space-y-4">
+      <ul className="divide-y divide-slate-100">
         {SIGNALS.map((s) => {
           const t = TONE[s.tone];
           return (
-            <li key={s.label} className="flex items-center gap-3">
-              <span className={cn("flex h-9 w-9 shrink-0 items-center justify-center rounded-lg", t.chip)}>
+            <li key={s.label} className="flex items-center gap-3 px-5 py-3">
+              <span className={cn("grid h-9 w-9 shrink-0 place-items-center rounded-md", t.chip)}>
                 <s.icon className="h-4 w-4" />
               </span>
               <div className="min-w-0 flex-1">
-                <div className="flex items-center justify-between gap-2">
-                  <span className="truncate text-[13px] font-medium text-slate-800">{s.label}</span>
-                  <span className={cn("shrink-0 text-[13px] font-bold", t.text)}>{s.score}%</span>
+                <div className="flex items-baseline justify-between gap-2">
+                  <span className="truncate text-[13px] font-semibold text-slate-800">{s.label}</span>
+                  <span className={cn("shrink-0 text-sm font-bold tabular-nums", t.text)}>{s.score}%</span>
                 </div>
-                <div className="mt-1 flex items-center gap-2">
-                  <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-slate-100">
-                    <div className={cn("h-full rounded-full", t.bar)} style={{ width: `${Math.min(s.score, 100)}%` }} />
-                  </div>
+                {/* Scharfe Fortschrittslinie (kein rundes Meter) */}
+                <div className="mt-1.5 h-1 w-full bg-slate-100">
+                  <div className={cn("h-full", t.bar)} style={{ width: `${Math.min(s.score, 100)}%` }} />
                 </div>
-                <p className="mt-0.5 text-[11px] text-slate-400">{s.sub}</p>
+                <p className="mt-1 text-[11px] uppercase tracking-wide text-slate-400">{s.sub}</p>
               </div>
             </li>
           );
