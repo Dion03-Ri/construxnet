@@ -5,7 +5,6 @@ import {
   MessagesSquare,
   ShoppingCart,
   Layers,
-  LineChart,
   BadgeCheck,
   MapPin,
   TrendingDown,
@@ -17,15 +16,6 @@ import {
   ArrowUpRight,
   HardHat,
 } from "lucide-react";
-
-/* Kernfunktionen */
-const CORE = [
-  { icon: Users, title: "Vernetzen", text: "Verifizierte Firmenprofile (CHE-Nummer) und Connections zwischen Bau und Baustoffwerk.", href: "/feed" },
-  { icon: MessagesSquare, title: "Verhandeln", text: "Direktnachrichten mit strukturierten Angeboten und Gegenangeboten im Chat.", href: "/messages" },
-  { icon: ShoppingCart, title: "Beschaffen", text: "Materialbedarf in vier Schritten melden — optional automatisch gebündelt.", href: "/beschaffung" },
-  { icon: Layers, title: "Bündeln", text: "Preistreppe, Sealed-Bid und garantierter Tier-Rabatt für regionale Smart Pools.", href: "/pools" },
-  { icon: LineChart, title: "Preisindex", text: "KBOB-Index gegen Smart-Pool-Durchschnittspreise — nach Material und Region.", href: "/kbob" },
-];
 
 const POOLS = [
   { material: "Beton C25/30", region: "Zürich", volume: "180 m³", tier: "12 %", deadline: "4 Tage" },
@@ -136,9 +126,10 @@ export default function Home() {
               <span className="bg-gradient-to-r from-brand to-brand-600 bg-clip-text text-transparent">richtigen Netzwerk.</span>
             </h1>
             <p className="mt-5 max-w-xl text-[17px] leading-relaxed text-slate-500">
-              Vernetze dich mit verifizierten Bauunternehmen und Baustoffwerken,
-              verhandle direkt und beschaffe Material — optional gebündelt zu
-              Smart Pools mit garantiertem Volumenrabatt.
+              Vernetze dich mit verifizierten Firmen, baue feste
+              <span className="font-semibold text-slate-700"> Beschaffungs-Partnerschaften</span> auf
+              und bündelt euren Materialbedarf zu Smart Pools — für Konditionen,
+              die alleine niemand bekommt.
             </p>
             <div className="mt-7 flex flex-col gap-3 sm:flex-row">
               <Link
@@ -183,49 +174,56 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Kernfunktionen */}
-      <section className="mx-auto max-w-6xl px-4 py-14 sm:px-6">
-        <div className="mb-8 max-w-2xl">
-          <span className="text-[11px] font-bold uppercase tracking-wider text-brand">Eine Plattform</span>
-          <h2 className="mt-1.5 text-3xl font-bold tracking-tight text-slate-900">
-            Fünf Kernfunktionen, ein Workflow
+      {/* 3-Akt-Story: Vernetzen -> Partnerschaft -> Bündeln */}
+      <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6">
+        <div className="mb-10 max-w-2xl">
+          <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-brand">Die Idee</span>
+          <h2 className="mt-2 text-3xl font-bold leading-tight tracking-tight text-slate-900 sm:text-4xl">
+            Vernetzen ist der Anfang.<br />Bessere Konditionen sind das Ziel.
           </h2>
-          <p className="mt-2 text-slate-500">
-            Von der ersten Verbindung bis zum unterschriebenen SIA-118-Vertrag — alles an einem Ort.
-          </p>
         </div>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {CORE.map((f) => (
-            <Link
-              key={f.title}
-              href={f.href}
-              className="group rounded-lg border border-slate-200 bg-white p-5 transition-all duration-200 hover:-translate-y-0.5 hover:border-brand/40 hover:shadow-cardhover"
-            >
-              <span className="grid h-11 w-11 place-items-center rounded-lg bg-brand/10 text-brand ring-1 ring-brand/15">
-                <f.icon className="h-5 w-5" />
-              </span>
-              <h3 className="mt-4 flex items-center gap-1.5 text-[17px] font-semibold text-slate-900">
-                {f.title}
-                <ArrowRight className="h-4 w-4 -translate-x-1 text-brand opacity-0 transition-all group-hover:translate-x-0 group-hover:opacity-100" />
-              </h3>
-              <p className="mt-1.5 text-sm leading-relaxed text-slate-500">{f.text}</p>
-            </Link>
-          ))}
-          {/* CTA-Kachel */}
-          <Link
-            href="/beschaffung"
-            className="group flex flex-col justify-between rounded-lg border border-brand/30 bg-gradient-to-br from-brand/10 to-accent/10 p-5 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-cardhover"
-          >
-            <span className="grid h-11 w-11 place-items-center rounded-lg bg-brand text-white">
-              <Megaphone className="h-5 w-5" />
-            </span>
-            <div className="mt-4">
-              <h3 className="text-[17px] font-semibold text-slate-900">Jetzt Bedarf melden</h3>
-              <p className="mt-1.5 inline-flex items-center gap-1 text-sm font-semibold text-brand">
-                In 4 Schritten zum Angebot <ArrowRight className="h-4 w-4" />
-              </p>
+        <div className="grid grid-cols-1 divide-y divide-slate-200 lg:grid-cols-3 lg:divide-x lg:divide-y-0">
+          {[
+            {
+              n: "01",
+              icon: Users,
+              t: "Vernetzen",
+              d: "Finde verifizierte Bauunternehmen und Baustoffwerke (CHE-geprüft) in deiner Region und verbinde dich — wie auf LinkedIn, nur für den Bau.",
+              href: "/network",
+              cta: "Zum Netzwerk",
+            },
+            {
+              n: "02",
+              icon: MessagesSquare,
+              t: "Partnerschaften bilden",
+              d: "Aus Kontakten werden feste Beschaffungs-Partnerschaften: gemeinsam planen, direkt verhandeln, verbindlich abschliessen.",
+              href: "/messages",
+              cta: "Nachrichten",
+            },
+            {
+              n: "03",
+              icon: Layers,
+              t: "Gemeinsam bündeln",
+              d: "Bündelt euren Materialbedarf zu Smart Pools und sichert euch garantierte Volumenrabatte bis 20 % — für alle Partner gleich.",
+              href: "/pools",
+              cta: "Smart Pools",
+            },
+          ].map((a) => (
+            <div key={a.n} className="group px-0 py-6 lg:px-8 lg:first:pl-0 lg:last:pr-0">
+              <div className="flex items-baseline gap-3">
+                <span className="text-3xl font-bold tabular-nums text-brand/30">{a.n}</span>
+                <a.icon className="h-5 w-5 text-brand" />
+              </div>
+              <h3 className="mt-4 text-xl font-bold tracking-tight text-slate-900">{a.t}</h3>
+              <p className="mt-2 text-[15px] leading-relaxed text-slate-500">{a.d}</p>
+              <Link
+                href={a.href}
+                className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-brand transition-colors hover:text-brand-600"
+              >
+                {a.cta} <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+              </Link>
             </div>
-          </Link>
+          ))}
         </div>
       </section>
 
