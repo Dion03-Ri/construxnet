@@ -109,8 +109,8 @@ export default function MapWidgets() {
                     fontSize: 12,
                   }}
                 />
-                <Bar dataKey="volume" name="Volumen" fill="#3B82F6" radius={[4, 4, 0, 0]} barSize={14} />
-                <Line dataKey="discount" name="Rabatt %" stroke="#F97316" strokeWidth={2} dot={false} />
+                <Bar dataKey="volume" name="Volumen" fill="#254D7A" radius={[4, 4, 0, 0]} barSize={14} />
+                <Line dataKey="discount" name="Rabatt %" stroke="#D99000" strokeWidth={2} dot={false} />
               </ComposedChart>
             </ResponsiveContainer>
           </div>

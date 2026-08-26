@@ -116,13 +116,13 @@ export default function SupplierMap() {
                 >
                   <motion.circle
                     r={r}
-                    fill="#F97316"
+                    fill="#D99000"
                     fillOpacity={isHover ? 0.35 : 0.18}
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
                     transition={{ duration: 0.4, ease: "easeOut" }}
                   />
-                  <circle r={5} fill="#F97316" stroke="#fff" strokeWidth={2} />
+                  <circle r={5} fill="#D99000" stroke="#fff" strokeWidth={2} />
                   {a.total >= maxTotal * 0.5 && (
                     <text
                       y={-r - 6}

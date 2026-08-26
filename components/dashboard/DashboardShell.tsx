@@ -45,9 +45,9 @@ import { CARD } from "@/lib/ui";
 import { cn } from "@/lib/utils";
 
 const C = {
-  brand: "#F97316",
+  brand: "#D99000",
   emerald: "#10B981",
-  accent: "#2563EB",
+  accent: "#1B3A5C",
   slate: "#94A3B8",
   slateLight: "#E2E8F0",
 };

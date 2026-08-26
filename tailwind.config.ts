@@ -5,33 +5,34 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Base surface (Navy)
+        // SourceOn Corporate Identity — exakt dieselben Farben wie sourceon.ch.
+        // Dunkle Navy-Flächen (SourceOn --dark / --bg)
         navy: {
-          DEFAULT: "#0F172A",
-          950: "#0B1120",
-          900: "#0F172A",
-          800: "#1E293B",
-          700: "#334155",
+          DEFAULT: "#0F2238",
+          950: "#070F1A",
+          900: "#08111E",
+          800: "#0C1824",
+          700: "#111F2E",
         },
-        // Bau-Akzent / aktive Bestellvorgänge (Orange)
+        // Primär / Marke: SourceOn-Gold (--gold #D99000, dunkler #9A6A00)
         brand: {
-          DEFAULT: "#F97316",
-          500: "#F97316",
-          600: "#EA580C",
+          DEFAULT: "#D99000",
+          500: "#D99000",
+          600: "#9A6A00",
         },
-        // Ersparnisse (Emerald)
+        // Ersparnisse / positiv: SourceOn-Grün
         emerald: {
           DEFAULT: "#10B981",
           500: "#10B981",
         },
-        // Electric-Blue-Akzent (KBOB / Daten)
+        // Sekundär-Akzent: SourceOn-Navy (--navy #1B3A5C / --navy-md #254D7A)
         accent: {
-          DEFAULT: "#2563EB",
-          500: "#3B82F6",
-          600: "#2563EB",
+          DEFAULT: "#1B3A5C",
+          500: "#254D7A",
+          600: "#1B3A5C",
         },
-        // KBOB-Index-Datenlinie (nur Datenvisualisierung)
-        "kbob-blue": "#3B82F6",
+        // Datenlinien (nur Visualisierung) — SourceOn-Navy
+        "kbob-blue": "#254D7A",
         "pool-green": "#10B981",
       },
       boxShadow: {

@@ -425,7 +425,7 @@ export default function KbobChart() {
               type="monotone"
               dataKey="kbob"
               name="KBOB Index"
-              stroke="#3B82F6"
+              stroke="#254D7A"
               strokeWidth={2.5}
               dot={false}
               activeDot={{ r: 4, strokeWidth: 0 }}

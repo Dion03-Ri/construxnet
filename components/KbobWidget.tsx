@@ -100,7 +100,7 @@ export default function KbobWidget() {
         className="mt-3 h-14 w-full"
         preserveAspectRatio="none"
       >
-        <Sparkline values={kbobVals} color="#3B82F6" min={min} max={max} />
+        <Sparkline values={kbobVals} color="#254D7A" min={min} max={max} />
         <Sparkline values={poolVals} color="#10B981" dashed min={min} max={max} />
       </svg>
 
