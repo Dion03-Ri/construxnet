@@ -139,7 +139,7 @@ export default function SupplierMap() {
 
           {/* Tooltip */}
           {hovered && (
-            <div className="pointer-events-none absolute left-1/2 top-3 -translate-x-1/2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 shadow-cardhover">
+            <div className="pointer-events-none absolute left-1/2 top-3 -translate-x-1/2 rounded-lg border border-slate-200 bg-white px-4 py-2.5 shadow-cardhover">
               <div className="text-sm font-semibold text-slate-900">
                 {CANTON_XY[hovered.canton]?.label}
               </div>

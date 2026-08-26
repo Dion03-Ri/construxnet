@@ -85,14 +85,14 @@ export default function Home() {
           <div className="mt-7 flex flex-col gap-3 sm:flex-row">
             <Link
               href="/dashboard"
-              className="inline-flex items-center justify-center gap-2 rounded-xl bg-brand px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-brand/30 transition-colors hover:bg-brand-600"
+              className="inline-flex items-center justify-center gap-2 rounded-lg bg-brand px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-brand/30 transition-colors hover:bg-brand-600"
             >
               Netzwerk beitreten
               <ArrowRight className="h-4 w-4" />
             </Link>
             <Link
               href="/feed"
-              className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-6 py-3 text-sm font-semibold text-slate-900 transition-colors hover:bg-slate-100"
+              className="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-6 py-3 text-sm font-semibold text-slate-900 transition-colors hover:bg-slate-100"
             >
               Netzwerk entdecken
             </Link>
@@ -109,9 +109,9 @@ export default function Home() {
             <Link
               key={f.title}
               href={f.href}
-              className="group rounded-2xl border border-slate-200 bg-white p-5 backdrop-blur transition-colors hover:border-brand/40 hover:bg-slate-50"
+              className="group rounded-lg border border-slate-200 bg-white p-5 backdrop-blur transition-colors hover:border-brand/40 hover:bg-slate-50"
             >
-              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand/15 text-brand">
+              <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-brand/15 text-brand">
                 <f.icon className="h-5 w-5" />
               </span>
               <h3 className="mt-4 flex items-center gap-1.5 font-semibold text-slate-900">
@@ -141,7 +141,7 @@ export default function Home() {
           {POOLS.map((p, i) => (
             <div
               key={i}
-              className="w-64 shrink-0 rounded-2xl border border-slate-200 bg-white p-4 backdrop-blur"
+              className="w-64 shrink-0 rounded-lg border border-slate-200 bg-white p-4 backdrop-blur"
             >
               <div className="flex items-center justify-between">
                 <span className="text-sm font-semibold text-slate-900">
@@ -184,10 +184,10 @@ export default function Home() {
           {COMPANIES.map((c) => (
             <div
               key={c.uid}
-              className="rounded-2xl border border-slate-200 bg-white p-5 backdrop-blur"
+              className="rounded-lg border border-slate-200 bg-white p-5 backdrop-blur"
             >
               <div className="flex items-start justify-between">
-                <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-slate-100 text-sm font-semibold text-slate-700">
+                <span className="flex h-11 w-11 items-center justify-center rounded-lg bg-slate-100 text-sm font-semibold text-slate-700">
                   {c.name
                     .split(" ")
                     .slice(0, 2)
@@ -217,7 +217,7 @@ export default function Home() {
 
       {/* ROI-Teaser */}
       <section className="pb-20">
-        <div className="flex flex-col items-center gap-4 rounded-3xl border border-slate-200 bg-white p-8 text-center backdrop-blur sm:p-12">
+        <div className="flex flex-col items-center gap-4 rounded-lg border border-slate-200 bg-white p-8 text-center backdrop-blur sm:p-12">
           <span className="inline-flex items-center gap-2 rounded-full bg-emerald/15 px-3 py-1 text-xs font-medium text-emerald">
             <TrendingDown className="h-3.5 w-3.5" />
             12–15 % typische Ersparnis
@@ -231,7 +231,7 @@ export default function Home() {
           </p>
           <Link
             href="/kbob"
-            className="mt-2 inline-flex items-center justify-center gap-2 rounded-xl bg-brand px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-brand/30 transition-colors hover:bg-brand-600"
+            className="mt-2 inline-flex items-center justify-center gap-2 rounded-lg bg-brand px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-brand/30 transition-colors hover:bg-brand-600"
           >
             Preisvergleich ansehen
             <ArrowRight className="h-4 w-4" />

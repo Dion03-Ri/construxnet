@@ -364,7 +364,7 @@ function PostCard({ post, index }: { post: Post; index: number }) {
       </p>
 
       {post.gradient && (
-        <div className={cn("mt-3 flex h-44 items-center justify-center rounded-xl bg-gradient-to-br", post.gradient)}>
+        <div className={cn("mt-3 flex h-44 items-center justify-center rounded-lg bg-gradient-to-br", post.gradient)}>
           <Package className="h-10 w-10 text-white/70" />
         </div>
       )}
@@ -528,7 +528,7 @@ export default function NetworkFeed() {
           <SkeletonCard />
         </>
       ) : error ? (
-        <div className="flex items-start gap-2 rounded-2xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-700">
+        <div className="flex items-start gap-2 rounded-lg border border-rose-200 bg-rose-50 p-4 text-sm text-rose-700">
           <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />
           <div>
             <p className="font-medium">Feed konnte nicht geladen werden.</p>

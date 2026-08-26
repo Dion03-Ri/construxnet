@@ -360,7 +360,7 @@ export default function ChatWindow({ initialTo }: { initialTo?: string }) {
                 if (m.is_negotiation_offer) {
                   return (
                     <div key={m.id} className={cn("flex", mine ? "justify-end" : "justify-start")}>
-                      <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} className="w-[85%] max-w-sm rounded-2xl border border-brand/30 bg-white p-4 shadow-card">
+                      <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} className="w-[85%] max-w-sm rounded-lg border border-brand/30 bg-white p-4 shadow-card">
                         <div className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-brand">
                           <Tag className="h-3.5 w-3.5" /> Verhandlungs-Angebot
                         </div>
@@ -386,7 +386,7 @@ export default function ChatWindow({ initialTo }: { initialTo?: string }) {
                 }
                 return (
                   <div key={m.id} className={cn("flex", mine ? "justify-end" : "justify-start")}>
-                    <div className={cn("max-w-[80%] rounded-2xl px-3.5 py-2 text-sm", mine ? "bg-brand text-white" : "border border-slate-200 bg-white text-slate-700")}>
+                    <div className={cn("max-w-[80%] rounded-lg px-3.5 py-2 text-sm", mine ? "bg-brand text-white" : "border border-slate-200 bg-white text-slate-700")}>
                       {m.content}
                       <div className={cn("mt-1 text-right text-[10px]", mine ? "text-white/70" : "text-slate-400")}>{time(m.created_at)}</div>
                     </div>
@@ -398,7 +398,7 @@ export default function ChatWindow({ initialTo }: { initialTo?: string }) {
             {/* Composer */}
             <div className="border-t border-slate-200 p-3">
               {offerMode && (
-                <div className="mb-2 flex flex-wrap items-center gap-2 rounded-xl border border-brand/30 bg-brand/[0.04] p-2">
+                <div className="mb-2 flex flex-wrap items-center gap-2 rounded-lg border border-brand/30 bg-brand/[0.04] p-2">
                   <span className="text-[11px] font-semibold uppercase tracking-wider text-brand">Angebot</span>
                   <input value={offerQty} onChange={(e) => setOfferQty(e.target.value)} placeholder="Menge (z. B. 230 m³)" className="min-w-0 flex-1 rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-xs text-slate-900 outline-none focus:border-brand/50" />
                   <div className="flex items-center gap-1 rounded-lg border border-slate-200 bg-white px-2.5 py-1.5">
@@ -409,7 +409,7 @@ export default function ChatWindow({ initialTo }: { initialTo?: string }) {
                 </div>
               )}
               <div className="flex items-center gap-2">
-                <button type="button" onClick={() => setOfferMode((v) => !v)} title="Angebot senden" className={cn("rounded-xl border p-2.5 transition-colors", offerMode ? "border-brand bg-brand/10 text-brand" : "border-slate-200 text-slate-500 hover:bg-slate-100")}>
+                <button type="button" onClick={() => setOfferMode((v) => !v)} title="Angebot senden" className={cn("rounded-lg border p-2.5 transition-colors", offerMode ? "border-brand bg-brand/10 text-brand" : "border-slate-200 text-slate-500 hover:bg-slate-100")}>
                   <Tag className="h-4 w-4" />
                 </button>
                 <input
@@ -503,7 +503,7 @@ function ContactPanel({ company, onOffer }: { company: Company; onOffer: () => v
     <div className="flex min-h-0 flex-col">
       <div className="border-b border-slate-200 bg-white px-4 py-4">
         <div className="flex items-center gap-3">
-          <span className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-slate-100 text-sm font-semibold text-slate-700">
+          <span className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-slate-100 text-sm font-semibold text-slate-700">
             {company.logo_url ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img src={company.logo_url} alt={company.company_name} className="h-full w-full object-cover" />

@@ -31,7 +31,7 @@ export default function FeedProfileCard({
         <div className="h-16 bg-gradient-to-r from-accent-600 via-accent-500 to-emerald" />
         <div className="px-4 pb-4">
           <Link href={`/company/${company.id}`} className="group block">
-            <div className="-mt-9 flex h-16 w-16 items-center justify-center overflow-hidden rounded-2xl border-4 border-white bg-slate-100 text-lg font-semibold text-slate-700 shadow-sm">
+            <div className="-mt-9 flex h-16 w-16 items-center justify-center overflow-hidden rounded-lg border-4 border-white bg-slate-100 text-lg font-semibold text-slate-700 shadow-sm">
               {company.logo_url ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img src={company.logo_url} alt={company.company_name} className="h-full w-full object-cover" />

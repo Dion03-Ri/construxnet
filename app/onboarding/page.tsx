@@ -17,7 +17,7 @@ export default async function OnboardingPage() {
   return (
     <main className="mx-auto max-w-lg px-4 py-12 sm:px-6 sm:py-16">
       <header className="mb-8 text-center">
-        <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-brand/15 text-brand">
+        <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-lg bg-brand/15 text-brand">
           <HardHat className="h-6 w-6" />
         </span>
         <h1 className="mt-4 text-2xl font-semibold tracking-tight text-slate-900 sm:text-3xl">
@@ -28,7 +28,7 @@ export default async function OnboardingPage() {
         </p>
       </header>
 
-      <div className="rounded-3xl border border-slate-200 bg-white p-6 backdrop-blur sm:p-8">
+      <div className="rounded-lg border border-slate-200 bg-white p-6 backdrop-blur sm:p-8">
         <OnboardingForm />
       </div>
     </main>

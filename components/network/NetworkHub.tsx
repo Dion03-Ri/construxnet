@@ -368,11 +368,11 @@ export default function NetworkHub() {
           </div>
 
           {loading ? (
-            <div className="flex items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white py-12 text-sm text-slate-500">
+            <div className="flex items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white py-12 text-sm text-slate-500">
               <Loader2 className="h-4 w-4 animate-spin" /> Firmen werden geladen …
             </div>
           ) : suggestions.length === 0 ? (
-            <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50 py-12 text-center text-sm text-slate-500">
+            <div className="rounded-lg border border-dashed border-slate-200 bg-slate-50 py-12 text-center text-sm text-slate-500">
               Keine weiteren Firmen gefunden.
             </div>
           ) : (
@@ -383,7 +383,7 @@ export default function NetworkHub() {
                   <div className="flex flex-1 flex-col px-4 pb-4">
                     <Link
                       href={`/company/${c.id}`}
-                      className="-mt-7 flex h-14 w-14 items-center justify-center overflow-hidden rounded-2xl border-4 border-white bg-slate-100 text-sm font-semibold text-slate-700 shadow-sm"
+                      className="-mt-7 flex h-14 w-14 items-center justify-center overflow-hidden rounded-lg border-4 border-white bg-slate-100 text-sm font-semibold text-slate-700 shadow-sm"
                     >
                       {c.logo_url ? (
                         // eslint-disable-next-line @next/next/no-img-element

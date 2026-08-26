@@ -35,7 +35,7 @@ export default function OnboardingForm() {
           {ROLES.map((r, i) => (
             <label
               key={r.key}
-              className="group relative cursor-pointer rounded-xl border border-slate-200 bg-white p-4 transition-colors hover:border-brand/40 has-[:checked]:border-brand has-[:checked]:bg-brand/10"
+              className="group relative cursor-pointer rounded-lg border border-slate-200 bg-white p-4 transition-colors hover:border-brand/40 has-[:checked]:border-brand has-[:checked]:bg-brand/10"
             >
               <input
                 type="radio"
@@ -136,7 +136,7 @@ export default function OnboardingForm() {
       <button
         type="submit"
         disabled={pending}
-        className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-brand px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-brand/30 transition-colors hover:bg-brand-600 disabled:cursor-not-allowed disabled:opacity-50"
+        className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-brand px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-brand/30 transition-colors hover:bg-brand-600 disabled:cursor-not-allowed disabled:opacity-50"
       >
         {pending && <Loader2 className="h-4 w-4 animate-spin" />}
         Profil erstellen & loslegen

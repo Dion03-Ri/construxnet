@@ -194,7 +194,7 @@ function KpiCard({ k }: { k: Kpi }) {
 function RevCostTooltip({ active, payload, label }: TooltipProps<number, string>) {
   if (!active || !payload?.length) return null;
   return (
-    <div className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs shadow-cardhover">
+    <div className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs shadow-cardhover">
       <div className="mb-1 font-semibold text-slate-900">{label}</div>
       {payload.map((p) => (
         <div key={p.name} className="flex items-center gap-2 text-slate-600">
@@ -218,7 +218,7 @@ function OverviewPanel({ role }: { role: "buyer" | "supplier" }) {
   return (
     <div className="space-y-4">
       {/* Alert-Banner (Bild 3) */}
-      <div className="flex items-center gap-3 rounded-2xl border border-brand/20 bg-brand/[0.06] px-4 py-3">
+      <div className="flex items-center gap-3 rounded-lg border border-brand/20 bg-brand/[0.06] px-4 py-3">
         <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-brand/15 text-brand">
           <AlertTriangle className="h-4 w-4" />
         </span>
@@ -398,7 +398,7 @@ function OverviewPanel({ role }: { role: "buyer" | "supplier" }) {
       {/* Orders + Promo (Bild 2) */}
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
         <OrdersPanel compact />
-        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-navy-900 via-navy-800 to-navy p-6 text-white shadow-cardhover">
+        <div className="relative overflow-hidden rounded-lg bg-gradient-to-br from-navy-900 via-navy-800 to-navy p-6 text-white shadow-cardhover">
           <div className="absolute -right-8 -top-8 h-40 w-40 rounded-full bg-brand/30 blur-3xl" />
           <div className="absolute -bottom-10 -left-6 h-40 w-40 rounded-full bg-emerald/20 blur-3xl" />
           <div className="relative">
@@ -490,7 +490,7 @@ function TendersPanel() {
         {list.map((t) => {
           const done = bids[t.id];
           return (
-            <div key={t.id} className="rounded-xl border border-slate-200 p-4">
+            <div key={t.id} className="rounded-lg border border-slate-200 p-4">
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <div>
                   <div className="font-medium text-slate-900">{t.material}</div>
@@ -538,7 +538,7 @@ function ContractsPanel() {
           {POOLS.map((p) => {
             const pct = Math.min(100, Math.round((p.vol / p.target) * 100));
             return (
-              <div key={p.material} className="rounded-xl border border-slate-200 p-4">
+              <div key={p.material} className="rounded-lg border border-slate-200 p-4">
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <div className="flex items-center gap-2">
                     <span className="font-medium text-slate-900">{p.material}</span>
@@ -629,7 +629,7 @@ export default function DashboardShell({ company }: { company: Company }) {
       <aside className="border-b border-slate-200 bg-slate-50/60 lg:border-b-0 lg:border-r">
         {/* Workspace-Header */}
         <div className="flex items-center gap-2.5 border-b border-slate-200 px-3 py-3">
-          <span className="grid h-9 w-9 shrink-0 place-items-center overflow-hidden rounded-xl bg-gradient-to-br from-brand to-brand-600 text-sm font-bold text-white">
+          <span className="grid h-9 w-9 shrink-0 place-items-center overflow-hidden rounded-lg bg-gradient-to-br from-brand to-brand-600 text-sm font-bold text-white">
             {company.logo_url ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img src={company.logo_url} alt="" className="h-full w-full object-cover" />

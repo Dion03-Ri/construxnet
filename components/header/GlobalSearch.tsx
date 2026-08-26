@@ -67,8 +67,11 @@ export default function GlobalSearch() {
         onFocus={() => setFocus(true)}
         onBlur={() => setTimeout(() => setFocus(false), 150)}
         placeholder="Firmen, Pools, Materialien …"
-        className="w-full rounded-full border border-slate-200 bg-slate-100/70 py-2 pl-9 pr-3 text-[13px] text-slate-800 placeholder:text-slate-400 outline-none transition-colors focus:border-brand/50 focus:bg-white"
+        className="w-full rounded-md border border-slate-300 bg-slate-50 py-2 pl-9 pr-14 text-[13px] text-slate-800 placeholder:text-slate-400 outline-none transition-colors focus:border-brand focus:bg-white focus:ring-1 focus:ring-brand/30"
       />
+      <kbd className="pointer-events-none absolute right-2 top-1/2 hidden -translate-y-1/2 items-center gap-0.5 rounded border border-slate-300 bg-white px-1.5 py-0.5 text-[10px] font-semibold text-slate-400 lg:inline-flex">
+        ⌘K
+      </kbd>
 
       <AnimatePresence>
         {show && (
@@ -77,7 +80,7 @@ export default function GlobalSearch() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -6 }}
             transition={{ duration: 0.15 }}
-            className="absolute left-0 right-0 z-50 mt-2 overflow-hidden rounded-2xl border border-slate-200 bg-white/95 shadow-cardhover backdrop-blur-xl"
+            className="absolute left-0 right-0 z-50 mt-2 overflow-hidden rounded-lg border border-slate-200 bg-white/95 shadow-cardhover backdrop-blur-xl"
           >
             {empty ? (
               <div className="px-4 py-6 text-center text-sm text-slate-400">

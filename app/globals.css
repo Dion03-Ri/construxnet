@@ -8,18 +8,14 @@
     text-rendering: optimizeLegibility;
   }
   body {
+    /* Solides Premium-Swiss-Slate, kein Grid-Pattern */
     background-color: #f8fafc;
-    /* feines Grid-Mesh im Hintergrund (sehr subtil) */
-    background-image:
-      linear-gradient(to right, rgba(15, 23, 42, 0.035) 1px, transparent 1px),
-      linear-gradient(to bottom, rgba(15, 23, 42, 0.035) 1px, transparent 1px);
-    background-size: 32px 32px;
   }
 }
 
 @layer utilities {
   .glass {
-    background-color: rgb(255 255 255 / 0.8);
+    background-color: rgb(255 255 255 / 0.95);
     backdrop-filter: blur(12px);
   }
 }

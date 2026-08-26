@@ -151,7 +151,7 @@ export default function ProfileHero({
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           {/* Identity */}
           <div className="min-w-0">
-            <div className="-mt-12 flex h-24 w-24 items-center justify-center overflow-hidden rounded-3xl border-4 border-white bg-slate-100 text-2xl font-bold text-slate-700 shadow-card sm:-mt-14 sm:h-28 sm:w-28">
+            <div className="-mt-12 flex h-24 w-24 items-center justify-center overflow-hidden rounded-lg border-4 border-white bg-slate-100 text-2xl font-bold text-slate-700 shadow-card sm:-mt-14 sm:h-28 sm:w-28">
               {company.logo_url ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img src={company.logo_url} alt={company.company_name} className="h-full w-full object-cover" />
@@ -220,7 +220,7 @@ export default function ProfileHero({
         </div>
 
         {/* Profilstärke */}
-        <div className="mt-5 rounded-xl border border-slate-200 bg-slate-50/60 p-3.5">
+        <div className="mt-5 rounded-lg border border-slate-200 bg-slate-50/60 p-3.5">
           <div className="flex items-center justify-between text-[13px]">
             <span className="font-medium text-slate-600">
               Profilstärke: <span className="font-semibold text-brand">{strengthLabel(pct)}</span>
@@ -252,7 +252,7 @@ export default function ProfileHero({
               <div
                 key={k.label}
                 className={cn(
-                  "rounded-xl border border-slate-200 bg-gradient-to-br p-3",
+                  "rounded-lg border border-slate-200 bg-gradient-to-br p-3",
                   k.tint,
                 )}
               >
