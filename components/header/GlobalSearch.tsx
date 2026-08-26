@@ -59,7 +59,7 @@ export default function GlobalSearch() {
 
   return (
     <div className="relative hidden w-full max-w-xs md:block">
-      <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+      <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-white/50" />
       <input
         type="search"
         value={q}
@@ -67,9 +67,9 @@ export default function GlobalSearch() {
         onFocus={() => setFocus(true)}
         onBlur={() => setTimeout(() => setFocus(false), 150)}
         placeholder="Firmen, Pools, Materialien …"
-        className="w-full rounded-md border border-slate-300 bg-slate-50 py-2 pl-9 pr-14 text-[13px] text-slate-800 placeholder:text-slate-400 outline-none transition-colors focus:border-brand focus:bg-white focus:ring-1 focus:ring-brand/30"
+        className="w-full rounded-md border border-white/15 bg-white/10 py-2 pl-9 pr-14 text-[13px] text-white placeholder:text-white/50 outline-none transition-colors focus:border-white/30 focus:bg-white/15"
       />
-      <kbd className="pointer-events-none absolute right-2 top-1/2 hidden -translate-y-1/2 items-center gap-0.5 rounded border border-slate-300 bg-white px-1.5 py-0.5 text-[10px] font-semibold text-slate-400 lg:inline-flex">
+      <kbd className="pointer-events-none absolute right-2 top-1/2 hidden -translate-y-1/2 items-center gap-0.5 rounded border border-white/20 bg-white/5 px-1.5 py-0.5 text-[10px] font-semibold text-white/50 lg:inline-flex">
         ⌘K
       </kbd>
 

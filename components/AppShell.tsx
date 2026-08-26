@@ -19,11 +19,11 @@ import GlobalSearch from "@/components/header/GlobalSearch";
 type NavItem = { href: string; label: string; icon: LucideIcon };
 
 const NAV: NavItem[] = [
-  { href: "/feed", label: "Feed", icon: Home },
   { href: "/network", label: "Netzwerk", icon: Users },
+  { href: "/feed", label: "Feed", icon: Home },
   { href: "/pools", label: "Smart Pools", icon: Package },
-  { href: "/kbob", label: "KBOB", icon: LineChart },
   { href: "/messages", label: "Nachrichten", icon: MessageSquare },
+  { href: "/kbob", label: "KBOB", icon: LineChart },
 ];
 
 function useActive() {
@@ -31,13 +31,13 @@ function useActive() {
   return (href: string) => pathname === href || pathname.startsWith(href + "/");
 }
 
-function Logo({ href = "/feed" }: { href?: string }) {
+function Logo({ href = "/feed", dark = false }: { href?: string; dark?: boolean }) {
   return (
     <Link href={href} className="flex items-center gap-2 font-semibold tracking-tight">
       <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-brand to-brand-600 text-white shadow-sm shadow-brand/30">
         <HardHat className="h-5 w-5" />
       </span>
-      <span className="hidden text-[15px] text-slate-900 sm:block">
+      <span className={cn("hidden text-[15px] sm:block", dark ? "text-white" : "text-slate-900")}>
         Construx<span className="text-brand">Net</span>
       </span>
     </Link>
@@ -47,9 +47,9 @@ function Logo({ href = "/feed" }: { href?: string }) {
 function TopBar() {
   const isActive = useActive();
   return (
-    <header className="sticky top-0 z-50 border-b border-slate-200 glass">
+    <header className="sticky top-0 z-50 border-b border-white/10 bg-navy-900">
       <div className="mx-auto flex h-14 max-w-7xl items-center gap-3 px-4 sm:px-6">
-        <Logo />
+        <Logo dark />
 
         <GlobalSearch />
 
@@ -62,7 +62,7 @@ function TopBar() {
                 href={item.href}
                 className={cn(
                   "group relative flex w-[68px] flex-col items-center justify-center gap-0.5 pt-1 text-[11px] transition-colors",
-                  active ? "font-semibold text-brand" : "font-medium text-slate-500 hover:text-slate-900",
+                  active ? "font-semibold text-white" : "font-medium text-white/55 hover:text-white",
                 )}
               >
                 <item.icon className="h-5 w-5" />
