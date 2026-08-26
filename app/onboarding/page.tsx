@@ -15,7 +15,7 @@ export default async function OnboardingPage() {
   if (company) redirect("/dashboard");
 
   return (
-    <main className="mx-auto max-w-lg px-4 py-12 sm:px-6 sm:py-16">
+    <main className="mx-auto max-w-lg px-4 py-8 sm:px-6 sm:py-12">
       <header className="mb-8 text-center">
         <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-lg bg-brand/15 text-brand">
           <HardHat className="h-6 w-6" />
