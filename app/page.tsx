@@ -10,6 +10,10 @@ import {
   MapPin,
   TrendingDown,
   Clock,
+  Megaphone,
+  Sparkles,
+  Gavel,
+  FileCheck,
 } from "lucide-react";
 import KbobWidget from "@/components/KbobWidget";
 
@@ -84,17 +88,18 @@ export default function Home() {
           </p>
           <div className="mt-7 flex flex-col gap-3 sm:flex-row">
             <Link
-              href="/dashboard"
+              href="/beschaffung"
               className="inline-flex items-center justify-center gap-2 rounded-lg bg-brand px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-brand/30 transition-colors hover:bg-brand-600"
             >
-              Netzwerk beitreten
-              <ArrowRight className="h-4 w-4" />
+              <ShoppingCart className="h-4 w-4" />
+              Materialbedarf melden
             </Link>
             <Link
               href="/feed"
               className="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-6 py-3 text-sm font-semibold text-slate-900 transition-colors hover:bg-slate-100"
             >
               Netzwerk entdecken
+              <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
         </div>
@@ -121,6 +126,43 @@ export default function Home() {
               <p className="mt-1.5 text-sm text-slate-500">{f.text}</p>
             </Link>
           ))}
+        </div>
+      </section>
+
+      {/* So funktioniert's */}
+      <section className="pt-16 sm:pt-20">
+        <div className="rounded-lg border border-slate-200 bg-white p-6 sm:p-8">
+          <div className="mb-6 flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <span className="text-[11px] font-bold uppercase tracking-wider text-brand">So funktioniert&apos;s</span>
+              <h2 className="mt-1 text-xl font-semibold tracking-tight text-slate-900">
+                In vier Schritten von der Anfrage zum Vertrag
+              </h2>
+            </div>
+            <Link
+              href="/beschaffung"
+              className="inline-flex items-center gap-1.5 self-start rounded-md bg-brand px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-brand-600 sm:self-auto"
+            >
+              <ShoppingCart className="h-4 w-4" /> Jetzt starten
+            </Link>
+          </div>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {[
+              { icon: Megaphone, title: "Bedarf melden", text: "Material, Menge und Region in vier Schritten erfassen — oder per Foto/Datei hochladen." },
+              { icon: Sparkles, title: "Optional bündeln", text: "Smart Pool aktivieren und Bedarf mit Firmen in deiner Region zu Volumenrabatt bündeln." },
+              { icon: Gavel, title: "Angebot & Zuschlag", text: "Baustoffwerke geben Sealed-Bid-Angebote ab — bestes Angebot erhält den Zuschlag." },
+              { icon: FileCheck, title: "Liefern & SIA-Vertrag", text: "Lieferung und rechtssicherer SIA-118-Vertrag — direkt in deinem Dashboard." },
+            ].map((s, i) => (
+              <div key={s.title} className="relative rounded-lg border border-slate-200 p-4">
+                <span className="absolute right-3 top-3 text-2xl font-bold text-slate-100">{i + 1}</span>
+                <span className="grid h-10 w-10 place-items-center rounded-md bg-brand/10 text-brand">
+                  <s.icon className="h-5 w-5" />
+                </span>
+                <h3 className="mt-3 font-semibold text-slate-900">{s.title}</h3>
+                <p className="mt-1 text-[13px] leading-relaxed text-slate-500">{s.text}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 

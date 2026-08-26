@@ -139,7 +139,7 @@ function Composer({ onCreated }: { onCreated: () => void }) {
   );
 
   const actions = [
-    { key: "MATERIAL_OFFER", label: "Material-Ausschreibung", icon: Megaphone, color: "text-brand", onClick: () => start("MATERIAL_OFFER") },
+    { key: "MATERIAL_OFFER", label: "Material-Ausschreibung", icon: Megaphone, color: "text-brand", href: "/beschaffung" },
     { key: "PROJECT", label: "Projekt-News", icon: Newspaper, color: "text-accent", onClick: () => start("PROJECT") },
     { key: "POOL", label: "Smart Pool", icon: Package, color: "text-emerald", href: "/pools" },
   ];
@@ -509,6 +509,25 @@ export default function NetworkFeed() {
 
   return (
     <div className="space-y-3">
+      {/* Prominenter Beschaffungs-CTA */}
+      <Link
+        href="/beschaffung"
+        className="flex items-center gap-3 rounded-lg border border-brand/30 bg-gradient-to-r from-brand/10 to-emerald/10 p-4 transition-colors hover:border-brand/50"
+      >
+        <span className="grid h-10 w-10 shrink-0 place-items-center rounded-md bg-brand text-white">
+          <Megaphone className="h-5 w-5" />
+        </span>
+        <div className="min-w-0 flex-1">
+          <div className="text-sm font-bold text-slate-900">Materialbedarf melden</div>
+          <div className="truncate text-[13px] text-slate-500">
+            Beton, Stahl, Kies &amp; mehr — optional gebündelt für bis zu 20 % Rabatt.
+          </div>
+        </div>
+        <span className="hidden shrink-0 items-center gap-1 rounded-md bg-brand px-3 py-2 text-sm font-semibold text-white sm:inline-flex">
+          Jetzt beschaffen <Rocket className="h-4 w-4" />
+        </span>
+      </Link>
+
       <Composer onCreated={load} />
 
       <div className="space-y-2">
