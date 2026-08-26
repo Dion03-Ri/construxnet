@@ -308,7 +308,7 @@ export default function BundleEngine() {
           <div className="flex items-center gap-2 text-[11px] font-medium uppercase tracking-wider text-slate-400">
             <Coins className="h-3.5 w-3.5" /> Monetarisierung (2.25 % Plattform-Marge)
           </div>
-          <Link href="/kbob" className="inline-flex items-center gap-1 text-xs font-medium text-accent hover:text-accent-600">
+          <Link href={`/kbob?material=${material.material}`} className="inline-flex items-center gap-1 text-xs font-medium text-accent hover:text-accent-600">
             <LineChart className="h-3.5 w-3.5" /> KBOB-Vergleich
           </Link>
         </div>
