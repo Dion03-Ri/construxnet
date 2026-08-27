@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { useAuth } from "@clerk/nextjs";
@@ -23,11 +23,23 @@ import {
 } from "lucide-react";
 import { useSupabaseBrowser } from "@/lib/supabase-browser";
 import RecommendedPartners from "@/components/feed/RecommendedPartners";
+import FeedBundleHero from "@/components/feed/FeedBundleHero";
 import { SAMPLE_POSTS, type MockPost } from "@/data/feedMock";
 import { CARD, badge } from "@/lib/ui";
 import { cn } from "@/lib/utils";
 
 const REGIONS = ["Zürich", "Bern", "Nordwestschweiz", "Innerschweiz"] as const;
+
+// Alle Kantone, nach Grossregion gruppiert — für die Region-Auswahl im Composer.
+const CANTON_GROUPS: { group: string; cantons: string[] }[] = [
+  { group: "Zürich", cantons: ["Zürich"] },
+  { group: "Espace Mittelland", cantons: ["Bern", "Freiburg", "Solothurn", "Neuenburg", "Jura"] },
+  { group: "Nordwestschweiz", cantons: ["Basel-Stadt", "Basel-Landschaft", "Aargau"] },
+  { group: "Ostschweiz", cantons: ["St. Gallen", "Thurgau", "Appenzell A.Rh.", "Appenzell I.Rh.", "Glarus", "Schaffhausen", "Graubünden"] },
+  { group: "Zentralschweiz", cantons: ["Luzern", "Uri", "Schwyz", "Obwalden", "Nidwalden", "Zug"] },
+  { group: "Genferseeregion", cantons: ["Waadt", "Wallis", "Genf"] },
+  { group: "Tessin", cantons: ["Tessin"] },
+];
 
 const POST_TYPES: Record<string, { label: string }> = {
   UPDATE: { label: "Update" },
@@ -78,8 +90,25 @@ function Composer({ onCreated }: { onCreated: () => void }) {
   const [region, setRegion] = useState("");
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+  const [image, setImage] = useState<string | null>(null); // Vorschau (Data-URL)
+  const [imageFile, setImageFile] = useState<File | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const imgRef = useRef<HTMLInputElement>(null);
+
+  function onImage(e: React.ChangeEvent<HTMLInputElement>) {
+    const f = e.target.files?.[0];
+    if (!f) return;
+    setImageFile(f);
+    const reader = new FileReader();
+    reader.onload = () => setImage(typeof reader.result === "string" ? reader.result : null);
+    reader.readAsDataURL(f);
+  }
+  function clearImage() {
+    setImage(null);
+    setImageFile(null);
+    if (imgRef.current) imgRef.current.value = "";
+  }
 
   useEffect(() => {
     if (!isSignedIn || !userId) return;
@@ -106,12 +135,29 @@ function Composer({ onCreated }: { onCreated: () => void }) {
     if (!content.trim() || !company) return;
     setSubmitting(true);
     setError(null);
+
+    // Bild (optional) in den Storage laden; scheitert es (kein Bucket), posten wir ohne Bild.
+    let media_url: string | null = null;
+    if (imageFile) {
+      try {
+        const ext = imageFile.name.split(".").pop() || "jpg";
+        const path = `${company.id}/${Date.now()}.${ext}`;
+        const up = await supabase.storage.from("post-media").upload(path, imageFile, { upsert: true });
+        if (!up.error) {
+          media_url = supabase.storage.from("post-media").getPublicUrl(path).data.publicUrl;
+        }
+      } catch {
+        /* Storage nicht verfügbar — Beitrag ohne Bild */
+      }
+    }
+
     const { error } = await supabase.from("network_posts").insert({
       company_id: company.id,
       post_type: postType,
       title: title.trim() || null,
       content: content.trim(),
       region: region || null,
+      media_url,
     });
     setSubmitting(false);
     if (error) {
@@ -122,6 +168,7 @@ function Composer({ onCreated }: { onCreated: () => void }) {
     setContent("");
     setRegion("");
     setPostType("UPDATE");
+    clearImage();
     setOpen(false);
     onCreated();
   }
@@ -221,6 +268,22 @@ function Composer({ onCreated }: { onCreated: () => void }) {
             autoFocus
             className="w-full resize-none rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 outline-none focus:border-brand/50"
           />
+
+          {image && (
+            <div className="relative mt-3 overflow-hidden rounded-lg border border-slate-200">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={image} alt="Vorschau" className="max-h-72 w-full object-cover" />
+              <button
+                type="button"
+                onClick={clearImage}
+                aria-label="Bild entfernen"
+                className="absolute right-2 top-2 grid h-7 w-7 place-items-center rounded-full bg-navy-900/70 text-white transition-colors hover:bg-navy-900"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+          )}
+
           <div className="mt-3 flex flex-wrap items-center gap-2">
             <select
               value={postType}
@@ -236,11 +299,23 @@ function Composer({ onCreated }: { onCreated: () => void }) {
               onChange={(e) => setRegion(e.target.value)}
               className="rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-xs text-slate-700 outline-none focus:border-brand/50"
             >
-              <option value="">Region (optional)</option>
-              {REGIONS.map((r) => (
-                <option key={r} value={r}>{r}</option>
+              <option value="">Region / Kanton (optional)</option>
+              {CANTON_GROUPS.map((g) => (
+                <optgroup key={g.group} label={g.group}>
+                  {g.cantons.map((c) => (
+                    <option key={c} value={c}>{c}</option>
+                  ))}
+                </optgroup>
               ))}
             </select>
+            <button
+              type="button"
+              onClick={() => imgRef.current?.click()}
+              className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-medium text-slate-600 transition-colors hover:border-brand/40 hover:text-brand"
+            >
+              <ImageIcon className="h-4 w-4" /> Bild
+            </button>
+            <input ref={imgRef} type="file" accept="image/*" className="hidden" onChange={onImage} />
             <button
               type="button"
               onClick={submit}
@@ -370,11 +445,16 @@ function PostCard({ post, index }: { post: Post; index: number }) {
         )}
       </p>
 
-      {post.gradient && (
+      {post.media_url ? (
+        <div className="mt-3 overflow-hidden rounded-lg border border-slate-200">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={post.media_url} alt={post.title ?? name} className="max-h-96 w-full object-cover" />
+        </div>
+      ) : post.gradient ? (
         <div className={cn("mt-3 flex h-44 items-center justify-center rounded-lg bg-gradient-to-br", post.gradient)}>
           <Package className="h-10 w-10 text-white/70" />
         </div>
-      )}
+      ) : null}
 
       {post.region && (
         <div className={cn("mt-3", badge("slate"))}>
@@ -516,6 +596,9 @@ export default function NetworkFeed() {
 
   return (
     <div className="space-y-3">
+      {/* Kern des Modells zuerst & hervorgehoben: bündeln & sparen */}
+      <FeedBundleHero />
+
       <Composer onCreated={load} />
 
       {/* Empfohlene Partner für die Beschaffung */}
