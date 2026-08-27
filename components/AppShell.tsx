@@ -5,7 +5,6 @@ import { usePathname } from "next/navigation";
 import { SignedIn, SignedOut } from "@clerk/nextjs";
 import {
   HardHat,
-  Home,
   Users,
   Package,
   LineChart,
@@ -21,8 +20,7 @@ type NavItem = { href: string; label: string; icon: LucideIcon };
 
 const NAV: NavItem[] = [
   { href: "/network", label: "Netzwerk", icon: Users },
-  { href: "/feed", label: "Feed", icon: Home },
-  { href: "/pools", label: "Smart Pools", icon: Package },
+  { href: "/pools", label: "Bündeln", icon: Package },
   { href: "/messages", label: "Nachrichten", icon: MessageSquare },
   { href: "/kbob", label: "KBOB", icon: LineChart },
 ];
@@ -32,7 +30,7 @@ function useActive() {
   return (href: string) => pathname === href || pathname.startsWith(href + "/");
 }
 
-function Logo({ href = "/feed", dark = false }: { href?: string; dark?: boolean }) {
+function Logo({ href = "/network", dark = false }: { href?: string; dark?: boolean }) {
   return (
     <Link href={href} className="flex items-center gap-2 font-semibold tracking-tight">
       <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-brand to-brand-600 text-white shadow-sm shadow-brand/30">
@@ -92,7 +90,7 @@ function TopBar() {
 function MobileNav() {
   const isActive = useActive();
   return (
-    <nav className="fixed inset-x-0 bottom-0 z-50 grid grid-cols-5 border-t border-slate-200 glass md:hidden">
+    <nav className="fixed inset-x-0 bottom-0 z-50 grid grid-cols-4 border-t border-slate-200 glass md:hidden">
       {NAV.map((item) => {
         const active = isActive(item.href);
         return (

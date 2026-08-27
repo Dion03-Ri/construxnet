@@ -69,7 +69,7 @@ export async function createCompany(
     .select("id")
     .eq("clerk_user_id", userId)
     .maybeSingle();
-  if (existing) redirect("/feed");
+  if (existing) redirect("/network");
 
   const base = {
     clerk_user_id: userId,
@@ -106,5 +106,5 @@ export async function createCompany(
     return { error: `${error.message} · (Host: ${supaHost})` };
   }
 
-  redirect("/feed");
+  redirect("/network");
 }
