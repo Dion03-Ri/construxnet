@@ -3,36 +3,11 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
-import {
-  Bell,
-  Package,
-  TrendingUp,
-  Tag,
-  UserPlus,
-  Gavel,
-  type LucideIcon,
-} from "lucide-react";
+import { Bell, ArrowRight } from "lucide-react";
+import { NOTICES, type NoticeCat } from "@/data/notifications";
 import { cn } from "@/lib/utils";
 
-type Tab = "all" | "pool" | "offer";
-
-type Notice = {
-  id: string;
-  cat: "pool" | "offer" | "network";
-  icon: LucideIcon;
-  tone: string;
-  text: string;
-  time: string;
-  href: string;
-};
-
-const NOTICES: Notice[] = [
-  { id: "n1", cat: "pool", icon: Package, tone: "text-brand bg-brand/10", text: "KIBAG Baustoffe hat den Pool „Beton C25/30“ bestätigt.", time: "vor 12 Min.", href: "/pools" },
-  { id: "n2", cat: "pool", icon: TrendingUp, tone: "text-accent bg-accent/10", text: "Neuer Rabatt-Tier 2 erreicht (−12 %) im Pool Beton C25/30.", time: "vor 1 Std.", href: "/pools" },
-  { id: "n3", cat: "offer", icon: Tag, tone: "text-accent bg-accent/10", text: "Vigier Beton Mittelland: neues Angebot 145.20 CHF/m³.", time: "vor 3 Std.", href: "/messages" },
-  { id: "n4", cat: "network", icon: UserPlus, tone: "text-slate-600 bg-slate-100", text: "Gebr. Meier Hochbau möchte sich mit dir vernetzen.", time: "vor 5 Std.", href: "/network" },
-  { id: "n5", cat: "pool", icon: Gavel, tone: "text-brand bg-brand/10", text: "Sealed-Bid-Phase für „Kies 0/45 Nordwestschweiz“ startet in 2 Tagen.", time: "gestern", href: "/pools" },
-];
+type Tab = "all" | NoticeCat;
 
 const TABS: { key: Tab; label: string }[] = [
   { key: "all", label: "Alle" },
@@ -132,7 +107,9 @@ export default function NotificationBell() {
                             <n.icon className="h-4 w-4" />
                           </span>
                           <div className="min-w-0">
-                            <p className="text-[13px] leading-snug text-slate-700">{n.text}</p>
+                            <p className="text-[13px] leading-snug text-slate-700">
+                              <span className="font-semibold text-slate-900">{n.actor}</span> {n.text}
+                            </p>
                             <p className="mt-0.5 text-[11px] text-slate-400">{n.time}</p>
                           </div>
                           {!isRead && <span className="ml-auto mt-1 h-2 w-2 shrink-0 rounded-full bg-brand" />}
@@ -142,6 +119,14 @@ export default function NotificationBell() {
                   })
                 )}
               </ul>
+
+              <Link
+                href="/notifications"
+                onClick={() => setOpen(false)}
+                className="flex items-center justify-center gap-1 border-t border-slate-100 py-2.5 text-[13px] font-semibold text-brand transition-colors hover:bg-slate-50"
+              >
+                Alle anzeigen <ArrowRight className="h-3.5 w-3.5" />
+              </Link>
             </motion.div>
           </>
         )}
