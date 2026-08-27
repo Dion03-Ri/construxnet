@@ -22,6 +22,7 @@ import {
   MoreHorizontal,
 } from "lucide-react";
 import { useSupabaseBrowser } from "@/lib/supabase-browser";
+import RecommendedPartners from "@/components/feed/RecommendedPartners";
 import { SAMPLE_POSTS, type MockPost } from "@/data/feedMock";
 import { CARD, badge } from "@/lib/ui";
 import { cn } from "@/lib/utils";
@@ -154,10 +155,16 @@ function Composer({ onCreated }: { onCreated: () => void }) {
               type="button"
               onClick={() => setOpen(true)}
               disabled={!company}
-              className="h-11 flex-1 rounded-md border border-slate-200 bg-slate-50 px-4 text-left text-sm text-slate-500 transition-colors hover:bg-slate-100 disabled:opacity-60"
+              className="h-11 flex-1 rounded-full border border-slate-200 bg-slate-50 px-4 text-left text-sm text-slate-500 transition-colors hover:bg-slate-100 disabled:opacity-60"
             >
-              {company ? "Bedarf oder Projekt teilen …" : "Firmenprofil nötig, um zu posten"}
+              {company ? "Update, Projekt oder Frage teilen …" : "Firmenprofil nötig, um zu posten"}
             </button>
+            <Link
+              href="/beschaffung"
+              className="hidden shrink-0 items-center gap-1.5 rounded-md bg-brand px-3.5 py-2 text-[13px] font-semibold text-navy-900 transition-colors hover:bg-brand-500 sm:inline-flex"
+            >
+              <Megaphone className="h-4 w-4" /> Materialbedarf melden
+            </Link>
           </div>
           <div className="mt-3 flex items-center justify-between gap-1 border-t border-slate-100 pt-2">
             {actions.map((a) =>
@@ -165,7 +172,7 @@ function Composer({ onCreated }: { onCreated: () => void }) {
                 <Link
                   key={a.key}
                   href={a.href}
-                  className="inline-flex flex-1 items-center justify-center gap-2 rounded-lg px-2 py-2 text-[13px] font-medium text-slate-600 transition-colors hover:bg-slate-100"
+                  className="inline-flex flex-1 items-center justify-center gap-2 rounded-md px-2 py-2 text-[13px] font-medium text-slate-600 transition-colors hover:bg-slate-100"
                 >
                   <a.icon className={cn("h-4 w-4", a.color)} />
                   <span className="hidden sm:inline">{a.label}</span>
@@ -176,7 +183,7 @@ function Composer({ onCreated }: { onCreated: () => void }) {
                   type="button"
                   onClick={a.onClick}
                   disabled={!company}
-                  className="inline-flex flex-1 items-center justify-center gap-2 rounded-lg px-2 py-2 text-[13px] font-medium text-slate-600 transition-colors hover:bg-slate-100 disabled:opacity-50"
+                  className="inline-flex flex-1 items-center justify-center gap-2 rounded-md px-2 py-2 text-[13px] font-medium text-slate-600 transition-colors hover:bg-slate-100 disabled:opacity-50"
                 >
                   <a.icon className={cn("h-4 w-4", a.color)} />
                   <span className="hidden sm:inline">{a.label}</span>
@@ -509,26 +516,10 @@ export default function NetworkFeed() {
 
   return (
     <div className="space-y-3">
-      {/* Prominenter Beschaffungs-CTA */}
-      <Link
-        href="/beschaffung"
-        className="flex items-center gap-3 rounded-lg border border-brand/30 bg-gradient-to-r from-brand/10 to-accent/10 p-4 transition-colors hover:border-brand/50"
-      >
-        <span className="grid h-10 w-10 shrink-0 place-items-center rounded-md bg-brand text-white">
-          <Megaphone className="h-5 w-5" />
-        </span>
-        <div className="min-w-0 flex-1">
-          <div className="text-sm font-bold text-slate-900">Materialbedarf melden</div>
-          <div className="truncate text-[13px] text-slate-500">
-            Beton, Stahl, Kies &amp; mehr — optional gebündelt für bis zu 20 % Rabatt.
-          </div>
-        </div>
-        <span className="hidden shrink-0 items-center gap-1 rounded-md bg-brand px-3 py-2 text-sm font-semibold text-white sm:inline-flex">
-          Jetzt beschaffen <Rocket className="h-4 w-4" />
-        </span>
-      </Link>
-
       <Composer onCreated={load} />
+
+      {/* Empfohlene Partner für die Beschaffung */}
+      <RecommendedPartners />
 
       <div className="space-y-2">
         <ChipRow options={typeOptions} value={type} onChange={setType} />

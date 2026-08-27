@@ -1,8 +1,6 @@
 import NetworkFeed from "@/components/NetworkFeed";
-import FeedProfileCard from "@/components/feed/FeedProfileCard";
-import MarketNews from "@/components/feed/MarketNews";
-import RecommendedPartners from "@/components/feed/RecommendedPartners";
-import KbobWidget from "@/components/KbobWidget";
+import ProfileRail from "@/components/feed/ProfileRail";
+import BundleOpportunities from "@/components/feed/BundleOpportunities";
 import { requireCompanyOrOnboard } from "@/lib/company";
 import { createServerSupabaseClient } from "@/lib/supabase";
 
@@ -10,7 +8,7 @@ export const dynamic = "force-dynamic";
 
 export const metadata = {
   title: "Feed · ConstruxNet",
-  description: "B2B-Aktivitätsstream der Schweizer Baubranche",
+  description: "Vernetzung, Beschaffung und Bündelung der Schweizer Baubranche",
 };
 
 export default async function FeedPage() {
@@ -33,29 +31,23 @@ export default async function FeedPage() {
 
   return (
     <main className="mx-auto max-w-6xl px-4 py-6 sm:px-6">
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-[250px_minmax(0,1fr)_320px]">
-        {/* Left */}
+      <div className="grid grid-cols-1 gap-5 lg:grid-cols-[260px_minmax(0,1fr)_300px]">
+        {/* Left · dunkle Profil-Rail */}
         <aside className="hidden lg:block">
           <div className="sticky top-[72px]">
-            <FeedProfileCard
-              company={company}
-              connections={connections}
-              pools={pools}
-            />
+            <ProfileRail company={company} connections={connections} pools={pools} />
           </div>
         </aside>
 
-        {/* Center */}
+        {/* Center · heller Feed */}
         <div className="min-w-0">
           <NetworkFeed />
         </div>
 
-        {/* Right */}
+        {/* Right · dunkle Bündel-Chancen */}
         <aside className="hidden lg:block">
-          <div className="sticky top-[72px] space-y-4">
-            <KbobWidget />
-            <MarketNews />
-            <RecommendedPartners />
+          <div className="sticky top-[72px]">
+            <BundleOpportunities />
           </div>
         </aside>
       </div>
