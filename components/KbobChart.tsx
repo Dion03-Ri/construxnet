@@ -231,7 +231,7 @@ function ChartTooltip({
       <div className="space-y-1.5 text-sm">
         <div className="flex items-center justify-between gap-6">
           <span className="flex items-center gap-2 text-slate-500">
-            <span className="h-2 w-2 rounded-full bg-kbob-blue" />
+            <span className="h-2 w-2 rounded-full bg-accent" />
             KBOB Index
           </span>
           <span className="font-mono font-medium text-slate-800">
@@ -240,7 +240,7 @@ function ChartTooltip({
         </div>
         <div className="flex items-center justify-between gap-6">
           <span className="flex items-center gap-2 text-slate-500">
-            <span className="h-2 w-2 rounded-full bg-pool-green" />
+            <span className="h-2 w-2 rounded-full bg-brand" />
             Smart Pool
           </span>
           <span className="font-mono font-medium text-slate-800">
@@ -249,7 +249,7 @@ function ChartTooltip({
         </div>
         <div className="mt-2 flex items-center justify-between gap-6 border-t border-slate-200 pt-2">
           <span className="text-slate-500">Ersparnis</span>
-          <span className="font-mono font-semibold text-pool-green">
+          <span className="font-mono font-semibold text-brand">
             −CHF {chf(savings)} ({savingsPct.toFixed(1)}%)
           </span>
         </div>
@@ -357,7 +357,7 @@ export default function KbobChart({ initialMaterial }: { initialMaterial?: strin
           <div
             className={cn(
               "flex items-center gap-1.5 text-2xl font-semibold",
-              kpis.change >= 0 ? "text-rose-400" : "text-pool-green",
+              kpis.change >= 0 ? "text-rose-400" : "text-brand",
             )}
           >
             {kpis.change >= 0 ? (
@@ -373,7 +373,7 @@ export default function KbobChart({ initialMaterial }: { initialMaterial?: strin
         <Kpi label={`Smart Pool Ersparnis ${regionShort}`}>
           <div className="flex items-baseline gap-1.5">
             <span className="text-lg">💡</span>
-            <span className="text-2xl font-semibold text-pool-green">
+            <span className="text-2xl font-semibold text-brand">
               ~ CHF {chf(kpis.savings)}
             </span>
             <span className="text-sm text-slate-500">/ {unit}</span>
@@ -388,15 +388,6 @@ export default function KbobChart({ initialMaterial }: { initialMaterial?: strin
             data={chartData}
             margin={{ top: 10, right: 12, bottom: 0, left: -8 }}
           >
-            <defs>
-              <filter id="kbobGlow" x="-20%" y="-20%" width="140%" height="140%">
-                <feGaussianBlur stdDeviation="2.5" result="blur" />
-                <feMerge>
-                  <feMergeNode in="blur" />
-                  <feMergeNode in="SourceGraphic" />
-                </feMerge>
-              </filter>
-            </defs>
             <CartesianGrid
               strokeDasharray="3 3"
               stroke="rgba(15,23,42,0.06)"
@@ -424,25 +415,23 @@ export default function KbobChart({ initialMaterial }: { initialMaterial?: strin
               cursor={{ stroke: "rgba(15,23,42,0.18)", strokeWidth: 1 }}
             />
             <Line
-              type="monotone"
+              type="linear"
               dataKey="kbob"
               name="KBOB Index"
-              stroke="#254D7A"
-              strokeWidth={2.5}
+              stroke="#1B3A5C"
+              strokeWidth={1.75}
               dot={false}
-              activeDot={{ r: 4, strokeWidth: 0 }}
-              filter="url(#kbobGlow)"
+              activeDot={{ r: 3.5, strokeWidth: 0 }}
               isAnimationActive={false}
             />
             <Line
-              type="monotone"
+              type="linear"
               dataKey="pool"
               name="Smart Pool"
-              stroke="#254D7A"
-              strokeWidth={2.5}
-              strokeDasharray="6 4"
+              stroke="#D99000"
+              strokeWidth={1.75}
               dot={false}
-              activeDot={{ r: 4, strokeWidth: 0 }}
+              activeDot={{ r: 3.5, strokeWidth: 0 }}
               isAnimationActive={false}
             />
           </LineChart>
@@ -453,18 +442,11 @@ export default function KbobChart({ initialMaterial }: { initialMaterial?: strin
       <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-5 text-xs text-slate-500">
           <span className="flex items-center gap-2">
-            <span className="h-0.5 w-6 rounded bg-kbob-blue" />
+            <span className="h-0.5 w-6 rounded bg-accent" />
             Offizieller KBOB Index
           </span>
           <span className="flex items-center gap-2">
-            <span
-              className="h-0.5 w-6 rounded bg-pool-green"
-              style={{
-                backgroundImage:
-                  "repeating-linear-gradient(90deg,#254D7A 0 6px,transparent 6px 10px)",
-                backgroundColor: "transparent",
-              }}
-            />
+            <span className="h-0.5 w-6 rounded bg-brand" />
             ConstruxNet Pool-Ø
           </span>
         </div>
