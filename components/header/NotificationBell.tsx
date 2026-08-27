@@ -37,12 +37,12 @@ export default function NotificationBell() {
         type="button"
         aria-label="Benachrichtigungen"
         onClick={() => setOpen((o) => !o)}
-        className="relative rounded-full p-2 text-white/70 transition-colors hover:bg-white/10 hover:text-white"
+        className="relative grid h-9 w-9 place-items-center rounded-full text-white/70 transition-colors hover:bg-white/10 hover:text-white"
       >
         <Bell className="h-5 w-5" />
         {unread > 0 && (
-          <span className="absolute -right-0.5 -top-0.5 grid h-4 min-w-4 place-items-center rounded-md bg-brand px-1 text-[10px] font-bold text-white ring-2 ring-navy-900">
-            {unread}
+          <span className="absolute right-1 top-1 grid h-[15px] min-w-[15px] place-items-center rounded-full bg-brand px-[3px] text-[9px] font-bold leading-none text-navy-900 ring-2 ring-navy-900">
+            {unread > 9 ? "9+" : unread}
           </span>
         )}
       </button>

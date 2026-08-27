@@ -79,8 +79,9 @@ function TopBar() {
           })}
         </nav>
 
-        <div className="ml-auto flex items-center gap-1.5 md:ml-2">
+        <div className="ml-auto flex items-center gap-2 md:ml-3">
           <NotificationBell />
+          <span className="hidden h-6 w-px bg-white/10 sm:block" />
           <ProfileMenu />
         </div>
       </div>

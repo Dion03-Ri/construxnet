@@ -6,7 +6,6 @@ import {
   BadgeCheck,
   MapPin,
   Users,
-  Layers,
   Inbox,
   Hash,
   ChevronRight,
@@ -39,6 +38,7 @@ export default function ProfileRail({
   pools: number;
 }) {
   const [open, setOpen] = useState(true);
+  const isSupplier = company.role === "SUPPLIER";
 
   return (
     <div className="space-y-4">
@@ -57,7 +57,7 @@ export default function ProfileRail({
         <div className="px-4 pb-4">
           <Link
             href={`/company/${company.id}`}
-            className="-mt-8 flex h-16 w-16 items-center justify-center overflow-hidden rounded-full border-[3px] border-navy-900 bg-navy-800 text-lg font-bold text-white"
+            className="relative z-10 -mt-8 flex h-16 w-16 items-center justify-center overflow-hidden rounded-full border-[3px] border-navy-900 bg-navy-800 text-lg font-bold text-white"
           >
             {company.logo_url ? (
               // eslint-disable-next-line @next/next/no-img-element
@@ -82,19 +82,30 @@ export default function ProfileRail({
             )}
           </p>
 
-          <button
-            type="button"
-            onClick={() => setOpen((v) => !v)}
-            className={cn(
-              "mt-3 inline-flex w-full items-center justify-center gap-1.5 rounded-md px-3 py-1.5 text-[12px] font-semibold transition-colors",
-              open
-                ? "bg-brand text-navy-900 hover:bg-brand-500"
-                : "border border-white/15 text-white/70 hover:bg-white/5",
-            )}
-          >
-            <span className={cn("h-1.5 w-1.5 rounded-full", open ? "bg-navy-900" : "bg-brand")} />
-            Offen für Aufträge
-          </button>
+          {/* „Offen für Aufträge" ist ein Lieferanten-Status — nur für Baustoffwerke. */}
+          {isSupplier && (
+            <button
+              type="button"
+              onClick={() => setOpen((v) => !v)}
+              className={cn(
+                "mt-3 inline-flex w-full items-center justify-center gap-1.5 rounded-md px-3 py-1.5 text-[12px] font-semibold transition-colors",
+                open
+                  ? "bg-brand text-navy-900 hover:bg-brand-500"
+                  : "border border-white/15 text-white/70 hover:bg-white/5",
+              )}
+            >
+              <span className={cn("h-1.5 w-1.5 rounded-full", open ? "bg-navy-900" : "bg-brand")} />
+              {open ? "Offen für Aufträge" : "Als offen markieren"}
+            </button>
+          )}
+          {!isSupplier && (
+            <Link
+              href="/beschaffung"
+              className="mt-3 inline-flex w-full items-center justify-center gap-1.5 rounded-md bg-brand px-3 py-1.5 text-[12px] font-semibold text-navy-900 transition-colors hover:bg-brand-500"
+            >
+              Materialbedarf melden
+            </Link>
+          )}
 
           <div className="mt-4 grid grid-cols-2 divide-x divide-white/10 border-t border-white/10 pt-3 text-center">
             <Link href="/network" className="group">
@@ -117,7 +128,7 @@ export default function ProfileRail({
         <div className="p-1.5">
           {[
             { href: "/messages", icon: MessageSquare, label: "Nachrichten", badge: "3" },
-            { href: "/network", icon: CalendarDays, label: "Termine & Ausschreibungen", badge: null },
+            { href: "/termine", icon: CalendarDays, label: "Termine & Ausschreibungen", badge: null },
             { href: "/network", icon: Boxes, label: "Beschaffungs-Gruppen", badge: "5" },
           ].map((l) => (
             <Link
@@ -147,9 +158,8 @@ export default function ProfileRail({
         <div className="p-1.5">
           {[
             { href: "/network", icon: Users, label: "Verbindungen" },
-            { href: "/network", icon: Inbox, label: "Empfangene Anfragen" },
-            { href: "/pools", icon: Layers, label: "Gespeicherte Pools" },
-            { href: "/pools", icon: Bookmark, label: "Merkliste" },
+            { href: "/network/requests", icon: Inbox, label: "Empfangene Anfragen" },
+            { href: "/pools/saved", icon: Bookmark, label: "Gespeicherte Pools" },
           ].map((l) => (
             <Link
               key={l.label}

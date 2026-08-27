@@ -2,33 +2,13 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { Clock, MapPin, Users, Layers, Gavel, ArrowRight, Flame } from "lucide-react";
+import { Clock, MapPin, Users, Layers, Gavel, ArrowRight, Flame, Bookmark } from "lucide-react";
+import { OPEN_POOLS, type Pool } from "@/data/pools";
+import { useSavedPools } from "@/lib/useSavedPools";
 import { CARD, badge } from "@/lib/ui";
 import { cn } from "@/lib/utils";
 
-type Pool = {
-  id: string;
-  material: string;
-  matKey: string; // Katalog-Key → im Beschaffungs-Flow vorausgewählt
-  region: string;
-  unit: string;
-  vol: number;
-  target: number;
-  tier: number;
-  disc: number;
-  participants: number;
-  phase: "OPEN" | "SEALED";
-  endsInH: number; // Stunden bis Deadline
-};
-
-const POOLS: Pool[] = [
-  { id: "p1", material: "Beton C25/30", matKey: "beton-25", region: "Zürich", unit: "m³", vol: 230, target: 300, tier: 2, disc: 12, participants: 8, phase: "OPEN", endsInH: 53 },
-  { id: "p2", material: "Bewehrungsstahl B500B", matKey: "stahl-b500b", region: "Bern", unit: "t", vol: 48, target: 60, tier: 2, disc: 12, participants: 5, phase: "OPEN", endsInH: 212 },
-  { id: "p3", material: "Koffer-/Wandkies 0/45", matKey: "kies-045", region: "Nordwestschweiz", unit: "t", vol: 320, target: 301, tier: 3, disc: 20, participants: 11, phase: "SEALED", endsInH: 19 },
-  { id: "p4", material: "Beton C30/37", matKey: "beton-30", region: "Innerschweiz", unit: "m³", vol: 90, target: 250, tier: 1, disc: 5, participants: 3, phase: "OPEN", endsInH: 288 },
-  { id: "p5", material: "Transportbeton C25/30", matKey: "beton-25", region: "Westschweiz", unit: "m³", vol: 140, target: 200, tier: 2, disc: 12, participants: 6, phase: "OPEN", endsInH: 7 },
-  { id: "p6", material: "Dämmung EPS 034", matKey: "daemmung-eps", region: "Ostschweiz", unit: "m²", vol: 1800, target: 3000, tier: 2, disc: 12, participants: 4, phase: "OPEN", endsInH: 121 },
-];
+const POOLS = OPEN_POOLS;
 
 const REGIONS = ["Alle", "Zürich", "Bern", "Nordwestschweiz", "Innerschweiz", "Westschweiz", "Ostschweiz"];
 
@@ -49,7 +29,7 @@ function useCountdown(endsInH: number) {
   return { text, urgent: diff < 24 * 3600_000, mounted: true };
 }
 
-function PoolCard({ p }: { p: Pool }) {
+function PoolCard({ p, saved, onToggleSave }: { p: Pool; saved: boolean; onToggleSave: () => void }) {
   const pct = Math.min(100, Math.round((p.vol / p.target) * 100));
   const cd = useCountdown(p.endsInH);
   return (
@@ -61,9 +41,23 @@ function PoolCard({ p }: { p: Pool }) {
             <MapPin className="h-3.5 w-3.5" /> {p.region}
           </p>
         </div>
-        <span className={badge(p.phase === "SEALED" ? "navy" : "gold", true)}>
-          {p.phase === "SEALED" ? <><Gavel className="h-3 w-3" /> Sealed-Bid</> : <><Layers className="h-3 w-3" /> Sammelphase</>}
-        </span>
+        <div className="flex shrink-0 items-center gap-1.5">
+          <span className={badge(p.phase === "SEALED" ? "navy" : "gold", true)}>
+            {p.phase === "SEALED" ? <><Gavel className="h-3 w-3" /> Sealed-Bid</> : <><Layers className="h-3 w-3" /> Sammelphase</>}
+          </span>
+          <button
+            type="button"
+            onClick={onToggleSave}
+            aria-label={saved ? "Aus Merkliste entfernen" : "Pool speichern"}
+            title={saved ? "Gespeichert" : "Pool speichern"}
+            className={cn(
+              "grid h-7 w-7 place-items-center rounded-md border transition-colors",
+              saved ? "border-brand bg-brand/10 text-brand" : "border-slate-200 text-slate-400 hover:border-slate-300 hover:text-slate-600",
+            )}
+          >
+            <Bookmark className={cn("h-3.5 w-3.5", saved && "fill-current")} />
+          </button>
+        </div>
       </div>
 
       {/* Fortschritt */}
@@ -101,6 +95,7 @@ function PoolCard({ p }: { p: Pool }) {
 export default function OpenPools() {
   const [region, setRegion] = useState("Alle");
   const [phase, setPhase] = useState<"all" | "OPEN" | "SEALED">("all");
+  const { has, toggle } = useSavedPools();
 
   const list = useMemo(
     () => POOLS.filter((p) => (region === "Alle" || p.region === region) && (phase === "all" || p.phase === phase)),
@@ -140,7 +135,7 @@ export default function OpenPools() {
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
-          {list.map((p) => <PoolCard key={p.id} p={p} />)}
+          {list.map((p) => <PoolCard key={p.id} p={p} saved={has(p.id)} onToggleSave={() => toggle(p.id)} />)}
         </div>
       )}
     </div>
