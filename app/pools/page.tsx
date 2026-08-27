@@ -2,6 +2,8 @@ import { Layers } from "lucide-react";
 import OpenPools from "@/components/pools/OpenPools";
 import BundleEnginePanel from "@/components/pools/BundleEnginePanel";
 
+export const dynamic = "force-dynamic";
+
 export const metadata = {
   title: "Smart Pools · ConstruxNet",
   description: "Offene, gebündelte Bedarfe der Schweizer Baubranche — beitreten und sparen",

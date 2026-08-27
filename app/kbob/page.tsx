@@ -4,6 +4,8 @@ import KbobChart from "@/components/KbobChart";
 import KbobKpis from "@/components/kbob/KbobKpis";
 import MarketSignals from "@/components/kbob/MarketSignals";
 
+export const dynamic = "force-dynamic";
+
 export const metadata = {
   title: "KBOB Index · ConstruxNet",
   description: "KBOB-Preisindex vs. Smart-Pool-Durchschnittspreis",
