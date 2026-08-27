@@ -20,6 +20,7 @@ export type MockPost = {
   company_id: string;
   companies: MockCompany;
   gradient?: string;
+  media_url?: string | null;
   demo?: boolean;
 };
 
@@ -38,7 +39,7 @@ export const SAMPLE_POSTS: MockPost[] = [
     created_at: new Date(Date.now() - 2 * H).toISOString(),
     company_id: "seed-kibag",
     companies: { company_name: "KIBAG Baustoffe", city: "Zürich", verified: true, logo_url: null },
-    gradient: "from-sky-500/25 via-sky-400/10 to-emerald-400/20",
+    gradient: "from-navy-800 via-navy-700 to-brand/40",
   },
   {
     id: "demo-2",
@@ -65,7 +66,7 @@ export const SAMPLE_POSTS: MockPost[] = [
     created_at: new Date(Date.now() - 20 * H).toISOString(),
     company_id: "seed-togg",
     companies: { company_name: "Toggenburger Kies AG", city: "Wil", verified: false, logo_url: null },
-    gradient: "from-emerald-500/25 via-emerald-400/10 to-amber-400/15",
+    gradient: "from-brand/30 via-brand/10 to-navy-800",
   },
   {
     id: "demo-4",
