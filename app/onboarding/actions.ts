@@ -71,7 +71,7 @@ export async function createCompany(
     .maybeSingle();
   if (existing) redirect("/feed");
 
-  const { error } = await admin.from("companies").insert({
+  const base = {
     clerk_user_id: userId,
     company_name,
     uid_number,
@@ -79,7 +79,25 @@ export async function createCompany(
     canton,
     city,
     bio: bio || null,
-  });
+  };
+
+  // Lieferanten-Profil (nur für Baustoffwerke): Material, Regionen, Radius, Kapazität.
+  const supplierExtra =
+    role === "SUPPLIER"
+      ? {
+          supply_materials: formData.getAll("supply_materials").map(String).filter(Boolean),
+          supply_regions: formData.getAll("supply_regions").map(String).filter(Boolean),
+          delivery_radius_km: Number(formData.get("delivery_radius_km")) || null,
+          capacity_note: String(formData.get("capacity_note") ?? "").trim() || null,
+        }
+      : {};
+
+  // Erst mit Liefer-Profil versuchen; falls die Spalten (Migration 05) noch
+  // nicht existieren, ohne die Zusatzfelder einfügen — Onboarding bleibt robust.
+  let error = (await admin.from("companies").insert({ ...base, ...supplierExtra })).error;
+  if (error && error.code !== "23505" && Object.keys(supplierExtra).length > 0) {
+    error = (await admin.from("companies").insert(base)).error;
+  }
 
   if (error) {
     if (error.code === "23505") {
