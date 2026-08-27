@@ -31,15 +31,15 @@ export const clerkLocalization = {
  */
 export const clerkAppearance: Appearance = {
   variables: {
-    colorPrimary: "#F97316", // Brand-Orange
+    colorPrimary: "#D99000", // Brand-Gold (SourceOn CI)
     colorBackground: "#FFFFFF",
     colorInputBackground: "#FFFFFF",
     colorInputText: "#0F172A",
     colorText: "#0F172A",
     colorTextSecondary: "#64748B",
-    colorTextOnPrimaryBackground: "#FFFFFF",
+    colorTextOnPrimaryBackground: "#1B3A5C",
     colorDanger: "#E11D48",
-    colorSuccess: "#10B981",
+    colorSuccess: "#254D7A", // kein Grün — Navy als positiver Ton
     borderRadius: "0.9rem",
   },
   elements: {
