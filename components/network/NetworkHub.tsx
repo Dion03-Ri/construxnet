@@ -10,12 +10,10 @@ import {
   UserPlus,
   Check,
   X,
-  Trophy,
-  Sparkles,
   ChevronDown,
   Map as MapIcon,
   ArrowRight,
-  TrendingUp,
+  Layers,
 } from "lucide-react";
 import { useSupabaseBrowser } from "@/lib/supabase-browser";
 import { CARD } from "@/lib/ui";
@@ -59,9 +57,14 @@ const TOP_DEALS = [
   { id: "d-eberhard", name: "Eberhard Bau AG", role: "BUYER", deals: 19, volume: "CHF 1.2 Mio.", verified: false },
   { id: "d-jura", name: "Jura Cement", role: "SUPPLIER", deals: 15, volume: "CHF 0.9 Mio.", verified: true },
 ];
+const MAX_DEALS = Math.max(...TOP_DEALS.map((d) => d.deals));
 
 function initials(name: string) {
   return name.split(" ").slice(0, 2).map((w) => w[0]).join("").toUpperCase();
+}
+
+function Eyebrow({ children }: { children: React.ReactNode }) {
+  return <div className="text-[11px] font-semibold uppercase tracking-[0.12em] text-accent/60">{children}</div>;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -197,7 +200,7 @@ export default function NetworkHub() {
   });
 
   const bannerFirms = suggestions.slice(0, 5);
-  const region = companies.find((c) => c.id === myCompanyId)?.canton ?? "deiner Region";
+  const region = companies.find((c) => c.id === myCompanyId)?.canton ?? null;
 
   const overview = [
     { label: "Einladungen gesendet", value: outgoing },
@@ -214,27 +217,23 @@ export default function NetworkHub() {
       {/* ---------------- LEFT RAIL ---------------- */}
       <aside className="space-y-4">
         {/* Netzwerk im Überblick */}
-        <div className={cn(CARD, "p-5")}>
-          <h2 className="text-lg font-bold text-slate-900">Netzwerk im Überblick</h2>
-          <div className="mt-4 space-y-3">
-            {overview.map((s) => (
-              <div key={s.label} className="flex items-baseline gap-3">
-                <span className="w-10 shrink-0 text-2xl font-bold text-slate-900">{s.value}</span>
+        <div className={cn(CARD, "overflow-hidden")}>
+          <div className="border-b border-slate-100 px-5 pb-3 pt-4">
+            <Eyebrow>Dein Netzwerk</Eyebrow>
+            <h2 className="mt-0.5 text-[15px] font-bold text-slate-900">Überblick</h2>
+          </div>
+          <div className="divide-y divide-slate-50 px-5">
+            {[...overview, ...(moreStats ? overviewMore : [])].map((s) => (
+              <div key={s.label} className="flex items-center justify-between py-2.5">
                 <span className="text-[13px] text-slate-500">{s.label}</span>
+                <span className="text-lg font-bold tabular-nums text-slate-900">{s.value}</span>
               </div>
             ))}
-            {moreStats &&
-              overviewMore.map((s) => (
-                <div key={s.label} className="flex items-baseline gap-3">
-                  <span className="w-10 shrink-0 text-2xl font-bold text-slate-900">{s.value}</span>
-                  <span className="text-[13px] text-slate-500">{s.label}</span>
-                </div>
-              ))}
           </div>
           <button
             type="button"
             onClick={() => setMoreStats((v) => !v)}
-            className="mt-3 inline-flex items-center gap-1 border-t border-slate-100 pt-3 text-[13px] font-semibold text-slate-500 transition-colors hover:text-brand"
+            className="flex w-full items-center justify-center gap-1 border-t border-slate-100 py-2.5 text-[12px] font-semibold text-accent transition-colors hover:bg-accent/5"
           >
             {moreStats ? "Weniger anzeigen" : "Mehr anzeigen"}
             <ChevronDown className={cn("h-4 w-4 transition-transform", moreStats && "rotate-180")} />
@@ -243,118 +242,125 @@ export default function NetworkHub() {
 
         {/* Meiste Deals (Leaderboard) */}
         <div className={cn(CARD, "overflow-hidden")}>
-          <div className="flex items-center gap-2 border-b border-slate-100 px-4 py-3">
-            <Trophy className="h-4 w-4 text-brand" />
-            <h3 className="text-[14px] font-bold text-slate-900">Meiste Deals abgeschlossen</h3>
+          <div className="border-b border-slate-100 px-5 pb-3 pt-4">
+            <Eyebrow>Rangliste · 12 Monate</Eyebrow>
+            <h3 className="mt-0.5 text-[15px] font-bold text-slate-900">Meiste Deals abgeschlossen</h3>
           </div>
-          <ul>
+          <ul className="px-3 py-1.5">
             {TOP_DEALS.map((d, i) => (
-              <li key={d.id} className="flex items-center gap-3 px-4 py-2.5 transition-colors hover:bg-slate-50">
-                <span
-                  className={cn(
-                    "grid h-6 w-6 shrink-0 place-items-center rounded-full text-[12px] font-bold",
-                    i === 0 ? "bg-brand text-navy-900" : i === 1 ? "bg-slate-300 text-slate-700" : i === 2 ? "bg-brand/30 text-brand" : "bg-slate-100 text-slate-500",
-                  )}
-                >
-                  {i + 1}
-                </span>
-                <span className={cn("flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-[11px] font-bold", d.role === "SUPPLIER" ? "bg-navy-800 text-white" : "bg-brand/15 text-brand")}>
-                  {initials(d.name)}
-                </span>
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-center gap-1 truncate text-[13px] font-semibold text-slate-900">
-                    <span className="truncate">{d.name}</span>
-                    {d.verified && <BadgeCheck className="h-3.5 w-3.5 shrink-0 text-accent" />}
+              <li key={d.id} className="rounded-lg px-2 py-2 transition-colors hover:bg-slate-50">
+                <div className="flex items-center gap-2.5">
+                  <span
+                    className={cn(
+                      "grid h-6 w-6 shrink-0 place-items-center rounded-md text-[12px] font-bold tabular-nums",
+                      i === 0 ? "bg-accent text-white" : "bg-accent/10 text-accent",
+                    )}
+                  >
+                    {i + 1}
+                  </span>
+                  <span className={cn("grid h-8 w-8 shrink-0 place-items-center rounded-full text-[10px] font-bold", d.role === "SUPPLIER" ? "bg-navy-800 text-white" : "bg-accent/12 text-accent")}>
+                    {initials(d.name)}
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-1 truncate text-[13px] font-semibold text-slate-900">
+                      <span className="truncate">{d.name}</span>
+                      {d.verified && <BadgeCheck className="h-3.5 w-3.5 shrink-0 text-accent" />}
+                    </div>
+                    <div className="text-[11px] text-slate-400">{d.volume}</div>
                   </div>
-                  <div className="text-[11px] text-slate-400">{d.volume}</div>
+                  <div className="shrink-0 text-right">
+                    <span className="text-[14px] font-bold tabular-nums text-slate-900">{d.deals}</span>
+                    <span className="ml-0.5 text-[10px] text-slate-400">Deals</span>
+                  </div>
                 </div>
-                <div className="shrink-0 text-right">
-                  <div className="text-[13px] font-bold text-slate-900">{d.deals}</div>
-                  <div className="text-[10px] uppercase tracking-wider text-slate-400">Deals</div>
+                <div className="mt-1.5 ml-[34px] h-1 overflow-hidden rounded-full bg-slate-100">
+                  <div className={cn("h-full rounded-full", i === 0 ? "bg-accent" : "bg-accent/40")} style={{ width: `${(d.deals / MAX_DEALS) * 100}%` }} />
                 </div>
               </li>
             ))}
           </ul>
-          <div className="flex items-center gap-1.5 border-t border-slate-100 px-4 py-2 text-[11px] text-slate-400">
-            <TrendingUp className="h-3.5 w-3.5" /> Rangliste der letzten 12 Monate
-          </div>
         </div>
 
-        {/* Karten-Promo */}
-        <Link href="/map" className={cn(CARD, "flex items-center gap-3 p-4 transition-colors hover:border-brand/40")}>
-          <span className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-brand/10 text-brand">
+        {/* Karten-Zugang */}
+        <Link href="/map" className={cn(CARD, "group flex items-center gap-3 p-4 transition-colors hover:border-accent/40")}>
+          <span className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-accent/10 text-accent">
             <MapIcon className="h-5 w-5" />
           </span>
           <div className="min-w-0 flex-1">
             <div className="text-[13px] font-semibold text-slate-900">Lieferanten-Karte Schweiz</div>
-            <div className="text-[11px] text-slate-500">Lieferanten auf der Karte entdecken</div>
+            <div className="text-[11px] text-slate-500">Lieferanten am Standort entdecken</div>
           </div>
-          <ArrowRight className="h-4 w-4 shrink-0 text-slate-300" />
+          <ArrowRight className="h-4 w-4 shrink-0 text-slate-300 transition-transform group-hover:translate-x-0.5" />
         </Link>
 
-        <div className={cn(CARD, "bg-gradient-to-br from-brand/5 to-accent/5 p-4")}>
-          <div className="flex items-center gap-2 text-[13px] font-semibold text-slate-900">
-            <Sparkles className="h-4 w-4 text-brand" /> Smart Pools starten
+        {/* Smart Pools (Bündeln = Gold) */}
+        <div className={cn(CARD, "p-5")}>
+          <div className="flex items-center gap-2 text-[14px] font-bold text-slate-900">
+            <Layers className="h-4 w-4 text-brand" /> Smart Pools
           </div>
-          <p className="mt-1 text-[12px] leading-relaxed text-slate-500">
-            Vernetzte Firmen bündeln gemeinsam und sparen Ø 12–18 %.
+          <p className="mt-1.5 text-[12px] leading-relaxed text-slate-500">
+            Vernetzte Firmen bündeln ihren Bedarf und sparen Ø 12–18 % gegenüber KBOB.
           </p>
-          <Link href="/pools" className="mt-3 inline-flex items-center gap-1 rounded-md bg-brand px-3 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-brand-600">
-            Zu Smart Pools
+          <Link href="/pools" className="mt-3 inline-flex items-center gap-1.5 rounded-md bg-brand px-3.5 py-2 text-[13px] font-semibold text-navy-900 transition-colors hover:bg-brand-500">
+            Zu den Bündeln <ArrowRight className="h-3.5 w-3.5" />
           </Link>
         </div>
       </aside>
 
       {/* ---------------- MAIN ---------------- */}
       <div className="min-w-0 space-y-4">
-        {/* Einladungs-/Wachstums-Banner */}
-        <div className={cn(CARD, "flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between")}>
-          <div className="max-w-md">
-            <h2 className="text-xl font-bold leading-snug text-slate-900">
-              Erweitere dein Beschaffungs-Netzwerk in {region}
-            </h2>
-            <p className="mt-1.5 text-[13px] leading-relaxed text-slate-500">
-              Mehr Verbindungen bedeuten mehr Bündel-Möglichkeiten. Vernetze dich mit passenden Firmen und Lieferanten.
-            </p>
-            <a href="#vorschlaege" className="mt-3 inline-flex items-center gap-1.5 rounded-md bg-brand px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-brand-600">
-              Passende Firmen finden <ArrowRight className="h-4 w-4" />
-            </a>
-          </div>
-          <div className="flex shrink-0 -space-x-3">
-            {bannerFirms.length > 0
-              ? bannerFirms.map((c) => (
-                  <Link
-                    key={c.id}
-                    href={`/company/${c.id}`}
-                    title={c.company_name}
-                    className={cn("grid h-12 w-12 place-items-center rounded-full border-2 border-white text-[13px] font-bold shadow-sm", c.role === "SUPPLIER" ? "bg-navy-800 text-white" : "bg-brand/15 text-brand")}
-                  >
-                    {c.logo_url ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img src={c.logo_url} alt={c.company_name} className="h-full w-full rounded-full object-cover" />
-                    ) : (
-                      initials(c.company_name)
-                    )}
-                  </Link>
-                ))
-              : [0, 1, 2, 3, 4].map((i) => (
-                  <span key={i} className="h-12 w-12 rounded-full border-2 border-white bg-slate-100" />
-                ))}
+        {/* Wachstums-Banner (Navy) */}
+        <div className={cn(CARD, "relative overflow-hidden")}>
+          <div className="absolute inset-y-0 left-0 w-1 bg-accent" />
+          <div className="flex flex-col gap-5 p-5 pl-6 sm:flex-row sm:items-center sm:justify-between sm:p-6 sm:pl-7">
+            <div className="max-w-md">
+              <Eyebrow>Netzwerk erweitern</Eyebrow>
+              <h2 className="mt-1 text-xl font-bold leading-snug text-slate-900">
+                Verbinde dich mit passenden Firmen{region ? ` in ${region}` : " in deiner Region"}
+              </h2>
+              <p className="mt-1.5 text-[13px] leading-relaxed text-slate-500">
+                Mehr Verbindungen bedeuten mehr Bündel-Möglichkeiten — mit Bauunternehmen und Lieferanten deiner Region.
+              </p>
+              <a href="#vorschlaege" className="mt-4 inline-flex items-center gap-1.5 rounded-md bg-accent-600 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-accent-700">
+                Passende Firmen finden <ArrowRight className="h-4 w-4" />
+              </a>
+            </div>
+            <div className="flex shrink-0 -space-x-3">
+              {bannerFirms.length > 0
+                ? bannerFirms.map((c) => (
+                    <Link
+                      key={c.id}
+                      href={`/company/${c.id}`}
+                      title={c.company_name}
+                      className={cn("grid h-12 w-12 place-items-center overflow-hidden rounded-full border-2 border-white text-[13px] font-bold shadow-sm", c.role === "SUPPLIER" ? "bg-navy-800 text-white" : "bg-accent/12 text-accent")}
+                    >
+                      {c.logo_url ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img src={c.logo_url} alt={c.company_name} className="h-full w-full object-cover" />
+                      ) : (
+                        initials(c.company_name)
+                      )}
+                    </Link>
+                  ))
+                : [0, 1, 2, 3, 4].map((i) => (
+                    <span key={i} className="h-12 w-12 rounded-full border-2 border-white bg-slate-100" />
+                  ))}
+            </div>
           </div>
         </div>
 
         {/* Erhaltene Einladungen */}
         {invitations.length > 0 && (
           <div className={cn(CARD, "overflow-hidden")}>
-            <div className="flex items-center justify-between border-b border-slate-200 px-4 py-3 sm:px-5">
-              <h3 className="text-[15px] font-semibold text-slate-900">
-                Erhaltene Einladungen <span className="text-slate-400">({invitations.length})</span>
+            <div className="flex items-center justify-between border-b border-slate-100 px-5 py-3.5">
+              <h3 className="text-[15px] font-bold text-slate-900">
+                Erhaltene Einladungen <span className="font-semibold text-accent">{invitations.length}</span>
               </h3>
-              <Link href="/network/requests" className="text-[13px] font-semibold text-brand hover:underline">Alle anzeigen</Link>
+              <Link href="/network/requests" className="text-[13px] font-semibold text-accent hover:underline">Alle anzeigen</Link>
             </div>
             <ul className="divide-y divide-slate-100">
               {invitations.map(({ company, conn }) => (
-                <li key={conn.id} className="flex items-center gap-3 px-4 py-3 sm:px-5">
+                <li key={conn.id} className="flex items-center gap-3 px-5 py-3.5">
                   <Link href={`/company/${company.id}`} className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-full bg-slate-100 text-sm font-semibold text-slate-700">
                     {company.logo_url ? (
                       // eslint-disable-next-line @next/next/no-img-element
@@ -364,7 +370,7 @@ export default function NetworkHub() {
                     )}
                   </Link>
                   <div className="min-w-0 flex-1">
-                    <Link href={`/company/${company.id}`} className="flex items-center gap-1 truncate text-sm font-semibold text-slate-900 hover:text-brand">
+                    <Link href={`/company/${company.id}`} className="flex items-center gap-1 truncate text-sm font-semibold text-slate-900 hover:text-accent">
                       {company.company_name}
                       {company.verified && <BadgeCheck className="h-4 w-4 shrink-0 text-accent" />}
                     </Link>
@@ -372,10 +378,10 @@ export default function NetworkHub() {
                       {ROLE_LABEL[company.role] ?? company.role}{company.city ? ` · ${company.city}` : ""}
                     </p>
                   </div>
-                  <button type="button" onClick={() => ignore(conn.id)} className="rounded-full border border-slate-300 px-4 py-1.5 text-sm font-semibold text-slate-500 transition-colors hover:bg-slate-50">
+                  <button type="button" onClick={() => ignore(conn.id)} className="rounded-full px-4 py-1.5 text-sm font-semibold text-slate-500 transition-colors hover:bg-slate-100">
                     Ignorieren
                   </button>
-                  <button type="button" onClick={() => accept(conn.id)} className="inline-flex items-center gap-1 rounded-full border border-brand bg-white px-4 py-1.5 text-sm font-semibold text-brand transition-colors hover:bg-brand/10">
+                  <button type="button" onClick={() => accept(conn.id)} className="inline-flex items-center gap-1 rounded-full bg-accent-600 px-4 py-1.5 text-sm font-semibold text-white transition-colors hover:bg-accent-700">
                     <Check className="h-4 w-4" /> Annehmen
                   </button>
                 </li>
@@ -386,10 +392,13 @@ export default function NetworkHub() {
 
         {/* Firmen, die du kennen könntest */}
         <div id="vorschlaege" className={cn(CARD, "overflow-hidden")}>
-          <div className="flex flex-col gap-3 border-b border-slate-100 px-4 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-5">
-            <h3 className="text-[15px] font-semibold text-slate-900">
-              {region !== "deiner Region" ? `Region ${region}: ` : ""}Firmen, die du kennen könntest
-            </h3>
+          <div className="flex flex-col gap-3 border-b border-slate-100 px-5 py-3.5 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <Eyebrow>Empfohlen für dich</Eyebrow>
+              <h3 className="mt-0.5 text-[15px] font-bold text-slate-900">
+                {region ? `Firmen in der Region ${region}` : "Firmen, die du kennen könntest"}
+              </h3>
+            </div>
             <div className="flex flex-wrap gap-1.5">
               {ROLE_FILTERS.map((r) => (
                 <button
@@ -397,8 +406,8 @@ export default function NetworkHub() {
                   type="button"
                   onClick={() => setRole(r.key)}
                   className={cn(
-                    "rounded-full px-3 py-1 text-xs font-medium transition-colors",
-                    role === r.key ? "bg-brand text-white" : "border border-slate-200 bg-white text-slate-500 hover:text-slate-900",
+                    "rounded-full px-3.5 py-1 text-xs font-semibold transition-colors",
+                    role === r.key ? "bg-accent-600 text-white" : "border border-slate-200 bg-white text-slate-500 hover:border-accent/40 hover:text-accent",
                   )}
                 >
                   {r.label}
@@ -407,15 +416,15 @@ export default function NetworkHub() {
             </div>
           </div>
 
-          <div className="p-4 sm:p-5">
+          <div className="p-5">
             <div className="relative mb-4">
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+              <Search className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
               <input
                 type="text"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Firma, Ort oder Kanton suchen …"
-                className="w-full rounded-full border border-slate-200 bg-white py-2.5 pl-9 pr-3 text-sm text-slate-900 placeholder:text-slate-400 focus:border-brand/50 focus:outline-none"
+                className="w-full rounded-lg border border-slate-200 bg-slate-50 py-2.5 pl-10 pr-3 text-sm text-slate-900 placeholder:text-slate-400 outline-none transition-colors focus:border-accent focus:bg-white focus:ring-1 focus:ring-accent/20"
               />
             </div>
 
@@ -429,48 +438,48 @@ export default function NetworkHub() {
               </div>
             ) : (
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
-                {suggestions.map((c) => {
-                  const relevance = c.role === "SUPPLIER" ? `Möglicher Lieferant${c.canton ? ` · ${c.canton}` : ""}` : "Möglicher Bündel-Partner";
-                  return (
-                    <div key={c.id} className="relative flex flex-col overflow-hidden rounded-lg border border-slate-200 text-center transition-shadow hover:shadow-cardhover">
+                {suggestions.map((c) => (
+                  <div key={c.id} className="group relative flex flex-col overflow-hidden rounded-xl border border-slate-200 text-center transition-all hover:border-accent/30 hover:shadow-cardhover">
+                    <button
+                      type="button"
+                      onClick={() => setDismissed((d) => new Set(d).add(c.id))}
+                      aria-label="Vorschlag ausblenden"
+                      className="absolute right-2 top-2 z-10 grid h-7 w-7 place-items-center rounded-full text-white/80 transition-colors hover:bg-white/15 hover:text-white"
+                    >
+                      <X className="h-4 w-4" />
+                    </button>
+                    <div className="h-14 bg-gradient-to-r from-navy-900 via-navy-800 to-accent-600" />
+                    <div className="flex flex-1 flex-col items-center px-4 pb-4">
+                      <Link href={`/company/${c.id}`} className="-mt-8 flex h-16 w-16 items-center justify-center overflow-hidden rounded-full border-4 border-white bg-slate-100 text-base font-bold text-slate-700 shadow-sm">
+                        {c.logo_url ? (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img src={c.logo_url} alt={c.company_name} className="h-full w-full object-cover" />
+                        ) : (
+                          initials(c.company_name)
+                        )}
+                      </Link>
+                      <Link href={`/company/${c.id}`} className="mt-2 flex items-center justify-center gap-1 text-[15px] font-semibold text-slate-900 hover:text-accent">
+                        <span className="max-w-full truncate">{c.company_name}</span>
+                        {c.verified && <BadgeCheck className="h-4 w-4 shrink-0 text-accent" />}
+                      </Link>
+                      <p className="text-xs text-slate-500">{ROLE_LABEL[c.role] ?? c.role}{c.city ? ` · ${c.city}` : ""}</p>
+                      <span className={cn(
+                        "mt-2 rounded-full border px-2.5 py-0.5 text-[11px] font-medium",
+                        c.role === "SUPPLIER" ? "border-accent/25 bg-accent/5 text-accent" : "border-brand/25 bg-brand/5 text-brand-700",
+                      )}>
+                        {c.role === "SUPPLIER" ? "Möglicher Lieferant" : "Möglicher Bündel-Partner"}
+                      </span>
                       <button
                         type="button"
-                        onClick={() => setDismissed((d) => new Set(d).add(c.id))}
-                        aria-label="Vorschlag ausblenden"
-                        className="absolute right-2 top-2 z-10 grid h-7 w-7 place-items-center rounded-full bg-white/80 text-slate-500 backdrop-blur transition-colors hover:bg-white hover:text-slate-800"
+                        onClick={() => connect(c.id)}
+                        disabled={!myCompanyId}
+                        className="mt-3.5 inline-flex w-full items-center justify-center gap-1.5 rounded-md bg-accent-600 px-3 py-2 text-sm font-semibold text-white transition-colors hover:bg-accent-700 disabled:cursor-not-allowed disabled:opacity-50"
                       >
-                        <X className="h-4 w-4" />
+                        <UserPlus className="h-4 w-4" /> Vernetzen
                       </button>
-                      <div className="h-16 bg-gradient-to-r from-navy-800 via-navy-700 to-brand/40" />
-                      <div className="flex flex-1 flex-col items-center px-4 pb-4">
-                        <Link href={`/company/${c.id}`} className="-mt-9 flex h-16 w-16 items-center justify-center overflow-hidden rounded-full border-4 border-white bg-slate-100 text-base font-bold text-slate-700 shadow-sm">
-                          {c.logo_url ? (
-                            // eslint-disable-next-line @next/next/no-img-element
-                            <img src={c.logo_url} alt={c.company_name} className="h-full w-full object-cover" />
-                          ) : (
-                            initials(c.company_name)
-                          )}
-                        </Link>
-                        <Link href={`/company/${c.id}`} className="mt-2 flex items-center justify-center gap-1 text-[15px] font-semibold text-slate-900 hover:text-brand">
-                          <span className="max-w-full truncate">{c.company_name}</span>
-                          {c.verified && <BadgeCheck className="h-4 w-4 shrink-0 text-accent" />}
-                        </Link>
-                        <p className="text-xs text-slate-500">{ROLE_LABEL[c.role] ?? c.role}{c.city ? ` · ${c.city}` : ""}</p>
-                        <p className="mt-1.5 inline-flex items-center gap-1 text-[11px] font-medium text-brand">
-                          <Sparkles className="h-3 w-3" /> {relevance}
-                        </p>
-                        <button
-                          type="button"
-                          onClick={() => connect(c.id)}
-                          disabled={!myCompanyId}
-                          className="mt-3 inline-flex w-full items-center justify-center gap-1.5 rounded-full border border-brand px-3 py-2 text-sm font-semibold text-brand transition-colors hover:bg-brand/10 disabled:cursor-not-allowed disabled:opacity-50"
-                        >
-                          <UserPlus className="h-4 w-4" /> Vernetzen
-                        </button>
-                      </div>
                     </div>
-                  );
-                })}
+                  </div>
+                ))}
               </div>
             )}
           </div>
