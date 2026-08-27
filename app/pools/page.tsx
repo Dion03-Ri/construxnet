@@ -1,6 +1,6 @@
-import { Layers, Calculator } from "lucide-react";
+import { Layers } from "lucide-react";
 import OpenPools from "@/components/pools/OpenPools";
-import BundleEngine from "@/components/BundleEngine";
+import BundleEnginePanel from "@/components/pools/BundleEnginePanel";
 
 export const metadata = {
   title: "Smart Pools · ConstruxNet",
@@ -25,12 +25,9 @@ export default function PoolsPage() {
       {/* Hauptinhalt: offene Bündel mit Countdown */}
       <OpenPools />
 
-      {/* Zusatztool: Rabatt-Rechner */}
+      {/* Zusatztool: Rabatt-Rechner — klein, per Vollbild-Icon aufklappbar */}
       <section className="mt-10">
-        <div className="mb-3 flex items-center gap-2 text-[11px] font-semibold uppercase tracking-wider text-slate-400">
-          <Calculator className="h-4 w-4" /> Zusatztool · Rabatt-Rechner
-        </div>
-        <BundleEngine />
+        <BundleEnginePanel />
       </section>
     </main>
   );
