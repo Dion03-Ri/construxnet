@@ -41,7 +41,11 @@ export default function MapWidgets() {
     <div className="space-y-4">
       {/* Spend by Category */}
       <div className={cn(CARD, "p-5")}>
-        <h3 className="text-[15px] font-semibold text-slate-900">Ausgaben nach Kategorie</h3>
+        <div className="flex items-baseline justify-between gap-2">
+          <h3 className="text-[15px] font-semibold text-slate-900">Top-Kategorien nach Volumen</h3>
+          <span className="text-[11px] text-slate-400">von 30+ Materialgruppen</span>
+        </div>
+        <p className="mt-0.5 text-[12px] text-slate-500">Die umsatzstärksten Beschaffungs-Kategorien der Plattform.</p>
         <div className="mt-3 overflow-x-auto">
           <table className="w-full text-left text-[13px]">
             <thead>

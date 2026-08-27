@@ -18,10 +18,14 @@ import {
   X,
   TrendingDown,
   Send,
+  Search,
+  PenLine,
 } from "lucide-react";
 import {
   PROC_MATERIALS,
+  PROC_CATEGORIES,
   PROC_REGIONS,
+  PROC_TIERS,
   DELIVERY_WINDOWS,
   tierForVolume,
   type ProcMaterial,
@@ -35,15 +39,27 @@ function chf(v: number, d = 0) {
 
 const STEPS = ["Material & SIA", "Menge & Lieferung", "Smart Pool", "Übersicht"];
 
-export default function BeschaffungFlow() {
+export default function BeschaffungFlow({ initialMaterial }: { initialMaterial?: string }) {
+  const preset = PROC_MATERIALS.find((m) => m.key === initialMaterial);
+
   const [step, setStep] = useState(0);
   const [done, setDone] = useState(false);
 
   // Step 1
-  const [materialKey, setMaterialKey] = useState<string>("");
-  const [sia, setSia] = useState("");
+  const [materialKey, setMaterialKey] = useState<string>(preset?.key ?? "");
+  const [sia, setSia] = useState(preset?.sia ?? "");
   const [file, setFile] = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
+
+  // Material-Browsing
+  const [matQuery, setMatQuery] = useState("");
+  const [matCat, setMatCat] = useState<string>("ALL");
+
+  // „Weiteres Material" (frei)
+  const [customMode, setCustomMode] = useState(false);
+  const [customLabel, setCustomLabel] = useState("");
+  const [customUnit, setCustomUnit] = useState("");
+  const [customPrice, setCustomPrice] = useState("");
 
   // Step 2
   const [qty, setQty] = useState("");
@@ -54,8 +70,28 @@ export default function BeschaffungFlow() {
   // Step 3
   const [pool, setPool] = useState(true);
 
-  const material: ProcMaterial | undefined = PROC_MATERIALS.find((m) => m.key === materialKey);
+  const material: ProcMaterial | undefined = customMode
+    ? customLabel.trim()
+      ? {
+          key: "custom",
+          label: customLabel.trim(),
+          sia: sia,
+          unit: customUnit.trim() || "Einheit",
+          kbobPrice: Number(customPrice) || 0,
+          category: "Beton",
+        }
+      : undefined
+    : PROC_MATERIALS.find((m) => m.key === materialKey);
   const qtyNum = Number(qty) || 0;
+
+  const filteredMaterials = useMemo(() => {
+    const q = matQuery.trim().toLowerCase();
+    return PROC_MATERIALS.filter((m) => {
+      if (matCat !== "ALL" && m.category !== matCat) return false;
+      if (!q) return true;
+      return m.label.toLowerCase().includes(q) || m.sia.toLowerCase().includes(q) || m.category.toLowerCase().includes(q);
+    });
+  }, [matQuery, matCat]);
 
   const calc = useMemo(() => {
     if (!material || qtyNum <= 0) return null;
@@ -74,8 +110,15 @@ export default function BeschaffungFlow() {
   );
 
   function pickMaterial(m: ProcMaterial) {
+    setCustomMode(false);
     setMaterialKey(m.key);
     setSia(m.sia);
+  }
+
+  function enableCustom() {
+    setCustomMode(true);
+    setMaterialKey("");
+    setSia("");
   }
 
   function onFile(e: React.ChangeEvent<HTMLInputElement>) {
@@ -117,7 +160,7 @@ export default function BeschaffungFlow() {
           </Link>
           <button
             type="button"
-            onClick={() => { setDone(false); setStep(0); setMaterialKey(""); setSia(""); setQty(""); setFile(null); setSite(""); }}
+            onClick={() => { setDone(false); setStep(0); setMaterialKey(""); setSia(""); setQty(""); setFile(null); setSite(""); setCustomMode(false); setCustomLabel(""); setCustomUnit(""); setCustomPrice(""); setMatQuery(""); setMatCat("ALL"); }}
             className="inline-flex items-center gap-1.5 rounded-md border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-600 transition-colors hover:bg-slate-50"
           >
             Weiteren Bedarf melden
@@ -179,11 +222,43 @@ export default function BeschaffungFlow() {
               {step === 0 && (
                 <div>
                   <h2 className="text-lg font-bold text-slate-900">Welches Material brauchst du?</h2>
-                  <p className="mt-0.5 text-sm text-slate-500">Wähle das Material — die SIA-Spezifikation wird vorbefüllt und ist editierbar.</p>
+                  <p className="mt-0.5 text-sm text-slate-500">Wähle aus dem Katalog oder erfasse ein eigenes Material — die SIA-Spezifikation wird vorbefüllt und ist editierbar.</p>
 
-                  <div className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2">
-                    {PROC_MATERIALS.map((m) => {
-                      const active = m.key === materialKey;
+                  {/* Suche + Kategorie-Filter */}
+                  <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:items-center">
+                    <div className="relative flex-1">
+                      <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                      <input
+                        value={matQuery}
+                        onChange={(e) => setMatQuery(e.target.value)}
+                        placeholder="Material suchen (z. B. Beton, Stahl, Dämmung …)"
+                        className="h-10 w-full rounded-md border border-slate-300 bg-slate-50 pl-9 pr-3 text-sm text-slate-900 placeholder:text-slate-400 outline-none focus:border-brand focus:bg-white focus:ring-1 focus:ring-brand/30"
+                      />
+                    </div>
+                  </div>
+                  <div className="mt-2 flex flex-wrap gap-1.5">
+                    <button
+                      type="button"
+                      onClick={() => setMatCat("ALL")}
+                      className={cn("rounded-md px-2.5 py-1 text-[12px] font-medium transition-colors", matCat === "ALL" ? "bg-brand text-white" : "border border-slate-200 bg-white text-slate-500 hover:text-slate-900")}
+                    >
+                      Alle
+                    </button>
+                    {PROC_CATEGORIES.map((c) => (
+                      <button
+                        key={c}
+                        type="button"
+                        onClick={() => setMatCat(c)}
+                        className={cn("rounded-md px-2.5 py-1 text-[12px] font-medium transition-colors", matCat === c ? "bg-brand text-white" : "border border-slate-200 bg-white text-slate-500 hover:text-slate-900")}
+                      >
+                        {c}
+                      </button>
+                    ))}
+                  </div>
+
+                  <div className="mt-3 grid max-h-[340px] grid-cols-1 gap-2 overflow-y-auto pr-1 sm:grid-cols-2">
+                    {filteredMaterials.map((m) => {
+                      const active = !customMode && m.key === materialKey;
                       return (
                         <button
                           key={m.key}
@@ -208,7 +283,47 @@ export default function BeschaffungFlow() {
                         </button>
                       );
                     })}
+                    {filteredMaterials.length === 0 && (
+                      <p className="col-span-full py-6 text-center text-[13px] text-slate-400">
+                        Kein Katalog-Treffer — erfasse es unten als „Weiteres Material".
+                      </p>
+                    )}
                   </div>
+
+                  {/* Weiteres Material (frei) */}
+                  <button
+                    type="button"
+                    onClick={enableCustom}
+                    className={cn(
+                      "mt-2 flex w-full items-center gap-3 rounded-lg border p-3 text-left transition-colors",
+                      customMode ? "border-brand bg-brand/[0.04] ring-1 ring-brand/30" : "border-dashed border-slate-300 hover:border-brand hover:text-brand",
+                    )}
+                  >
+                    <span className={cn("grid h-8 w-8 shrink-0 place-items-center rounded-md", customMode ? "bg-brand text-white" : "bg-slate-100 text-slate-500")}>
+                      <PenLine className="h-4 w-4" />
+                    </span>
+                    <span className="text-[14px] font-semibold text-slate-900">
+                      Weiteres Material erfassen
+                      <span className="ml-1 text-[12px] font-normal text-slate-400">— nicht im Katalog? Frei eingeben.</span>
+                    </span>
+                  </button>
+
+                  {customMode && (
+                    <div className="mt-3 grid grid-cols-1 gap-3 rounded-lg border border-brand/25 bg-brand/[0.03] p-3 sm:grid-cols-3">
+                      <div className="sm:col-span-3">
+                        <label className="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-slate-400">Material-Bezeichnung *</label>
+                        <input value={customLabel} onChange={(e) => setCustomLabel(e.target.value)} placeholder="z. B. Faserbeton, Naturstein, Spezialmörtel …" className="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none focus:border-brand focus:ring-1 focus:ring-brand/30" />
+                      </div>
+                      <div>
+                        <label className="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-slate-400">Einheit</label>
+                        <input value={customUnit} onChange={(e) => setCustomUnit(e.target.value)} placeholder="m³, t, m², Stk …" className="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none focus:border-brand focus:ring-1 focus:ring-brand/30" />
+                      </div>
+                      <div className="sm:col-span-2">
+                        <label className="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-slate-400">KBOB-/Richtpreis pro Einheit (optional)</label>
+                        <input value={customPrice} onChange={(e) => setCustomPrice(e.target.value.replace(/[^0-9.]/g, ""))} inputMode="decimal" placeholder="CHF" className="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none focus:border-brand focus:ring-1 focus:ring-brand/30" />
+                      </div>
+                    </div>
+                  )}
 
                   {material && (
                     <div className="mt-4">
@@ -345,21 +460,22 @@ export default function BeschaffungFlow() {
                     </span>
                   </button>
 
-                  {/* Tier-Preview */}
-                  <div className="mt-4 grid grid-cols-3 gap-2">
-                    {[{ t: 1, d: 5, r: "0–100" }, { t: 2, d: 12, r: "101–300" }, { t: 3, d: 20, r: "301+" }].map((x) => {
-                      const active = pool && calc?.tier.tier === x.t;
+                  {/* Tier-Preview — 5 Rabattstufen */}
+                  <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-5">
+                    {PROC_TIERS.map((t) => {
+                      const active = pool && calc?.tier.tier === t.tier;
+                      const range = t.max === null ? `${t.min}+` : `${t.min}–${t.max}`;
                       return (
                         <div
-                          key={x.t}
+                          key={t.tier}
                           className={cn(
                             "rounded-lg border p-3 text-center",
                             active ? "border-accent bg-accent/[0.06]" : "border-slate-200 bg-white",
                           )}
                         >
-                          <div className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">Tier {x.t}</div>
-                          <div className={cn("mt-0.5 text-xl font-bold", active ? "text-accent" : "text-slate-900")}>{x.d}%</div>
-                          <div className="text-[11px] text-slate-400">{x.r} {material.unit}</div>
+                          <div className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">Tier {t.tier}</div>
+                          <div className={cn("mt-0.5 text-xl font-bold", active ? "text-accent" : "text-slate-900")}>{t.discount}%</div>
+                          <div className="text-[11px] text-slate-400">{range} {material.unit}</div>
                         </div>
                       );
                     })}

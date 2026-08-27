@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils";
 type Pool = {
   id: string;
   material: string;
+  matKey: string; // Katalog-Key → im Beschaffungs-Flow vorausgewählt
   region: string;
   unit: string;
   vol: number;
@@ -21,12 +22,12 @@ type Pool = {
 };
 
 const POOLS: Pool[] = [
-  { id: "p1", material: "Beton C25/30", region: "Zürich", unit: "m³", vol: 230, target: 300, tier: 2, disc: 12, participants: 8, phase: "OPEN", endsInH: 53 },
-  { id: "p2", material: "Bewehrungsstahl B500B", region: "Bern", unit: "t", vol: 48, target: 60, tier: 2, disc: 12, participants: 5, phase: "OPEN", endsInH: 212 },
-  { id: "p3", material: "Koffer-/Wandkies 0/45", region: "Nordwestschweiz", unit: "t", vol: 320, target: 301, tier: 3, disc: 20, participants: 11, phase: "SEALED", endsInH: 19 },
-  { id: "p4", material: "Beton C30/37", region: "Innerschweiz", unit: "m³", vol: 90, target: 250, tier: 1, disc: 5, participants: 3, phase: "OPEN", endsInH: 288 },
-  { id: "p5", material: "Transportbeton C25/30", region: "Westschweiz", unit: "m³", vol: 140, target: 200, tier: 2, disc: 12, participants: 6, phase: "OPEN", endsInH: 7 },
-  { id: "p6", material: "Dämmung EPS 034", region: "Ostschweiz", unit: "m²", vol: 1800, target: 3000, tier: 2, disc: 12, participants: 4, phase: "OPEN", endsInH: 121 },
+  { id: "p1", material: "Beton C25/30", matKey: "beton-25", region: "Zürich", unit: "m³", vol: 230, target: 300, tier: 2, disc: 12, participants: 8, phase: "OPEN", endsInH: 53 },
+  { id: "p2", material: "Bewehrungsstahl B500B", matKey: "stahl-b500b", region: "Bern", unit: "t", vol: 48, target: 60, tier: 2, disc: 12, participants: 5, phase: "OPEN", endsInH: 212 },
+  { id: "p3", material: "Koffer-/Wandkies 0/45", matKey: "kies-045", region: "Nordwestschweiz", unit: "t", vol: 320, target: 301, tier: 3, disc: 20, participants: 11, phase: "SEALED", endsInH: 19 },
+  { id: "p4", material: "Beton C30/37", matKey: "beton-30", region: "Innerschweiz", unit: "m³", vol: 90, target: 250, tier: 1, disc: 5, participants: 3, phase: "OPEN", endsInH: 288 },
+  { id: "p5", material: "Transportbeton C25/30", matKey: "beton-25", region: "Westschweiz", unit: "m³", vol: 140, target: 200, tier: 2, disc: 12, participants: 6, phase: "OPEN", endsInH: 7 },
+  { id: "p6", material: "Dämmung EPS 034", matKey: "daemmung-eps", region: "Ostschweiz", unit: "m²", vol: 1800, target: 3000, tier: 2, disc: 12, participants: 4, phase: "OPEN", endsInH: 121 },
 ];
 
 const REGIONS = ["Alle", "Zürich", "Bern", "Nordwestschweiz", "Innerschweiz", "Westschweiz", "Ostschweiz"];
@@ -88,7 +89,7 @@ function PoolCard({ p }: { p: Pool }) {
       </div>
 
       <Link
-        href="/beschaffung"
+        href={`/beschaffung?material=${encodeURIComponent(p.matKey)}`}
         className="mt-4 inline-flex items-center justify-center gap-1.5 rounded-md bg-brand px-4 py-2.5 text-sm font-semibold text-navy-900 transition-colors hover:bg-brand-500"
       >
         Bedarf melden &amp; beitreten <ArrowRight className="h-4 w-4" />
