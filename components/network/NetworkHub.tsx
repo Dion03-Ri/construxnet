@@ -18,7 +18,6 @@ import {
 } from "lucide-react";
 import { useSupabaseBrowser } from "@/lib/supabase-browser";
 import { GEWERKE } from "@/data/feedMock";
-import ConnectionsMap, { type MapCompany } from "@/components/network/ConnectionsMap";
 import { CARD } from "@/lib/ui";
 import { cn } from "@/lib/utils";
 
@@ -49,17 +48,6 @@ const ROLE_FILTERS = [
   { key: "ALL", label: "Alle" },
   { key: "BUYER", label: "Bauunternehmen" },
   { key: "SUPPLIER", label: "Baustoffwerke" },
-];
-
-const DEMO_MAP: MapCompany[] = [
-  { id: "d1", company_name: "KIBAG Baustoffe", canton: "ZH", city: "Zürich", role: "SUPPLIER", verified: true },
-  { id: "d2", company_name: "Vigier Beton Mittelland", canton: "BE", city: "Bern", role: "SUPPLIER", verified: true },
-  { id: "d3", company_name: "Gebr. Meier Hochbau AG", canton: "BE", city: "Bern", role: "BUYER", verified: true },
-  { id: "d4", company_name: "Rhomberg Bau AG", canton: "LU", city: "Luzern", role: "BUYER", verified: true },
-  { id: "d5", company_name: "Toggenburger Kies AG", canton: "SG", city: "Wil", role: "SUPPLIER", verified: false },
-  { id: "d6", company_name: "Losinger Marazzi", canton: "GE", city: "Genf", role: "BUYER", verified: true },
-  { id: "d7", company_name: "Holcim Kies & Beton", canton: "AG", city: "Aarau", role: "SUPPLIER", verified: true },
-  { id: "d8", company_name: "Implenia Schweiz", canton: "VD", city: "Lausanne", role: "BUYER", verified: true },
 ];
 
 function initials(name: string) {
@@ -190,18 +178,6 @@ export default function NetworkHub() {
     return true;
   });
 
-  const mapDemo = connectedList.length < 3;
-  const mapCompanies: MapCompany[] = mapDemo
-    ? DEMO_MAP
-    : connectedList.map((c) => ({
-        id: c.id,
-        company_name: c.company_name,
-        canton: c.canton,
-        city: c.city,
-        role: c.role,
-        verified: c.verified,
-      }));
-
   const stats = [
     { icon: Users, label: "Verbindungen", value: connectedList.length },
     { icon: Clock, label: "Offene Anfragen", value: invitations.length },
@@ -269,8 +245,6 @@ export default function NetworkHub() {
 
       {/* Main */}
       <div className="min-w-0 space-y-5">
-        <ConnectionsMap companies={mapCompanies} demo={mapDemo} />
-
         {/* Offene Anfragen */}
         {invitations.length > 0 && (
           <div className={cn(CARD, "overflow-hidden")}>
