@@ -10,6 +10,10 @@ import {
   Inbox,
   Hash,
   ChevronRight,
+  MessageSquare,
+  CalendarDays,
+  Boxes,
+  Bookmark,
 } from "lucide-react";
 import type { Company } from "@/lib/company";
 import { GEWERKE } from "@/data/feedMock";
@@ -105,6 +109,36 @@ export default function ProfileRail({
         </div>
       </div>
 
+      {/* Schnellzugriff (LinkedIn-Stil): Nachrichten · Termine · Gruppen */}
+      <div className="overflow-hidden rounded-lg border border-white/10 bg-navy-900 text-white shadow-card">
+        <div className="border-b border-white/10 px-4 py-2.5 text-[11px] font-semibold uppercase tracking-wider text-white/50">
+          Schnellzugriff
+        </div>
+        <div className="p-1.5">
+          {[
+            { href: "/messages", icon: MessageSquare, label: "Nachrichten", badge: "3" },
+            { href: "/network", icon: CalendarDays, label: "Termine & Ausschreibungen", badge: null },
+            { href: "/network", icon: Boxes, label: "Beschaffungs-Gruppen", badge: "5" },
+          ].map((l) => (
+            <Link
+              key={l.label}
+              href={l.href}
+              className="flex items-center gap-2.5 rounded-md px-2.5 py-2 text-[13px] font-medium text-white/75 transition-colors hover:bg-white/5 hover:text-white"
+            >
+              <l.icon className="h-4 w-4 text-brand/80" />
+              <span className="flex-1">{l.label}</span>
+              {l.badge ? (
+                <span className="grid h-5 min-w-5 place-items-center rounded-full bg-brand px-1.5 text-[10px] font-bold text-navy-900">
+                  {l.badge}
+                </span>
+              ) : (
+                <ChevronRight className="h-3.5 w-3.5 text-white/30" />
+              )}
+            </Link>
+          ))}
+        </div>
+      </div>
+
       {/* Netzwerk verwalten (dunkel) */}
       <div className="overflow-hidden rounded-lg border border-white/10 bg-navy-900 text-white shadow-card">
         <div className="border-b border-white/10 px-4 py-2.5 text-[11px] font-semibold uppercase tracking-wider text-white/50">
@@ -115,6 +149,7 @@ export default function ProfileRail({
             { href: "/network", icon: Users, label: "Verbindungen" },
             { href: "/network", icon: Inbox, label: "Empfangene Anfragen" },
             { href: "/pools", icon: Layers, label: "Gespeicherte Pools" },
+            { href: "/pools", icon: Bookmark, label: "Merkliste" },
           ].map((l) => (
             <Link
               key={l.label}
