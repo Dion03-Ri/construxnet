@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { useSupabaseBrowser } from "@/lib/supabase-browser";
 import { GEWERKE } from "@/data/feedMock";
+import SupplierMap from "@/components/map/SupplierMap";
 import { CARD } from "@/lib/ui";
 import { cn } from "@/lib/utils";
 
@@ -250,6 +251,9 @@ export default function NetworkHub() {
 
       {/* Main */}
       <div className="min-w-0 space-y-5">
+        {/* Lieferanten-Karte Schweiz */}
+        <SupplierMap />
+
         {/* Offene Anfragen */}
         {invitations.length > 0 && (
           <div className={cn(CARD, "overflow-hidden")}>

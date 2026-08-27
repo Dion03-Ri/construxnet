@@ -139,7 +139,7 @@ export default function Home() {
                 <ShoppingCart className="h-4 w-4" /> Materialbedarf melden
               </Link>
               <Link
-                href="/network"
+                href="/feed"
                 className="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-300 bg-white px-6 py-3 text-sm font-semibold text-slate-900 transition-colors hover:bg-slate-50"
               >
                 Netzwerk entdecken <ArrowRight className="h-4 w-4" />
