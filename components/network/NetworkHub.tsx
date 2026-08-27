@@ -180,10 +180,10 @@ export default function NetworkHub() {
   });
 
   const stats = [
-    { icon: Users, label: "Verbindungen", value: connectedList.length },
-    { icon: Clock, label: "Offene Anfragen", value: invitations.length },
-    { icon: Truck, label: "Lieferanten", value: connectedList.filter((c) => c.role === "SUPPLIER").length },
-    { icon: Building2, label: "Bauunternehmen", value: connectedList.filter((c) => c.role === "BUYER").length },
+    { icon: Users, label: "Verbindungen", value: connectedList.length, href: null as string | null },
+    { icon: Clock, label: "Offene Anfragen", value: invitations.length, href: "/network/requests" },
+    { icon: Truck, label: "Lieferanten", value: connectedList.filter((c) => c.role === "SUPPLIER").length, href: null as string | null },
+    { icon: Building2, label: "Bauunternehmen", value: connectedList.filter((c) => c.role === "BUYER").length, href: null as string | null },
   ];
 
   return (
@@ -196,18 +196,23 @@ export default function NetworkHub() {
               Mein Netzwerk verwalten
             </div>
             <div>
-              {stats.map((s) => (
-                <div
-                  key={s.label}
-                  className="flex items-center justify-between px-4 py-2.5 text-[13px] text-slate-600 transition-colors hover:bg-slate-50"
-                >
-                  <span className="inline-flex items-center gap-2">
-                    <s.icon className="h-4 w-4 text-slate-400" />
-                    {s.label}
-                  </span>
-                  <span className="font-semibold text-slate-900">{s.value}</span>
-                </div>
-              ))}
+              {stats.map((s) => {
+                const inner = (
+                  <>
+                    <span className="inline-flex items-center gap-2">
+                      <s.icon className="h-4 w-4 text-slate-400" />
+                      {s.label}
+                    </span>
+                    <span className="font-semibold text-slate-900">{s.value}</span>
+                  </>
+                );
+                const cls = "flex items-center justify-between px-4 py-2.5 text-[13px] text-slate-600 transition-colors hover:bg-slate-50";
+                return s.href ? (
+                  <Link key={s.label} href={s.href} className={cls}>{inner}</Link>
+                ) : (
+                  <div key={s.label} className={cls}>{inner}</div>
+                );
+              })}
             </div>
           </div>
 

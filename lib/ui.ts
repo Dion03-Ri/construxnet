@@ -1,5 +1,5 @@
 // Wiederverwendbare Enterprise-Design-Primitive (scharf, präzise, institutionell).
-// CI: Gold #D99000 (brand), Navy #1B3A5C (accent), Grün #10B981 (accent).
+// CI: Gold #D99000 (brand), Navy #1B3A5C / #254D7A (accent). Kein Grün.
 
 import { cn } from "@/lib/utils";
 
