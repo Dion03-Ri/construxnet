@@ -5,7 +5,6 @@ import Link from "next/link";
 import { useAuth } from "@clerk/nextjs";
 import {
   BadgeCheck,
-  MapPin,
   Search,
   Loader2,
   UserPlus,
@@ -15,7 +14,6 @@ import {
   Building2,
   Truck,
   Hash,
-  MessageSquare,
   Sparkles,
 } from "lucide-react";
 import { useSupabaseBrowser } from "@/lib/supabase-browser";
@@ -377,55 +375,52 @@ export default function NetworkHub() {
             </div>
           ) : (
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
-              {suggestions.map((c) => (
-                <div key={c.id} className={cn(CARD, "flex flex-col overflow-hidden")}>
-                  <div className="h-12 bg-gradient-to-r from-brand/20 via-brand/10 to-accent/15" />
-                  <div className="flex flex-1 flex-col px-4 pb-4">
-                    <Link
-                      href={`/company/${c.id}`}
-                      className="-mt-7 flex h-14 w-14 items-center justify-center overflow-hidden rounded-lg border-4 border-white bg-slate-100 text-sm font-semibold text-slate-700 shadow-sm"
-                    >
-                      {c.logo_url ? (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img src={c.logo_url} alt={c.company_name} className="h-full w-full object-cover" />
-                      ) : (
-                        initials(c.company_name)
-                      )}
-                    </Link>
-                    <Link
-                      href={`/company/${c.id}`}
-                      className="mt-2 flex items-center gap-1 text-[15px] font-semibold text-slate-900 hover:text-brand"
-                    >
-                      <span className="truncate">{c.company_name}</span>
-                      {c.verified && <BadgeCheck className="h-4 w-4 shrink-0 text-accent" />}
-                    </Link>
-                    <p className="text-xs text-slate-500">{ROLE_LABEL[c.role] ?? c.role}</p>
-                    <p className="mt-0.5 flex items-center gap-1 text-[11px] text-slate-400">
-                      <MapPin className="h-3 w-3" />
-                      {[c.city, c.canton].filter(Boolean).join(", ") || c.uid_number}
-                    </p>
-                    {c.bio && <p className="mt-2 line-clamp-2 text-[13px] text-slate-500">{c.bio}</p>}
-
-                    <div className="mt-4 flex items-center gap-2">
+              {suggestions.map((c) => {
+                const relevance =
+                  c.role === "SUPPLIER"
+                    ? `Möglicher Lieferant${c.canton ? ` · ${c.canton}` : ""}`
+                    : "Möglicher Bündel-Partner";
+                return (
+                  <div key={c.id} className={cn(CARD, "flex flex-col overflow-hidden text-center")}>
+                    <div className="h-16 bg-gradient-to-r from-navy-800 via-navy-700 to-brand/40" />
+                    <div className="flex flex-1 flex-col items-center px-4 pb-4">
+                      <Link
+                        href={`/company/${c.id}`}
+                        className="-mt-9 flex h-16 w-16 items-center justify-center overflow-hidden rounded-full border-4 border-white bg-slate-100 text-base font-bold text-slate-700 shadow-sm"
+                      >
+                        {c.logo_url ? (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img src={c.logo_url} alt={c.company_name} className="h-full w-full object-cover" />
+                        ) : (
+                          initials(c.company_name)
+                        )}
+                      </Link>
+                      <Link
+                        href={`/company/${c.id}`}
+                        className="mt-2 flex items-center justify-center gap-1 text-[15px] font-semibold text-slate-900 hover:text-brand"
+                      >
+                        <span className="max-w-full truncate">{c.company_name}</span>
+                        {c.verified && <BadgeCheck className="h-4 w-4 shrink-0 text-accent" />}
+                      </Link>
+                      <p className="text-xs text-slate-500">
+                        {ROLE_LABEL[c.role] ?? c.role}
+                        {c.city ? ` · ${c.city}` : ""}
+                      </p>
+                      <p className="mt-1.5 inline-flex items-center gap-1 text-[11px] font-medium text-brand">
+                        <Sparkles className="h-3 w-3" /> {relevance}
+                      </p>
                       <button
                         type="button"
                         onClick={() => connect(c.id)}
                         disabled={!myCompanyId}
-                        className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-md border border-brand/40 bg-brand/10 px-3 py-2 text-sm font-semibold text-brand transition-colors hover:bg-brand/20 disabled:cursor-not-allowed disabled:opacity-50"
+                        className="mt-3 inline-flex w-full items-center justify-center gap-1.5 rounded-md border border-brand/50 px-3 py-2 text-sm font-semibold text-brand transition-colors hover:bg-brand/10 disabled:cursor-not-allowed disabled:opacity-50"
                       >
                         <UserPlus className="h-4 w-4" /> Vernetzen
                       </button>
-                      <Link
-                        href={`/messages?to=${c.id}`}
-                        className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-slate-200 text-slate-500 transition-colors hover:bg-slate-50"
-                        aria-label="Nachricht"
-                      >
-                        <MessageSquare className="h-4 w-4" />
-                      </Link>
                     </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </div>

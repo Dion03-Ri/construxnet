@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
+import { SignedIn, SignedOut } from "@clerk/nextjs";
 import {
   HardHat,
   Home,
@@ -15,6 +15,7 @@ import {
 import { cn } from "@/lib/utils";
 import NotificationBell from "@/components/header/NotificationBell";
 import GlobalSearch from "@/components/header/GlobalSearch";
+import ProfileMenu from "@/components/header/ProfileMenu";
 
 type NavItem = { href: string; label: string; icon: LucideIcon };
 
@@ -80,10 +81,7 @@ function TopBar() {
 
         <div className="ml-auto flex items-center gap-1.5 md:ml-2">
           <NotificationBell />
-          <UserButton
-            afterSignOutUrl="/"
-            appearance={{ elements: { avatarBox: "h-8 w-8" } }}
-          />
+          <ProfileMenu />
         </div>
       </div>
     </header>
