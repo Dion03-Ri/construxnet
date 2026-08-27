@@ -83,12 +83,15 @@ export default function RecommendedPartners() {
 
   return (
     <div className={cn(CARD, "p-4")}>
-      <div className="mb-3 flex items-center gap-2">
+      <div className="mb-1 flex items-center gap-2">
         <Sparkles className="h-4 w-4 text-brand" />
         <h3 className="text-[15px] font-semibold text-slate-900">
-          Empfohlene Partner
+          Partner für deine Beschaffung
         </h3>
       </div>
+      <p className="mb-3 text-[12px] text-slate-400">
+        Vernetze dich mit Werken &amp; Firmen, mit denen du bündeln kannst.
+      </p>
       <ul className="space-y-3">
         {items.map((c) => (
           <li key={c.id} className="flex items-center gap-3">
