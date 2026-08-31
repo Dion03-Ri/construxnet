@@ -1,22 +1,22 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
+import { NextResponse } from "next/server";
+import { PREVIEW_COOKIE, sha256Hex } from "@/lib/preview";
 
 // ============================================================
-// EIGENER LOGIN (kein Satellite-Modus).
-// ConstruxNet nutzt eine eigenständige Clerk-Instanz mit
-// selbst-gehosteten Login-Seiten unter /sign-in und /sign-up.
-// Die Sign-in/Sign-up-URLs sind im ClerkProvider (app/layout.tsx)
-// gesetzt; diese Routen sind unten als public freigegeben.
+// ZUGANGS-STEUERUNG (Entwicklungsphase / Pre-Launch)
 //
-// ENV-Variablen (siehe .env.example):
-//   NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
-//   CLERK_SECRET_KEY
-//   NEXT_PUBLIC_SUPABASE_URL / NEXT_PUBLIC_SUPABASE_ANON_KEY
-//   SUPABASE_SERVICE_ROLE_KEY
+// Zwei per Env steuerbare Modi, die zusammenspielen:
 //
-// WICHTIG: KEINE Satellite-Variablen setzen — falls noch vorhanden,
-// auf Vercel entfernen: NEXT_PUBLIC_CLERK_IS_SATELLITE,
-// NEXT_PUBLIC_CLERK_DOMAIN sowie auf SourceOn zeigende
-// NEXT_PUBLIC_CLERK_SIGN_IN_URL / NEXT_PUBLIC_CLERK_SIGN_UP_URL.
+//  COMING_SOON=1        → Öffentlichkeit sieht NUR die Coming-Soon-Seite
+//                         (Warteliste). Alle anderen Seiten leiten auf "/".
+//  PREVIEW_PASSWORD=…   → Team-Zugang: nach Eingabe unter /preview wird ein
+//                         Cookie gesetzt, das Coming-Soon/Gate überspringt.
+//
+// Ist nur PREVIEW_PASSWORD gesetzt (ohne COMING_SOON), liegt die GANZE Seite
+// hinter der Passworteingabe. Sind beide leer → normaler Betrieb.
+// Zum Launch: beide Env-Variablen in Vercel entfernen.
+//
+// Clerk: eigenständige Instanz, Login unter /sign-in, /sign-up.
 // ============================================================
 
 const isPublicRoute = createRouteMatcher([
@@ -24,13 +24,69 @@ const isPublicRoute = createRouteMatcher([
   "/sign-in(.*)",
   "/sign-up(.*)",
   "/api/webhooks(.*)",
+  "/preview",
+  "/api/preview(.*)",
+  "/coming-soon",
+  "/api/waitlist(.*)",
 ]);
 
-export default clerkMiddleware((auth, req) => {
+const comingSoonOn =
+  process.env.COMING_SOON === "1" || process.env.COMING_SOON === "true";
+
+export default clerkMiddleware(async (auth, req) => {
+  const password = process.env.PREVIEW_PASSWORD;
+  const hasPreview = password
+    ? req.cookies.get(PREVIEW_COOKIE)?.value === (await sha256Hex(password))
+    : false;
+
+  const path = req.nextUrl.pathname;
+
+  // 1) COMING-SOON-Sperre (öffentlich) — Team mit Preview-Cookie ausgenommen.
+  if (comingSoonOn && !hasPreview) {
+    const allowed =
+      path === "/coming-soon" ||
+      path === "/preview" ||
+      path.startsWith("/api/preview") ||
+      path.startsWith("/api/waitlist");
+    if (allowed) return NextResponse.next();
+
+    if (path === "/") {
+      const url = req.nextUrl.clone();
+      url.pathname = "/coming-soon";
+      return NextResponse.rewrite(url);
+    }
+    // Alle anderen Seiten → Startseite (Coming Soon).
+    const home = req.nextUrl.clone();
+    home.pathname = "/";
+    home.search = "";
+    return NextResponse.redirect(home);
+  }
+
+  // 2) Reiner Passwortschutz (kein Coming Soon): ganze Seite hinter /preview.
+  if (password && !hasPreview && !comingSoonOn && !isPublicRouteGate(path)) {
+    const url = req.nextUrl.clone();
+    url.pathname = "/preview";
+    url.search = "";
+    url.searchParams.set("next", req.nextUrl.pathname + req.nextUrl.search);
+    return NextResponse.redirect(url);
+  }
+
+  // 3) Clerk-Auth für geschützte Routen.
   if (!isPublicRoute(req)) {
-    auth.protect();
+    await auth.protect();
   }
 });
+
+// Routen, die auch beim reinen Passwortschutz erreichbar bleiben müssen.
+function isPublicRouteGate(path: string) {
+  return (
+    path === "/preview" ||
+    path.startsWith("/api/preview") ||
+    path === "/coming-soon" ||
+    path.startsWith("/api/waitlist")
+  );
+}
+
 export const config = {
   matcher: [
     "/((?!_next|.*\\..*).*)",

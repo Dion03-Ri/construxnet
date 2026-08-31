@@ -138,6 +138,13 @@ function MarketingHeader() {
 }
 
 export default function AppShell({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname();
+
+  // Gate-/Coming-Soon-Seiten laufen bewusst ohne jede Navigation.
+  if (pathname === "/coming-soon" || pathname === "/preview") {
+    return <>{children}</>;
+  }
+
   return (
     <>
       <SignedOut>
