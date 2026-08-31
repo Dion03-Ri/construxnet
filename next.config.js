@@ -10,6 +10,8 @@ const NO_STORE = "private, no-store, no-cache, max-age=0, must-revalidate";
 // gehashte JS/CSS-Assets weiterhin dauerhaft cachebar bleiben.
 const DYNAMIC_ROUTES = [
   "/",
+  "/coming-soon",
+  "/preview",
   "/feed",
   "/network",
   "/network/:path*",
