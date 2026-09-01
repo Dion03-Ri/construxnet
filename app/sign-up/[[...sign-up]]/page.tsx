@@ -1,6 +1,6 @@
 import { SignUp } from "@clerk/nextjs";
 
-export const metadata = { title: "Registrieren · ConstruxNet" };
+export const metadata = { title: "Registrieren · Obtanet" };
 
 export default function SignUpPage() {
   return (

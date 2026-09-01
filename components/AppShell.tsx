@@ -39,7 +39,7 @@ function Logo({ href = "/", dark = false }: { href?: string; dark?: boolean }) {
         <HardHat className="h-5 w-5" />
       </span>
       <span className={cn("hidden text-[15px] sm:block", dark ? "text-white" : "text-slate-900")}>
-        Construx<span className="text-brand">Net</span>
+        Obta<span className="text-brand">net</span>
       </span>
     </Link>
   );

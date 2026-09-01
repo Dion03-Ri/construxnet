@@ -6,7 +6,7 @@ import { requireCompanyOrOnboard } from "@/lib/company";
 export const dynamic = "force-dynamic";
 
 export const metadata = {
-  title: "Empfangene Anfragen · ConstruxNet",
+  title: "Empfangene Anfragen · Obtanet",
   description: "Alle offenen Vernetzungs-Anfragen an dein Unternehmen.",
 };
 

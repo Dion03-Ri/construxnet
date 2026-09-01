@@ -2,9 +2,9 @@ import { deDE } from "@clerk/localizations";
 import type { Appearance } from "@clerk/types";
 
 /**
- * Deutsche Clerk-Lokalisierung mit ConstruxNet-eigenem Wording.
+ * Deutsche Clerk-Lokalisierung mit Obtanet-eigenem Wording.
  * Überschreibt die Titel/Untertitel, damit NICHT der geteilte App-Name
- * ("SourceOn") erscheint, sondern "ConstruxNet".
+ * ("SourceOn") erscheint, sondern "Obtanet".
  */
 export const clerkLocalization = {
   ...deDE,
@@ -12,7 +12,7 @@ export const clerkLocalization = {
     ...deDE.signIn,
     start: {
       ...deDE.signIn?.start,
-      title: "Anmelden bei ConstruxNet",
+      title: "Anmelden bei Obtanet",
       subtitle: "Willkommen zurück im B2B-Netzwerk der Baubranche",
     },
   },
@@ -20,7 +20,7 @@ export const clerkLocalization = {
     ...deDE.signUp,
     start: {
       ...deDE.signUp?.start,
-      title: "ConstruxNet-Konto erstellen",
+      title: "Obtanet-Konto erstellen",
       subtitle: "Werde Teil des B2B-Netzwerks der Schweizer Baubranche",
     },
   },

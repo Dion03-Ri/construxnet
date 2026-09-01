@@ -9,7 +9,7 @@ const NEWS = [
   { title: "Zementpreise Q3: KBOB-Index +2.4 % ggü. Vorquartal", tag: "Markt", readers: "1'240 Leser" },
   { title: "Armierungsstahl: Nachfrage zieht in der Zentralschweiz an", tag: "Beschaffung", readers: "860 Leser" },
   { title: "Neue SIA-118-Vorlagen für Rahmenverträge verfügbar", tag: "Recht", readers: "540 Leser" },
-  { title: "Smart Pools: Rekord-Bündelvolumen im Raum Zürich", tag: "ConstruxNet", readers: "2'100 Leser" },
+  { title: "Smart Pools: Rekord-Bündelvolumen im Raum Zürich", tag: "Obtanet", readers: "2'100 Leser" },
   { title: "Dämmstoffe: Lieferzeiten normalisieren sich nach Q2-Engpass", tag: "Markt", readers: "710 Leser" },
   { title: "RC-Beton: Kantone Bern & Aargau erhöhen Recycling-Quote", tag: "Nachhaltigkeit", readers: "430 Leser" },
   { title: "Transportbeton: Diesel-Zuschlag sinkt erstmals seit 2024", tag: "Logistik", readers: "980 Leser" },
@@ -23,7 +23,7 @@ export default function MarketNews() {
     <div className={cn(CARD, "p-4")}>
       <div className="mb-3 flex items-center gap-2">
         <Newspaper className="h-4 w-4 text-brand" />
-        <h3 className="text-[15px] font-semibold text-slate-900">ConstruxNet Market News</h3>
+        <h3 className="text-[15px] font-semibold text-slate-900">Obtanet Market News</h3>
       </div>
       <ul className="space-y-3">
         {visible.map((n) => (

@@ -1,4 +1,4 @@
-# ConstruxNet
+# Obtanet
 
 Smart-Bündelungs-Plattform für Schweizer Baumaterialien. Eigenständiges
 Projekt — technisch und markenmäßig getrennt von SourceOn, mit einer
@@ -30,7 +30,7 @@ Ausnahme: **gemeinsamer Login** über dieselbe Clerk-Instanz.
      von SourceOn kopieren)
    - Supabase-Keys: von einem **neuen, separaten** Supabase-Projekt
 3. SQL-Migration in Supabase ausführen: `supabase/migrations/01_schema.sql`
-4. Im Clerk-Dashboard (SourceOn-Projekt) unter "Domains" die ConstruxNet-
+4. Im Clerk-Dashboard (SourceOn-Projekt) unter "Domains" die Obtanet-
    Vercel-URL als Satellite Domain eintragen
 5. `npm run dev`
 

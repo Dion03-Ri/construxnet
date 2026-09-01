@@ -2,7 +2,7 @@ import { createClient } from "@supabase/supabase-js";
 import { auth } from "@clerk/nextjs/server";
 import { sanitizeAccessToken } from "./token";
 
-// Eigenständiges ConstruxNet Supabase-Projekt — bewusst getrennt
+// Eigenständiges Obtanet Supabase-Projekt — bewusst getrennt
 // von SourceOn's Supabase-Instanz. Keine Cross-Project-Queries.
 
 // Nur Origin (scheme://host) verwenden — entfernt Trailing-Slashes UND

@@ -6,7 +6,7 @@ import { createServerSupabaseClient } from "@/lib/supabase";
 export const dynamic = "force-dynamic";
 
 export const metadata = {
-  title: "Benachrichtigungen · ConstruxNet",
+  title: "Benachrichtigungen · Obtanet",
   description: "Pool-Updates, Angebote und Netzwerk-Aktivität",
 };
 

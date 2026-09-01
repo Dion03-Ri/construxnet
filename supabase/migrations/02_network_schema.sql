@@ -1,5 +1,5 @@
 -- ============================================================
--- ConstruxNet — Migration 02: B2B-Netzwerk
+-- Obtanet — Migration 02: B2B-Netzwerk
 -- Erweitert companies und ergänzt network_posts, messages, connections.
 -- Auth-Mapping wie in 01_schema.sql: companies.clerk_user_id = auth.jwt()->>'sub'
 --

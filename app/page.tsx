@@ -64,7 +64,7 @@ function HeroMock() {
           <span className="h-2.5 w-2.5 rounded-full bg-white/15" />
           <span className="h-2.5 w-2.5 rounded-full bg-white/15" />
           <span className="ml-2 flex-1 truncate rounded-md bg-white/5 px-2.5 py-1 text-[11px] text-white/40 ring-1 ring-white/10">
-            construxnet.ch/pools
+            obtanet.ch/pools
           </span>
         </div>
         <div className="space-y-3 p-4">
@@ -493,7 +493,7 @@ export default function Home() {
               <span className="grid h-8 w-8 place-items-center rounded-lg bg-gradient-to-br from-brand to-brand-600 text-navy-950">
                 <HardHat className="h-4 w-4" />
               </span>
-              Construx<span className="text-brand">Net</span>
+              Obta<span className="text-brand">net</span>
             </div>
             <p className="mt-3 max-w-xs text-[13px] leading-relaxed text-white/50">
               Das B2B-Netzwerk der Schweizer Baubranche — vernetzen, verhandeln, beschaffen.
@@ -517,7 +517,7 @@ export default function Home() {
           ))}
         </div>
         <div className="border-t border-white/10 py-5 text-center text-[12px] text-white/40">
-          © {new Date().getFullYear()} ConstruxNet · Schweizer Baubranche
+          © {new Date().getFullYear()} Obtanet · Schweizer Baubranche
         </div>
       </footer>
     </main>

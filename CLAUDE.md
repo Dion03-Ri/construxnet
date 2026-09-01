@@ -1,7 +1,9 @@
 # Projekt-Kontext (für Claude — beim Start automatisch gelesen)
 
 ## Was ist das
-**Obtanet** (intern noch „ConstruxNet") — B2B-Netzwerk der Schweizer Baubranche.
+**Obtanet** — B2B-Netzwerk der Schweizer Baubranche. Branding ist final: im
+Code/UI nirgends mehr "ConstruxNet" (Repo- und Branch-Name bleiben technisch
+unverändert, sind aber nicht user-sichtbar).
 Leitidee: **„Vernetzen fürs Beschaffen"** — Firmen vernetzen sich, bündeln
 Materialbedarf zu **Smart Pools** und beschaffen günstiger.
 
@@ -47,6 +49,5 @@ Supabase (server + browser client, `supabaseAdmin` service-role), Leaflet/OSM
   ganzen Baum. Für einfache Edits Modell **Sonnet**, Opus nur für schwere Arbeit.
 
 ## OFFEN / als Nächstes
-- **Startseite (`app/page.tsx`) Redesign**: dunkler Mockup ist erstellt und vom
-  Nutzer noch NICHT final freigegeben → erst nach OK 1:1 in `app/page.tsx`
-  übernehmen. Offene Detailfrage: Branding **Obtanet vs. ConstruxNet**.
+- Startseiten-Redesign (dunkel, ehrliche Inhalte) ist gemergt. Branding
+  einheitlich auf Obtanet umgestellt — nichts aktuell offen.

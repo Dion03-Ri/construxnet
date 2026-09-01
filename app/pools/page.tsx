@@ -5,7 +5,7 @@ import BundleEnginePanel from "@/components/pools/BundleEnginePanel";
 export const dynamic = "force-dynamic";
 
 export const metadata = {
-  title: "Smart Pools · ConstruxNet",
+  title: "Smart Pools · Obtanet",
   description: "Offene, gebündelte Bedarfe der Schweizer Baubranche — beitreten und sparen",
 };
 

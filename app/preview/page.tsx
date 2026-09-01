@@ -1,6 +1,6 @@
 export const dynamic = "force-dynamic";
 
-export const metadata = { title: "Zugang · ConstruxNet" };
+export const metadata = { title: "Zugang · Obtanet" };
 
 export default async function PreviewPage({
   searchParams,
@@ -13,7 +13,7 @@ export default async function PreviewPage({
     <main className="flex min-h-screen items-center justify-center bg-navy-950 px-4">
       <div className="w-full max-w-sm text-center">
         <div className="text-2xl font-extrabold tracking-tight text-white">
-          Construx<span className="text-brand">Net</span>
+          Obta<span className="text-brand">net</span>
         </div>
         <p className="mt-6 text-[13px] leading-relaxed text-white/55">
           Diese Umgebung befindet sich im Aufbau und ist noch nicht öffentlich.

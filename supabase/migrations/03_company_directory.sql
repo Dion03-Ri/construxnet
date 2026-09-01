@@ -1,5 +1,5 @@
 -- ============================================================
--- ConstruxNet — Migration 03: Firmen-Directory
+-- Obtanet — Migration 03: Firmen-Directory
 --
 -- Für die LinkedIn-artige Vernetzung müssen Firmenprofile im Netzwerk
 -- auffindbar sein (Directory /network + Auflösung der Post-Autoren im Feed).
