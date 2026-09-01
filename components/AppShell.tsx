@@ -145,10 +145,14 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
     return <>{children}</>;
   }
 
+  // Die Startseite bringt ihren eigenen (hellen) Header mit — keine zweite,
+  // dunkle MarketingHeader-Leiste darüber.
+  const isHome = pathname === "/";
+
   return (
     <>
       <SignedOut>
-        <MarketingHeader />
+        {!isHome && <MarketingHeader />}
         {children}
       </SignedOut>
 
