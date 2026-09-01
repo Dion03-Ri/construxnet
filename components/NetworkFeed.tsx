@@ -24,6 +24,7 @@ import {
 } from "lucide-react";
 import { useSupabaseBrowser } from "@/lib/supabase-browser";
 import RecommendedPartners from "@/components/feed/RecommendedPartners";
+import FeedBundleHero from "@/components/feed/FeedBundleHero";
 import { SAMPLE_POSTS, type MockPost } from "@/data/feedMock";
 import { CARD, badge } from "@/lib/ui";
 import { cn } from "@/lib/utils";
@@ -545,7 +546,7 @@ function SkeletonCard() {
   );
 }
 
-export default function NetworkFeed({ hero }: { hero?: React.ReactNode }) {
+export default function NetworkFeed() {
   const supabase = useSupabaseBrowser();
 
   const [posts, setPosts] = useState<Post[]>([]);
@@ -560,9 +561,6 @@ export default function NetworkFeed({ hero }: { hero?: React.ReactNode }) {
   // Endloses Nachladen: Seite für Seite, wie im LinkedIn-Feed.
   const pageRef = useRef(0);
   const sentinelRef = useRef<HTMLDivElement | null>(null);
-  // Ab lg scrollt dieser Strang statt des Fensters — er ist dann der
-  // Bezugsrahmen für den Sentinel.
-  const scrollRef = useRef<HTMLDivElement | null>(null);
 
   const fetchPage = useCallback(
     async (page: number) => {
@@ -642,14 +640,11 @@ export default function NetworkFeed({ hero }: { hero?: React.ReactNode }) {
   useEffect(() => {
     const el = sentinelRef.current;
     if (!el || !hasMore) return;
-    // Scrollt der innere Strang (ab lg), ist er der Root — sonst das Fenster.
-    const container = scrollRef.current;
-    const root = container && container.scrollHeight > container.clientHeight ? container : null;
     const io = new IntersectionObserver(
       (entries) => {
         if (entries[0]?.isIntersecting) loadMore();
       },
-      { root, rootMargin: "400px" },
+      { rootMargin: "600px" },
     );
     io.observe(el);
     return () => io.disconnect();
@@ -668,12 +663,10 @@ export default function NetworkFeed({ hero }: { hero?: React.ReactNode }) {
   ];
 
   return (
-    <div className="lg:flex lg:min-h-0 lg:flex-col">
-      {/* Bündel-Hero bleibt oben stehen und scrollt nicht mit */}
-      {hero && <div className="mb-3 shrink-0">{hero}</div>}
+    <div className="space-y-3">
+      {/* Kern des Modells zuerst & hervorgehoben: bündeln & sparen */}
+      <FeedBundleHero />
 
-      {/* Ab lg scrollt ausschliesslich dieser Strang — nicht die ganze Seite */}
-      <div ref={scrollRef} className="feed-scroll space-y-3 lg:min-h-0 lg:flex-1 lg:overflow-y-auto lg:pr-1">
       <Composer onCreated={load} />
 
       {/* Empfohlene Partner für die Beschaffung */}
@@ -723,7 +716,6 @@ export default function NetworkFeed({ hero }: { hero?: React.ReactNode }) {
           )}
         </>
       )}
-      </div>
     </div>
   );
 }
