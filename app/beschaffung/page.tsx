@@ -12,10 +12,10 @@ export const metadata = {
 export default async function BeschaffungPage({
   searchParams,
 }: {
-  searchParams: Promise<{ material?: string }>;
+  searchParams: Promise<{ material?: string; menge?: string }>;
 }) {
   await requireCompanyOrOnboard();
-  const { material } = await searchParams;
+  const { material, menge } = await searchParams;
   return (
     <main className="mx-auto max-w-5xl px-4 py-6 sm:px-6 sm:py-8">
       <header className="mb-6 flex items-center gap-3">
@@ -25,12 +25,13 @@ export default async function BeschaffungPage({
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-slate-900">Materialbedarf melden</h1>
           <p className="text-sm text-slate-500">
-            In vier Schritten zum Angebot — optional gebündelt für bis zu 20 % Rabatt.
+            Mehrere Materialien auf einmal — optional gebündelt für einen garantierten
+            Netto-Mindestvorteil gegenüber KBOB.
           </p>
         </div>
       </header>
 
-      <BeschaffungFlow initialMaterial={material} />
+      <BeschaffungFlow initialMaterial={material} initialQty={menge} />
     </main>
   );
 }
