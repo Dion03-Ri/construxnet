@@ -1,6 +1,6 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
-import { PREVIEW_COOKIE, sha256Hex } from "@/lib/preview";
+import { PREVIEW_COOKIE, sha256Hex, getBypassPassword } from "@/lib/preview";
 
 // ============================================================
 // ZUGANGS-STEUERUNG (Entwicklungsphase / Pre-Launch)
@@ -34,10 +34,10 @@ const comingSoonOn =
   process.env.COMING_SOON === "1" || process.env.COMING_SOON === "true";
 
 export default clerkMiddleware(async (auth, req) => {
-  const password = process.env.PREVIEW_PASSWORD;
-  const hasPreview = password
-    ? req.cookies.get(PREVIEW_COOKIE)?.value === (await sha256Hex(password))
-    : false;
+  // Zugangs-Passwort: Env bevorzugt, sonst Standard — so gibt es immer einen Weg rein.
+  const bypassPw = getBypassPassword();
+  const hasPreview =
+    req.cookies.get(PREVIEW_COOKIE)?.value === (await sha256Hex(bypassPw));
 
   const path = req.nextUrl.pathname;
 
@@ -63,7 +63,7 @@ export default clerkMiddleware(async (auth, req) => {
   }
 
   // 2) Reiner Passwortschutz (kein Coming Soon): ganze Seite hinter /preview.
-  if (password && !hasPreview && !comingSoonOn && !isPublicRouteGate(path)) {
+  if (process.env.PREVIEW_PASSWORD && !hasPreview && !comingSoonOn && !isPublicRouteGate(path)) {
     const url = req.nextUrl.clone();
     url.pathname = "/preview";
     url.search = "";

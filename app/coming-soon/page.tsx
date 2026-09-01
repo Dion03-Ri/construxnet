@@ -7,6 +7,11 @@ export const metadata = {
   description: "Die Plattform für die Baubranche. Sei unter den Ersten.",
 };
 
-export default function ComingSoonPage() {
-  return <ComingSoon />;
+export default async function ComingSoonPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ error?: string }>;
+}) {
+  const { error } = await searchParams;
+  return <ComingSoon accessError={error === "1"} />;
 }

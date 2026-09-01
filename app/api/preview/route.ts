@@ -1,17 +1,19 @@
 import { NextResponse } from "next/server";
-import { PREVIEW_COOKIE, sha256Hex, safeNext } from "@/lib/preview";
+import { PREVIEW_COOKIE, sha256Hex, safeNext, getBypassPassword } from "@/lib/preview";
 
 // Setzt nach korrekter Passworteingabe das Preview-Cookie (Team-Zugang).
 export async function POST(req: Request) {
   const form = await req.formData();
   const password = String(form.get("password") ?? "");
   const next = safeNext(String(form.get("next") ?? "/"));
+  // Seite, zu der bei falschem Passwort zurückgeleitet wird (Coming-Soon oder /preview).
+  const from = safeNext(String(form.get("from") ?? "/preview"));
 
-  const expected = process.env.PREVIEW_PASSWORD;
+  const expected = getBypassPassword();
   const origin = new URL(req.url).origin;
 
-  if (!expected || password !== expected) {
-    const back = new URL("/preview", origin);
+  if (password !== expected) {
+    const back = new URL(from, origin);
     back.searchParams.set("error", "1");
     if (next && next !== "/") back.searchParams.set("next", next);
     return NextResponse.redirect(back, { status: 303 });

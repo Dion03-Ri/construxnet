@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { ArrowRight, Loader2, Check } from "lucide-react";
 
-export default function ComingSoon() {
+export default function ComingSoon({ accessError = false }: { accessError?: boolean }) {
   const [email, setEmail] = useState("");
   const [state, setState] = useState<"idle" | "loading" | "done" | "error">("idle");
   const [msg, setMsg] = useState("");
@@ -108,6 +108,33 @@ export default function ComingSoon() {
             )}
           </form>
         )}
+
+        {/* Team-Zugang: Passwort eingeben, um die Vorschau zu sehen */}
+        <div className="mx-auto mt-10 max-w-sm border-t border-white/10 pt-6">
+          <p className="text-[12px] font-semibold uppercase tracking-[0.14em] text-white/40">
+            Team-Zugang
+          </p>
+          <form action="/api/preview" method="POST" className="mt-3 flex flex-col gap-2.5 sm:flex-row">
+            <input type="hidden" name="next" value="/" />
+            <input type="hidden" name="from" value="/coming-soon" />
+            <input
+              type="password"
+              name="password"
+              required
+              placeholder="Passwort"
+              className="h-11 flex-1 rounded-lg border border-white/12 bg-white/5 px-4 text-sm text-white outline-none placeholder:text-white/35 focus:border-brand/60"
+            />
+            <button
+              type="submit"
+              className="inline-flex h-11 items-center justify-center rounded-lg border border-white/15 px-5 text-sm font-semibold text-white transition-colors hover:bg-white/10"
+            >
+              Zugang
+            </button>
+          </form>
+          {accessError ? (
+            <p className="mt-2.5 text-[13px] font-medium text-rose-400">Falsches Passwort.</p>
+          ) : null}
+        </div>
       </div>
     </main>
   );
