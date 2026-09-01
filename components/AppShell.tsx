@@ -20,8 +20,8 @@ import ProfileMenu from "@/components/header/ProfileMenu";
 type NavItem = { href: string; label: string; icon: LucideIcon };
 
 const NAV: NavItem[] = [
-  { href: "/network", label: "Netzwerk", icon: Users },
   { href: "/feed", label: "Feed", icon: Home },
+  { href: "/network", label: "Netzwerk", icon: Users },
   { href: "/pools", label: "Smart Pools", icon: Package },
   { href: "/messages", label: "Nachrichten", icon: MessageSquare },
   { href: "/kbob", label: "KBOB", icon: LineChart },
@@ -32,7 +32,7 @@ function useActive() {
   return (href: string) => pathname === href || pathname.startsWith(href + "/");
 }
 
-function Logo({ href = "/feed", dark = false }: { href?: string; dark?: boolean }) {
+function Logo({ href = "/", dark = false }: { href?: string; dark?: boolean }) {
   return (
     <Link href={href} className="flex items-center gap-2 font-semibold tracking-tight">
       <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-brand to-brand-600 text-white shadow-sm shadow-brand/30">
