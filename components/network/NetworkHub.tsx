@@ -299,7 +299,8 @@ export default function NetworkHub() {
             <Layers className="h-4 w-4 text-brand" /> Smart Pools
           </div>
           <p className="mt-1.5 text-[12px] leading-relaxed text-slate-500">
-            Vernetzte Firmen bündeln ihren Bedarf und sparen Ø 12–18 % gegenüber KBOB.
+            Bündle deinen Bedarf mit anderen Firmen — Sealed-Bid-Angebote gegen KBOB sichern
+            einen garantierten Netto-Mindestvorteil.
           </p>
           <Link href="/pools" className="mt-3 inline-flex items-center gap-1.5 rounded-md bg-brand px-3.5 py-2 text-[13px] font-semibold text-navy-900 transition-colors hover:bg-brand-500">
             Zu den Bündeln <ArrowRight className="h-3.5 w-3.5" />
