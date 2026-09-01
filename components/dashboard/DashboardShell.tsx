@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 import {
@@ -34,10 +34,18 @@ import {
   Check,
   ChevronRight,
   Lock,
+  Building2,
+  UploadCloud,
+  Trash2,
+  Plus,
+  Minus,
+  Calculator,
 } from "lucide-react";
 import type { Company } from "@/lib/company";
 import { CARD, badge } from "@/lib/ui";
 import { cn } from "@/lib/utils";
+import { PROC_MATERIALS, PROC_CATEGORIES, tierForVolume, type ProcMaterial, type ProcCategory } from "@/data/procurement";
+import kbobData from "@/data/kbobData.json";
 
 const C = {
   brand: "#D99000",
@@ -120,6 +128,7 @@ const POOLS = [
 ];
 
 const NAV_ALL = [
+  { key: "workspace", label: "Beschaffung", icon: Search },
   { key: "overview", label: "Übersicht", icon: LayoutDashboard },
   { key: "orders", label: "Bestellungen", icon: ShoppingCart, badge: 7 },
   { key: "tenders", label: "Ausschreibungen", icon: Gavel, badge: 3, supplierOnly: true },
@@ -127,6 +136,16 @@ const NAV_ALL = [
   { key: "reports", label: "Berichte", icon: BarChart3 },
   { key: "settings", label: "Einstellungen", icon: Settings },
 ];
+
+// Baustellen-Auswahl (Workspace-Kontext) — vorerst lokal, noch nicht an eine
+// eigene Projekt-Tabelle angebunden.
+const PROJECTS = [
+  { id: "p1", name: "Neubau MFH Zürich-West", city: "Zürich" },
+  { id: "p2", name: "Sanierung EFH Bächli", city: "Bern" },
+  { id: "p3", name: "Gewerbebau Halle 4", city: "Aarau" },
+];
+
+type CartItem = { key: string; label: string; unit: string; kbobPrice: number; qty: number };
 
 /* -------------------------------------------------------------------------- */
 /*  Kleinteile                                                                */
@@ -491,6 +510,299 @@ function ContractsPanel() {
 }
 
 /* -------------------------------------------------------------------------- */
+/*  Beschaffungs-Workspace: KI-Suche, PDF-Dropzone, Material-Tabelle          */
+/* -------------------------------------------------------------------------- */
+
+function WorkspacePanel({ onAdd }: { onAdd: (m: ProcMaterial) => void }) {
+  const [query, setQuery] = useState("");
+  const [cat, setCat] = useState<"ALL" | ProcCategory>("ALL");
+  const [fileName, setFileName] = useState<string | null>(null);
+  const [dragOver, setDragOver] = useState(false);
+
+  const results = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    return PROC_MATERIALS.filter((m) => {
+      if (cat !== "ALL" && m.category !== cat) return false;
+      if (!q) return true;
+      return (
+        m.label.toLowerCase().includes(q) ||
+        m.sia.toLowerCase().includes(q) ||
+        m.category.toLowerCase().includes(q)
+      );
+    });
+  }, [query, cat]);
+
+  function handleFiles(files: FileList | null) {
+    const f = files?.[0];
+    if (f) setFileName(f.name);
+  }
+
+  return (
+    <div className="space-y-4">
+      {/* Suche + Ausschreibung hochladen */}
+      <div className={cn(CARD, "p-4")}>
+        <div className="flex flex-col gap-3 sm:flex-row">
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+            <input
+              type="text"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Material, SIA-Norm oder Bedarf beschreiben …"
+              className="w-full rounded-md border border-slate-300 bg-slate-50 py-2.5 pl-9 pr-3 text-sm text-slate-900 placeholder:text-slate-400 outline-none focus:border-brand focus:bg-white focus:ring-1 focus:ring-brand/30"
+            />
+          </div>
+          <select
+            value={cat}
+            onChange={(e) => setCat(e.target.value as "ALL" | ProcCategory)}
+            className="rounded-md border border-slate-300 bg-slate-50 px-3 py-2.5 text-sm text-slate-700 outline-none focus:border-brand"
+          >
+            <option value="ALL">Alle Kategorien</option>
+            {PROC_CATEGORIES.map((c) => (
+              <option key={c} value={c}>{c}</option>
+            ))}
+          </select>
+        </div>
+
+        <label
+          onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
+          onDragLeave={() => setDragOver(false)}
+          onDrop={(e) => { e.preventDefault(); setDragOver(false); handleFiles(e.dataTransfer.files); }}
+          className={cn(
+            "mt-3 flex cursor-pointer items-center justify-center gap-2.5 rounded-md border border-dashed px-4 py-4 text-center text-[13px] transition-colors",
+            dragOver ? "border-brand bg-brand/5 text-brand" : "border-slate-300 text-slate-500 hover:border-brand/40 hover:text-brand",
+          )}
+        >
+          <UploadCloud className="h-4 w-4 shrink-0" />
+          {fileName ? (
+            <span className="flex items-center gap-2 truncate font-medium text-slate-700">
+              {fileName}
+              <button type="button" onClick={(e) => { e.preventDefault(); setFileName(null); }} className="text-slate-400 hover:text-rose-500">
+                ✕
+              </button>
+            </span>
+          ) : (
+            <span>Leistungsverzeichnis / Ausschreibung als PDF hierher ziehen oder klicken</span>
+          )}
+          <input type="file" accept="application/pdf" className="hidden" onChange={(e) => handleFiles(e.target.files)} />
+        </label>
+      </div>
+
+      {/* Material-Tabelle */}
+      <div className={cn(CARD, "overflow-hidden p-0")}>
+        <div className="flex items-center justify-between border-b border-slate-100 px-4 py-3">
+          <h3 className="text-[15px] font-semibold text-slate-900">Material-Katalog</h3>
+          <span className="text-[11px] text-slate-400">{results.length} von {PROC_MATERIALS.length}</span>
+        </div>
+        <div className="max-h-[440px] overflow-y-auto">
+          <table className="w-full text-left text-[13px]">
+            <thead className="sticky top-0 bg-white">
+              <tr className="text-[11px] uppercase tracking-wider text-slate-400">
+                <th className="px-4 pb-2 pt-3 font-medium">Material</th>
+                <th className="hidden px-2 pb-2 pt-3 font-medium sm:table-cell">Spezifikation</th>
+                <th className="px-2 pb-2 pt-3 font-medium">KBOB CHF/Einheit</th>
+                <th className="px-4 pb-2 pt-3 text-right font-medium">Aktion</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-100">
+              {results.map((m) => (
+                <tr key={m.key}>
+                  <td className="px-4 py-2.5">
+                    <div className="font-medium text-slate-800">{m.label}</div>
+                    <div className="text-[11px] text-slate-400">{m.category}</div>
+                  </td>
+                  <td className="hidden px-2 py-2.5 text-[12px] text-slate-500 sm:table-cell">{m.sia}</td>
+                  <td className="px-2 py-2.5 tabular-nums text-slate-700">{chf(m.kbobPrice, m.kbobPrice % 1 ? 2 : 0)} / {m.unit}</td>
+                  <td className="px-4 py-2.5 text-right">
+                    <button
+                      type="button"
+                      onClick={() => onAdd(m)}
+                      className="inline-flex items-center gap-1 rounded-md border border-brand/30 bg-brand/10 px-2.5 py-1.5 text-xs font-semibold text-brand transition-colors hover:bg-brand/20"
+                    >
+                      <Plus className="h-3.5 w-3.5" /> Warenkorb
+                    </button>
+                  </td>
+                </tr>
+              ))}
+              {results.length === 0 && (
+                <tr>
+                  <td colSpan={4} className="px-4 py-8 text-center text-slate-400">Keine Treffer.</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Rechte Spalte: Warenkorb, Kostenübersicht, Quick Tools                    */
+/* -------------------------------------------------------------------------- */
+
+function CartPanel({
+  cart,
+  onQty,
+  onRemove,
+}: {
+  cart: CartItem[];
+  onQty: (key: string, qty: number) => void;
+  onRemove: (key: string) => void;
+}) {
+  const subtotal = cart.reduce((s, c) => s + c.qty * c.kbobPrice, 0);
+  const savings = cart.reduce((s, c) => s + c.qty * c.kbobPrice * (tierForVolume(c.qty).discount / 100), 0);
+
+  return (
+    <div className={cn(CARD, "p-4")}>
+      <div className="flex items-center justify-between">
+        <h3 className="text-[13px] font-semibold uppercase tracking-wider text-slate-500">Warenkorb</h3>
+        {cart.length > 0 && <span className={badge("gold", true)}>{cart.length}</span>}
+      </div>
+
+      {cart.length === 0 ? (
+        <p className="mt-3 text-[13px] text-slate-400">Noch keine Materialien gewählt.</p>
+      ) : (
+        <div className="mt-3 space-y-3">
+          {cart.map((c) => (
+            <div key={c.key} className="rounded-md border border-slate-200 p-2.5">
+              <div className="flex items-start justify-between gap-2">
+                <span className="text-[13px] font-medium leading-tight text-slate-800">{c.label}</span>
+                <button type="button" onClick={() => onRemove(c.key)} className="shrink-0 text-slate-300 hover:text-rose-500">
+                  <Trash2 className="h-3.5 w-3.5" />
+                </button>
+              </div>
+              <div className="mt-2 flex items-center justify-between">
+                <div className="inline-flex items-center gap-1.5 rounded-md border border-slate-200 px-1.5 py-1">
+                  <button type="button" onClick={() => onQty(c.key, Math.max(1, c.qty - 1))} className="text-slate-400 hover:text-slate-700">
+                    <Minus className="h-3 w-3" />
+                  </button>
+                  <span className="w-12 text-center text-[12px] tabular-nums text-slate-700">{c.qty} {c.unit}</span>
+                  <button type="button" onClick={() => onQty(c.key, c.qty + 1)} className="text-slate-400 hover:text-slate-700">
+                    <Plus className="h-3 w-3" />
+                  </button>
+                </div>
+                <span className="text-[12px] font-semibold tabular-nums text-slate-700">CHF {chf(c.qty * c.kbobPrice)}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      <div className="mt-4 space-y-1.5 border-t border-slate-100 pt-3">
+        <div className="flex items-center justify-between text-[13px] text-slate-500">
+          <span>Zwischensumme (KBOB)</span>
+          <span className="font-medium text-slate-800">CHF {chf(subtotal)}</span>
+        </div>
+        <div className="flex items-center justify-between text-[13px] text-accent">
+          <span>Geschätzter Mindestvorteil</span>
+          <span className="font-semibold">− CHF {chf(savings)}</span>
+        </div>
+        <div className="flex items-center justify-between border-t border-slate-100 pt-1.5 text-sm">
+          <span className="font-semibold text-slate-900">Zielpreis (indikativ)</span>
+          <span className="font-bold text-slate-900">CHF {chf(subtotal - savings)}</span>
+        </div>
+      </div>
+
+      {cart.length > 0 ? (
+        <Link
+          href="/beschaffung"
+          className="mt-4 flex w-full items-center justify-center gap-1.5 rounded-md bg-brand px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-brand-600"
+        >
+          Bedarf einreichen
+        </Link>
+      ) : (
+        <span className="mt-4 flex w-full cursor-not-allowed items-center justify-center gap-1.5 rounded-md bg-slate-100 px-4 py-2 text-sm font-semibold text-slate-400">
+          Bedarf einreichen
+        </span>
+      )}
+    </div>
+  );
+}
+
+type KbobMaterials = Record<
+  string,
+  { label: string; unit: string; regions: Record<string, { period: string; kbob: number }[]> }
+>;
+
+function QuickToolsPanel() {
+  const [area, setArea] = useState("");
+  const [waste, setWaste] = useState("8");
+  const areaNum = parseFloat(area.replace(",", "."));
+  const wasteNum = parseFloat(waste.replace(",", "."));
+  const result = Number.isFinite(areaNum) && Number.isFinite(wasteNum) ? areaNum * (1 + wasteNum / 100) : null;
+
+  const materials = (kbobData as { materials: KbobMaterials }).materials;
+  const beton = materials["beton"];
+  const points = beton?.regions?.["zuerich"] ?? [];
+  const last = points[points.length - 1];
+  const prev = points[points.length - 2];
+  const delta = last && prev ? ((last.kbob - prev.kbob) / prev.kbob) * 100 : 0;
+
+  return (
+    <div className="space-y-4">
+      <div className={cn(CARD, "p-4")}>
+        <h3 className="flex items-center gap-1.5 text-[13px] font-semibold uppercase tracking-wider text-slate-500">
+          <Calculator className="h-3.5 w-3.5" /> Mengen-/Verschnittrechner
+        </h3>
+        <div className="mt-3 grid grid-cols-2 gap-2">
+          <div>
+            <label className="text-[11px] text-slate-400">Menge / Fläche</label>
+            <input
+              value={area}
+              onChange={(e) => setArea(e.target.value)}
+              type="text"
+              inputMode="decimal"
+              placeholder="0"
+              className="mt-1 w-full rounded-md border border-slate-300 bg-slate-50 px-2.5 py-1.5 text-sm text-slate-900 outline-none focus:border-brand"
+            />
+          </div>
+          <div>
+            <label className="text-[11px] text-slate-400">Verschnitt %</label>
+            <input
+              value={waste}
+              onChange={(e) => setWaste(e.target.value)}
+              type="text"
+              inputMode="decimal"
+              className="mt-1 w-full rounded-md border border-slate-300 bg-slate-50 px-2.5 py-1.5 text-sm text-slate-900 outline-none focus:border-brand"
+            />
+          </div>
+        </div>
+        <div className="mt-2.5 flex items-center justify-between rounded-md bg-slate-50 px-3 py-2 text-[13px]">
+          <span className="text-slate-500">Bestellmenge</span>
+          <span className="font-semibold text-slate-900">
+            {result !== null ? result.toLocaleString("de-CH", { maximumFractionDigits: 2 }) : "–"}
+          </span>
+        </div>
+      </div>
+
+      <div className={cn(CARD, "p-4")}>
+        <div className="flex items-center justify-between">
+          <h3 className="flex items-center gap-1.5 text-[13px] font-semibold uppercase tracking-wider text-slate-500">
+            <Coins className="h-3.5 w-3.5" /> KBOB-Index
+          </h3>
+          <Link href="/kbob" className="text-[11px] font-semibold text-brand hover:underline">Details →</Link>
+        </div>
+        {last ? (
+          <div className="mt-2 flex items-end justify-between">
+            <div>
+              <div className="text-[11px] text-slate-400">{beton.label} · Zürich</div>
+              <div className="text-xl font-bold tabular-nums text-slate-900">CHF {chf(last.kbob, 2)}</div>
+            </div>
+            <span className={cn("inline-flex items-center gap-0.5 text-[12px] font-semibold", delta >= 0 ? "text-accent" : "text-rose-500")}>
+              {delta >= 0 ? <ArrowUpRight className="h-3.5 w-3.5" /> : <ArrowDownRight className="h-3.5 w-3.5" />}
+              {Math.abs(delta).toFixed(1)}%
+            </span>
+          </div>
+        ) : (
+          <p className="mt-2 text-[13px] text-slate-400">Keine Daten.</p>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/* -------------------------------------------------------------------------- */
 /*  Shell                                                                     */
 /* -------------------------------------------------------------------------- */
 
@@ -503,13 +815,29 @@ export default function DashboardShell({ company }: { company: Company }) {
   const role: "buyer" | "supplier" = isSupplier ? "supplier" : "buyer";
 
   const nav = NAV_ALL.filter((n) => !n.supplierOnly || isSupplier);
-  const [view, setView] = useState("overview");
-  const title = nav.find((n) => n.key === view)?.label ?? "Übersicht";
+  const [view, setView] = useState("workspace");
+  const [projectId, setProjectId] = useState(PROJECTS[0].id);
+  const [cart, setCart] = useState<CartItem[]>([]);
+  const title = nav.find((n) => n.key === view)?.label ?? "Beschaffung";
+
+  function addToCart(m: ProcMaterial) {
+    setCart((prev) => {
+      const existing = prev.find((c) => c.key === m.key);
+      if (existing) return prev.map((c) => (c.key === m.key ? { ...c, qty: c.qty + 1 } : c));
+      return [...prev, { key: m.key, label: m.label, unit: m.unit, kbobPrice: m.kbobPrice, qty: 1 }];
+    });
+  }
+  function updateQty(key: string, qty: number) {
+    setCart((prev) => prev.map((c) => (c.key === key ? { ...c, qty } : c)));
+  }
+  function removeFromCart(key: string) {
+    setCart((prev) => prev.filter((c) => c.key !== key));
+  }
 
   return (
-    <div className={cn(CARD, "grid grid-cols-1 overflow-hidden lg:grid-cols-[240px_minmax(0,1fr)]")}>
-      {/* Sidebar */}
-      <aside className="border-b border-slate-200 bg-slate-50/60 lg:border-b-0 lg:border-r">
+    <div className="grid grid-cols-1 gap-4 lg:grid-cols-[240px_minmax(0,1fr)] xl:grid-cols-[240px_minmax(0,1fr)_300px]">
+      {/* Linke Spalte: Navigation & Projekt-Auswahl */}
+      <aside className={cn(CARD, "h-fit overflow-hidden")}>
         <div className="flex items-center gap-2.5 border-b border-slate-200 px-3 py-3">
           <span className="grid h-9 w-9 shrink-0 place-items-center overflow-hidden rounded-lg bg-gradient-to-br from-brand to-brand-600 text-sm font-bold text-white">
             {company.logo_url ? (
@@ -525,14 +853,24 @@ export default function DashboardShell({ company }: { company: Company }) {
           </div>
         </div>
 
-        <div className="px-3 py-3">
-          <div className="relative">
-            <Search className="absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-slate-400" />
-            <input type="text" placeholder="Suchen …" className="w-full rounded-md border border-slate-300 bg-white py-2 pl-8 pr-3 text-[13px] text-slate-900 placeholder:text-slate-400 focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand/30" />
+        {!isSupplier && (
+          <div className="border-b border-slate-200 px-3 py-3">
+            <label className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+              <Building2 className="h-3 w-3" /> Baustelle / Projekt
+            </label>
+            <select
+              value={projectId}
+              onChange={(e) => setProjectId(e.target.value)}
+              className="mt-1.5 w-full rounded-md border border-slate-300 bg-white px-2.5 py-2 text-[13px] text-slate-900 outline-none focus:border-brand focus:ring-1 focus:ring-brand/30"
+            >
+              {PROJECTS.map((p) => (
+                <option key={p.id} value={p.id}>{p.name} · {p.city}</option>
+              ))}
+            </select>
           </div>
-        </div>
+        )}
 
-        <nav className="px-2 pb-3">
+        <nav className="px-2 py-3">
           {nav.map((n) => {
             const active = view === n.key;
             return (
@@ -567,8 +905,8 @@ export default function DashboardShell({ company }: { company: Company }) {
         )}
       </aside>
 
-      {/* Main */}
-      <div className="min-w-0 bg-slate-50/30">
+      {/* Mittlere Spalte: Arbeitsbereich */}
+      <div className={cn(CARD, "min-w-0 overflow-hidden")}>
         <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200 bg-white px-4 py-3 sm:px-6">
           <h2 className="text-lg font-bold tracking-tight text-slate-900">{title}</h2>
           <div className="flex items-center gap-2">
@@ -584,6 +922,7 @@ export default function DashboardShell({ company }: { company: Company }) {
         <div className="p-4 sm:p-6">
           <AnimatePresence mode="wait">
             <motion.div key={view} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }}>
+              {view === "workspace" && <WorkspacePanel onAdd={addToCart} />}
               {view === "overview" && <OverviewPanel role={role} />}
               {view === "orders" && <OrdersPanel />}
               {view === "tenders" && isSupplier && <TendersPanel />}
@@ -604,6 +943,12 @@ export default function DashboardShell({ company }: { company: Company }) {
           </AnimatePresence>
         </div>
       </div>
+
+      {/* Rechte Spalte: Warenkorb, Kosten & Quick Tools */}
+      <aside className="space-y-4">
+        <CartPanel cart={cart} onQty={updateQty} onRemove={removeFromCart} />
+        <QuickToolsPanel />
+      </aside>
     </div>
   );
 }
