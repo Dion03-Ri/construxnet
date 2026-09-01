@@ -7,7 +7,7 @@ import MarketSignals from "@/components/kbob/MarketSignals";
 export const dynamic = "force-dynamic";
 
 export const metadata = {
-  title: "KBOB Index · ConstruxNet",
+  title: "KBOB Index · Obtanet",
   description: "KBOB-Preisindex vs. Smart-Pool-Durchschnittspreis",
 };
 
@@ -27,7 +27,7 @@ export default async function KbobPage({
           </h1>
           <p className="mt-1 max-w-2xl text-sm text-slate-500">
             Der offizielle Schweizer Baupreis-Referenzindex — Grundlage für jede
-            faire Angebotsbewertung. ConstruxNet vergleicht ihn laufend mit den real
+            faire Angebotsbewertung. Obtanet vergleicht ihn laufend mit den real
             erzielten Smart-Pool-Preisen.
           </p>
         </div>

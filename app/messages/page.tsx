@@ -4,7 +4,7 @@ import { requireCompanyOrOnboard } from "@/lib/company";
 export const dynamic = "force-dynamic";
 
 export const metadata = {
-  title: "Nachrichten · ConstruxNet",
+  title: "Nachrichten · Obtanet",
   description: "Direktnachrichten und Verhandlungen zwischen verbundenen Firmen",
 };
 

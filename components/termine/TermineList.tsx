@@ -41,12 +41,12 @@ function icsStamp(d: Date) {
 function downloadIcs(t: Termin) {
   const start = dateFor(t);
   const end = new Date(start.getTime() + t.durationH * 3600_000);
-  const uid = `${t.id}-${start.getTime()}@construxnet`;
+  const uid = `${t.id}-${start.getTime()}@obtanet`;
   const esc = (s: string) => s.replace(/([,;\\])/g, "\\$1").replace(/\n/g, "\\n");
   const lines = [
     "BEGIN:VCALENDAR",
     "VERSION:2.0",
-    "PRODID:-//ConstruxNet//Termine//DE",
+    "PRODID:-//Obtanet//Termine//DE",
     "CALSCALE:GREGORIAN",
     "METHOD:PUBLISH",
     "BEGIN:VEVENT",
@@ -64,7 +64,7 @@ function downloadIcs(t: Termin) {
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
-  a.download = `${t.id}-construxnet.ics`;
+  a.download = `${t.id}-obtanet.ics`;
   document.body.appendChild(a);
   a.click();
   a.remove();

@@ -6,7 +6,7 @@ import { requireCompanyOrOnboard } from "@/lib/company";
 export const dynamic = "force-dynamic";
 
 export const metadata = {
-  title: "Gespeicherte Pools · ConstruxNet",
+  title: "Gespeicherte Pools · Obtanet",
   description: "Deine gemerkten Smart Pools auf einen Blick.",
 };
 

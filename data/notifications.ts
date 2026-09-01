@@ -31,7 +31,7 @@ export const NOTICES: Notice[] = [
   { id: "n5", cat: "network", icon: ShieldCheck, tone: "text-accent bg-accent-50", actor: "Toggenburger Kies AG", text: "wurde als Lieferant verifiziert (CHE geprüft).", time: "vor 5 Std.", href: "/network" },
   { id: "n6", cat: "pool", icon: Gavel, tone: "text-brand bg-brand/10", actor: "Kies 0/45 · Nordwestschweiz", text: "geht in 2 Tagen in die Sealed-Bid-Phase — jetzt Bedarf einbringen.", time: "gestern", href: "/pools" },
   { id: "n7", cat: "offer", icon: MessageSquare, tone: "text-accent bg-accent-50", actor: "Eberhard Bau AG", text: "hat dir eine Nachricht zum Armierungsstahl-Bündel geschrieben.", time: "gestern", href: "/messages" },
-  { id: "n8", cat: "network", icon: Truck, tone: "text-slate-600 bg-slate-100", actor: "3 neue Baustoffwerke", text: "in deiner Region (ZH) sind ConstruxNet beigetreten.", time: "vor 2 T.", href: "/network" },
+  { id: "n8", cat: "network", icon: Truck, tone: "text-slate-600 bg-slate-100", actor: "3 neue Baustoffwerke", text: "in deiner Region (ZH) sind Obtanet beigetreten.", time: "vor 2 T.", href: "/network" },
 ];
 
 export const NOTICE_TABS: { key: "all" | NoticeCat; label: string }[] = [

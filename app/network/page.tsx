@@ -4,7 +4,7 @@ import { requireCompanyOrOnboard } from "@/lib/company";
 export const dynamic = "force-dynamic";
 
 export const metadata = {
-  title: "Netzwerk · ConstruxNet",
+  title: "Netzwerk · Obtanet",
   description: "Dein Beschaffungs-Netzwerk — Verbindungen, Einladungen und passende Firmen.",
 };
 

@@ -34,7 +34,7 @@ export default function FeedBundleHero() {
             <span className="text-brand">bis 20 % unter KBOB.</span>
           </h2>
           <p className="mt-1.5 max-w-xl text-[13px] leading-relaxed text-white/60">
-            Melde, was du brauchst. ConstruxNet bündelt gleiche Bedarfe deiner Region zu einem Pool,
+            Melde, was du brauchst. Obtanet bündelt gleiche Bedarfe deiner Region zu einem Pool,
             Lieferanten bieten im Sealed-Bid — der beste Preis gilt für alle Teilnehmer.
           </p>
 

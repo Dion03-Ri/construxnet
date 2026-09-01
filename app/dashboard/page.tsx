@@ -4,7 +4,7 @@ import { requireCompanyOrOnboard } from "@/lib/company";
 export const dynamic = "force-dynamic";
 
 export const metadata = {
-  title: "Dashboard · ConstruxNet",
+  title: "Dashboard · Obtanet",
   description: "Rollen-Cockpit: Beschaffung, Ausschreibungen, Verträge & Analytics",
 };
 

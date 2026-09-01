@@ -6,8 +6,8 @@ import OnboardingForm from "@/components/OnboardingForm";
 export const dynamic = "force-dynamic";
 
 export const metadata = {
-  title: "Profil einrichten · ConstruxNet",
-  description: "Firmenprofil anlegen, um ConstruxNet zu nutzen",
+  title: "Profil einrichten · Obtanet",
+  description: "Firmenprofil anlegen, um Obtanet zu nutzen",
 };
 
 export default async function OnboardingPage() {
@@ -21,7 +21,7 @@ export default async function OnboardingPage() {
           <HardHat className="h-6 w-6" />
         </span>
         <h1 className="mt-4 text-2xl font-semibold tracking-tight text-slate-900 sm:text-3xl">
-          Willkommen bei ConstruxNet
+          Willkommen bei Obtanet
         </h1>
         <p className="mt-2 text-slate-500">
           Lege dein Firmenprofil an, um Feed, Netzwerk und Dashboard zu nutzen.

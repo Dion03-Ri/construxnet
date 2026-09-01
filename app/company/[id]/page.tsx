@@ -74,7 +74,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   const supabase = createServerSupabaseClient();
   const { data } = await supabase.from("companies").select("company_name").eq("id", id).maybeSingle();
   const name = (data as { company_name: string } | null)?.company_name;
-  return { title: name ? `${name} · ConstruxNet` : "Firma · ConstruxNet" };
+  return { title: name ? `${name} · Obtanet` : "Firma · Obtanet" };
 }
 
 export default async function CompanyPage({ params }: { params: Promise<{ id: string }> }) {

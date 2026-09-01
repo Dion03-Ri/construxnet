@@ -7,7 +7,7 @@ import { createServerSupabaseClient } from "@/lib/supabase";
 export const dynamic = "force-dynamic";
 
 export const metadata = {
-  title: "Feed · ConstruxNet",
+  title: "Feed · Obtanet",
   description: "Vernetzung, Beschaffung und Bündelung der Schweizer Baubranche",
 };
 

@@ -5,7 +5,7 @@ import { requireCompanyOrOnboard } from "@/lib/company";
 export const dynamic = "force-dynamic";
 
 export const metadata = {
-  title: "Termine & Ausschreibungen · ConstruxNet",
+  title: "Termine & Ausschreibungen · Obtanet",
   description: "Anstehende Ausschreibungen, Pool-Deadlines und Netzwerk-Anlässe — direkt in deinen Kalender.",
 };
 

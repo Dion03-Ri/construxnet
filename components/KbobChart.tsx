@@ -447,7 +447,7 @@ export default function KbobChart({ initialMaterial }: { initialMaterial?: strin
           </span>
           <span className="flex items-center gap-2">
             <span className="h-0.5 w-6 rounded bg-brand" />
-            ConstruxNet Pool-Ø
+            Obtanet Pool-Ø
           </span>
         </div>
         <Segmented

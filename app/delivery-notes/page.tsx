@@ -4,7 +4,7 @@ import { requireCompanyOrOnboard } from "@/lib/company";
 export const dynamic = "force-dynamic";
 
 export const metadata = {
-  title: "Lieferscheine · ConstruxNet",
+  title: "Lieferscheine · Obtanet",
   description: "Lieferschein-OCR — erfassen und abgleichen",
 };
 

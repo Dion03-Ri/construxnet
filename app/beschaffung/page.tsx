@@ -5,7 +5,7 @@ import { requireCompanyOrOnboard } from "@/lib/company";
 export const dynamic = "force-dynamic";
 
 export const metadata = {
-  title: "Materialbedarf melden · ConstruxNet",
+  title: "Materialbedarf melden · Obtanet",
   description: "Geführter Beschaffungs-Flow: Material wählen, Menge & Region, optional Smart Pool aktivieren.",
 };
 

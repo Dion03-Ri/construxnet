@@ -1,5 +1,5 @@
 -- ============================================================
--- ConstruxNet — Demo-Seed für Tests
+-- Obtanet — Demo-Seed für Tests
 --
 -- Legt einige verifizierte Beispiel-Firmen (Bauunternehmen + Baustoffwerke)
 -- und ein paar Feed-Beiträge an, damit Netzwerk/Feed nicht leer sind.
@@ -9,7 +9,7 @@
 -- Login über das Onboarding an — danach kannst du dich mit diesen Demo-Firmen
 -- vernetzen und ihnen schreiben.
 --
--- Im Supabase SQL-Editor des ConstruxNet-Projekts ausführen. Idempotent
+-- Im Supabase SQL-Editor des Obtanet-Projekts ausführen. Idempotent
 -- (ON CONFLICT / NOT EXISTS) — mehrfaches Ausführen ist unschädlich.
 -- ============================================================
 
