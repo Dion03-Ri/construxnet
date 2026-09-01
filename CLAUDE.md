@@ -19,10 +19,13 @@ Supabase (server + browser client, `supabaseAdmin` service-role), Leaflet/OSM
 (Karte), Recharts (Charts).
 
 ## Design / Corporate Identity — STRIKT
-- Nur **Gold `#D99000`** (brand) + **Navy** (`#1B3A5C`, `#254D7A` = accent).
+- Nur **Gold `#D99000`** (brand) + **Navy/Corporate Blue** (`#1B3A5C`, `#254D7A` = accent).
 - **KEIN Grün** (kein emerald/green/teal), kein Orange. Slate = neutral, Rose = Fehler.
-- Angestrebt: dunkle, seriöse, einheitliche B2B-Linie. Keine „KI-Klischees"
-  (keine Sparkles-Deko, keine erfundenen Zahlen/Claims).
+- **Light Mode ist Standard** (Stand: Startseite + Dashboard): Weiss/Slate-50
+  als Grundfläche, Navy/Blau als Haupt-Akzent (Buttons, Links, aktive Zustände),
+  Gold gezielt als Sekundär-Akzent (Badges, Beispiel-Highlights) — NICHT die
+  ganze Fläche/den Hintergrund in Navy tauchen. Keine „KI-Klischees" (keine
+  Sparkles-Deko, keine erfundenen Zahlen/Claims).
 
 ## Git-Workflow
 - Arbeits-Branch: `claude/construxnet-platform-rebuild-jll7j9`.
@@ -49,5 +52,7 @@ Supabase (server + browser client, `supabaseAdmin` service-role), Leaflet/OSM
   ganzen Baum. Für einfache Edits Modell **Sonnet**, Opus nur für schwere Arbeit.
 
 ## OFFEN / als Nächstes
-- Startseiten-Redesign (dunkel, ehrliche Inhalte) ist gemergt. Branding
-  einheitlich auf Obtanet umgestellt — nichts aktuell offen.
+- Startseite + Dashboard (`/dashboard`) sind auf Light Mode umgestellt. Andere
+  Seiten (z.B. Coming-Soon, Netzwerk) sind noch dunkel — bei Bedarf einzeln
+  nachziehen, nicht automatisch annehmen, dass alles schon hell ist.
+- Branding einheitlich auf Obtanet umgestellt.
