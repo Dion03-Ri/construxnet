@@ -545,7 +545,7 @@ function SkeletonCard() {
   );
 }
 
-export default function NetworkFeed() {
+export default function NetworkFeed({ hero }: { hero?: React.ReactNode }) {
   const supabase = useSupabaseBrowser();
 
   const [posts, setPosts] = useState<Post[]>([]);
@@ -560,6 +560,9 @@ export default function NetworkFeed() {
   // Endloses Nachladen: Seite für Seite, wie im LinkedIn-Feed.
   const pageRef = useRef(0);
   const sentinelRef = useRef<HTMLDivElement | null>(null);
+  // Ab lg scrollt dieser Strang statt des Fensters — er ist dann der
+  // Bezugsrahmen für den Sentinel.
+  const scrollRef = useRef<HTMLDivElement | null>(null);
 
   const fetchPage = useCallback(
     async (page: number) => {
@@ -639,15 +642,18 @@ export default function NetworkFeed() {
   useEffect(() => {
     const el = sentinelRef.current;
     if (!el || !hasMore) return;
+    // Scrollt der innere Strang (ab lg), ist er der Root — sonst das Fenster.
+    const container = scrollRef.current;
+    const root = container && container.scrollHeight > container.clientHeight ? container : null;
     const io = new IntersectionObserver(
       (entries) => {
         if (entries[0]?.isIntersecting) loadMore();
       },
-      { rootMargin: "400px" },
+      { root, rootMargin: "400px" },
     );
     io.observe(el);
     return () => io.disconnect();
-  }, [loadMore, hasMore]);
+  }, [loadMore, hasMore, posts.length]);
 
   const typeOptions = [
     { key: "ALL", label: "Alle" },
@@ -662,7 +668,12 @@ export default function NetworkFeed() {
   ];
 
   return (
-    <div className="space-y-3">
+    <div className="lg:flex lg:min-h-0 lg:flex-col">
+      {/* Bündel-Hero bleibt oben stehen und scrollt nicht mit */}
+      {hero && <div className="mb-3 shrink-0">{hero}</div>}
+
+      {/* Ab lg scrollt ausschliesslich dieser Strang — nicht die ganze Seite */}
+      <div ref={scrollRef} className="feed-scroll space-y-3 lg:min-h-0 lg:flex-1 lg:overflow-y-auto lg:pr-1">
       <Composer onCreated={load} />
 
       {/* Empfohlene Partner für die Beschaffung */}
@@ -712,6 +723,7 @@ export default function NetworkFeed() {
           )}
         </>
       )}
+      </div>
     </div>
   );
 }
