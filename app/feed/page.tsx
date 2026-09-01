@@ -31,33 +31,30 @@ export default async function FeedPage() {
   const pools = poolCount ?? 0;
 
   return (
-    <main className="relative mx-auto max-w-6xl px-4 py-6 sm:px-6">
+    // Ab lg füllt der Feed genau die Fensterhöhe (abzüglich der 56px-Topbar).
+    // Gescrollt wird dann nur innerhalb der Spalten, nicht die ganze Seite.
+    <main className="relative mx-auto max-w-6xl px-4 py-6 sm:px-6 lg:h-[calc(100vh-56px)] lg:overflow-hidden">
       {/* dezenter Navy-Verlauf, damit die dunklen Rails nicht als Blöcke auf reinem Weiss stehen */}
       <div
         aria-hidden
         className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-72 bg-gradient-to-b from-navy-900/[0.06] via-navy-900/[0.02] to-transparent"
       />
-      <div className="grid grid-cols-1 items-start gap-5 lg:grid-cols-[260px_minmax(0,1fr)_300px]">
+      <div className="grid grid-cols-1 gap-5 lg:h-full lg:grid-cols-[260px_minmax(0,1fr)_300px]">
         {/* Left · dunkle Profil-Rail */}
-        <aside className="hidden lg:block lg:row-span-2">
-          <div className="sticky top-[72px]">
+        <aside className="hidden lg:block lg:min-h-0">
+          <div className="feed-scroll lg:h-full lg:overflow-y-auto lg:pr-1">
             <ProfileRail company={company} connections={connections} pools={pools} />
           </div>
         </aside>
 
-        {/* Bündel-Hero · über Feed und rechte Spalte hinweg bis an den Rand */}
-        <div className="min-w-0 lg:col-span-2">
-          <FeedBundleHero />
+        {/* Center · Hero bleibt oben stehen, nur die Beiträge scrollen */}
+        <div className="min-w-0 lg:flex lg:min-h-0 lg:flex-col">
+          <NetworkFeed hero={<FeedBundleHero />} />
         </div>
 
-        {/* Center · heller Feed */}
-        <div className="min-w-0">
-          <NetworkFeed />
-        </div>
-
-        {/* Right · dunkle Bündel-Chancen, füllt die Höhe bis zum Fensterrand */}
-        <aside className="hidden lg:block">
-          <div className="sticky top-[72px] max-h-[calc(100vh-88px)] overflow-y-auto pb-1">
+        {/* Right · dunkle Bündel-Chancen */}
+        <aside className="hidden lg:block lg:min-h-0">
+          <div className="feed-scroll lg:h-full lg:overflow-y-auto lg:pr-1">
             <BundleOpportunities />
           </div>
         </aside>
