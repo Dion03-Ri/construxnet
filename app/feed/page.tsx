@@ -1,6 +1,7 @@
 import NetworkFeed from "@/components/NetworkFeed";
 import ProfileRail from "@/components/feed/ProfileRail";
 import BundleOpportunities from "@/components/feed/BundleOpportunities";
+import FeedBundleHero from "@/components/feed/FeedBundleHero";
 import { requireCompanyOrOnboard } from "@/lib/company";
 import { createServerSupabaseClient } from "@/lib/supabase";
 
@@ -36,22 +37,27 @@ export default async function FeedPage() {
         aria-hidden
         className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-72 bg-gradient-to-b from-navy-900/[0.06] via-navy-900/[0.02] to-transparent"
       />
-      <div className="grid grid-cols-1 gap-5 lg:grid-cols-[260px_minmax(0,1fr)_300px]">
+      <div className="grid grid-cols-1 items-start gap-5 lg:grid-cols-[260px_minmax(0,1fr)_300px]">
         {/* Left · dunkle Profil-Rail */}
-        <aside className="hidden lg:block">
+        <aside className="hidden lg:block lg:row-span-2">
           <div className="sticky top-[72px]">
             <ProfileRail company={company} connections={connections} pools={pools} />
           </div>
         </aside>
+
+        {/* Bündel-Hero · über Feed und rechte Spalte hinweg bis an den Rand */}
+        <div className="min-w-0 lg:col-span-2">
+          <FeedBundleHero />
+        </div>
 
         {/* Center · heller Feed */}
         <div className="min-w-0">
           <NetworkFeed />
         </div>
 
-        {/* Right · dunkle Bündel-Chancen */}
+        {/* Right · dunkle Bündel-Chancen, füllt die Höhe bis zum Fensterrand */}
         <aside className="hidden lg:block">
-          <div className="sticky top-[72px]">
+          <div className="sticky top-[72px] max-h-[calc(100vh-88px)] overflow-y-auto pb-1">
             <BundleOpportunities />
           </div>
         </aside>
