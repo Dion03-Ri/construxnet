@@ -35,6 +35,8 @@ export default function GroupOverview() {
         </h3>
         <p className="mt-0.5 text-[12px] text-slate-500">
           Referenzpreis und Veränderung zum Vorquartal, Stand {data.meta.updated}.
+          Mehr Reihen führt der Index nicht — für alle übrigen Materialien
+          zählt der Referenzpreis aus der jeweiligen Anfrage.
         </p>
       </div>
 
