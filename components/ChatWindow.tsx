@@ -26,6 +26,7 @@ import {
   Clock,
   ArrowRight,
 } from "lucide-react";
+import type { RealtimeChannel } from "@supabase/supabase-js";
 import { useSupabaseBrowser } from "@/lib/supabase-browser";
 import { fetchMyCompanyId } from "@/lib/myCompany";
 import { CARD } from "@/lib/ui";
@@ -52,6 +53,8 @@ type Msg = {
   is_negotiation_offer: boolean;
   offer_amount: number | null;
   created_at: string;
+  /** Gesetzt, sobald der Empfänger die Nachricht geöffnet hat. */
+  read_at?: string | null;
 };
 
 /** Beschaffungs-Kontext eines Threads — verknüpft jede Konversation mit dem
@@ -202,6 +205,13 @@ export default function ChatWindow({ initialTo }: { initialTo?: string }) {
   const [offerQty, setOfferQty] = useState("");
   const [sending, setSending] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const [partnerTyping, setPartnerTyping] = useState(false);
+  const [partnerOnline, setPartnerOnline] = useState(false);
+  // Der Kanal-Rückruf sieht sonst den Zustand vom Zeitpunkt des Abonnements.
+  const activeRef = useRef<string | null>(null);
+  const typingTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const presenceRef = useRef<RealtimeChannel | null>(null);
+  const typingSentAt = useRef(0);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -224,7 +234,7 @@ export default function ChatWindow({ initialTo }: { initialTo?: string }) {
     // connections (CONNECTED) + message counterparties
     const [{ data: conns }, { data: rows }] = await Promise.all([
       supabase.from("connections").select("company_id_a, company_id_b, status").eq("status", "CONNECTED"),
-      supabase.from("messages").select("id, sender_company_id, receiver_company_id, content, is_negotiation_offer, offer_amount, created_at").order("created_at", { ascending: true }),
+      supabase.from("messages").select("id, sender_company_id, receiver_company_id, content, is_negotiation_offer, offer_amount, created_at, read_at").order("created_at", { ascending: true }),
     ]);
 
     const counterIds = new Set<string>();
@@ -280,18 +290,136 @@ export default function ChatWindow({ initialTo }: { initialTo?: string }) {
         dealMap[id] = { material: lastOffer.content.replace(/·.*$/, "").trim() || "Beschaffung", volume: "—", region: "—", phase: "In Verhandlung", savingsPct: 0, unit: "Einheit" };
       }
     }
+    // Ungelesen heisst: an mich gerichtet und noch nicht geöffnet.
+    const unreadMap: Record<string, number> = {};
+    for (const m of allMsgs) {
+      if (m.receiver_company_id === mineId && !m.read_at) {
+        unreadMap[m.sender_company_id] = (unreadMap[m.sender_company_id] ?? 0) + 1;
+      }
+    }
+
     setDemo(false);
     setThreads(list);
     setMsgs(map);
     setDeals(dealMap);
-    setUnread({});
-    setActive(initialTo && counterIds.has(initialTo) ? initialTo : list[0]?.id ?? null);
+    setUnread(unreadMap);
+    const opened = initialTo && counterIds.has(initialTo) ? initialTo : list[0]?.id ?? null;
+    setActive(opened);
+    if (opened) void supabase.rpc("mark_thread_read", { p_other: opened });
     setLoading(false);
   }, [isSignedIn, userId, supabase, initialTo]);
 
   useEffect(() => {
     load();
   }, [load]);
+
+  /**
+   * Live-Zustellung.
+   *
+   * Postgres meldet jede neue Nachricht an die verbundenen Clients; die
+   * Zeilenrechte gelten dabei weiter, es kommt also nur an, was man
+   * ohnehin lesen dürfte. Ohne das sah man eine Antwort erst nach dem
+   * Neuladen — der Unterschied zwischen "kommt an" und "ist ein Chat".
+   */
+  useEffect(() => {
+    if (demo || !myId) return;
+
+    const ch = supabase
+      .channel("chat-messages")
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "messages" },
+        (payload) => {
+          const m = payload.new as Msg;
+          const other =
+            m.sender_company_id === myId ? m.receiver_company_id : m.sender_company_id;
+
+          setMsgs((prev) => {
+            const list = prev[other] ?? [];
+            // Die eigene Nachricht steht schon optimistisch drin — sie wird
+            // ersetzt statt verdoppelt.
+            const withoutTmp = list.filter(
+              (x) => !(x.id.startsWith("tmp-") && x.content === m.content),
+            );
+            if (withoutTmp.some((x) => x.id === m.id)) return prev;
+            return { ...prev, [other]: [...withoutTmp, m] };
+          });
+
+          // Eingehende Nachricht: entweder direkt als gelesen markieren
+          // (der Thread ist offen) oder den Zähler erhöhen.
+          if (m.receiver_company_id === myId) {
+            if (activeRef.current === other) {
+              void supabase.rpc("mark_thread_read", { p_other: other });
+            } else {
+              setUnread((prev) => ({ ...prev, [other]: (prev[other] ?? 0) + 1 }));
+            }
+          }
+        },
+      )
+      .on(
+        "postgres_changes",
+        { event: "UPDATE", schema: "public", table: "messages" },
+        (payload) => {
+          // Betrifft den Gelesen-Vermerk: der Haken beim Absender.
+          const m = payload.new as Msg;
+          const other =
+            m.sender_company_id === myId ? m.receiver_company_id : m.sender_company_id;
+          setMsgs((prev) => {
+            const list = prev[other];
+            if (!list) return prev;
+            return { ...prev, [other]: list.map((x) => (x.id === m.id ? { ...x, ...m } : x)) };
+          });
+        },
+      )
+      .subscribe();
+
+    return () => {
+      void supabase.removeChannel(ch);
+    };
+  }, [supabase, myId, demo]);
+
+  /**
+   * Tippanzeige und Online-Status der Gegenseite.
+   *
+   * Läuft über einen eigenen Kanal je Gesprächspaar — die Kennung ist für
+   * beide Seiten dieselbe, egal wer ihn zuerst öffnet. Nichts davon wird
+   * gespeichert: es interessiert nur im Moment.
+   */
+  useEffect(() => {
+    if (demo || !myId || !active) return;
+    const pair = [myId, active].sort().join("_");
+    const ch = supabase.channel(`chat-presence-${pair}`, {
+      config: { presence: { key: myId } },
+    });
+
+    ch.on("presence", { event: "sync" }, () => {
+      const state = ch.presenceState();
+      setPartnerOnline(Object.keys(state).some((k) => k === active));
+    })
+      .on("broadcast", { event: "typing" }, ({ payload }) => {
+        if ((payload as { from?: string })?.from !== active) return;
+        setPartnerTyping(true);
+        if (typingTimer.current) clearTimeout(typingTimer.current);
+        typingTimer.current = setTimeout(() => setPartnerTyping(false), 2500);
+      })
+      .subscribe(async (status) => {
+        if (status === "SUBSCRIBED") await ch.track({ at: Date.now() });
+      });
+
+    presenceRef.current = ch;
+    return () => {
+      presenceRef.current = null;
+      setPartnerTyping(false);
+      setPartnerOnline(false);
+      void supabase.removeChannel(ch);
+    };
+  }, [supabase, myId, active, demo]);
+
+  // Der Rückruf des Echtzeit-Kanals liest den aktiven Thread über diese
+  // Referenz — der Zustand darin wäre sonst der vom Abonnement-Zeitpunkt.
+  useEffect(() => {
+    activeRef.current = active;
+  }, [active]);
 
   const activeCompany = threads.find((t) => t.id === active) ?? null;
   const activeMsgs = active ? msgs[active] ?? [] : [];
@@ -322,6 +450,26 @@ export default function ChatWindow({ initialTo }: { initialTo?: string }) {
   function openThread(id: string) {
     setActive(id);
     setUnread((prev) => (prev[id] ? { ...prev, [id]: 0 } : prev));
+    // Auch in der Datenbank vermerken, sonst zählt die Glocke ewig weiter.
+    if (!demo) void supabase.rpc("mark_thread_read", { p_other: id });
+  }
+
+  /**
+   * "schreibt …" an die Gegenseite melden.
+   *
+   * Höchstens alle zwei Sekunden, sonst geht bei jedem Tastendruck eine
+   * Meldung raus. Nichts davon wird gespeichert.
+   */
+  function notifyTyping() {
+    if (demo || !myId || !active) return;
+    const now = Date.now();
+    if (now - typingSentAt.current < 2000) return;
+    typingSentAt.current = now;
+    void presenceRef.current?.send({
+      type: "broadcast",
+      event: "typing",
+      payload: { from: myId },
+    });
   }
 
   const canSend = useMemo(
@@ -486,11 +634,19 @@ export default function ChatWindow({ initialTo }: { initialTo?: string }) {
               <button type="button" onClick={() => setActive(null)} className="rounded-lg p-1 text-slate-500 hover:bg-slate-100 sm:hidden">
                 <X className="h-4 w-4" />
               </button>
-              <span className={cn(
-                "flex h-9 w-9 items-center justify-center rounded-full text-xs font-bold",
-                activeCompany.role === "SUPPLIER" ? "bg-navy-900 text-white" : "bg-brand/15 text-brand",
-              )}>
-                {initials(activeCompany.company_name)}
+              <span className="relative shrink-0">
+                <span className={cn(
+                  "flex h-9 w-9 items-center justify-center rounded-full text-xs font-bold",
+                  activeCompany.role === "SUPPLIER" ? "bg-navy-900 text-white" : "bg-brand/15 text-brand",
+                )}>
+                  {initials(activeCompany.company_name)}
+                </span>
+                {partnerOnline && (
+                  <span
+                    title="gerade im Chat"
+                    className="absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full border-2 border-white bg-brand"
+                  />
+                )}
               </span>
               <div className="min-w-0">
                 <div className="flex items-center gap-1 text-sm font-semibold text-slate-900">
@@ -498,8 +654,15 @@ export default function ChatWindow({ initialTo }: { initialTo?: string }) {
                   {activeCompany.verified && <BadgeCheck className="h-4 w-4 shrink-0 text-accent" />}
                 </div>
                 <div className="text-[11px] text-slate-400">
-                  {activeCompany.role ? ROLE_LABEL[activeCompany.role] ?? activeCompany.role : "Firma"}
-                  {activeCompany.city ? ` · ${activeCompany.city}` : ""}
+                  {partnerTyping ? (
+                    <span className="font-medium text-brand">schreibt …</span>
+                  ) : (
+                    <>
+                      {activeCompany.role ? ROLE_LABEL[activeCompany.role] ?? activeCompany.role : "Firma"}
+                      {activeCompany.city ? ` · ${activeCompany.city}` : ""}
+                      {partnerOnline && <span className="text-brand"> · online</span>}
+                    </>
+                  )}
                 </div>
               </div>
             </div>
@@ -570,7 +733,16 @@ export default function ChatWindow({ initialTo }: { initialTo?: string }) {
                   <div key={m.id} className={cn("flex", mine ? "justify-end" : "justify-start")}>
                     <div className={cn("max-w-[80%] rounded-lg px-3.5 py-2 text-sm shadow-sm", mine ? "bg-brand text-white" : "border border-slate-200 bg-white text-slate-700")}>
                       {m.content}
-                      <div className={cn("mt-1 text-right text-[10px]", mine ? "text-white/70" : "text-slate-400")}>{time(m.created_at)}</div>
+                      <div className={cn("mt-1 flex items-center justify-end gap-1 text-[10px]", mine ? "text-white/70" : "text-slate-400")}>
+                        {time(m.created_at)}
+                        {mine && !m.id.startsWith("tmp-") && (
+                          // Zwei Haken heisst gelesen, einer heisst zugestellt.
+                          <span title={m.read_at ? "gelesen" : "zugestellt"} className={cn("inline-flex", m.read_at && "text-white")}>
+                            <Check className="h-3 w-3" />
+                            {m.read_at && <Check className="-ml-1.5 h-3 w-3" />}
+                          </span>
+                        )}
+                      </div>
                     </div>
                   </div>
                 );
@@ -596,7 +768,7 @@ export default function ChatWindow({ initialTo }: { initialTo?: string }) {
                 </button>
                 <input
                   value={text}
-                  onChange={(e) => setText(e.target.value)}
+                  onChange={(e) => { setText(e.target.value); notifyTyping(); }}
                   onKeyDown={(e) => e.key === "Enter" && !offerMode && send()}
                   placeholder={offerMode ? "Optionale Notiz zum Angebot …" : "Nachricht schreiben …"}
                   className="h-11 flex-1 rounded-md border border-slate-200 bg-slate-50 px-4 text-sm text-slate-900 placeholder:text-slate-400 outline-none focus:border-brand/50 focus:bg-white"

@@ -152,6 +152,22 @@ Supabase (server + browser client, `supabaseAdmin` service-role), Leaflet/OSM
   nicht einen verteilten Angriff. Für dauerhaften Schutz braucht es einen
   gemeinsamen Speicher (Upstash, Vercel KV oder eine Supabase-Tabelle).
 
+## Chat
+- Läuft über **Supabase Realtime** (in allen Plänen enthalten, auch im
+  kostenlosen — kein zusätzliches Abo). `messages` ist in der Publikation
+  `supabase_realtime`, RLS gilt weiter: jeder bekommt nur, was er ohnehin
+  lesen dürfte.
+- Gelesen-Vermerk über `mark_thread_read()` statt direktem UPDATE. Grund:
+  die Zeilenregel erlaubt dem Empfänger, seine Zeile zu ändern, und RLS
+  kennt keine Spalten-Ebene — er könnte sonst den Inhalt einer empfangenen
+  Nachricht umschreiben. Ein Trigger sperrt Inhalt und Beteiligte zusätzlich.
+- Tippanzeige und Online-Status laufen über Broadcast bzw. Presence auf
+  einem Kanal je Gesprächspaar. Nichts davon wird gespeichert.
+- **Noch offen:** Benachrichtigung, wenn jemand offline ist (Web-Push oder
+  E-Mail). Das wäre der einzige Punkt, der einen zusätzlichen Dienst
+  bräuchte — Push über einen eigenen Service-Worker ist kostenlos, E-Mail
+  braucht einen Versanddienst.
+
 ## OFFEN / als Nächstes
 - Startseite + Dashboard (`/dashboard`) sind auf Light Mode umgestellt. Andere
   Seiten (z.B. Coming-Soon, Netzwerk) sind noch dunkel — bei Bedarf einzeln
@@ -172,5 +188,4 @@ Supabase (server + browser client, `supabaseAdmin` service-role), Leaflet/OSM
     Ein KI-Treffer wird als Alias mit `source: 'AI'` gemerkt, damit er beim
     zweiten Mal gratis ist.
   - Danach: hochgeladene Leistungsverzeichnisse (#25) über dieselbe Route.
-- Migrationen `08`–`18` sind eingespielt; `19_hardening.sql` und
-  `20_security_gaps.sql` sind neu.
+- Migrationen `08`–`20` sind eingespielt; `21_realtime_chat.sql` ist neu.
