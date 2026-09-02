@@ -401,10 +401,21 @@ function OverviewPanel({ role }: { role: "buyer" | "supplier" }) {
 function printOrder(o: Order, companyName: string) {
   const w = window.open("", "_blank", "width=820,height=1000");
   if (!w) return;
+
+  // Alles, was aus der Datenbank kommt, wird maskiert. Der Firmenname ist
+  // vom Nutzer erfasst; ohne Maskierung landet er ungeprüft als HTML im
+  // Druckfenster — eine Firma namens "<script>…" würde dort ausgeführt.
+  const esc = (v: string) =>
+    String(v)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+
   const row = (k: string, v: string) =>
     `<tr><td style="padding:6px 0;color:#64748B">${k}</td><td style="padding:6px 0;text-align:right;font-weight:600">${v}</td></tr>`;
   w.document.write(`<!doctype html><html lang="de"><head><meta charset="utf-8">
-<title>Bestellung ${o.id}</title>
+<title>Bestellung ${esc(o.id)}</title>
 <style>
   *{box-sizing:border-box} body{font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:#0F172A;margin:0;padding:48px}
   h1{font-size:22px;margin:0 0 2px} .sub{color:#64748B;font-size:13px;margin-bottom:28px}
@@ -419,18 +430,18 @@ function printOrder(o: Order, companyName: string) {
 </style></head><body>
 <div class="head">
   <div><div class="brand">Obta<span>net</span></div><div class="sub" style="margin:2px 0 0">Schweizer Baubranche</div></div>
-  <div style="text-align:right"><h1>Bestellung ${o.id}</h1><div class="sub" style="margin:0">${o.date} · ${o.status}</div></div>
+  <div style="text-align:right"><h1>Bestellung ${esc(o.id)}</h1><div class="sub" style="margin:0">${esc(o.date)} · ${esc(o.status)}</div></div>
 </div>
-<div class="box"><div class="lbl">Besteller</div><div style="font-weight:600">${companyName}</div></div>
+<div class="box"><div class="lbl">Besteller</div><div style="font-weight:600">${esc(companyName)}</div></div>
 <div class="box"><div class="lbl">Position</div><table>
-  ${row("Materialnummer", o.materialId)}
-  ${row("Material", o.material)}
-  ${row("Spezifikation", o.sia)}
-  ${row("Menge", `${chf(o.qty)} ${o.unit}`)}
+  ${row("Materialnummer", esc(o.materialId))}
+  ${row("Material", esc(o.material))}
+  ${row("Spezifikation", esc(o.sia))}
+  ${row("Menge", `${chf(o.qty)} ${esc(o.unit)}`)}
   ${row("Preis pro Einheit", `CHF ${chf(o.unitPrice, 2)}`)}
 </table>
 <div class="total"><span>Bestellwert</span><span>CHF ${chf(o.amount)}</span></div></div>
-${o.contract ? `<div class="box"><div class="lbl">Vertrag</div><table>${row("SIA-118-Vertrag", o.contract)}</table></div>` : ""}
+${o.contract ? `<div class="box"><div class="lbl">Vertrag</div><table>${row("SIA-118-Vertrag", esc(o.contract))}</table></div>` : ""}
 <div class="foot">
   Erzeugt über Obtanet am ${new Date().toLocaleDateString("de-CH")}.<br>
   Preisbasis ist der KBOB-Referenzpreis; massgebend ist der zugehörige SIA-118-Vertrag.

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useAuth } from "@clerk/nextjs";
 import { UserPlus, BadgeCheck, Check, Sparkles } from "lucide-react";
 import { useSupabaseBrowser } from "@/lib/supabase-browser";
+import { fetchMyCompanyId } from "@/lib/myCompany";
 import { SAMPLE_PARTNERS } from "@/data/feedMock";
 import { CARD } from "@/lib/ui";
 import { cn } from "@/lib/utils";
@@ -39,12 +40,7 @@ export default function RecommendedPartners() {
   const load = useCallback(async () => {
     let mineId: string | null = null;
     if (isSignedIn && userId) {
-      const { data: me } = await supabase
-        .from("companies")
-        .select("id")
-        .eq("clerk_user_id", userId)
-        .maybeSingle();
-      mineId = (me as { id: string } | null)?.id ?? null;
+      mineId = await fetchMyCompanyId(supabase);
       setMyId(mineId);
     }
     const { data } = await supabase

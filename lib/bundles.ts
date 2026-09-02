@@ -91,6 +91,26 @@ export function nextStep(volume: number) {
  * etwas sammelt. Sichtbar sind ausschliesslich Summen; wer beiträgt,
  * verrät die Datenbank niemandem.
  */
+/**
+ * Gemeinsamer Abruf für alle Aufrufer.
+ *
+ * Auf dem Dashboard verwenden mehrere Bereiche gleichzeitig useBundles —
+ * Übersicht, eigene Bündel, Ausschreibungen. Ohne Bündelung stellt jeder
+ * dieselben zwei Abfragen und ruft dazu advance_due_bundles() auf. Ein
+ * kurzer gemeinsamer Zwischenspeicher macht daraus einen Durchgang.
+ */
+let inflight: Promise<{ bundles: Bundle[]; mine: MyParticipation[]; error: string | null }> | null =
+  null;
+let cachedAt = 0;
+let cached: { bundles: Bundle[]; mine: MyParticipation[]; error: string | null } | null = null;
+const CACHE_MS = 3_000;
+
+export function invalidateBundles() {
+  cached = null;
+  cachedAt = 0;
+  inflight = null;
+}
+
 export function useBundles() {
   const supabase = useSupabaseBrowser();
   const [bundles, setBundles] = useState<Bundle[]>([]);
@@ -98,7 +118,7 @@ export function useBundles() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const reload = useCallback(async () => {
+  const fetchAll = useCallback(async () => {
     // Ohne Zeitgeber schalten fällige Bündel beim Lesen weiter: abgelaufene
     // Sammelphasen gehen in die Ausschreibung oder werden aufgelöst,
     // abgelaufene Angebotsfristen bekommen ihren Zuschlag. Idempotent —
@@ -118,19 +138,41 @@ export function useBundles() {
         .neq("status", "CANCELLED"),
     ]);
 
-    if (b.error) {
-      setError(b.error.message);
-      setBundles([]);
-    } else {
-      setError(null);
-      setBundles((b.data ?? []) as Bundle[]);
-    }
-    setMine((p.data ?? []) as MyParticipation[]);
-    setLoading(false);
+    return {
+      bundles: b.error ? [] : ((b.data ?? []) as Bundle[]),
+      mine: (p.data ?? []) as MyParticipation[],
+      error: b.error?.message ?? null,
+    };
   }, [supabase]);
 
+  const reload = useCallback(
+    async (force = true) => {
+      if (force) invalidateBundles();
+      if (!inflight) {
+        if (cached && Date.now() - cachedAt < CACHE_MS) {
+          setBundles(cached.bundles);
+          setMine(cached.mine);
+          setError(cached.error);
+          setLoading(false);
+          return;
+        }
+        inflight = fetchAll().finally(() => {
+          inflight = null;
+        });
+      }
+      const res = await inflight;
+      cached = res;
+      cachedAt = Date.now();
+      setBundles(res.bundles);
+      setMine(res.mine);
+      setError(res.error);
+      setLoading(false);
+    },
+    [fetchAll],
+  );
+
   useEffect(() => {
-    void reload();
+    void reload(false);
   }, [reload]);
 
   const myBundleIds = useMemo(

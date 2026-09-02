@@ -13,6 +13,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { useSupabaseBrowser } from "@/lib/supabase-browser";
+import { fetchMyCompanyId } from "@/lib/myCompany";
 
 export type NoticeCat = "pool" | "offer" | "network";
 
@@ -69,13 +70,18 @@ export function useNotifications() {
   const [loading, setLoading] = useState(true);
 
   const load = useCallback(async () => {
-    const me = await supabase
-      .from("companies")
-      .select("id, role, notifications_seen_at")
-      .limit(1)
-      .maybeSingle();
+    // Die eigene Firma über die Datenbank bestimmen. Ein `.limit(1)` auf
+    // companies liefert eine beliebige fremde Firma — das Verzeichnis ist
+    // absichtlich offen, "die erste Zeile" ist nicht die eigene.
+    const myId = await fetchMyCompanyId(supabase);
+    const me = myId
+      ? await supabase
+          .from("companies")
+          .select("id, role, notifications_seen_at")
+          .eq("id", myId)
+          .maybeSingle()
+      : { data: null };
 
-    const myId = (me.data as { id?: string } | null)?.id ?? null;
     const isSupplier = (me.data as { role?: string } | null)?.role === "SUPPLIER";
     setSeenAt((me.data as { notifications_seen_at?: string } | null)?.notifications_seen_at ?? null);
 
