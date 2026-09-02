@@ -204,5 +204,26 @@ Diese Punkte müssen erledigt sein, bevor echte Firmen darauf arbeiten:
 4. **Web-Push** für Nachrichten (siehe Chat).
 5. **Ratenbegrenzung über einen gemeinsamen Speicher** statt im
    Arbeitsspeicher (Upstash, Vercel KV oder Supabase-Tabelle).
-6. **Impressum, AGB, Datenschutz** inhaltlich prüfen — die Seiten
-   existieren, ich habe sie nie angefasst.
+6. **Impressum, AGB, Datenschutz** — existieren im Next-Projekt gar nicht,
+   weder als Seite noch als Verweis im Fussbereich. Texte müssen vom Nutzer
+   kommen, das Einbauen ist danach eine Viertelstunde.
+7. **Lieferschein-Abgleich** (#22). Schliesst den Kreis: die Preisgarantie
+   ist nur eine Zusage, solange niemand prüft, ob das Werk sie auf der
+   Rechnung angewendet hat. `delivery_notes` steht im Schema
+   (`discrepancy_flag`, `platform_commission_amount`), die Seite ist ein
+   ehrlicher Platzhalter.
+   - **Erster Schritt bewusst klein:** Foto hochladen, Werte von Hand
+     eintragen, gegen den SIA-Vertrag prüfen. Das bringt den ganzen Nutzen
+     ausser der Bequemlichkeit — und zeigt, ob Poliere den Ablauf
+     überhaupt leben. Ein Ablauf, der drei Klicks zu lang ist, wird auf der
+     Baustelle nicht gemacht.
+   - **Automatisches Auslesen danach:** Sprachmodell mit Bildverständnis
+     (Claude Haiku 4.5 reicht, deutlich unter 5 Rappen je Lieferschein),
+     nicht Tesseract — auf zerknitterten Fotos mit je Werk anderem Formular
+     ist die Trefferquote zu schlecht, um Rechnungen darauf zu prüfen.
+     Braucht denselben ANTHROPIC_API_KEY wie der Materialabgleich.
+   - **Der eigentliche Aufwand ist der Abweichungs-Ablauf**, nicht die
+     Texterkennung: wer wird benachrichtigt, kann der Lieferant
+     widersprechen, was gilt bei Patt.
+   - Sinnvoll erst, wenn echte Bündel zu echten Verträgen geführt haben —
+     sonst rät man, wie die Lieferscheine der echten Werke aussehen.
