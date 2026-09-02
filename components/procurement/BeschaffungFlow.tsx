@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useRef, useState } from "react";
+import { useProjects, projectLabel } from "@/lib/projects";
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 import {
@@ -61,10 +62,14 @@ function toPosition(m: ProcMaterial, qty = ""): Position {
 export default function BeschaffungFlow({
   initialMaterial,
   initialQty,
+  initialProject,
 }: {
   initialMaterial?: string;
   initialQty?: string;
+  /** Vorausgewählte Baustelle, z. B. aus dem Warenkorb im Dashboard. */
+  initialProject?: string;
 }) {
+  const { projects, loading: projectsLoading } = useProjects();
   // Vorauswahl aus der URL (z. B. „Pool beitreten" aus dem Feed):
   // ?material=beton-25,stahl-b500b&menge=120
   const presetPositions = useMemo(() => {
@@ -100,6 +105,12 @@ export default function BeschaffungFlow({
   const [deliveryWindow, setDeliveryWindow] = useState<string>(DELIVERY_WINDOWS[0]);
   const [region, setRegion] = useState<string>(PROC_REGIONS[0]);
   const [site, setSite] = useState("");
+  const [projectId, setProjectId] = useState(initialProject ?? "");
+  const project = projects.find((p) => p.id === projectId) ?? null;
+  // Baustelle im Klartext für Zusammenfassung und Übermittlung: entweder
+  // das gewählte Projekt oder — wenn noch keins angelegt ist — der Text
+  // aus dem Ersatzfeld.
+  const siteLabel = project ? projectLabel(project) : site;
 
   // Smart Pool
   const [pool, setPool] = useState(true);
@@ -471,7 +482,23 @@ export default function BeschaffungFlow({
                     </div>
                     <div>
                       <label className="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-slate-400">Baustelle (optional)</label>
-                      <input value={site} onChange={(e) => setSite(e.target.value)} placeholder="z. B. Überbauung Bern-West" className="w-full rounded-md border border-slate-300 bg-slate-50 px-3 py-2 text-sm text-slate-900 outline-none focus:border-brand focus:bg-white" />
+                      {projects.length > 0 ? (
+                        <select value={projectId} onChange={(e) => setProjectId(e.target.value)} className="w-full rounded-md border border-slate-300 bg-slate-50 px-3 py-2 text-sm text-slate-900 outline-none focus:border-brand focus:bg-white">
+                          <option value="">Keiner Baustelle zuordnen</option>
+                          {projects.map((p) => (
+                            <option key={p.id} value={p.id}>{projectLabel(p)}</option>
+                          ))}
+                        </select>
+                      ) : (
+                        <input value={site} onChange={(e) => setSite(e.target.value)} placeholder={projectsLoading ? "Wird geladen …" : "z. B. Überbauung Bern-West"} className="w-full rounded-md border border-slate-300 bg-slate-50 px-3 py-2 text-sm text-slate-900 outline-none focus:border-brand focus:bg-white" />
+                      )}
+                      {projects.length === 0 && !projectsLoading && (
+                        <p className="mt-1 text-[11.5px] text-slate-400">
+                          Baustellen legst du im{" "}
+                          <Link href="/dashboard" className="font-semibold text-brand hover:underline">Dashboard unter „Projekte"</Link>{" "}
+                          an — dann kannst du hier direkt auswählen.
+                        </p>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -576,7 +603,7 @@ export default function BeschaffungFlow({
                     {[
                       ["Lieferzeitraum", deliveryWindow],
                       ["Region", region],
-                      ["Baustelle", site || "—"],
+                      ["Baustelle", siteLabel || "—"],
                       ["Belege", files.length ? files.join(", ") : "—"],
                     ].map(([k, v]) => (
                       <div key={k} className="flex items-start justify-between gap-4 px-4 py-2.5 text-sm">

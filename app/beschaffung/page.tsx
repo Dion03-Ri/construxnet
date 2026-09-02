@@ -12,10 +12,10 @@ export const metadata = {
 export default async function BeschaffungPage({
   searchParams,
 }: {
-  searchParams: Promise<{ material?: string; menge?: string }>;
+  searchParams: Promise<{ material?: string; menge?: string; projekt?: string }>;
 }) {
   await requireCompanyOrOnboard();
-  const { material, menge } = await searchParams;
+  const { material, menge, projekt } = await searchParams;
   return (
     <main className="mx-auto max-w-5xl px-4 py-6 sm:px-6 sm:py-8">
       <header className="mb-6 flex items-center gap-3">
@@ -31,7 +31,7 @@ export default async function BeschaffungPage({
         </div>
       </header>
 
-      <BeschaffungFlow initialMaterial={material} initialQty={menge} />
+      <BeschaffungFlow initialMaterial={material} initialQty={menge} initialProject={projekt} />
     </main>
   );
 }
