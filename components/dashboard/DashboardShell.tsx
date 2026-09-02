@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 import {
@@ -989,7 +990,14 @@ export default function DashboardShell({ company }: { company: Company }) {
   const nav = NAV_ALL.filter(
     (n) => (!n.supplierOnly || isSupplier) && (!n.buyerOnly || !isSupplier),
   );
-  const [view, setView] = useState("workspace");
+  // Direktsprung aus dem Profilmenue: /dashboard?view=settings
+  const searchParams = useSearchParams();
+  const requestedView = searchParams.get("view");
+  const [view, setView] = useState(
+    requestedView && NAV_ALL.some((n) => n.key === requestedView)
+      ? requestedView
+      : "workspace",
+  );
   const supabase = useSupabaseBrowser();
   const { projects, loading: projectsLoading, error: projectsError, reload: reloadProjects } =
     useProjects();

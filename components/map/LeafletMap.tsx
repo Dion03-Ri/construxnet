@@ -30,16 +30,30 @@ function markerIcon(verified: boolean) {
   });
 }
 
-export default function LeafletMap({ points }: { points: MapPoint[] }) {
+// Die Schweiz plus ein schmaler Rand. Die Karte ist ein Werkzeug für den
+// Schweizer Baustoffmarkt — Wegziehen nach Sibirien hilft niemandem.
+const CH_BOUNDS: [[number, number], [number, number]] = [
+  [45.7, 5.8],
+  [47.9, 10.6],
+];
+
+export default function LeafletMap({
+  points,
+  height = 340,
+}: {
+  points: MapPoint[];
+  height?: number;
+}) {
   return (
     <MapContainer
-      center={[46.8, 8.23]}
+      center={[46.83, 8.23]}
       zoom={7}
-      minZoom={2}
-      maxZoom={16}
-      scrollWheelZoom
-      worldCopyJump
-      style={{ height: "480px", width: "100%", background: "#EAF0F6" }}
+      minZoom={7}
+      maxZoom={14}
+      maxBounds={CH_BOUNDS}
+      maxBoundsViscosity={1}
+      scrollWheelZoom={false}
+      style={{ height, width: "100%", background: "#EAF0F6" }}
     >
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>-Mitwirkende'
