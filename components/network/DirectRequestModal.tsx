@@ -167,7 +167,6 @@ export default function DirectRequestModal({
               <div className="flex items-center gap-2 rounded-md border border-brand/30 bg-brand/[0.05] px-3 py-2">
                 <div className="min-w-0 flex-1">
                   <div className="truncate text-[13.5px] font-semibold text-slate-900">{material.label}</div>
-                  <div className="font-mono text-[10.5px] tracking-tight text-brand-700">{material.id}</div>
                   <div className="truncate text-[11px] text-slate-400">{material.sia}</div>
                 </div>
                 <button
@@ -201,7 +200,6 @@ export default function DirectRequestModal({
                       >
                         <span className="min-w-0">
                           <span className="block truncate text-[13px] font-medium text-slate-800">{m.label}</span>
-                          <span className="block font-mono text-[10.5px] tracking-tight text-brand-700">{m.id}</span>
                           <span className="block truncate text-[11px] text-slate-400">{m.sia}</span>
                         </span>
                         <span className="shrink-0 text-[11px] text-slate-400">CHF {m.kbobPrice}/{m.unit}</span>

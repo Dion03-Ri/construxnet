@@ -37,18 +37,17 @@ export type ProcMaterial = {
  * Bestellungen lesbar bleiben.
  */
 export const CATEGORY_CODE: Record<ProcCategory, string> = {
-  "Beton": "BET",
-  "Zement & Bindemittel": "ZEM",
-  "Bewehrung & Stahl": "ARM",
-  "Kies, Aushub & Recycling": "KIE",
-  "Mauerwerk": "MAU",
-  "Dämmung": "DAE",
-  "Belag & Asphalt": "ASP",
-  "Holz": "HOL",
-  "Entwässerung & Rohre": "ROH",
-  "Bauchemie": "CHE",
+  "Beton": "BET",                       // Beton
+  "Zement & Bindemittel": "ZEM",        // Zement — das Leitwort der Gruppe
+  "Bewehrung & Stahl": "BST",           // BewehrungsSTahl
+  "Kies, Aushub & Recycling": "KAR",    // Kies, Aushub, Recycling
+  "Mauerwerk": "MAU",                   // Mauerwerk
+  "Dämmung": "DAE",                     // Dämmung (ä → ae)
+  "Belag & Asphalt": "BAS",             // Belag, ASphalt
+  "Holz": "HOL",                        // Holz
+  "Entwässerung & Rohre": "ENR",        // ENtwässerung, Rohre
+  "Bauchemie": "BCH",                   // BauCHemie — "BAU" wäre zu allgemein
 };
-
 // Kuratierter Katalog der gängigsten Baustoffe. Er ist bewusst breit — gebündelt
 // werden kann grundsätzlich jedes Material; wo etwas fehlt, gibt es im
 // Beschaffungs-Flow „Weiteres Material (frei)".
@@ -67,16 +66,16 @@ export const PROC_MATERIALS: ProcMaterial[] = [
   { key: "kalk", id: "OB-ZEM-003", label: "Baukalk CL 90", sia: "SN EN 459-1 · CL 90-S", unit: "t", kbobPrice: 235, category: "Zement & Bindemittel" },
 
   // Bewehrung & Stahl
-  { key: "stahl-b500b", id: "OB-ARM-001", label: "Bewehrungsstahl B500B", sia: "SIA 262 · B500B · Ring / Stäbe", unit: "t", kbobPrice: 1120, category: "Bewehrung & Stahl" },
-  { key: "stahl-matten", id: "OB-ARM-002", label: "Baustahlmatten B500A", sia: "SIA 262 · B500A · Lagermatten", unit: "t", kbobPrice: 1180, category: "Bewehrung & Stahl" },
-  { key: "stahl-profil", id: "OB-ARM-003", label: "Stahlprofile S235/S355", sia: "SN EN 10025 · S235JR / S355J2", unit: "t", kbobPrice: 1650, category: "Bewehrung & Stahl" },
+  { key: "stahl-b500b", id: "OB-BST-001", label: "Bewehrungsstahl B500B", sia: "SIA 262 · B500B · Ring / Stäbe", unit: "t", kbobPrice: 1120, category: "Bewehrung & Stahl" },
+  { key: "stahl-matten", id: "OB-BST-002", label: "Baustahlmatten B500A", sia: "SIA 262 · B500A · Lagermatten", unit: "t", kbobPrice: 1180, category: "Bewehrung & Stahl" },
+  { key: "stahl-profil", id: "OB-BST-003", label: "Stahlprofile S235/S355", sia: "SN EN 10025 · S235JR / S355J2", unit: "t", kbobPrice: 1650, category: "Bewehrung & Stahl" },
 
   // Kies, Aushub & Recycling
-  { key: "kies-045", id: "OB-KIE-001", label: "Koffer-/Wandkies 0/45", sia: "SN 670 · ungebrochen 0/45", unit: "t", kbobPrice: 39, category: "Kies, Aushub & Recycling" },
-  { key: "kies-032", id: "OB-KIE-002", label: "Rundkies 0/32", sia: "SN 670 · ungebrochen 0/32", unit: "t", kbobPrice: 42, category: "Kies, Aushub & Recycling" },
-  { key: "sand-04", id: "OB-KIE-003", label: "Betonsand 0/4", sia: "SN EN 12620 · 0/4", unit: "t", kbobPrice: 44, category: "Kies, Aushub & Recycling" },
-  { key: "rc-kies", id: "OB-KIE-004", label: "RC-Kies (Recycling) 0/32", sia: "SN 670 062 · RC-Typ A · 0/32", unit: "t", kbobPrice: 31, category: "Kies, Aushub & Recycling" },
-  { key: "rc-beton", id: "OB-KIE-005", label: "RC-Betongranulat 0/45", sia: "SN 670 062 · RC-Beton · 0/45", unit: "t", kbobPrice: 28, category: "Kies, Aushub & Recycling" },
+  { key: "kies-045", id: "OB-KAR-001", label: "Koffer-/Wandkies 0/45", sia: "SN 670 · ungebrochen 0/45", unit: "t", kbobPrice: 39, category: "Kies, Aushub & Recycling" },
+  { key: "kies-032", id: "OB-KAR-002", label: "Rundkies 0/32", sia: "SN 670 · ungebrochen 0/32", unit: "t", kbobPrice: 42, category: "Kies, Aushub & Recycling" },
+  { key: "sand-04", id: "OB-KAR-003", label: "Betonsand 0/4", sia: "SN EN 12620 · 0/4", unit: "t", kbobPrice: 44, category: "Kies, Aushub & Recycling" },
+  { key: "rc-kies", id: "OB-KAR-004", label: "RC-Kies (Recycling) 0/32", sia: "SN 670 062 · RC-Typ A · 0/32", unit: "t", kbobPrice: 31, category: "Kies, Aushub & Recycling" },
+  { key: "rc-beton", id: "OB-KAR-005", label: "RC-Betongranulat 0/45", sia: "SN 670 062 · RC-Beton · 0/45", unit: "t", kbobPrice: 28, category: "Kies, Aushub & Recycling" },
 
   // Mauerwerk
   { key: "backstein", id: "OB-MAU-001", label: "Backstein / Modulziegel", sia: "SIA 266 · Modul MB", unit: "Pal.", kbobPrice: 285, category: "Mauerwerk" },
@@ -89,8 +88,8 @@ export const PROC_MATERIALS: ProcMaterial[] = [
   { key: "daemmung-steinwolle", id: "OB-DAE-003", label: "Steinwolle 035", sia: "SIA 279 · MW λ 0.035 W/mK", unit: "m²", kbobPrice: 32, category: "Dämmung" },
 
   // Belag & Asphalt
-  { key: "asphalt-ac11", id: "OB-ASP-001", label: "Asphaltbeton AC 11", sia: "SN 640 431 · AC 11 N", unit: "t", kbobPrice: 118, category: "Belag & Asphalt" },
-  { key: "asphalt-ac22", id: "OB-ASP-002", label: "Asphalt Binderschicht AC 22", sia: "SN 640 431 · AC 22 S", unit: "t", kbobPrice: 112, category: "Belag & Asphalt" },
+  { key: "asphalt-ac11", id: "OB-BAS-001", label: "Asphaltbeton AC 11", sia: "SN 640 431 · AC 11 N", unit: "t", kbobPrice: 118, category: "Belag & Asphalt" },
+  { key: "asphalt-ac22", id: "OB-BAS-002", label: "Asphalt Binderschicht AC 22", sia: "SN 640 431 · AC 22 S", unit: "t", kbobPrice: 112, category: "Belag & Asphalt" },
 
   // Holz
   { key: "holz-kvh", id: "OB-HOL-001", label: "Konstruktionsvollholz KVH C24", sia: "SN EN 14081 · C24 · KVH", unit: "m³", kbobPrice: 640, category: "Holz" },
@@ -98,13 +97,13 @@ export const PROC_MATERIALS: ProcMaterial[] = [
   { key: "holz-osb", id: "OB-HOL-003", label: "OSB-/Dreischichtplatte", sia: "SN EN 300 · OSB/3", unit: "m²", kbobPrice: 24, category: "Holz" },
 
   // Entwässerung & Rohre
-  { key: "rohr-pp", id: "OB-ROH-001", label: "Kanalrohr PP DN 200", sia: "SN EN 1852 · PP SN10 · DN 200", unit: "lfm", kbobPrice: 42, category: "Entwässerung & Rohre" },
-  { key: "rohr-beton", id: "OB-ROH-002", label: "Betonrohr DN 400", sia: "SN EN 1916 · DN 400", unit: "lfm", kbobPrice: 96, category: "Entwässerung & Rohre" },
-  { key: "schacht", id: "OB-ROH-003", label: "Normschacht DN 1000", sia: "SN EN 1917 · DN 1000", unit: "Stk", kbobPrice: 520, category: "Entwässerung & Rohre" },
+  { key: "rohr-pp", id: "OB-ENR-001", label: "Kanalrohr PP DN 200", sia: "SN EN 1852 · PP SN10 · DN 200", unit: "lfm", kbobPrice: 42, category: "Entwässerung & Rohre" },
+  { key: "rohr-beton", id: "OB-ENR-002", label: "Betonrohr DN 400", sia: "SN EN 1916 · DN 400", unit: "lfm", kbobPrice: 96, category: "Entwässerung & Rohre" },
+  { key: "schacht", id: "OB-ENR-003", label: "Normschacht DN 1000", sia: "SN EN 1917 · DN 1000", unit: "Stk", kbobPrice: 520, category: "Entwässerung & Rohre" },
 
   // Bauchemie
-  { key: "moertel", id: "OB-CHE-001", label: "Trockenmörtel / Werkmörtel", sia: "SN EN 998-2 · M10", unit: "t", kbobPrice: 265, category: "Bauchemie" },
-  { key: "abdichtung", id: "OB-CHE-002", label: "Bitumen-Dichtungsbahn", sia: "SN EN 13707 · Polymerbitumen", unit: "m²", kbobPrice: 21, category: "Bauchemie" },
+  { key: "moertel", id: "OB-BCH-001", label: "Trockenmörtel / Werkmörtel", sia: "SN EN 998-2 · M10", unit: "t", kbobPrice: 265, category: "Bauchemie" },
+  { key: "abdichtung", id: "OB-BCH-002", label: "Bitumen-Dichtungsbahn", sia: "SN EN 13707 · Polymerbitumen", unit: "m²", kbobPrice: 21, category: "Bauchemie" },
 ];
 
 export const PROC_CATEGORIES: ProcCategory[] = [
