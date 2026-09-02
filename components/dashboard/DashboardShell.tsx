@@ -805,13 +805,16 @@ function WorkspacePanel({
           <h3 className="text-[15px] font-semibold text-slate-900">Material-Katalog</h3>
           <span className="text-[11px] text-slate-400">{results.length} von {catalog.length}</span>
         </div>
-        <div className="max-h-[440px] overflow-y-auto">
+        <div className="max-h-[440px] overflow-y-auto overflow-x-auto">
           <table className="w-full text-left text-[13px]">
             <thead className="sticky top-0 bg-white">
               <tr className="text-[11px] uppercase tracking-wider text-slate-400">
                 <th className="px-4 pb-2 pt-3 font-medium">Material</th>
                 <th className="hidden px-2 pb-2 pt-3 font-medium sm:table-cell">Spezifikation</th>
-                <th className="px-2 pb-2 pt-3 font-medium">KBOB CHF/Einheit</th>
+                <th className="px-2 pb-2 pt-3 font-medium">
+                  <span className="sm:hidden">KBOB</span>
+                  <span className="hidden sm:inline">KBOB CHF/Einheit</span>
+                </th>
                 <th className="px-4 pb-2 pt-3 text-right font-medium">Aktion</th>
               </tr>
             </thead>
@@ -828,9 +831,11 @@ function WorkspacePanel({
                     <button
                       type="button"
                       onClick={() => onAdd(m)}
+                      aria-label={`${m.label} in den Warenkorb`}
                       className="inline-flex items-center gap-1 rounded-md border border-brand/30 bg-brand/10 px-2.5 py-1.5 text-xs font-semibold text-brand transition-colors hover:bg-brand/20"
                     >
-                      <Plus className="h-3.5 w-3.5" /> Warenkorb
+                      <Plus className="h-3.5 w-3.5" />
+                      <span className="hidden sm:inline">Warenkorb</span>
                     </button>
                   </td>
                 </tr>
@@ -1118,8 +1123,83 @@ export default function DashboardShell({ company }: { company: Company }) {
 
   return (
     <div className="grid grid-cols-1 gap-4 lg:grid-cols-[240px_minmax(0,1fr)] xl:grid-cols-[240px_minmax(0,1fr)_300px]">
-      {/* Linke Spalte: Navigation & Projekt-Auswahl */}
-      <aside className="relative h-fit overflow-hidden rounded-xl border border-white/10 bg-navy-900 text-white">
+      {/* Handy: kompakte Kopfzeile + waagrechte Tab-Leiste statt der Seitenspalte.
+          Damit steht der Inhalt sofort oben und nicht erst nach einem Bildschirm Navigation. */}
+      <div className="relative overflow-hidden rounded-xl border border-white/10 bg-navy-900 text-white lg:hidden">
+        <div aria-hidden className="pointer-events-none absolute inset-0 opacity-[0.06]" style={GRID_BG} />
+        <div className="relative flex items-center gap-2.5 px-3 py-2.5">
+          <span className="grid h-8 w-8 shrink-0 place-items-center overflow-hidden rounded-lg bg-gradient-to-br from-brand to-brand-600 text-[11px] font-bold text-white">
+            {company.logo_url ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={company.logo_url} alt="" className="h-full w-full object-cover" />
+            ) : (
+              initials(company.company_name)
+            )}
+          </span>
+          <div className="min-w-0 flex-1">
+            <div className="truncate text-[13px] font-semibold">{company.company_name}</div>
+            <div className="truncate text-[11px] text-white/40">
+              {isSupplier ? "Baustoffwerk / Lieferant" : "Bauunternehmen"}
+            </div>
+          </div>
+          {!isSupplier &&
+            (projects.length === 0 ? (
+              <button
+                type="button"
+                onClick={() => setView("projects")}
+                className="flex shrink-0 items-center gap-1 rounded-md border border-dashed border-white/20 px-2 py-1.5 text-[11.5px] font-medium text-white/60"
+              >
+                <Plus className="h-3.5 w-3.5" /> Baustelle
+              </button>
+            ) : (
+              <select
+                value={projectId}
+                onChange={(e) => setProjectId(e.target.value)}
+                aria-label="Baustelle / Projekt"
+                className="w-[38%] shrink-0 truncate rounded-md border border-white/15 bg-navy-800 px-2 py-1.5 text-[12px] text-white outline-none focus:border-brand"
+              >
+                <option value="">Keine Baustelle</option>
+                {projects.map((p) => (
+                  <option key={p.id} value={p.id}>{projectLabel(p)}</option>
+                ))}
+              </select>
+            ))}
+        </div>
+        <div className="no-scrollbar relative flex gap-1.5 overflow-x-auto border-t border-white/10 px-3 py-2">
+          {nav.map((n) => {
+            const active = view === n.key;
+            const count = n.key === "requests" ? openRequests : n.badge;
+            return (
+              <button
+                key={n.key}
+                type="button"
+                onClick={() => setView(n.key)}
+                aria-current={active ? "page" : undefined}
+                className={cn(
+                  "flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-md px-2.5 py-1.5 text-[12.5px] font-medium transition-colors",
+                  active ? "bg-brand text-navy-900" : "bg-white/[0.06] text-white/70",
+                )}
+              >
+                <n.icon className="h-3.5 w-3.5 shrink-0" />
+                {n.label}
+                {(n.key === "requests" ? openRequests > 0 : !!n.badge) && (
+                  <span
+                    className={cn(
+                      "rounded px-1 text-[10px] font-semibold",
+                      active ? "bg-navy-900/20 text-navy-900" : "bg-white/15 text-white/80",
+                    )}
+                  >
+                    {count}
+                  </span>
+                )}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Linke Spalte: Navigation & Projekt-Auswahl (ab lg) */}
+      <aside className="relative hidden h-fit overflow-hidden rounded-xl border border-white/10 bg-navy-900 text-white lg:block">
         <div aria-hidden className="pointer-events-none absolute inset-0 opacity-[0.06]" style={GRID_BG} />
         <div className="relative flex items-center gap-2.5 border-b border-white/10 px-3 py-3">
           <span className="grid h-9 w-9 shrink-0 place-items-center overflow-hidden rounded-lg bg-gradient-to-br from-brand to-brand-600 text-sm font-bold text-white">

@@ -19,7 +19,7 @@ export default function FeedBundleHero() {
 
   return (
     <section className="overflow-hidden rounded-xl border border-white/10 bg-navy-900 text-white shadow-card">
-      <div className="relative px-5 py-5 sm:px-6 sm:py-6">
+      <div className="relative px-4 py-4 sm:px-6 sm:py-6">
         {/* dezentes Raster */}
         <div
           aria-hidden
@@ -34,11 +34,15 @@ export default function FeedBundleHero() {
           <span className="inline-flex items-center gap-1.5 rounded-md border border-brand/30 bg-brand/10 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-brand">
             <Layers className="h-3.5 w-3.5" /> Smart Bündeln
           </span>
-          <h2 className="mt-3 text-xl font-bold leading-snug tracking-tight sm:text-2xl">
+          <h2 className="mt-3 text-[19px] font-bold leading-snug tracking-tight sm:text-2xl">
             Bündle deinen Materialbedarf mit der Branche —{" "}
             <span className="text-brand">garantiert unter KBOB.</span>
           </h2>
-          <p className="mt-1.5 max-w-2xl text-[13px] leading-relaxed text-white/60">
+          {/* Handy: eine Zeile statt Absatz — die Bündel darunter sind wichtiger. */}
+          <p className="mt-1.5 text-[13px] leading-relaxed text-white/60 sm:hidden">
+            Gleiche Bedarfe deiner Region werden gebündelt, die Werke bieten verdeckt dagegen.
+          </p>
+          <p className="mt-1.5 hidden max-w-2xl text-[13px] leading-relaxed text-white/60 sm:block">
             Melde, was du brauchst. Obtanet bündelt gleiche Bedarfe deiner Region zu einem Pool,
             die Werke bieten verdeckt im Sealed-Bid — je grösser das Bündel, desto höher der
             garantierte Netto-Mindestvorteil für alle Teilnehmer.
@@ -49,7 +53,7 @@ export default function FeedBundleHero() {
               href="/beschaffung"
               className="inline-flex items-center gap-2 rounded-md bg-brand px-4 py-2.5 text-sm font-semibold text-navy-900 transition-colors hover:bg-brand-500"
             >
-              <Megaphone className="h-4 w-4" /> Materialbedarf melden
+              <Megaphone className="h-4 w-4" /> Bedarf melden
             </Link>
             <Link
               href="/pools"

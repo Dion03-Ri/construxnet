@@ -335,7 +335,8 @@ export default function NetworkHub() {
       </aside>
 
       {/* ============================== MITTE ============================== */}
-      <div className="min-w-0 space-y-4">
+      {/* Auf dem Handy zuerst: Suche und Vorschlaege stehen oben, die Rails darunter. */}
+      <div className="order-first min-w-0 space-y-4 lg:order-none">
         {/* Wachstums-Banner */}
         <DarkPanel>
           <div className="flex flex-col gap-5 p-6 sm:flex-row sm:items-center sm:justify-between">
@@ -518,7 +519,7 @@ export default function NetworkHub() {
       </div>
 
       {/* ============================ RIGHT RAIL ============================ */}
-      <aside className="space-y-4">
+      <aside className="order-last space-y-4 lg:order-none">
         {/* Erhaltene Anfragen — jetzt dauerhaft sichtbar statt versteckt */}
         <div className={cn(CARD, "overflow-hidden")}>
           <div className="flex items-center justify-between border-b border-slate-100 px-4 py-3">

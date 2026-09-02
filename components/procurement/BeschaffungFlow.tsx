@@ -689,8 +689,8 @@ export default function BeschaffungFlow({
                   <h2 className="text-lg font-bold text-slate-900">Übersicht & Absenden</h2>
                   <p className="mt-0.5 text-sm text-slate-500">Prüfe deine Angaben und melde den Bedarf.</p>
 
-                  <div className="mt-4 overflow-hidden rounded-lg border border-slate-200">
-                    <table className="w-full text-left text-[13px]">
+                  <div className="mt-4 overflow-x-auto rounded-lg border border-slate-200">
+                    <table className="w-full min-w-[340px] text-left text-[13px]">
                       <thead className="bg-slate-50">
                         <tr className="text-[11px] uppercase tracking-wider text-slate-400">
                           <th className="px-3.5 py-2 font-medium">Material</th>
