@@ -39,8 +39,10 @@ export default async function KbobPage({
           <b>Zur Datenlage:</b> Die Referenzkurve ist derzeit eine
           nachgebildete Reihe am KBOB-Preisindex, keine amtliche Publikation.
           Sie taugt für Grössenordnung und Verlauf, nicht als Beleg gegenüber
-          einem Lieferanten. Deine eigenen Abschlüsse dagegen sind echt — sie
-          stammen aus angenommenen Angeboten.
+          einem Lieferanten, und deckt vier Warengruppen ab — der
+          Materialkatalog ist breiter. Deine eigenen Abschlüsse dagegen sind
+          echt: sie stammen aus angenommenen Angeboten und werden gegen den
+          Referenzpreis gemessen, der bei deiner Anfrage festgehalten wurde.
         </span>
       </p>
 

@@ -23,7 +23,7 @@ import {
   Loader2,
 } from "lucide-react";
 import kbobData from "@/data/kbobData.json";
-import { useOwnPurchases, type Purchase } from "@/lib/kbobPurchases";
+import { useOwnPurchases, averageDelta, type Purchase } from "@/lib/kbobPurchases";
 import { CARD } from "@/lib/ui";
 import { cn } from "@/lib/utils";
 
@@ -236,8 +236,9 @@ function OwnPurchases({
       <div className="border-b border-slate-200 px-5 py-3.5">
         <h3 className="text-[15px] font-semibold text-slate-900">Deine Abschlüsse</h3>
         <p className="mt-0.5 text-[12px] leading-relaxed text-slate-500">
-          Angenommene Angebote in dieser Warengruppe, gemessen am Referenzpreis
-          zum Zeitpunkt der Anfrage.
+          Angenommene Angebote in dieser Warengruppe und im gewählten Zeitraum,
+          gemessen am Referenzpreis zum Zeitpunkt der Anfrage. Bündel-Teilnahmen
+          sind nicht dabei — dort wird noch kein Abschlusspreis erfasst.
         </p>
       </div>
 
@@ -248,7 +249,7 @@ function OwnPurchases({
       ) : purchases.length === 0 ? (
         <div className="px-5 py-6 text-center">
           <p className="text-[13px] font-semibold text-slate-800">
-            Noch kein Abschluss in dieser Gruppe
+            Kein Abschluss in dieser Gruppe
           </p>
           <p className="mx-auto mt-1 max-w-xs text-[12px] leading-relaxed text-slate-500">
             Sobald du ein Angebot annimmst, erscheint es hier und in der Kurve —
@@ -314,6 +315,86 @@ function OwnPurchases({
   );
 }
 
+
+/* -------------------------------------------------------------------------- */
+/*  Abschlüsse ausserhalb der Index-Gruppen                                    */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * Der Index führt vier Warengruppen, der Materialkatalog über dreissig
+ * Positionen. Dämmung, Mauerwerk, Holz, Asphalt, Rohre und Bauchemie haben
+ * keine Reihe — die Abschlüsse dürfen deswegen aber nicht unsichtbar
+ * werden. Der Vergleich zum Referenzpreis funktioniert hier trotzdem, weil
+ * er bei jeder Anfrage einzeln festgehalten wird.
+ */
+function OtherPurchases({ purchases }: { purchases: Purchase[] }) {
+  if (purchases.length === 0) return null;
+  const avg = averageDelta(purchases);
+
+  return (
+    <div className={cn(CARD, "overflow-hidden")}>
+      <div className="flex flex-wrap items-baseline justify-between gap-2 border-b border-slate-200 px-5 py-3.5">
+        <div>
+          <h3 className="text-[15px] font-semibold text-slate-900">
+            Abschlüsse ohne Index-Reihe
+          </h3>
+          <p className="mt-0.5 max-w-xl text-[12px] leading-relaxed text-slate-500">
+            Für Dämmung, Mauerwerk, Holz, Asphalt, Rohre und Bauchemie führt
+            der Index keine Kurve. Der Abstand zum Referenzpreis stimmt
+            trotzdem — er wird bei jeder Anfrage einzeln festgehalten.
+          </p>
+        </div>
+        {avg !== null && (
+          <div className="shrink-0 text-right">
+            <div className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+              Ø zur Referenz
+            </div>
+            <Trend value={avg} />
+          </div>
+        )}
+      </div>
+
+      <ul className="divide-y divide-slate-100">
+        {[...purchases].reverse().map((p) => {
+          const delta =
+            p.reference && p.reference > 0
+              ? ((p.unitPrice - p.reference) / p.reference) * 100
+              : null;
+          return (
+            <li key={p.id} className="px-5 py-3">
+              <div className="flex items-baseline justify-between gap-2">
+                <span className="truncate text-[13px] font-semibold text-slate-800">
+                  {p.materialLabel}
+                </span>
+                <span className="shrink-0 text-[13px] font-bold text-slate-900">
+                  CHF {chf(p.unitPrice)} / {p.unit}
+                </span>
+              </div>
+              <div className="mt-0.5 flex flex-wrap items-center gap-x-2.5 text-[11.5px] text-slate-400">
+                <span>{shortPeriod(p.period)}</span>
+                <span>
+                  {chf(p.quantity, 0)} {p.unit}
+                </span>
+                <span className="truncate">{p.supplier}</span>
+                {delta !== null && (
+                  <span
+                    className={cn(
+                      "font-semibold",
+                      delta <= 0 ? "text-brand-700" : "text-rose-600",
+                    )}
+                  >
+                    {pct(delta)} zur Referenz
+                  </span>
+                )}
+              </div>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+  );
+}
+
 /* -------------------------------------------------------------------------- */
 /*  Hauptkomponente                                                           */
 /* -------------------------------------------------------------------------- */
@@ -329,7 +410,21 @@ export default function KbobChart({ initialMaterial }: { initialMaterial?: strin
 
   const entry = data.materials[material];
   const unit = entry.unit;
-  const { purchases, avgDelta, loading } = useOwnPurchases(material);
+  const { purchases: allPurchases, loading } = useOwnPurchases();
+
+  const periodsInRange = useMemo(() => {
+    const full = entry.regions[region];
+    const count = data.timeRanges[range] ?? full.length;
+    return new Set(full.slice(Math.max(0, full.length - count)).map((p) => p.period));
+  }, [entry, region, range]);
+
+  // Nur was zur gewählten Warengruppe UND in den gewählten Zeitraum
+  // gehört. Sonst zeigt die Kurve etwas anderes als die Zahl daneben.
+  const purchases = useMemo(
+    () => allPurchases.filter((p) => p.group === material && periodsInRange.has(p.period)),
+    [allPurchases, material, periodsInRange],
+  );
+  const avgDelta = useMemo(() => averageDelta(purchases), [purchases]);
 
   const chartData = useMemo<Row[]>(() => {
     const full = entry.regions[region];
@@ -445,8 +540,8 @@ export default function KbobChart({ initialMaterial }: { initialMaterial?: strin
           label="Deine Abschlüsse zur Referenz"
           hint={
             avgDelta === null
-              ? "noch kein angenommenes Angebot"
-              : `${purchases.length} Abschluss${purchases.length === 1 ? "" : "e"}, mengengewichtet`
+              ? `kein Abschluss im Zeitraum ${range}`
+              : `${purchases.length} Abschluss${purchases.length === 1 ? "" : "e"} im Zeitraum ${range}, nach Auftragswert gewichtet`
           }
         >
           {avgDelta === null ? (
@@ -527,6 +622,8 @@ export default function KbobChart({ initialMaterial }: { initialMaterial?: strin
         unit={unit}
         materialKey={material}
       />
+
+      <OtherPurchases purchases={allPurchases.filter((p) => p.group === null)} />
     </div>
   );
 }
