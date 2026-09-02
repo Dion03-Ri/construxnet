@@ -86,9 +86,17 @@ Supabase (server + browser client, `supabaseAdmin` service-role), Leaflet/OSM
 - Teilnehmerzahl liegt auf dem Bündel (`participant_count`), weil die
   Teilnahmen per RLS verdeckt sind — sichtbar ist die Menge, nie wer sie
   beisteuert.
-- **Noch offen:** Sealed-Bid-Phase (Übergang OPEN → SEALED_BIDDING),
-  Lieferantengebote, Zuschlag, Auflösung bei Fristablauf. Es gibt keinen
-  Zeitgeber, der Bündel weiterschaltet.
+- Ausschreibung, Gebote und Zuschlag laufen (`place_bid()`, `award_bundle()`).
+  Bewertet wird gegen den KBOB-Referenzpreis des Bündels, nicht gegen den
+  selbst deklarierten Listenpreis — sonst gewinnt, wer seinen Listenpreis
+  hochsetzt.
+- **Kein Zeitgeber:** `advance_due_bundles()` schaltet fällige Bündel weiter
+  und wird beim Laden der Bündel-Liste aufgerufen (`lib/bundles.ts`). Sobald
+  pg_cron oder ein externer Zeitgeber verfügbar ist, ruft der dieselbe
+  Funktion — die Logik muss dafür nicht angefasst werden.
+- **Noch offen:** Vertrags-PDF aus `sia_contracts`, Lieferscheine,
+  Koppelung von Bündeln, Early-Bird-Priorität. Die Tabellen dafür stehen,
+  die Oberfläche fehlt.
 
 ## OFFEN / als Nächstes
 - Startseite + Dashboard (`/dashboard`) sind auf Light Mode umgestellt. Andere
@@ -110,4 +118,4 @@ Supabase (server + browser client, `supabaseAdmin` service-role), Leaflet/OSM
     Ein KI-Treffer wird als Alias mit `source: 'AI'` gemerkt, damit er beim
     zweiten Mal gratis ist.
   - Danach: hochgeladene Leistungsverzeichnisse (#25) über dieselbe Route.
-- Migrationen `08`–`15` sind eingespielt; `16_real_bundles.sql` ist neu.
+- Migrationen `08`–`16` sind eingespielt; `17_bidding.sql` ist neu.
