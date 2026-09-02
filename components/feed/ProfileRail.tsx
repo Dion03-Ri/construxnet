@@ -128,7 +128,7 @@ export default function ProfileRail({
         <div className="p-1.5">
           {[
             { href: "/messages", icon: MessageSquare, label: "Nachrichten", badge: "3" },
-            { href: "/termine", icon: CalendarDays, label: "Termine & Ausschreibungen", badge: null },
+            { href: "/termine", icon: CalendarDays, label: "Fristen", badge: null },
             { href: "/network", icon: Boxes, label: "Beschaffungs-Gruppen", badge: "5" },
           ].map((l) => (
             <Link

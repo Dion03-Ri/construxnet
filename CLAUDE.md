@@ -98,6 +98,17 @@ Supabase (server + browser client, `supabaseAdmin` service-role), Leaflet/OSM
   Koppelung von Bündeln, Early-Bird-Priorität. Die Tabellen dafür stehen,
   die Oberfläche fehlt.
 
+## Benachrichtigungen & Fristen
+- **Keine eigene Tabelle.** Beides wird aus dem abgeleitet, was ohnehin
+  dasteht: offene Verbindungsanfragen, eingegangene Angebote,
+  Zustandswechsel der eigenen Bündel, ungelesene Nachrichten, Bündelfristen.
+  Eine Melde-Tabelle müsste bei jedem Vorgang mitgeschrieben werden und liefe
+  auseinander — eine Meldung über ein Bündel, das es nicht mehr gibt, ist
+  schlimmer als gar keine.
+- Gespeichert wird nur `companies.notifications_seen_at`; alles Neuere gilt
+  als ungelesen. Gesetzt über `mark_notifications_seen()`, weil `companies`
+  bewusst keine allgemeine Update-Regel hat.
+
 ## OFFEN / als Nächstes
 - Startseite + Dashboard (`/dashboard`) sind auf Light Mode umgestellt. Andere
   Seiten (z.B. Coming-Soon, Netzwerk) sind noch dunkel — bei Bedarf einzeln
@@ -118,4 +129,4 @@ Supabase (server + browser client, `supabaseAdmin` service-role), Leaflet/OSM
     Ein KI-Treffer wird als Alias mit `source: 'AI'` gemerkt, damit er beim
     zweiten Mal gratis ist.
   - Danach: hochgeladene Leistungsverzeichnisse (#25) über dieselbe Route.
-- Migrationen `08`–`16` sind eingespielt; `17_bidding.sql` ist neu.
+- Migrationen `08`–`17` sind eingespielt; `18_notifications_seen.sql` ist neu.

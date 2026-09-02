@@ -5,8 +5,8 @@ import { requireCompanyOrOnboard } from "@/lib/company";
 export const dynamic = "force-dynamic";
 
 export const metadata = {
-  title: "Termine & Ausschreibungen · Obtanet",
-  description: "Anstehende Ausschreibungen, Pool-Deadlines und Netzwerk-Anlässe — direkt in deinen Kalender.",
+  title: "Fristen · Obtanet",
+  description: "Sammel- und Angebotsfristen deiner Bündel — direkt in deinen Kalender.",
 };
 
 export default async function TerminePage() {
@@ -18,9 +18,10 @@ export default async function TerminePage() {
           <CalendarDays className="h-6 w-6" />
         </span>
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900">Termine &amp; Ausschreibungen</h1>
+          <h1 className="text-2xl font-bold tracking-tight text-slate-900">Fristen</h1>
           <p className="text-sm text-slate-500">
-            Pool-Deadlines, Sealed-Bids und Anlässe — mit einem Klick in deinen Kalender übernehmen.
+            Sammel- und Angebotsfristen der Bündel, an denen du beteiligt bist —
+            mit einem Klick in deinen Kalender.
           </p>
         </div>
       </header>
