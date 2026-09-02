@@ -82,7 +82,22 @@ Supabase (server + browser client, `supabaseAdmin` service-role), Leaflet/OSM
   Einreichungen sonst zwei Töpfe erzeugen.
 - Rabattstufen stehen an **zwei** Stellen: `PROC_TIERS` in
   `data/procurement.ts` und `bundle_tier()` in der Datenbank. Ändert sich
-  eine, muss die andere mit. (Themenpunkt #27: Stufen endgültig festlegen.)
+  eine, muss die andere mit.
+- **#27 offen — die aktuellen Stufen (5/9/12/16/20 %) sind NICHT belastbar.**
+  Zwei Gründe, beide gerechnet: die Schwellen zählen Stückzahlen statt Werte,
+  wodurch dieselbe Stufe zwischen CHF 12'000 (Dämmung) und CHF 561'000
+  (Bewehrungsstahl) bedeutet — Faktor 47. Und 20 % sind in keiner
+  Materialgruppe erreichbar; indexnahe Güter wie Stahl und Zement geben nur
+  wenige Prozent her. Solange das so steht, darf keine Garantie live gehen.
+  Der Nutzer recherchiert die realen Werte bei Werken. Die Frage dafür:
+  „Wenn ich Ihnen für ein Quartal garantierte X Einheiten im Umkreis von
+  20 km bringe, mit fixer Disposition und einem Ansprechpartner — wie viel
+  liegt netto unter dem, was ein mittelgrosses Bauunternehmen heute zahlt?"
+- Zwei Punkte, die bei der Festlegung mitentschieden werden müssen: die
+  Plattformgebühr (2,25 %) geht vom garantierten Vorteil ab, das Werk muss
+  also Stufe + Gebühr unter Referenz bieten. Und die Garantie misst gegen
+  den KBOB-Index, der bei uns derzeit eine nachgebildete Reihe ist — eine
+  Garantie gegen einen selbstgebauten Index ist angreifbar.
 - Teilnehmerzahl liegt auf dem Bündel (`participant_count`), weil die
   Teilnahmen per RLS verdeckt sind — sichtbar ist die Menge, nie wer sie
   beisteuert.
