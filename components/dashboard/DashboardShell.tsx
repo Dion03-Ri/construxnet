@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 import {
@@ -45,6 +45,9 @@ import {
   Calculator,
 } from "lucide-react";
 import type { Company } from "@/lib/company";
+import { useSupabaseBrowser } from "@/lib/supabase-browser";
+import { useProjects, projectLabel } from "@/lib/projects";
+import ProjectsPanel from "@/components/dashboard/ProjectsPanel";
 import { CARD, badge } from "@/lib/ui";
 import { cn } from "@/lib/utils";
 import { PROC_MATERIALS, PROC_CATEGORIES, tierForVolume, type ProcMaterial, type ProcCategory } from "@/data/procurement";
@@ -148,19 +151,12 @@ const POOLS = [
 const NAV_ALL = [
   { key: "workspace", label: "Beschaffung", icon: Search },
   { key: "overview", label: "Übersicht", icon: LayoutDashboard },
+  { key: "projects", label: "Projekte", icon: Building2, buyerOnly: true },
   { key: "orders", label: "Bestellungen", icon: ShoppingCart, badge: 7 },
   { key: "tenders", label: "Ausschreibungen", icon: Gavel, badge: 3, supplierOnly: true },
   { key: "contracts", label: "SIA-118 Verträge", icon: FileText },
   { key: "reports", label: "Berichte", icon: BarChart3 },
   { key: "settings", label: "Einstellungen", icon: Settings },
-];
-
-// Baustellen-Auswahl (Workspace-Kontext) — vorerst lokal, noch nicht an eine
-// eigene Projekt-Tabelle angebunden.
-const PROJECTS = [
-  { id: "p1", name: "Neubau MFH Zürich-West", city: "Zürich" },
-  { id: "p2", name: "Sanierung EFH Bächli", city: "Bern" },
-  { id: "p3", name: "Gewerbebau Halle 4", city: "Aarau" },
 ];
 
 type CartItem = { key: string; label: string; unit: string; kbobPrice: number; qty: number };
@@ -800,11 +796,25 @@ function CartPanel({
   cart,
   onQty,
   onRemove,
+  projectId,
+  projectName,
 }: {
   cart: CartItem[];
   onQty: (key: string, qty: number) => void;
   onRemove: (key: string) => void;
+  projectId: string;
+  projectName: string | null;
 }) {
+  // Warenkorb und gewählte Baustelle wandern als Parameter ins Formular,
+  // damit dort nichts noch einmal eingetippt werden muss.
+  const handoff = new URLSearchParams();
+  if (cart.length) {
+    handoff.set("material", cart.map((c) => c.key).join(","));
+    handoff.set("menge", String(cart[0].qty));
+  }
+  if (projectId) handoff.set("projekt", projectId);
+  const href = `/beschaffung${handoff.toString() ? `?${handoff}` : ""}`;
+
   const subtotal = cart.reduce((s, c) => s + c.qty * c.kbobPrice, 0);
   const savings = cart.reduce((s, c) => s + c.qty * c.kbobPrice * (tierForVolume(c.qty).discount / 100), 0);
 
@@ -814,6 +824,9 @@ function CartPanel({
         <h3 className="text-[13px] font-semibold uppercase tracking-wider text-slate-500">Warenkorb</h3>
         {cart.length > 0 && <span className={badge("gold", true)}>{cart.length}</span>}
       </div>
+      {projectName && (
+        <p className="mt-1 truncate text-[11.5px] text-slate-400">für {projectName}</p>
+      )}
 
       {cart.length === 0 ? (
         <p className="mt-3 text-[13px] text-slate-400">Noch keine Materialien gewählt.</p>
@@ -861,7 +874,7 @@ function CartPanel({
 
       {cart.length > 0 ? (
         <Link
-          href="/beschaffung"
+          href={href}
           className="mt-4 flex w-full items-center justify-center gap-1.5 rounded-md bg-brand px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-brand-600"
         >
           Bedarf einreichen
@@ -969,9 +982,41 @@ export default function DashboardShell({ company }: { company: Company }) {
   const isSupplier = company.role === "SUPPLIER";
   const role: "buyer" | "supplier" = isSupplier ? "supplier" : "buyer";
 
-  const nav = NAV_ALL.filter((n) => !n.supplierOnly || isSupplier);
+  const nav = NAV_ALL.filter(
+    (n) => (!n.supplierOnly || isSupplier) && (!n.buyerOnly || !isSupplier),
+  );
   const [view, setView] = useState("workspace");
-  const [projectId, setProjectId] = useState(PROJECTS[0].id);
+  const supabase = useSupabaseBrowser();
+  const { projects, loading: projectsLoading, error: projectsError, reload: reloadProjects } =
+    useProjects();
+  // "" = keiner Baustelle zugeordnet. Bewusst erlaubt: nicht jede
+  // Bestellung gehört zu einem Projekt (Lager, Werkhof, Kleinbedarf).
+  const [projectId, setProjectId] = useState("");
+  const [orderCounts, setOrderCounts] = useState<Record<string, number>>({});
+
+  // Wie viele Bestellungen hängen an welcher Baustelle? Wird für die
+  // Projektkarten gebraucht.
+  const loadOrderCounts = useCallback(async () => {
+    const { data } = await supabase
+      .from("bundle_participations")
+      .select("project_id")
+      .not("project_id", "is", null);
+    const counts: Record<string, number> = {};
+    for (const row of (data ?? []) as { project_id: string }[]) {
+      counts[row.project_id] = (counts[row.project_id] ?? 0) + 1;
+    }
+    setOrderCounts(counts);
+  }, [supabase]);
+
+  useEffect(() => {
+    void loadOrderCounts();
+  }, [loadOrderCounts]);
+
+  // Verschwindet die gewählte Baustelle (gelöscht, abgeschlossen), fällt
+  // die Auswahl sauber zurück statt auf eine tote ID zu zeigen.
+  useEffect(() => {
+    if (projectId && !projects.some((p) => p.id === projectId)) setProjectId("");
+  }, [projects, projectId]);
   const [cart, setCart] = useState<CartItem[]>([]);
   const title = nav.find((n) => n.key === view)?.label ?? "Beschaffung";
 
@@ -1011,18 +1056,39 @@ export default function DashboardShell({ company }: { company: Company }) {
 
         {!isSupplier && (
           <div className="relative border-b border-white/10 px-3 py-3">
-            <label className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-white/40">
-              <Building2 className="h-3 w-3" /> Baustelle / Projekt
-            </label>
-            <select
-              value={projectId}
-              onChange={(e) => setProjectId(e.target.value)}
-              className="mt-1.5 w-full rounded-md border border-white/15 bg-navy-800 px-2.5 py-2 text-[13px] text-white outline-none focus:border-brand"
-            >
-              {PROJECTS.map((p) => (
-                <option key={p.id} value={p.id}>{p.name} · {p.city}</option>
-              ))}
-            </select>
+            <div className="flex items-center justify-between gap-2">
+              <label className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-white/40">
+                <Building2 className="h-3 w-3" /> Baustelle / Projekt
+              </label>
+              <button
+                type="button"
+                onClick={() => setView("projects")}
+                className="text-[11px] font-semibold text-brand transition-colors hover:text-brand-400"
+              >
+                Verwalten
+              </button>
+            </div>
+            {projects.length === 0 ? (
+              <button
+                type="button"
+                onClick={() => setView("projects")}
+                className="mt-1.5 flex w-full items-center gap-1.5 rounded-md border border-dashed border-white/20 px-2.5 py-2 text-[12.5px] text-white/50 transition-colors hover:border-brand/50 hover:text-white"
+              >
+                <Plus className="h-3.5 w-3.5" />
+                {projectsLoading ? "Wird geladen …" : "Erste Baustelle anlegen"}
+              </button>
+            ) : (
+              <select
+                value={projectId}
+                onChange={(e) => setProjectId(e.target.value)}
+                className="mt-1.5 w-full rounded-md border border-white/15 bg-navy-800 px-2.5 py-2 text-[13px] text-white outline-none focus:border-brand"
+              >
+                <option value="">Keine Baustelle</option>
+                {projects.map((p) => (
+                  <option key={p.id} value={p.id}>{projectLabel(p)}</option>
+                ))}
+              </select>
+            )}
           </div>
         )}
 
@@ -1079,6 +1145,16 @@ export default function DashboardShell({ company }: { company: Company }) {
             <motion.div key={view} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }}>
               {view === "workspace" && <WorkspacePanel onAdd={addToCart} />}
               {view === "overview" && <OverviewPanel role={role} />}
+              {view === "projects" && !isSupplier && (
+                <ProjectsPanel
+                  companyId={company.id}
+                  projects={projects}
+                  loading={projectsLoading}
+                  error={projectsError}
+                  reload={() => { reloadProjects(); void loadOrderCounts(); }}
+                  orderCounts={orderCounts}
+                />
+              )}
               {view === "orders" && <OrdersPanel companyName={company.company_name} />}
               {view === "tenders" && isSupplier && <TendersPanel />}
               {view === "contracts" && <ContractsPanel />}
@@ -1101,7 +1177,13 @@ export default function DashboardShell({ company }: { company: Company }) {
 
       {/* Rechte Spalte: Warenkorb, Kosten & Quick Tools */}
       <aside className="space-y-4">
-        <CartPanel cart={cart} onQty={updateQty} onRemove={removeFromCart} />
+        <CartPanel
+          cart={cart}
+          onQty={updateQty}
+          onRemove={removeFromCart}
+          projectId={projectId}
+          projectName={projects.find((p) => p.id === projectId)?.name ?? null}
+        />
         <QuickToolsPanel />
       </aside>
     </div>
