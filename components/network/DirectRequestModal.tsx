@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { Handshake, X, Search, Send, Loader2, Info } from "lucide-react";
 import { PROC_MATERIALS, DELIVERY_WINDOWS } from "@/data/procurement";
+import { useProjects, projectLabel } from "@/lib/projects";
 import { useSupabaseBrowser } from "@/lib/supabase-browser";
 import { cn } from "@/lib/utils";
 
@@ -30,12 +31,21 @@ export default function DirectRequestModal({
 }) {
   const supabase = useSupabaseBrowser();
   const router = useRouter();
+  const { projects } = useProjects();
 
   const [query, setQuery] = useState("");
   const [materialKey, setMaterialKey] = useState("");
   const [qty, setQty] = useState("");
   const [window, setWindow] = useState<string>(DELIVERY_WINDOWS[0]);
   const [note, setNote] = useState("");
+  const [projectId, setProjectId] = useState("");
+  // Standardfrist: eine Woche. Lang genug für eine ernsthafte Kalkulation,
+  // kurz genug, dass die Anfrage nicht liegen bleibt.
+  const [respondBy, setRespondBy] = useState(() => {
+    const d = new Date();
+    d.setDate(d.getDate() + 7);
+    return d.toISOString().slice(0, 10);
+  });
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -72,6 +82,28 @@ export default function DirectRequestModal({
       }
     }
 
+    // Die Anfrage selbst — strukturiert, damit der Lieferant ein
+    // Angebot darauf legen kann und beide Seiten den Stand sehen.
+    const { error: reqErr } = await supabase.from("direct_requests").insert({
+      buyer_company_id: myCompanyId,
+      supplier_company_id: target.id,
+      project_id: projectId || null,
+      material_key: material.key,
+      material_label: material.label,
+      spec: material.sia,
+      unit: material.unit,
+      quantity: Number(qty),
+      kbob_reference_price: material.kbobPrice,
+      delivery_window: window,
+      note: note.trim() || null,
+      respond_by: respondBy || null,
+    });
+    if (reqErr) {
+      setSending(false);
+      setError("Anfrage konnte nicht angelegt werden: " + reqErr.message);
+      return;
+    }
+
     const lines = [
       "Direktanfrage",
       `Material: ${material.label}`,
@@ -79,6 +111,7 @@ export default function DirectRequestModal({
       `Menge: ${Number(qty).toLocaleString("de-CH")} ${material.unit}`,
       `Lieferung: ${window}`,
     ];
+    if (respondBy) lines.push(`Antwort bis: ${respondBy.split("-").reverse().join(".")}`);
     if (note.trim()) lines.push("", note.trim());
 
     const { error: msgErr } = await supabase.from("messages").insert({
@@ -209,6 +242,37 @@ export default function DirectRequestModal({
                 className="w-full rounded-md border border-slate-300 bg-slate-50 px-3 py-2 text-sm text-slate-900 outline-none focus:border-brand focus:bg-white"
               >
                 {DELIVERY_WINDOWS.map((w) => <option key={w} value={w}>{w}</option>)}
+              </select>
+            </div>
+          </div>
+
+          {/* Frist + Baustelle */}
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+                Antwort bis
+              </label>
+              <input
+                type="date"
+                value={respondBy}
+                onChange={(e) => setRespondBy(e.target.value)}
+                className="w-full rounded-md border border-slate-300 bg-slate-50 px-3 py-2 text-sm text-slate-900 outline-none focus:border-brand focus:bg-white"
+              />
+            </div>
+            <div>
+              <label className="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+                Baustelle
+              </label>
+              <select
+                value={projectId}
+                onChange={(e) => setProjectId(e.target.value)}
+                disabled={projects.length === 0}
+                className="w-full rounded-md border border-slate-300 bg-slate-50 px-3 py-2 text-sm text-slate-900 outline-none focus:border-brand focus:bg-white disabled:text-slate-400"
+              >
+                <option value="">{projects.length === 0 ? "Keine angelegt" : "Keine Zuordnung"}</option>
+                {projects.map((p) => (
+                  <option key={p.id} value={p.id}>{projectLabel(p)}</option>
+                ))}
               </select>
             </div>
           </div>
