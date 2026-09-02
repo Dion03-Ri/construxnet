@@ -145,18 +145,6 @@ export function matchesMaterial(m: ProcMaterial, query: string): boolean {
   );
 }
 
-/**
- * Nummer für ein selbst angelegtes Material.
- *
- * Solche Materialien stehen noch in keinem gemeinsamen Katalog, deshalb
- * das Kürzel EIG statt einer Kategorie und eine laufende Nummer je
- * Sitzung. Sobald eigene Materialien in der Datenbank landen und für
- * andere Firmen freigegeben werden, bekommen sie eine echte Nummer.
- */
-export function ownMaterialId(index: number): string {
-  return `OB-EIG-${String(index + 1).padStart(3, "0")}`;
-}
-
 export type Tier = { tier: number; min: number; max: number | null; discount: number };
 
 // Gestaffelter Volumenrabatt (5 Stufen, deckungsgleich mit der BundleEngine-Kurve).
