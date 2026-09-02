@@ -4,9 +4,14 @@ import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { Handshake, X, Search, Send, Loader2, Info } from "lucide-react";
+<<<<<<< HEAD
 import { PROC_MATERIALS, DELIVERY_WINDOWS, matchesMaterial, type ProcMaterial } from "@/data/procurement";
 import { matchMaterial, WORTH_SHOWING } from "@/lib/materialMatch";
 import { rememberAlias } from "@/lib/useMaterialResolve";
+=======
+import { PROC_MATERIALS, DELIVERY_WINDOWS, matchesMaterial } from "@/data/procurement";
+import { matchMaterial, WORTH_SHOWING } from "@/lib/materialMatch";
+>>>>>>> origin/claude/construxnet-platform-rebuild-jll7j9
 import { useProjects, projectLabel } from "@/lib/projects";
 import { useSupabaseBrowser } from "@/lib/supabase-browser";
 import { cn } from "@/lib/utils";
