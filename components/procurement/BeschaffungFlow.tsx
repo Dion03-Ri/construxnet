@@ -6,6 +6,7 @@ import { useSupabaseBrowser } from "@/lib/supabase-browser";
 import { useMaterialResolve, rememberAlias } from "@/lib/useMaterialResolve";
 import { matchMaterial, WORTH_SHOWING } from "@/lib/materialMatch";
 import { createCustomMaterial, useCustomMaterials } from "@/lib/customMaterials";
+import { submitDemand } from "@/lib/bundles";
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 import {
@@ -102,6 +103,9 @@ export default function BeschaffungFlow({
 
   const [step, setStep] = useState(0);
   const [done, setDone] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [bundleIds, setBundleIds] = useState<string[]>([]);
 
   // Mehrfachauswahl: alle gewählten Materialien
   const [positions, setPositions] = useState<Position[]>(presetPositions);
@@ -240,9 +244,53 @@ export default function BeschaffungFlow({
 
   const canNext = step === 0 ? positions.length > 0 : step === 1 ? totals.filled === positions.length : true;
 
+  /**
+   * Letzter Schritt: jede Position wird eingereicht.
+   *
+   * Pro Position entsteht entweder ein neues Bündel oder eine Teilnahme
+   * an einem bestehenden — entschieden wird das in der Datenbank, weil
+   * nur dort zwei gleichzeitige Einreichungen nicht zwei Töpfe erzeugen.
+   */
+  async function submitAll() {
+    if (submitting) return;
+    setSubmitting(true);
+    setSubmitError(null);
+
+    const results: string[] = [];
+    for (const p of positions) {
+      const qty = Number(p.qty);
+      if (!(qty > 0)) continue;
+      const res = await submitDemand(supabase, {
+        materialId: p.id,
+        materialLabel: p.label,
+        sia: p.sia,
+        unit: p.unit,
+        category: p.category,
+        region,
+        volume: qty,
+        kbobPrice: p.kbobPrice,
+        projectId: projectId || null,
+      });
+      if (res.error) {
+        setSubmitting(false);
+        setSubmitError(
+          res.error.includes("submit_demand") || res.error.includes("function")
+            ? "Bedarf konnte nicht eingereicht werden. Ist die Migration 16_real_bundles.sql eingespielt?"
+            : res.error,
+        );
+        return;
+      }
+      if (res.bundleId) results.push(res.bundleId);
+    }
+
+    setSubmitting(false);
+    setBundleIds(results);
+    setDone(true);
+  }
+
   function next() {
     if (step < STEPS.length - 1) setStep((s) => s + 1);
-    else setDone(true);
+    else void submitAll();
   }
   function back() {
     if (step > 0) setStep((s) => s - 1);
@@ -264,13 +312,15 @@ export default function BeschaffungFlow({
         <div className="mx-auto grid h-14 w-14 place-items-center rounded-lg bg-brand/15 text-brand">
           <Check className="h-7 w-7" />
         </div>
-        <h2 className="mt-4 text-xl font-bold text-slate-900">Bedarf gemeldet</h2>
+        <h2 className="mt-4 text-xl font-bold text-slate-900">Bedarf eingereicht</h2>
         <p className="mx-auto mt-1.5 max-w-lg text-sm leading-relaxed text-slate-500">
-          {positions.length === 1 ? "Deine Materialanfrage wurde erfasst" : `${positions.length} Positionen wurden erfasst`}
+          {bundleIds.length === 1
+            ? "Deine Position liegt jetzt in einem Bündel"
+            : `${bundleIds.length} Positionen liegen jetzt in Bündeln`}
           . Referenz <span className="font-semibold text-slate-900">{reference}</span>.
-          {pool
-            ? " Jede Position wird einem passenden Pool ihrer Materialart und Region zugeordnet — daraus entstehen separate Bündel."
-            : " Passende Baustoffwerke werden zur Angebotsabgabe eingeladen."}
+          Wo für Material und Region schon ein offenes Bündel lief, ist deine
+          Menge dazugekommen — sonst ist ein neues entstanden. Unter Smart Pools
+          siehst du, wie viel bis zur nächsten Rabattstufe fehlt.
         </p>
         <div className="mt-6 flex flex-wrap justify-center gap-2">
           <Link href="/pools" className="inline-flex items-center gap-1.5 rounded-md bg-brand px-4 py-2 text-sm font-semibold text-navy-900 transition-colors hover:bg-brand-500">
@@ -720,8 +770,21 @@ export default function BeschaffungFlow({
               {step === 1 && totals.filled < positions.length && (
                 <span className="text-[12px] text-slate-400">Menge bei allen Positionen nötig</span>
               )}
-              <button type="button" onClick={next} disabled={!canNext} className="inline-flex items-center gap-1.5 rounded-md bg-brand px-5 py-2 text-sm font-semibold text-navy-900 transition-colors hover:bg-brand-500 disabled:cursor-not-allowed disabled:opacity-50">
-                {step === STEPS.length - 1 ? (<><Send className="h-4 w-4" /> Bedarf melden</>) : (<>Weiter <ChevronRight className="h-4 w-4" /></>)}
+              {submitError && (
+                <span className="max-w-xs text-right text-[12px] font-medium text-rose-600">
+                  {submitError}
+                </span>
+              )}
+              <button type="button" onClick={next} disabled={!canNext || submitting} className="inline-flex items-center gap-1.5 rounded-md bg-brand px-5 py-2 text-sm font-semibold text-navy-900 transition-colors hover:bg-brand-500 disabled:cursor-not-allowed disabled:opacity-50">
+                {step === STEPS.length - 1 ? (
+                  submitting ? (
+                    <><Loader2 className="h-4 w-4 animate-spin" /> Wird eingereicht …</>
+                  ) : (
+                    <><Send className="h-4 w-4" /> Bedarf einreichen</>
+                  )
+                ) : (
+                  <>Weiter <ChevronRight className="h-4 w-4" /></>
+                )}
               </button>
             </div>
           </div>

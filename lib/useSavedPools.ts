@@ -1,7 +1,13 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { SAVED_POOLS_KEY } from "@/data/pools";
+/**
+ * Schlüssel im Browser-Speicher. Der Wert hat sich mit dem Umstieg auf
+ * echte Bündel geändert: früher standen dort Beispiel-IDs wie "p1", jetzt
+ * Bündel-UUIDs. Der neue Schlüssel sorgt dafür, dass alte Merklisten
+ * nicht als tote Einträge weiterleben.
+ */
+const SAVED_POOLS_KEY = "obtanet.saved-bundles.v2";
 
 /**
  * Gespeicherte Pools pro Browser (localStorage). Bewusst leichtgewichtig:

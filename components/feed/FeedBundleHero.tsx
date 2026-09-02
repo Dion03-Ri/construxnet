@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { Megaphone, Layers, TrendingDown, ArrowRight, MapPin, Users } from "lucide-react";
-import { OPEN_POOLS } from "@/data/pools";
+import { useBundles, nextStep } from "@/lib/bundles";
 import { cn } from "@/lib/utils";
 
 /**
@@ -10,7 +10,12 @@ import { cn } from "@/lib/utils";
  * melden → bündeln → sparen. Bewusst grösser/dominanter als der Composer.
  */
 export default function FeedBundleHero() {
-  const top = [...OPEN_POOLS].sort((a, b) => b.disc - a.disc).slice(0, 3);
+  const { bundles } = useBundles();
+  // Die drei, bei denen am meisten drinliegt. Ohne laufende Bündel bleibt
+  // der Streifen leer statt Beispiele zu zeigen, die es nicht gibt.
+  const top = [...bundles]
+    .sort((a, b) => b.current_discount_pct - a.current_discount_pct)
+    .slice(0, 3);
 
   return (
     <section className="overflow-hidden rounded-xl border border-white/10 bg-navy-900 text-white shadow-card">
@@ -56,41 +61,49 @@ export default function FeedBundleHero() {
         </div>
       </div>
 
-      {/* Live-Bündel-Chancen */}
-      <div className="border-t border-white/10 bg-navy-950/40 px-3 py-3 sm:px-4">
-        <div className="mb-2 px-1 text-[11px] font-semibold uppercase tracking-wider text-white/45">
-          Live-Bündel in deiner Region
+      {/* Laufende Bündel — echte, oder gar keine */}
+      {top.length > 0 && (
+        <div className="border-t border-white/10 bg-navy-950/40 px-3 py-3 sm:px-4">
+          <div className="mb-2 px-1 text-[11px] font-semibold uppercase tracking-wider text-white/45">
+            Laufende Bündel
+          </div>
+          <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
+            {top.map((b) => {
+              const step = nextStep(b.current_volume);
+              const goal = step?.at ?? b.current_volume;
+              const pct = Math.min(100, Math.round((b.current_volume / (goal || 1)) * 100));
+              return (
+                <Link
+                  key={b.id}
+                  href={`/beschaffung?material=${encodeURIComponent(b.material_id ?? "")}`}
+                  className="group rounded-lg border border-white/10 bg-navy-900 p-3 transition-colors hover:border-brand/40"
+                >
+                  <div className="flex items-start justify-between gap-2">
+                    <span className="truncate text-[13px] font-semibold text-white">
+                      {b.material_label ?? b.title}
+                    </span>
+                    <span className="shrink-0 rounded border border-brand/30 bg-brand/10 px-1.5 py-0.5 text-[11px] font-bold text-brand">
+                      mind. {b.current_discount_pct} %
+                    </span>
+                  </div>
+                  <div className="mt-1 flex items-center gap-2 text-[11px] text-white/50">
+                    <MapPin className="h-3 w-3" /> {b.region}
+                    <span className="inline-flex items-center gap-1">
+                      <Users className="h-3 w-3" /> {b.participant_count}
+                    </span>
+                  </div>
+                  <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-white/10">
+                    <div className="h-full rounded-full bg-brand" style={{ width: `${pct}%` }} />
+                  </div>
+                  <div className="mt-1.5 flex items-center gap-1 text-[11px] font-semibold text-brand opacity-0 transition-opacity group-hover:opacity-100">
+                    <TrendingDown className="h-3 w-3" /> Beitreten
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
         </div>
-        <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
-          {top.map((p) => {
-            const pct = Math.min(100, Math.round((p.vol / p.target) * 100));
-            return (
-              <Link
-                key={p.id}
-                href={`/beschaffung?material=${encodeURIComponent(p.matKey)}`}
-                className="group rounded-lg border border-white/10 bg-navy-900 p-3 transition-colors hover:border-brand/40"
-              >
-                <div className="flex items-start justify-between gap-2">
-                  <span className="truncate text-[13px] font-semibold text-white">{p.material}</span>
-                  <span className="shrink-0 rounded border border-brand/30 bg-brand/10 px-1.5 py-0.5 text-[11px] font-bold text-brand">
-                    −{p.disc}%
-                  </span>
-                </div>
-                <div className="mt-1 flex items-center gap-2 text-[11px] text-white/50">
-                  <MapPin className="h-3 w-3" /> {p.region}
-                  <span className="inline-flex items-center gap-1"><Users className="h-3 w-3" /> {p.participants}</span>
-                </div>
-                <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-white/10">
-                  <div className="h-full rounded-full bg-brand" style={{ width: `${pct}%` }} />
-                </div>
-                <div className="mt-1.5 flex items-center gap-1 text-[11px] font-semibold text-brand opacity-0 transition-opacity group-hover:opacity-100">
-                  <TrendingDown className="h-3 w-3" /> Beitreten
-                </div>
-              </Link>
-            );
-          })}
-        </div>
-      </div>
+      )}
     </section>
   );
 }
