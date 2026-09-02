@@ -137,8 +137,8 @@ type Order = {
 
 const ORDERS: Order[] = [
   { id: "OBT-1543", materialId: "OB-BET-001", material: "Beton C25/30", sia: "SN EN 206 · C25/30 · XC3", qty: 1000, unit: "m³", unitPrice: 145.2, amount: 145_200, date: "12.02.2026", status: "In Arbeit", contract: "OBT-2026-0142" },
-  { id: "OBT-1521", materialId: "OB-ARM-001", material: "Bewehrungsstahl B500B", sia: "SN EN 10080 · B500B", qty: 68, unit: "t", unitPrice: 1107.35, amount: 75_300, date: "03.02.2026", status: "In Arbeit", contract: "OBT-2026-0098" },
-  { id: "OBT-1498", materialId: "OB-KIE-001", material: "Koffer-/Wandkies 0/45", sia: "SN 670 119 · 0/45", qty: 721, unit: "t", unitPrice: 33.15, amount: 23_900, date: "24.01.2026", status: "Abgeschlossen", contract: "OBT-2026-0119" },
+  { id: "OBT-1521", materialId: "OB-BST-001", material: "Bewehrungsstahl B500B", sia: "SN EN 10080 · B500B", qty: 68, unit: "t", unitPrice: 1107.35, amount: 75_300, date: "03.02.2026", status: "In Arbeit", contract: "OBT-2026-0098" },
+  { id: "OBT-1498", materialId: "OB-KAR-001", material: "Koffer-/Wandkies 0/45", sia: "SN 670 119 · 0/45", qty: 721, unit: "t", unitPrice: 33.15, amount: 23_900, date: "24.01.2026", status: "Abgeschlossen", contract: "OBT-2026-0119" },
   { id: "OBT-1466", materialId: "OB-BET-001", material: "Transportbeton C25/30", sia: "SN EN 206 · C25/30", qty: 421, unit: "m³", unitPrice: 145.2, amount: 61_100, date: "09.01.2026", status: "Abgeschlossen", contract: null },
 ];
 
@@ -768,7 +768,6 @@ function WorkspacePanel({ onAdd }: { onAdd: (m: ProcMaterial) => void }) {
                 <tr key={m.key}>
                   <td className="px-4 py-2.5">
                     <div className="font-medium text-slate-800">{m.label}</div>
-                    <div className="font-mono text-[10.5px] tracking-tight text-brand-700">{m.id}</div>
                     <div className="text-[11px] text-slate-400">{m.category}</div>
                   </td>
                   <td className="hidden px-2 py-2.5 text-[12px] text-slate-500 sm:table-cell">{m.sia}</td>
@@ -844,10 +843,7 @@ function CartPanel({
           {cart.map((c) => (
             <div key={c.key} className="rounded-md border border-slate-200 p-2.5">
               <div className="flex items-start justify-between gap-2">
-                <span className="min-w-0">
-                  <span className="block text-[13px] font-medium leading-tight text-slate-800">{c.label}</span>
-                  <span className="block font-mono text-[10px] tracking-tight text-brand-700">{c.id}</span>
-                </span>
+                <span className="text-[13px] font-medium leading-tight text-slate-800">{c.label}</span>
                 <button type="button" onClick={() => onRemove(c.key)} className="shrink-0 text-slate-300 hover:text-rose-500">
                   <Trash2 className="h-3.5 w-3.5" />
                 </button>

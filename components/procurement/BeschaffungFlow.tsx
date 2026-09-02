@@ -370,7 +370,6 @@ export default function BeschaffungFlow({
                           </span>
                           <span className="min-w-0">
                             <span className="block text-[14px] font-semibold text-slate-900">{m.label}</span>
-                            <span className="mt-0.5 block font-mono text-[10.5px] tracking-tight text-brand-700">{m.id}</span>
                             <span className="mt-0.5 block truncate text-[11px] text-slate-400">{m.sia}</span>
                             <span className="mt-1 inline-block text-[11px] text-slate-500">
                               KBOB-Ref CHF {chf(m.kbobPrice)}/{m.unit}
@@ -446,7 +445,6 @@ export default function BeschaffungFlow({
                         <div className="flex items-start justify-between gap-3">
                           <div className="min-w-0">
                             <div className="text-[14px] font-semibold text-slate-900">{p.label}</div>
-                            <div className="font-mono text-[10.5px] tracking-tight text-brand-700">{p.id}</div>
                             <div className="truncate text-[11px] text-slate-400">{p.sia}</div>
                           </div>
                           <div className="flex w-[170px] shrink-0 items-center rounded-md border border-slate-300 bg-slate-50 focus-within:border-brand focus-within:bg-white focus-within:ring-1 focus-within:ring-brand/30">

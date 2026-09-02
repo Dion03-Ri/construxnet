@@ -51,8 +51,33 @@ Supabase (server + browser client, `supabaseAdmin` service-role), Leaflet/OSM
 - Immer nur die **wirklich nötigen** Dateien lesen (gezielt via grep), nicht den
   ganzen Baum. Für einfache Edits Modell **Sonnet**, Opus nur für schwere Arbeit.
 
+## Materialnummern (OB-BET-001) — wofür sie da sind
+- Schema `OB-<Kategoriekürzel>-<laufende Nummer>`, definiert in
+  `data/procurement.ts` (`CATEGORY_CODE`, Feld `id`). Vorbild: SourceOn
+  `SO-BET-001`.
+- **Sie sind in erster Linie Infrastruktur, keine Beschriftung.** Zweck ist der
+  gemeinsame Fixpunkt, auf den unterschiedliche Eingaben zusammenlaufen:
+  „Beton C25/30", „Transportbeton 25/30", „C25/30 Ortbeton XC3" und
+  „Beton 25er" sind vier Schreibweisen und ein Material — die KI ordnet sie
+  alle `OB-BET-001` zu.
+- **Daran hängt das Bündeln.** Ohne gemeinsamen Schlüssel liegen vier Firmen mit
+  demselben Bedarf in vier getrennten Töpfen und niemand erreicht eine
+  Rabattstufe. Der Abgleich ist die Voraussetzung, nicht ein Zusatz.
+- Deshalb: In der Oberfläche zurückhaltend zeigen — dort, wo ein Mensch sie
+  wirklich braucht (Bestell-PDF, Bestellübersicht, Anfrage an den Lieferanten).
+  Nicht als Deko unter jeder Bezeichnung.
+- Einmal vergeben = nie wieder ändern. Katalogpositionen nur hinten anhängen,
+  nie umsortieren; genommene Nummern bleiben belegt.
+- Selbst erfasste Materialien: `OB-EIG-<Nummer>` — Kennzeichen dafür, dass sie
+  noch in keinem gemeinsamen Katalog stehen und noch nicht abgeglichen sind.
+
 ## OFFEN / als Nächstes
 - Startseite + Dashboard (`/dashboard`) sind auf Light Mode umgestellt. Andere
   Seiten (z.B. Coming-Soon, Netzwerk) sind noch dunkel — bei Bedarf einzeln
   nachziehen, nicht automatisch annehmen, dass alles schon hell ist.
 - Branding einheitlich auf Obtanet umgestellt.
+- **KI-Abgleich auf Materialnummern (#25/#24):** freie Eingaben und hochgeladene
+  Dokumente auf `OB-...` mappen, Dubletten erkennen, eigene Materialien
+  (`OB-EIG-...`) in den gemeinsamen Katalog überführen. Das ist der Schritt, der
+  die Nummern erst nützlich macht.
+- Migrationen `08`–`13` sind eingespielt (Stand: Materialnummern).
