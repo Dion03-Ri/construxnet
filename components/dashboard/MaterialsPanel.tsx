@@ -33,29 +33,15 @@ const STATUS_STYLE: Record<CustomStatus, string> = {
 /**
  * Dublettenverdacht für ein eigenes Material.
  *
- * Verglichen wird gegen den festen Katalog und gegen alles, was andere
- * Firmen freigegeben haben — genau dort entstehen die Doppelungen, die
- * Bündel zerreissen.
+ * Geprüft wird gegen den festen Katalog UND gegen alles, was andere Firmen
+ * freigegeben haben — genau dort entstehen die Doppelungen, die Bündel
+ * zerreissen. Zwei Nummern für dasselbe Material heissen zwei Töpfe, und
+ * keiner erreicht die Rabattstufe.
  */
-function duplicatesFor(
-  m: CustomMaterial,
-  others: ProcMaterial[],
-): { material: ProcMaterial; reason: string }[] {
-  return matchMaterial(`${m.label} ${m.sia ?? ""}`, 3)
+function duplicatesFor(m: CustomMaterial, comparable: ProcMaterial[]) {
+  return matchMaterial(`${m.label} ${m.sia ?? ""}`, 3, comparable)
     .filter((r) => r.score >= WORTH_SHOWING && r.material.id !== m.material_id)
-    .map((r) => ({ material: r.material, reason: r.reason }))
-    .concat(
-      others
-        .filter(
-          (o) =>
-            o.id !== m.material_id &&
-            matchMaterial(`${m.label} ${m.sia ?? ""}`, 20).some(
-              (r) => r.material.id === o.id && r.score >= WORTH_SHOWING,
-            ),
-        )
-        .map((o) => ({ material: o, reason: "andere Firma hat dasselbe erfasst" })),
-    )
-    .slice(0, 3);
+    .map((r) => ({ material: r.material, reason: r.reason }));
 }
 
 export default function MaterialsPanel({

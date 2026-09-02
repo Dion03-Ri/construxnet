@@ -149,7 +149,14 @@ export type MatchResult = {
  * festlegt. Reine Wortüberschneidung allein reicht nie für Gewissheit —
  * „Beton" passt auf sechs Positionen.
  */
-export function matchMaterial(input: string, limit = 3): MatchResult[] {
+export function matchMaterial(
+  input: string,
+  limit = 3,
+  /** Worin gesucht wird. Standard ist der feste Katalog; wo eigene und
+   *  freigegebene Materialien dazugehören, wird die erweiterte Liste
+   *  übergeben — sonst findet der Abgleich genau die nicht. */
+  catalog: ProcMaterial[] = PROC_MATERIALS,
+): MatchResult[] {
   const q = normalize(input);
   if (q.length < 2) return [];
 
@@ -159,7 +166,7 @@ export function matchMaterial(input: string, limit = 3): MatchResult[] {
 
   const results: MatchResult[] = [];
 
-  for (const m of PROC_MATERIALS) {
+  for (const m of catalog) {
     const haystack = `${m.label} ${m.sia}`;
     const mSpecs = specTokens(haystack);
     const mTokens = tokens(m.label);

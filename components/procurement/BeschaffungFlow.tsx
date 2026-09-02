@@ -155,9 +155,9 @@ export default function BeschaffungFlow({
   const searchSuggestions = useMemo(
     () =>
       filteredMaterials.length === 0 && matQuery.trim().length >= 3
-        ? matchMaterial(matQuery, 4).filter((m) => m.score >= WORTH_SHOWING)
+        ? matchMaterial(matQuery, 4, catalog).filter((m) => m.score >= WORTH_SHOWING)
         : [],
-    [filteredMaterials.length, matQuery],
+    [filteredMaterials.length, matQuery, catalog],
   );
 
   const selectedKeys = useMemo(() => new Set(positions.map((p) => p.key)), [positions]);

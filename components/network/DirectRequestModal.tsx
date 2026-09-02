@@ -4,10 +4,11 @@ import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { Handshake, X, Search, Send, Loader2, Info } from "lucide-react";
-import { PROC_MATERIALS, DELIVERY_WINDOWS, matchesMaterial, type ProcMaterial } from "@/data/procurement";
+import { DELIVERY_WINDOWS, matchesMaterial, type ProcMaterial } from "@/data/procurement";
 import { matchMaterial, WORTH_SHOWING } from "@/lib/materialMatch";
 import { rememberAlias } from "@/lib/useMaterialResolve";
 import { useProjects, projectLabel } from "@/lib/projects";
+import { useCustomMaterials } from "@/lib/customMaterials";
 import { useSupabaseBrowser } from "@/lib/supabase-browser";
 import { cn } from "@/lib/utils";
 
@@ -34,6 +35,9 @@ export default function DirectRequestModal({
   const supabase = useSupabaseBrowser();
   const router = useRouter();
   const { projects } = useProjects();
+  // Fester Katalog plus eigene und freigegebene Materialien — sonst liesse
+  // sich ausgerechnet das nicht anfragen, was der Katalog nicht führt.
+  const { catalog } = useCustomMaterials(myCompanyId);
 
   const [query, setQuery] = useState("");
   const [materialKey, setMaterialKey] = useState("");
@@ -51,19 +55,19 @@ export default function DirectRequestModal({
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const material = PROC_MATERIALS.find((m) => m.key === materialKey);
+  const material = catalog.find((m) => m.key === materialKey);
 
   const matches = useMemo(() => {
     const q = query.trim();
-    if (!q) return PROC_MATERIALS.slice(0, 6);
-    const literal = PROC_MATERIALS.filter((m) => matchesMaterial(m, q)).slice(0, 6);
+    if (!q) return catalog.slice(0, 6);
+    const literal = catalog.filter((m) => matchesMaterial(m, q)).slice(0, 6);
     if (literal.length > 0) return literal;
     // Kein wörtlicher Treffer: der Abgleich fängt Schreibweisen ab, die es
     // so nicht im Katalog gibt — "Armierungsstahl" statt "Bewehrungsstahl".
-    return matchMaterial(q, 4)
+    return matchMaterial(q, 4, catalog)
       .filter((m) => m.score >= WORTH_SHOWING)
       .map((m) => m.material);
-  }, [query]);
+  }, [query, catalog]);
 
   const valid = !!material && Number(qty) > 0;
 
@@ -73,7 +77,7 @@ export default function DirectRequestModal({
    * Treffer sofort da, ohne Heuristik.
    */
   function pickMaterial(m: ProcMaterial) {
-    const literal = PROC_MATERIALS.some((x) => matchesMaterial(x, query.trim()));
+    const literal = catalog.some((x) => matchesMaterial(x, query.trim()));
     if (!literal) void rememberAlias(supabase, query, m.id, myCompanyId, "MATCH");
     setMaterialKey(m.key);
   }
