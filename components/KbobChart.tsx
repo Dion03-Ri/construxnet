@@ -1,10 +1,12 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import Link from "next/link";
 import {
   ResponsiveContainer,
-  LineChart,
+  ComposedChart,
   Line,
+  Scatter,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -12,20 +14,24 @@ import {
   type TooltipProps,
 } from "recharts";
 import {
-  ChevronDown,
   TrendingUp,
   TrendingDown,
-  MapPin,
-  Check,
+  Minus,
+  Info,
+  ShoppingCart,
+  Handshake,
+  Loader2,
 } from "lucide-react";
 import kbobData from "@/data/kbobData.json";
+import { useOwnPurchases, type Purchase } from "@/lib/kbobPurchases";
+import { CARD } from "@/lib/ui";
 import { cn } from "@/lib/utils";
 
 /* -------------------------------------------------------------------------- */
-/*  Types                                                                       */
+/*  Daten                                                                     */
 /* -------------------------------------------------------------------------- */
 
-type PricePoint = { period: string; kbob: number; pool: number };
+type PricePoint = { period: string; kbob: number };
 
 type MaterialEntry = {
   label: string;
@@ -42,14 +48,28 @@ type KbobData = {
   materials: Record<string, MaterialEntry>;
 };
 
-const data = kbobData as KbobData;
+const data = kbobData as unknown as KbobData;
 
 const MATERIAL_KEYS = Object.keys(data.materials);
 const REGION_KEYS = Object.keys(data.regions);
-const RANGE_KEYS = Object.keys(data.timeRanges); // 1J, 3J, 5J, Max
+const RANGE_KEYS = Object.keys(data.timeRanges);
+
+/** Womit man dieses Material tatsächlich beschafft. */
+const PROCURE_LINK: Record<string, string> = {
+  beton: "beton-25",
+  stahl: "stahl-b500b",
+  kies: "kies-045",
+  transport: "",
+};
+
+const GRID_BG = {
+  backgroundImage:
+    "linear-gradient(rgba(255,255,255,.7) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.7) 1px,transparent 1px)",
+  backgroundSize: "26px 26px",
+};
 
 /* -------------------------------------------------------------------------- */
-/*  Formatting helpers                                                          */
+/*  Formatierung                                                              */
 /* -------------------------------------------------------------------------- */
 
 function decimalsFor(value: number) {
@@ -66,398 +86,447 @@ function chf(value: number, decimals?: number) {
   }).format(value);
 }
 
-/** "2021-Q1" -> { q: "Q1", year: "2021", short: "Q1 '21" } */
-function parsePeriod(period: string) {
+/** "2021-Q1" → "Q1 '21" */
+function shortPeriod(period: string) {
   const [year, q] = period.split("-");
-  return { q, year, short: `${q} '${year.slice(2)}` };
+  return `${q} '${year.slice(2)}`;
+}
+
+function pct(v: number) {
+  return `${v > 0 ? "+" : ""}${v.toFixed(1)} %`;
 }
 
 /* -------------------------------------------------------------------------- */
-/*  Material dropdown (lightweight, accessible)                                 */
+/*  Kleinteile                                                                */
 /* -------------------------------------------------------------------------- */
 
-function MaterialSelect({
-  value,
-  onChange,
-}: {
-  value: string;
-  onChange: (v: string) => void;
-}) {
-  const [open, setOpen] = useState(false);
-  const current = data.materials[value];
-
+function Trend({ value, invert }: { value: number; invert?: boolean }) {
+  // Bei Preisen ist "runter" gut, bei Ersparnis "rauf". invert dreht das um.
+  const good = invert ? value >= 0 : value <= 0;
+  const Icon = value === 0 ? Minus : value > 0 ? TrendingUp : TrendingDown;
   return (
-    <div className="relative">
-      <button
-        type="button"
-        onClick={() => setOpen((o) => !o)}
-        aria-haspopup="listbox"
-        aria-expanded={open}
-        className={cn(
-          "flex w-full min-w-[240px] items-center justify-between gap-3 rounded-lg",
-          "border border-slate-200 bg-white px-4 py-2.5 text-left backdrop-blur",
-          "transition-colors hover:border-slate-300 hover:bg-slate-50",
-          "focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/60",
-        )}
-      >
-        <span className="flex flex-col leading-tight">
-          <span className="text-sm font-semibold text-slate-800">
-            {current.label}
-          </span>
-          <span className="text-[11px] text-slate-500">{current.spec}</span>
-        </span>
-        <ChevronDown
-          className={cn(
-            "h-4 w-4 shrink-0 text-slate-500 transition-transform",
-            open && "rotate-180",
-          )}
-        />
-      </button>
-
-      {open && (
-        <>
-          {/* click-away backdrop */}
-          <div
-            className="fixed inset-0 z-40"
-            aria-hidden
-            onClick={() => setOpen(false)}
-          />
-          <ul
-            role="listbox"
-            className={cn(
-              "absolute z-50 mt-2 w-full overflow-hidden rounded-lg border border-slate-200",
-              "bg-white shadow-2xl shadow-slate-900/10 backdrop-blur-xl",
-            )}
-          >
-            {MATERIAL_KEYS.map((key) => {
-              const m = data.materials[key];
-              const active = key === value;
-              return (
-                <li key={key}>
-                  <button
-                    type="button"
-                    role="option"
-                    aria-selected={active}
-                    onClick={() => {
-                      onChange(key);
-                      setOpen(false);
-                    }}
-                    className={cn(
-                      "flex w-full items-center justify-between gap-3 px-4 py-2.5 text-left",
-                      "transition-colors hover:bg-slate-50",
-                      active && "bg-brand/10",
-                    )}
-                  >
-                    <span className="flex flex-col leading-tight">
-                      <span className="text-sm font-medium text-slate-800">
-                        {m.label}
-                      </span>
-                      <span className="text-[11px] text-slate-500">
-                        {m.spec}
-                      </span>
-                    </span>
-                    {active && (
-                      <Check className="h-4 w-4 shrink-0 text-brand" />
-                    )}
-                  </button>
-                </li>
-              );
-            })}
-          </ul>
-        </>
+    <span
+      className={cn(
+        "inline-flex items-center gap-1 text-[13px] font-semibold",
+        value === 0 ? "text-slate-400" : good ? "text-brand-700" : "text-rose-600",
       )}
-    </div>
+    >
+      <Icon className="h-3.5 w-3.5" />
+      {pct(value)}
+    </span>
   );
 }
-
-/* -------------------------------------------------------------------------- */
-/*  Segmented control                                                          */
-/* -------------------------------------------------------------------------- */
 
 function Segmented({
   options,
   value,
   onChange,
+  dark,
 }: {
   options: { key: string; label: string }[];
   value: string;
-  onChange: (v: string) => void;
+  onChange: (k: string) => void;
+  dark?: boolean;
 }) {
   return (
-    <div className="inline-flex rounded-lg border border-slate-200 bg-white p-1 backdrop-blur">
-      {options.map((opt) => (
-        <button
-          key={opt.key}
-          type="button"
-          onClick={() => onChange(opt.key)}
-          className={cn(
-            "rounded-lg px-3 py-1.5 text-xs font-medium transition-colors",
-            value === opt.key
-              ? "bg-brand text-white shadow-sm shadow-brand/30"
-              : "text-slate-500 hover:text-slate-800",
-          )}
-        >
-          {opt.label}
-        </button>
-      ))}
+    <div
+      className={cn(
+        "inline-flex rounded-md p-0.5",
+        dark ? "bg-white/10" : "border border-slate-200",
+      )}
+    >
+      {options.map((o) => {
+        const active = o.key === value;
+        return (
+          <button
+            key={o.key}
+            type="button"
+            onClick={() => onChange(o.key)}
+            className={cn(
+              "rounded px-2.5 py-1.5 text-[12.5px] font-semibold transition-colors",
+              active
+                ? dark
+                  ? "bg-brand text-navy-900"
+                  : "bg-navy-900 text-white"
+                : dark
+                  ? "text-white/60 hover:text-white"
+                  : "text-slate-500 hover:bg-slate-100",
+            )}
+          >
+            {o.label}
+          </button>
+        );
+      })}
     </div>
   );
 }
 
-/* -------------------------------------------------------------------------- */
-/*  Custom tooltip                                                             */
-/* -------------------------------------------------------------------------- */
+type Row = PricePoint & { own?: number };
 
 function ChartTooltip({
   active,
   payload,
   unit,
 }: TooltipProps<number, string> & { unit: string }) {
-  if (!active || !payload || payload.length === 0) return null;
-  const row = payload[0].payload as {
-    period: string;
-    kbob: number;
-    pool: number;
-  };
-  const { q, year } = parsePeriod(row.period);
-  const savings = row.kbob - row.pool;
-  const savingsPct = (savings / row.kbob) * 100;
+  if (!active || !payload?.length) return null;
+  const row = payload[0].payload as Row;
+  const delta = row.own != null ? ((row.own - row.kbob) / row.kbob) * 100 : null;
 
   return (
-    <div className="rounded-md border border-slate-200 bg-white px-4 py-3 shadow-cardhover">
-      <div className="mb-2 text-xs font-semibold text-slate-600">
-        {q} {year}
+    <div className="rounded-md border border-slate-200 bg-white px-3 py-2 shadow-cardhover">
+      <div className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+        {shortPeriod(row.period)}
       </div>
-      <div className="space-y-1.5 text-sm">
-        <div className="flex items-center justify-between gap-6">
-          <span className="flex items-center gap-2 text-slate-500">
-            <span className="h-2 w-2 rounded-full bg-accent" />
-            KBOB Index
-          </span>
-          <span className="font-mono font-medium text-slate-800">
-            CHF {chf(row.kbob)} / {unit}
-          </span>
-        </div>
-        <div className="flex items-center justify-between gap-6">
-          <span className="flex items-center gap-2 text-slate-500">
-            <span className="h-2 w-2 rounded-full bg-brand" />
-            Smart Pool
-          </span>
-          <span className="font-mono font-medium text-slate-800">
-            CHF {chf(row.pool)} / {unit}
-          </span>
-        </div>
-        <div className="mt-2 flex items-center justify-between gap-6 border-t border-slate-200 pt-2">
-          <span className="text-slate-500">Ersparnis</span>
-          <span className="font-mono font-semibold text-brand">
-            −CHF {chf(savings)} ({savingsPct.toFixed(1)}%)
-          </span>
-        </div>
+      <div className="mt-1 text-[13px] text-slate-600">
+        Referenz <b className="text-slate-900">CHF {chf(row.kbob)}</b> / {unit}
       </div>
+      {row.own != null && (
+        <div className="mt-0.5 text-[13px] text-slate-600">
+          Dein Einkauf <b className="text-brand-700">CHF {chf(row.own)}</b> / {unit}
+          {delta !== null && (
+            <span className={cn("ml-1.5 font-semibold", delta <= 0 ? "text-brand-700" : "text-rose-600")}>
+              ({pct(delta)})
+            </span>
+          )}
+        </div>
+      )}
     </div>
   );
 }
 
-/* -------------------------------------------------------------------------- */
-/*  KPI card                                                                   */
-/* -------------------------------------------------------------------------- */
-
-function Kpi({
+function Stat({
   label,
   children,
+  hint,
 }: {
   label: string;
   children: React.ReactNode;
+  hint?: string;
 }) {
   return (
-    <div className="rounded-lg border border-slate-200 bg-white p-4 backdrop-blur">
-      <div className="text-[11px] font-medium uppercase tracking-wider text-slate-500">
+    <div className="px-4 py-3.5 sm:px-5">
+      <div className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">
         {label}
       </div>
-      <div className="mt-1.5">{children}</div>
+      <div className="mt-1">{children}</div>
+      {hint && <div className="mt-0.5 text-[11px] text-slate-400">{hint}</div>}
     </div>
   );
 }
 
 /* -------------------------------------------------------------------------- */
-/*  Main component                                                             */
+/*  Eigene Käufe                                                              */
+/* -------------------------------------------------------------------------- */
+
+function OwnPurchases({
+  purchases,
+  loading,
+  unit,
+  materialKey,
+}: {
+  purchases: Purchase[];
+  loading: boolean;
+  unit: string;
+  materialKey: string;
+}) {
+  const procureKey = PROCURE_LINK[materialKey];
+
+  return (
+    <div className={cn(CARD, "overflow-hidden")}>
+      <div className="border-b border-slate-200 px-5 py-3.5">
+        <h3 className="text-[15px] font-semibold text-slate-900">Deine Abschlüsse</h3>
+        <p className="mt-0.5 text-[12px] leading-relaxed text-slate-500">
+          Angenommene Angebote in dieser Warengruppe, gemessen am Referenzpreis
+          zum Zeitpunkt der Anfrage.
+        </p>
+      </div>
+
+      {loading ? (
+        <div className="grid place-items-center py-10 text-slate-400">
+          <Loader2 className="h-5 w-5 animate-spin" />
+        </div>
+      ) : purchases.length === 0 ? (
+        <div className="px-5 py-6 text-center">
+          <p className="text-[13px] font-semibold text-slate-800">
+            Noch kein Abschluss in dieser Gruppe
+          </p>
+          <p className="mx-auto mt-1 max-w-xs text-[12px] leading-relaxed text-slate-500">
+            Sobald du ein Angebot annimmst, erscheint es hier und in der Kurve —
+            so siehst du, wie du gegenüber der Referenz gefahren bist.
+          </p>
+          <div className="mt-3 flex flex-col gap-1.5">
+            {procureKey && (
+              <Link
+                href={`/beschaffung?material=${procureKey}`}
+                className="inline-flex items-center justify-center gap-1.5 rounded-md bg-brand px-3.5 py-2 text-[12.5px] font-semibold text-navy-900 transition-colors hover:bg-brand-500"
+              >
+                <ShoppingCart className="h-3.5 w-3.5" /> Bedarf einreichen
+              </Link>
+            )}
+            <Link
+              href="/network"
+              className="inline-flex items-center justify-center gap-1.5 rounded-md px-3.5 py-2 text-[12.5px] font-semibold text-slate-600 transition-colors hover:bg-slate-100"
+            >
+              <Handshake className="h-3.5 w-3.5" /> Lieferant direkt anfragen
+            </Link>
+          </div>
+        </div>
+      ) : (
+        <ul className="divide-y divide-slate-100">
+          {[...purchases].reverse().map((p) => {
+            const delta =
+              p.reference && p.reference > 0
+                ? ((p.unitPrice - p.reference) / p.reference) * 100
+                : null;
+            return (
+              <li key={p.id} className="px-5 py-3">
+                <div className="flex items-baseline justify-between gap-2">
+                  <span className="truncate text-[13px] font-semibold text-slate-800">
+                    {p.materialLabel}
+                  </span>
+                  <span className="shrink-0 text-[13px] font-bold text-slate-900">
+                    CHF {chf(p.unitPrice)}
+                  </span>
+                </div>
+                <div className="mt-0.5 flex flex-wrap items-center gap-x-2.5 text-[11.5px] text-slate-400">
+                  <span>{shortPeriod(p.period)}</span>
+                  <span>
+                    {chf(p.quantity, 0)} {p.unit}
+                  </span>
+                  <span className="truncate">{p.supplier}</span>
+                  {delta !== null && (
+                    <span
+                      className={cn(
+                        "font-semibold",
+                        delta <= 0 ? "text-brand-700" : "text-rose-600",
+                      )}
+                    >
+                      {pct(delta)} zur Referenz
+                    </span>
+                  )}
+                </div>
+              </li>
+            );
+          })}
+        </ul>
+      )}
+    </div>
+  );
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Hauptkomponente                                                           */
 /* -------------------------------------------------------------------------- */
 
 export default function KbobChart({ initialMaterial }: { initialMaterial?: string }) {
   const [material, setMaterial] = useState(
-    initialMaterial && MATERIAL_KEYS.includes(initialMaterial) ? initialMaterial : MATERIAL_KEYS[0],
+    initialMaterial && MATERIAL_KEYS.includes(initialMaterial)
+      ? initialMaterial
+      : MATERIAL_KEYS[0],
   );
   const [region, setRegion] = useState(REGION_KEYS[0]);
   const [range, setRange] = useState<string>("3J");
 
   const entry = data.materials[material];
   const unit = entry.unit;
+  const { purchases, avgDelta, loading } = useOwnPurchases(material);
 
-  const chartData = useMemo(() => {
+  const chartData = useMemo<Row[]>(() => {
     const full = entry.regions[region];
     const count = data.timeRanges[range] ?? full.length;
-    return full.slice(Math.max(0, full.length - count));
-  }, [entry, region, range]);
+    const slice = full.slice(Math.max(0, full.length - count));
 
-  const kpis = useMemo(() => {
+    // Eigene Abschlüsse auf die Quartalspunkte legen. Mehrere Käufe im
+    // selben Quartal werden gemittelt — die Kurve zeigt einen Punkt.
+    const byPeriod = new Map<string, number[]>();
+    for (const p of purchases) {
+      const arr = byPeriod.get(p.period) ?? [];
+      arr.push(p.unitPrice);
+      byPeriod.set(p.period, arr);
+    }
+
+    return slice.map((pt) => {
+      const own = byPeriod.get(pt.period);
+      return {
+        period: pt.period,
+        kbob: pt.kbob,
+        own: own ? own.reduce((a, b) => a + b, 0) / own.length : undefined,
+      };
+    });
+  }, [entry, region, range, purchases]);
+
+  const stats = useMemo(() => {
     const n = chartData.length;
     const last = chartData[n - 1];
     const prev = chartData[n - 2] ?? last;
-    const current = last.kbob;
-    const change = ((last.kbob - prev.kbob) / prev.kbob) * 100;
-    const savings = last.kbob - last.pool;
-    const savingsPct = (savings / last.kbob) * 100;
-    return { current, change, savings, savingsPct };
+    const first = chartData[0];
+    return {
+      current: last.kbob,
+      quarter: ((last.kbob - prev.kbob) / prev.kbob) * 100,
+      range: ((last.kbob - first.kbob) / first.kbob) * 100,
+    };
   }, [chartData]);
 
-  const regionLabel = data.regions[region];
-  const regionShort = region.slice(0, 3).toUpperCase();
   const tickInterval = Math.max(0, Math.floor(chartData.length / 7) - 1);
+  const ownPoints = chartData.filter((r) => r.own != null).length;
 
   return (
-    <section className="w-full rounded-lg border border-slate-200 bg-white p-5 shadow-card sm:p-7">
-      {/* Header row: title + material select */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-        <div>
-          <h2 className="text-lg font-semibold tracking-tight text-slate-800">
-            KBOB Preisindex vs. Smart Pool
+    <div className="space-y-4">
+      {/* Kopfleiste: Material, Region, Zeitraum */}
+      <div className="relative overflow-hidden rounded-xl border border-white/10 bg-navy-900 text-white">
+        <div aria-hidden className="pointer-events-none absolute inset-0 opacity-[0.06]" style={GRID_BG} />
+        <div className="relative px-5 py-4">
+          <div className="flex flex-wrap gap-1.5">
+            {MATERIAL_KEYS.map((k) => {
+              const active = k === material;
+              return (
+                <button
+                  key={k}
+                  type="button"
+                  onClick={() => setMaterial(k)}
+                  className={cn(
+                    "rounded-md px-3 py-1.5 text-[13px] font-semibold transition-colors",
+                    active
+                      ? "bg-brand text-navy-900"
+                      : "bg-white/5 text-white/60 hover:bg-white/10 hover:text-white",
+                  )}
+                >
+                  {data.materials[k].label}
+                </button>
+              );
+            })}
+          </div>
+
+          <p className="mt-2.5 text-[12px] text-white/40">{entry.spec}</p>
+
+          <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-white/10 pt-3">
+            <div className="flex items-center gap-2">
+              <span className="text-[11px] font-semibold uppercase tracking-wider text-white/40">
+                Region
+              </span>
+              <Segmented
+                dark
+                options={REGION_KEYS.map((k) => ({ key: k, label: data.regions[k] }))}
+                value={region}
+                onChange={setRegion}
+              />
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-[11px] font-semibold uppercase tracking-wider text-white/40">
+                Zeitraum
+              </span>
+              <Segmented
+                dark
+                options={RANGE_KEYS.map((k) => ({ key: k, label: k }))}
+                value={range}
+                onChange={setRange}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Zahlen */}
+      <div className={cn(CARD, "grid grid-cols-1 divide-y divide-slate-200 sm:grid-cols-3 sm:divide-x sm:divide-y-0")}>
+        <Stat label="Referenzpreis" hint={`${data.regions[region]} · Stand ${data.meta.updated}`}>
+          <div className="flex items-baseline gap-1.5">
+            <span className="text-2xl font-bold tracking-tight text-slate-900">
+              CHF {chf(stats.current)}
+            </span>
+            <span className="text-sm text-slate-500">/ {unit}</span>
+          </div>
+        </Stat>
+        <Stat label="Gegenüber Vorquartal">
+          <span className="text-2xl font-bold">
+            <Trend value={stats.quarter} />
+          </span>
+        </Stat>
+        <Stat
+          label="Deine Abschlüsse zur Referenz"
+          hint={
+            avgDelta === null
+              ? "noch kein angenommenes Angebot"
+              : `${purchases.length} Abschluss${purchases.length === 1 ? "" : "e"}, mengengewichtet`
+          }
+        >
+          {avgDelta === null ? (
+            <span className="text-2xl font-bold tracking-tight text-slate-300">—</span>
+          ) : (
+            <span className="text-2xl font-bold">
+              <Trend value={avgDelta} />
+            </span>
+          )}
+        </Stat>
+      </div>
+
+      {/* Kurve */}
+      <div className={cn(CARD, "p-5 sm:p-6")}>
+        <div className="flex flex-wrap items-baseline justify-between gap-2">
+          <h2 className="text-[15px] font-semibold text-slate-900">
+            {entry.label} · {data.regions[region]}
           </h2>
-          <p className="mt-1 flex items-center gap-1.5 text-sm text-slate-500">
-            <MapPin className="h-3.5 w-3.5" />
-            {regionLabel} · Stand {data.meta.updated}
+          <div className="flex items-center gap-3 text-[11.5px] text-slate-500">
+            <span className="inline-flex items-center gap-1.5">
+              <span className="h-0.5 w-4 rounded bg-navy-700" /> Referenzpreis
+            </span>
+            <span className="inline-flex items-center gap-1.5">
+              <span className="h-2 w-2 rounded-full bg-brand ring-2 ring-brand/25" />
+              Deine Abschlüsse
+            </span>
+          </div>
+        </div>
+
+        <div className="mt-4 h-[320px] w-full">
+          <ResponsiveContainer width="100%" height="100%">
+            <ComposedChart data={chartData} margin={{ top: 10, right: 12, bottom: 0, left: -8 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="rgba(15,23,42,0.06)" vertical={false} />
+              <XAxis
+                dataKey="period"
+                tickFormatter={shortPeriod}
+                interval={tickInterval}
+                tick={{ fill: "#9ca3af", fontSize: 11 }}
+                tickLine={false}
+                axisLine={false}
+              />
+              <YAxis
+                tick={{ fill: "#9ca3af", fontSize: 11 }}
+                tickLine={false}
+                axisLine={false}
+                width={56}
+                domain={["auto", "auto"]}
+              />
+              <Tooltip content={<ChartTooltip unit={unit} />} />
+              <Line
+                type="monotone"
+                dataKey="kbob"
+                name="Referenzpreis"
+                stroke="#254D7A"
+                strokeWidth={2}
+                dot={false}
+                activeDot={{ r: 4 }}
+              />
+              <Scatter dataKey="own" name="Deine Abschlüsse" fill="#D99000" shape="circle" />
+            </ComposedChart>
+          </ResponsiveContainer>
+        </div>
+
+        {ownPoints === 0 && !loading && (
+          <p className="mt-3 flex items-start gap-2 rounded-md bg-slate-50 px-3 py-2.5 text-[12px] leading-relaxed text-slate-500">
+            <Info className="mt-px h-3.5 w-3.5 shrink-0 text-slate-400" />
+            In der Kurve steht bisher nur die Referenz. Sobald du ein Angebot
+            annimmst, kommt dein tatsächlicher Preis als Punkt dazu — dann
+            zeigt die Grafik, ob du über oder unter der Referenz eingekauft
+            hast.
           </p>
-        </div>
-        <MaterialSelect value={material} onChange={setMaterial} />
+        )}
       </div>
 
-      {/* Region filter */}
-      <div className="mt-5 flex flex-wrap items-center gap-2">
-        <span className="mr-1 text-[11px] font-medium uppercase tracking-wider text-slate-500">
-          Region
-        </span>
-        <Segmented
-          options={REGION_KEYS.map((k) => ({ key: k, label: data.regions[k] }))}
-          value={region}
-          onChange={setRegion}
-        />
-      </div>
-
-      {/* KPI header */}
-      <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-3">
-        <Kpi label={`Marktpreis (KBOB)`}>
-          <div className="flex items-baseline gap-1.5">
-            <span className="text-2xl font-semibold text-slate-900">
-              CHF {chf(kpis.current)}
-            </span>
-            <span className="text-sm text-slate-500">/ {unit}</span>
-          </div>
-        </Kpi>
-
-        <Kpi label="Veränderung ggü. Vorquartal">
-          <div
-            className={cn(
-              "flex items-center gap-1.5 text-2xl font-semibold",
-              kpis.change >= 0 ? "text-rose-400" : "text-brand",
-            )}
-          >
-            {kpis.change >= 0 ? (
-              <TrendingUp className="h-5 w-5" />
-            ) : (
-              <TrendingDown className="h-5 w-5" />
-            )}
-            {kpis.change >= 0 ? "+" : ""}
-            {kpis.change.toFixed(1)}%
-          </div>
-        </Kpi>
-
-        <Kpi label={`Smart Pool Ersparnis ${regionShort}`}>
-          <div className="flex items-baseline gap-1.5">
-            <span className="text-lg">💡</span>
-            <span className="text-2xl font-semibold text-brand">
-              ~ CHF {chf(kpis.savings)}
-            </span>
-            <span className="text-sm text-slate-500">/ {unit}</span>
-          </div>
-        </Kpi>
-      </div>
-
-      {/* Chart */}
-      <div className="mt-6 h-[340px] w-full">
-        <ResponsiveContainer width="100%" height="100%">
-          <LineChart
-            data={chartData}
-            margin={{ top: 10, right: 12, bottom: 0, left: -8 }}
-          >
-            <CartesianGrid
-              strokeDasharray="3 3"
-              stroke="rgba(15,23,42,0.06)"
-              vertical={false}
-            />
-            <XAxis
-              dataKey="period"
-              tickFormatter={(p: string) => parsePeriod(p).short}
-              interval={tickInterval}
-              tick={{ fill: "#9ca3af", fontSize: 11 }}
-              tickLine={false}
-              axisLine={{ stroke: "rgba(15,23,42,0.10)" }}
-              tickMargin={10}
-            />
-            <YAxis
-              tick={{ fill: "#9ca3af", fontSize: 11 }}
-              tickLine={false}
-              axisLine={false}
-              width={64}
-              domain={["auto", "auto"]}
-              tickFormatter={(v: number) => chf(v, decimalsFor(v) === 3 ? 2 : 0)}
-            />
-            <Tooltip
-              content={<ChartTooltip unit={unit} />}
-              cursor={{ stroke: "rgba(15,23,42,0.18)", strokeWidth: 1 }}
-            />
-            <Line
-              type="linear"
-              dataKey="kbob"
-              name="KBOB Index"
-              stroke="#1B3A5C"
-              strokeWidth={1.75}
-              dot={false}
-              activeDot={{ r: 3.5, strokeWidth: 0 }}
-              isAnimationActive={false}
-            />
-            <Line
-              type="linear"
-              dataKey="pool"
-              name="Smart Pool"
-              stroke="#D99000"
-              strokeWidth={1.75}
-              dot={false}
-              activeDot={{ r: 3.5, strokeWidth: 0 }}
-              isAnimationActive={false}
-            />
-          </LineChart>
-        </ResponsiveContainer>
-      </div>
-
-      {/* Footer: legend + time range */}
-      <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex items-center gap-5 text-xs text-slate-500">
-          <span className="flex items-center gap-2">
-            <span className="h-0.5 w-6 rounded bg-accent" />
-            Offizieller KBOB Index
-          </span>
-          <span className="flex items-center gap-2">
-            <span className="h-0.5 w-6 rounded bg-brand" />
-            Obtanet Pool-Ø
-          </span>
-        </div>
-        <Segmented
-          options={RANGE_KEYS.map((k) => ({ key: k, label: k }))}
-          value={range}
-          onChange={setRange}
-        />
-      </div>
-
-      <p className="mt-4 text-[11px] text-slate-400">{data.meta.source}</p>
-    </section>
+      <OwnPurchases
+        purchases={purchases}
+        loading={loading}
+        unit={unit}
+        materialKey={material}
+      />
+    </div>
   );
 }
