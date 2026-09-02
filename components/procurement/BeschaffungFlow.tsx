@@ -78,6 +78,7 @@ export default function BeschaffungFlow({
   initialProject?: string;
   companyId: string;
 }) {
+  const supabase = useSupabaseBrowser();
   const { projects, loading: projectsLoading } = useProjects();
   // Vorauswahl aus der URL (z. B. „Pool beitreten" aus dem Feed):
   // ?material=beton-25,stahl-b500b&menge=120
@@ -193,6 +194,20 @@ export default function BeschaffungFlow({
     () => "OBT-" + new Date().getFullYear() + "-" + Math.floor(1000 + Math.random() * 8999),
     [],
   );
+
+  /**
+   * Vorschlag aus der Suche übernehmen — und die Zuordnung merken.
+   *
+   * Das ist der häufigste Weg, auf dem jemand eine eigene Schreibweise
+   * auf eine Katalogposition bringt. Würde er nichts merken, bliebe das
+   * Gedächtnis leer und jeder Abgleich fiele wieder auf die Heuristik
+   * zurück.
+   */
+  function acceptSuggestion(m: ProcMaterial) {
+    void rememberAlias(supabase, matQuery, m.id, companyId, "MATCH");
+    toggleMaterial(m);
+    setMatQuery("");
+  }
 
   function toggleMaterial(m: ProcMaterial) {
     setPositions((prev) =>
@@ -407,7 +422,7 @@ export default function BeschaffungFlow({
                                 <button
                                   key={c.material.key}
                                   type="button"
-                                  onClick={() => { toggleMaterial(c.material); setMatQuery(""); }}
+                                  onClick={() => acceptSuggestion(c.material)}
                                   className="rounded-md border border-brand/30 bg-brand/[0.05] px-3 py-1.5 text-[12.5px] font-semibold text-slate-800 transition-colors hover:border-brand hover:bg-brand/10"
                                 >
                                   {c.material.label}
