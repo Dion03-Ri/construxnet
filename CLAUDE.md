@@ -75,6 +75,21 @@ Supabase (server + browser client, `supabaseAdmin` service-role), Leaflet/OSM
   Nummernkreis: 001–099 gehört dem Katalog in `data/procurement.ts`,
   ab 100 vergibt die Datenbank.
 
+## Bündeln — Stand
+- Bedarf aus dem Beschaffungsformular geht über `submit_demand()` in echte
+  Bündel (`bundles` + `bundle_participations`). Zusammengeführt wird auf
+  Materialnummer + Region; die Datenbank entscheidet, weil zwei gleichzeitige
+  Einreichungen sonst zwei Töpfe erzeugen.
+- Rabattstufen stehen an **zwei** Stellen: `PROC_TIERS` in
+  `data/procurement.ts` und `bundle_tier()` in der Datenbank. Ändert sich
+  eine, muss die andere mit. (Themenpunkt #27: Stufen endgültig festlegen.)
+- Teilnehmerzahl liegt auf dem Bündel (`participant_count`), weil die
+  Teilnahmen per RLS verdeckt sind — sichtbar ist die Menge, nie wer sie
+  beisteuert.
+- **Noch offen:** Sealed-Bid-Phase (Übergang OPEN → SEALED_BIDDING),
+  Lieferantengebote, Zuschlag, Auflösung bei Fristablauf. Es gibt keinen
+  Zeitgeber, der Bündel weiterschaltet.
+
 ## OFFEN / als Nächstes
 - Startseite + Dashboard (`/dashboard`) sind auf Light Mode umgestellt. Andere
   Seiten (z.B. Coming-Soon, Netzwerk) sind noch dunkel — bei Bedarf einzeln
@@ -95,4 +110,4 @@ Supabase (server + browser client, `supabaseAdmin` service-role), Leaflet/OSM
     Ein KI-Treffer wird als Alias mit `source: 'AI'` gemerkt, damit er beim
     zweiten Mal gratis ist.
   - Danach: hochgeladene Leistungsverzeichnisse (#25) über dieselbe Route.
-- Migrationen `08`–`14` sind eingespielt; `15_custom_materials.sql` ist neu.
+- Migrationen `08`–`15` sind eingespielt; `16_real_bundles.sql` ist neu.
