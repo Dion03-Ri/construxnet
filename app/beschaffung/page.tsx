@@ -14,7 +14,7 @@ export default async function BeschaffungPage({
 }: {
   searchParams: Promise<{ material?: string; menge?: string; projekt?: string }>;
 }) {
-  await requireCompanyOrOnboard();
+  const company = await requireCompanyOrOnboard();
   const { material, menge, projekt } = await searchParams;
   return (
     <main className="mx-auto max-w-5xl px-4 py-6 sm:px-6 sm:py-8">
@@ -31,7 +31,12 @@ export default async function BeschaffungPage({
         </div>
       </header>
 
-      <BeschaffungFlow initialMaterial={material} initialQty={menge} initialProject={projekt} />
+      <BeschaffungFlow
+        initialMaterial={material}
+        initialQty={menge}
+        initialProject={projekt}
+        companyId={company.id}
+      />
     </main>
   );
 }

@@ -2,6 +2,9 @@
 
 import { useMemo, useRef, useState } from "react";
 import { useProjects, projectLabel } from "@/lib/projects";
+import { useSupabaseBrowser } from "@/lib/supabase-browser";
+import { useMaterialResolve, rememberAlias } from "@/lib/useMaterialResolve";
+import { matchMaterial, WORTH_SHOWING } from "@/lib/materialMatch";
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 import {
@@ -23,6 +26,7 @@ import {
   Plus,
   Trash2,
   Gavel,
+  Loader2,
 } from "lucide-react";
 import {
   PROC_MATERIALS,
@@ -66,11 +70,13 @@ export default function BeschaffungFlow({
   initialMaterial,
   initialQty,
   initialProject,
+  companyId,
 }: {
   initialMaterial?: string;
   initialQty?: string;
   /** Vorausgewählte Baustelle, z. B. aus dem Warenkorb im Dashboard. */
   initialProject?: string;
+  companyId: string;
 }) {
   const { projects, loading: projectsLoading } = useProjects();
   // Vorauswahl aus der URL (z. B. „Pool beitreten" aus dem Feed):
@@ -139,6 +145,17 @@ export default function BeschaffungFlow({
       return matchesMaterial(m, q) || m.category.toLowerCase().includes(q);
     });
   }, [catalog, matQuery, matCat]);
+
+  // Wenn die wörtliche Suche nichts findet, greift der Abgleich: "Transportbeton"
+  // steht so nicht im Katalog, meint aber Beton C25/30. Genau hier entstehen
+  // sonst die Dubletten, die später die Bündel zerreissen.
+  const searchSuggestions = useMemo(
+    () =>
+      filteredMaterials.length === 0 && matQuery.trim().length >= 3
+        ? matchMaterial(matQuery, 4).filter((m) => m.score >= WORTH_SHOWING)
+        : [],
+    [filteredMaterials.length, matQuery],
+  );
 
   const selectedKeys = useMemo(() => new Set(positions.map((p) => p.key)), [positions]);
 
@@ -379,9 +396,34 @@ export default function BeschaffungFlow({
                       );
                     })}
                     {filteredMaterials.length === 0 && (
-                      <p className="col-span-full py-6 text-center text-[13px] text-slate-400">
-                        Kein Katalog-Treffer — erfasse es unten als „Weiteres Material".
-                      </p>
+                      <div className="col-span-full py-6 text-center">
+                        {searchSuggestions.length > 0 ? (
+                          <>
+                            <p className="text-[13px] text-slate-500">
+                              Kein wörtlicher Treffer. Meinst du eines davon?
+                            </p>
+                            <div className="mt-2.5 flex flex-wrap justify-center gap-1.5">
+                              {searchSuggestions.map((c) => (
+                                <button
+                                  key={c.material.key}
+                                  type="button"
+                                  onClick={() => { toggleMaterial(c.material); setMatQuery(""); }}
+                                  className="rounded-md border border-brand/30 bg-brand/[0.05] px-3 py-1.5 text-[12.5px] font-semibold text-slate-800 transition-colors hover:border-brand hover:bg-brand/10"
+                                >
+                                  {c.material.label}
+                                </button>
+                              ))}
+                            </div>
+                            <p className="mt-2 text-[11.5px] text-slate-400">
+                              Sonst unten als „Weiteres Material" erfassen.
+                            </p>
+                          </>
+                        ) : (
+                          <p className="text-[13px] text-slate-400">
+                            Kein Katalog-Treffer — erfasse es unten als „Weiteres Material".
+                          </p>
+                        )}
+                      </div>
                     )}
                   </div>
 
@@ -715,8 +757,8 @@ export default function BeschaffungFlow({
         <CustomMaterialModal
           onClose={() => setModalOpen(false)}
           onAdd={addCustomMaterial}
-          existing={catalog}
           ownCount={customMaterials.length}
+          companyId={companyId}
         />
       )}
     </div>
@@ -730,29 +772,35 @@ export default function BeschaffungFlow({
 function CustomMaterialModal({
   onClose,
   onAdd,
-  existing,
   ownCount,
+  companyId,
 }: {
   onClose: () => void;
   onAdd: (m: ProcMaterial) => void;
-  existing: ProcMaterial[];
   /** Wie viele eigene Materialien es schon gibt — für die Nummerierung. */
   ownCount: number;
+  companyId: string;
 }) {
+  const supabase = useSupabaseBrowser();
   const [label, setLabel] = useState("");
   const [unit, setUnit] = useState("");
   const [price, setPrice] = useState("");
   const [sia, setSia] = useState("");
   const [category, setCategory] = useState<ProcCategory>(PROC_CATEGORIES[0]);
 
-  // Einfache Dublettenprüfung über den Namen, damit der Katalog sauber bleibt.
-  const similar = useMemo(() => {
-    const q = label.trim().toLowerCase();
-    if (q.length < 3) return [];
-    return existing.filter((m) => m.label.toLowerCase().includes(q) || q.includes(m.label.toLowerCase())).slice(0, 3);
-  }, [label, existing]);
+  // Abgleich gegen den Katalog: Normbezeichnung, Wortüberschneidung und
+  // bereits bestätigte Zuordnungen. Verhindert, dass "Transportbeton
+  // C25/30" als neues Material neben "Beton C25/30" landet — genau das
+  // zerreisst sonst die Bündel.
+  const { candidates, fromAlias, certain, loading: resolving } = useMaterialResolve(label);
 
   const valid = label.trim().length >= 2 && unit.trim().length >= 1;
+
+  /** Statt neu anzulegen: das erkannte Katalogmaterial übernehmen. */
+  function useExisting(m: ProcMaterial) {
+    void rememberAlias(supabase, label, m.id, companyId);
+    onAdd(m);
+  }
 
   function submit() {
     if (!valid) return;
@@ -795,17 +843,49 @@ function CustomMaterialModal({
               placeholder="z. B. Faserbeton, Naturstein, Spezialmörtel …"
               className="w-full rounded-md border border-slate-300 bg-slate-50 px-3 py-2 text-sm text-slate-900 outline-none focus:border-brand focus:bg-white focus:ring-1 focus:ring-brand/30"
             />
-            {similar.length > 0 && (
-              <div className="mt-2 rounded-md border border-brand/25 bg-brand/[0.05] px-3 py-2">
-                <div className="text-[11.5px] font-semibold text-slate-700">Ähnliches gibt es schon im Katalog:</div>
-                <ul className="mt-1 space-y-0.5">
-                  {similar.map((m) => (
-                    <li key={m.key} className="text-[12px] text-slate-500">· {m.label}</li>
+            {resolving && label.trim().length >= 3 && (
+              <p className="mt-2 flex items-center gap-1.5 text-[11.5px] text-slate-400">
+                <Loader2 className="h-3 w-3 animate-spin" /> Katalog wird abgeglichen …
+              </p>
+            )}
+
+            {!resolving && candidates.length > 0 && (
+              <div className="mt-2 rounded-md border border-brand/25 bg-brand/[0.05] p-3">
+                <div className="text-[11.5px] font-semibold text-slate-700">
+                  {fromAlias
+                    ? "Das wurde schon einmal so zugeordnet:"
+                    : certain
+                      ? "Das gibt es bereits im Katalog:"
+                      : "Meinst du vielleicht:"}
+                </div>
+                <ul className="mt-1.5 space-y-1">
+                  {candidates.map((c) => (
+                    <li key={c.material.key}>
+                      <button
+                        type="button"
+                        onClick={() => useExisting(c.material)}
+                        className="flex w-full items-center gap-2 rounded-md border border-transparent bg-white/70 px-2.5 py-1.5 text-left transition-colors hover:border-brand/40 hover:bg-white"
+                      >
+                        <span className="min-w-0 flex-1">
+                          <span className="block truncate text-[13px] font-semibold text-slate-900">
+                            {c.material.label}
+                          </span>
+                          <span className="block truncate text-[11px] text-slate-400">
+                            {c.reason}
+                          </span>
+                        </span>
+                        <span className="shrink-0 text-[11.5px] font-semibold text-brand">
+                          übernehmen
+                        </span>
+                      </button>
+                    </li>
                   ))}
                 </ul>
-                <div className="mt-1 text-[11px] text-slate-400">
-                  Bitte prüfen, damit nicht dasselbe Material doppelt entsteht.
-                </div>
+                <p className="mt-2 text-[11px] leading-relaxed text-slate-500">
+                  Dasselbe Material unter zwei Namen landet in zwei getrennten
+                  Bündeln — dann erreicht keines die Rabattstufe. Nur wirklich
+                  Neues neu erfassen.
+                </p>
               </div>
             )}
           </div>

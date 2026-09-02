@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { Handshake, X, Search, Send, Loader2, Info } from "lucide-react";
 import { PROC_MATERIALS, DELIVERY_WINDOWS, matchesMaterial } from "@/data/procurement";
+import { matchMaterial, WORTH_SHOWING } from "@/lib/materialMatch";
 import { useProjects, projectLabel } from "@/lib/projects";
 import { useSupabaseBrowser } from "@/lib/supabase-browser";
 import { cn } from "@/lib/utils";
@@ -54,7 +55,13 @@ export default function DirectRequestModal({
   const matches = useMemo(() => {
     const q = query.trim();
     if (!q) return PROC_MATERIALS.slice(0, 6);
-    return PROC_MATERIALS.filter((m) => matchesMaterial(m, q)).slice(0, 6);
+    const literal = PROC_MATERIALS.filter((m) => matchesMaterial(m, q)).slice(0, 6);
+    if (literal.length > 0) return literal;
+    // Kein wörtlicher Treffer: der Abgleich fängt Schreibweisen ab, die es
+    // so nicht im Katalog gibt — "Armierungsstahl" statt "Bewehrungsstahl".
+    return matchMaterial(q, 4)
+      .filter((m) => m.score >= WORTH_SHOWING)
+      .map((m) => m.material);
   }, [query]);
 
   const valid = !!material && Number(qty) > 0;
