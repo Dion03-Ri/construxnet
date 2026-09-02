@@ -40,6 +40,7 @@ import {
   X,
   Building2,
   Handshake,
+  Loader2,
   Package,
   UploadCloud,
   Trash2,
@@ -53,7 +54,9 @@ import { useProjects, projectLabel } from "@/lib/projects";
 import ProjectsPanel from "@/components/dashboard/ProjectsPanel";
 import RequestsPanel from "@/components/dashboard/RequestsPanel";
 import MaterialsPanel from "@/components/dashboard/MaterialsPanel";
+import TendersPanel from "@/components/dashboard/TendersPanel";
 import { useCustomMaterials } from "@/lib/customMaterials";
+import { useBundles, nextStep, deadlineLabel, hoursLeft, type Bundle } from "@/lib/bundles";
 import { useDirectRequests, isLive } from "@/lib/directRequests";
 import { CARD, badge } from "@/lib/ui";
 import { cn } from "@/lib/utils";
@@ -151,12 +154,6 @@ const CONTRACTS = [
   { no: "OBT-2026-0098", material: "Bewehrungsstahl B500B", vol: "42 t", price: "1'108.00", status: "Aktiv" },
 ];
 
-const POOLS = [
-  { material: "Beton C25/30", region: "Zürich", vol: 230, target: 300, tier: 2, disc: 12, deadline: "4 Tage", coupled: "Stahl B500B", unit: "m³" },
-  { material: "Bewehrungsstahl B500B", region: "Bern", vol: 48, target: 60, tier: 2, disc: 12, deadline: "9 Tage", coupled: null, unit: "t" },
-  { material: "Koffer-/Wandkies 0/45", region: "Nordwestschweiz", vol: 320, target: 301, tier: 3, disc: 20, deadline: "2 Tage", coupled: null, unit: "t" },
-];
-
 const NAV_ALL = [
   { key: "workspace", label: "Beschaffung", icon: Search },
   { key: "overview", label: "Übersicht", icon: LayoutDashboard },
@@ -193,35 +190,109 @@ function KpiCard({ k }: { k: Kpi }) {
   );
 }
 
-function PoolRow({ p }: { p: (typeof POOLS)[number] }) {
-  const pct = Math.min(100, Math.round((p.vol / p.target) * 100));
+/**
+ * Eine eigene Bündel-Teilnahme.
+ *
+ * Der Balken misst gegen die nächste erreichbare Stufe, nicht gegen ein
+ * fernes Endziel — sichtbar ist, was als Nächstes drin liegt.
+ */
+function PoolRow({ b, myVolume }: { b: Bundle; myVolume: number }) {
+  const step = nextStep(b.current_volume);
+  const goal = step?.at ?? b.current_volume;
+  const pct = Math.min(100, Math.round((b.current_volume / (goal || 1)) * 100));
+
   return (
     <Link href="/pools" className="block rounded-lg border border-slate-200 p-4 transition-colors hover:border-brand/40">
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <div className="flex items-center gap-2">
-          <span className="font-medium text-slate-900">{p.material}</span>
-          <span className="rounded-md bg-slate-100 px-2 py-0.5 text-[11px] text-slate-500">{p.region}</span>
-          {p.coupled && (
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="font-medium text-slate-900">{b.material_label ?? b.title}</span>
+          <span className="rounded-md bg-slate-100 px-2 py-0.5 text-[11px] text-slate-500">{b.region}</span>
+          {b.status === "SEALED_BIDDING" && (
             <span className={badge("navy", true)}>
-              <Link2 className="h-3 w-3" /> Koppelung: {p.coupled}
+              <Gavel className="h-3 w-3" /> Ausschreibung läuft
+            </span>
+          )}
+          {b.status === "AWARDED" && (
+            <span className={badge("gold", true)}>
+              <Check className="h-3 w-3" /> vergeben
             </span>
           )}
         </div>
         <span className="inline-flex items-center gap-1 text-xs text-slate-500">
-          <Clock className="h-3.5 w-3.5" /> {p.deadline}
+          <Clock className="h-3.5 w-3.5" /> {deadlineLabel(b.bid_deadline ?? b.deadline)}
         </span>
       </div>
+
       <div className="mt-3 flex items-center gap-3">
         <div className="h-2 flex-1 overflow-hidden rounded-full bg-slate-100">
           <div className="h-full rounded-full bg-brand" style={{ width: `${pct}%` }} />
         </div>
-        <span className={badge("gold", true)}>Tier {p.tier} · {p.disc}%</span>
+        <span className={badge("gold", true)}>Stufe {b.current_tier} · mind. {b.current_discount_pct}%</span>
       </div>
-      <div className="mt-1.5 flex items-center justify-between text-[11px] text-slate-500">
-        <span>{chf(p.vol)} / {chf(p.target)} {p.unit}</span>
-        <span className="font-medium text-brand">Pool öffnen →</span>
+
+      <div className="mt-1.5 flex flex-wrap items-center justify-between gap-x-3 text-[11px] text-slate-500">
+        <span>
+          {chf(b.current_volume)} {b.unit} gesamt · davon deine {chf(myVolume)} {b.unit}
+        </span>
+        {b.status === "AWARDED" && b.awarded_price != null ? (
+          <span className="font-semibold text-brand">
+            Zuschlag CHF {chf(b.awarded_price, 2)}/{b.unit}
+          </span>
+        ) : step ? (
+          <span>noch {chf(step.at - b.current_volume)} {b.unit} bis mind. {step.discount}%</span>
+        ) : (
+          <span>höchste Stufe erreicht</span>
+        )}
       </div>
     </Link>
+  );
+}
+
+/**
+ * Die eigenen laufenden Bündel — gemeinsam genutzt von Übersicht und
+ * Verträgen, damit beide dieselbe Wahrheit zeigen.
+ */
+function MyBundles({ limit }: { limit?: number }) {
+  const { bundles, mine, loading } = useBundles();
+  const volumes = useMemo(() => {
+    const m = new Map<string, number>();
+    for (const p of mine) m.set(p.bundle_id, Number(p.requested_volume));
+    return m;
+  }, [mine]);
+
+  const list = bundles.filter((b) => volumes.has(b.id)).slice(0, limit ?? 99);
+
+  if (loading) {
+    return (
+      <div className="grid place-items-center py-10 text-slate-400">
+        <Loader2 className="h-5 w-5 animate-spin" />
+      </div>
+    );
+  }
+  if (list.length === 0) {
+    return (
+      <div className="rounded-lg border border-dashed border-slate-200 px-4 py-8 text-center">
+        <p className="text-[13px] font-semibold text-slate-700">Du bist noch in keinem Bündel</p>
+        <p className="mx-auto mt-1 max-w-sm text-[12px] leading-relaxed text-slate-500">
+          Bündel entstehen aus gemeldetem Bedarf. Meldest du deinen, kommst du
+          entweder einem laufenden dazu oder startest ein neues.
+        </p>
+        <Link
+          href="/beschaffung"
+          className="mt-3 inline-flex items-center gap-1.5 rounded-md bg-brand px-3.5 py-2 text-[12.5px] font-semibold text-navy-900 transition-colors hover:bg-brand-500"
+        >
+          Bedarf melden
+        </Link>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-3">
+      {list.map((b) => (
+        <PoolRow key={b.id} b={b} myVolume={volumes.get(b.id) ?? 0} />
+      ))}
+    </div>
   );
 }
 
@@ -231,14 +302,37 @@ function PoolRow({ p }: { p: (typeof POOLS)[number] }) {
 
 function OverviewPanel({ role }: { role: "buyer" | "supplier" }) {
   const isSupplier = role === "supplier";
+  const { bundles, mine } = useBundles();
 
-  // Was heute Aufmerksamkeit braucht — keine Jahresbilanz, sondern To-dos.
-  const soonClosing = POOLS.filter((p) => parseInt(p.deadline) <= 5);
+  // Was heute Aufmerksamkeit braucht — aus echten Daten, keine Platzhalter.
+  const myIds = new Set(mine.map((m) => m.bundle_id));
+  const myBundles = bundles.filter((b) => myIds.has(b.id));
+  const soonClosing = myBundles.filter(
+    (b) => b.status === "OPEN" && hoursLeft(b.deadline) < 120,
+  );
+  const inBidding = myBundles.filter((b) => b.status === "SEALED_BIDDING");
+  const awarded = myBundles.filter((b) => b.status === "AWARDED");
+
   const openTasks = [
-    { icon: Gavel, text: `${soonClosing.length} Bündel schliessen in den nächsten Tagen`, href: "/pools", cta: "Bündel ansehen" },
-    { icon: FileText, text: "1 Vertrag wartet auf deine Unterschrift", href: "#", cta: "Vertrag öffnen" },
-    { icon: Truck, text: "2 Lieferungen sind für diese Woche angekündigt", href: "#", cta: "Lieferungen" },
-  ];
+    soonClosing.length > 0 && {
+      icon: Clock,
+      text: `${soonClosing.length} deiner Bündel ${soonClosing.length === 1 ? "schliesst" : "schliessen"} in den nächsten Tagen — jede zusätzliche Menge zählt noch`,
+      href: "/pools",
+      cta: "Bündel ansehen",
+    },
+    inBidding.length > 0 && {
+      icon: Gavel,
+      text: `${inBidding.length} ${inBidding.length === 1 ? "Bündel ist" : "Bündel sind"} in der Ausschreibung — die Werke bieten verdeckt`,
+      href: "/pools",
+      cta: "Stand ansehen",
+    },
+    awarded.length > 0 && {
+      icon: FileText,
+      text: `${awarded.length} ${awarded.length === 1 ? "Bündel wurde" : "Bündel wurden"} vergeben — Vertrag nach SIA-118 liegt bereit`,
+      href: "/pools",
+      cta: "Ergebnis ansehen",
+    },
+  ].filter(Boolean) as { icon: typeof Gavel; text: string; href: string; cta: string }[];
 
   return (
     <div className="space-y-4">
@@ -281,9 +375,7 @@ function OverviewPanel({ role }: { role: "buyer" | "supplier" }) {
             Alle Bündel <ChevronRight className="h-3.5 w-3.5" />
           </Link>
         </div>
-        <div className="space-y-3">
-          {POOLS.map((p) => <PoolRow key={p.material} p={p} />)}
-        </div>
+        <MyBundles limit={3} />
       </div>
 
       {isSupplier && (
@@ -558,75 +650,13 @@ function ReportsPanel({ role }: { role: "buyer" | "supplier" }) {
   );
 }
 
-function TendersPanel() {
-  const [bids, setBids] = useState<Record<string, string>>({});
-  const [openForm, setOpenForm] = useState<string | null>(null);
-  const [draft, setDraft] = useState("");
-  const list = [
-    { id: "t1", material: "Beton C25/30", region: "Zürich", vol: "230 m³", kbob: 156, unit: "m³" },
-    { id: "t2", material: "Koffer-/Wandkies 0/45", region: "Nordwestschweiz", vol: "320 t", kbob: 39, unit: "t" },
-    { id: "t3", material: "Bewehrungsstahl B500B", region: "Bern", vol: "60 t", kbob: 1120, unit: "t" },
-  ];
-  function submit(id: string) {
-    if (!draft) return;
-    setBids((b) => ({ ...b, [id]: draft }));
-    setOpenForm(null);
-    setDraft("");
-  }
-  return (
-    <div className={cn(CARD, "p-5")}>
-      <h3 className="text-[15px] font-semibold text-slate-900">Offene Ausschreibungen (Sealed-Bid)</h3>
-      <p className="mt-0.5 text-[13px] text-slate-500">Gebündelte Bedarfe, auf die du als Baustoffwerk bieten kannst.</p>
-      <div className="mt-4 space-y-3">
-        {list.map((t) => {
-          const done = bids[t.id];
-          return (
-            <div key={t.id} className="rounded-lg border border-slate-200 p-4">
-              <div className="flex flex-wrap items-center justify-between gap-2">
-                <div>
-                  <div className="font-medium text-slate-900">{t.material}</div>
-                  <div className="text-[11px] text-slate-500">{t.region} · {t.vol} · KBOB-Ref CHF {chf(t.kbob)}/{t.unit}</div>
-                </div>
-                {done ? (
-                  <span className="inline-flex items-center gap-1 rounded-md bg-accent/10 px-3 py-1 text-xs font-medium text-accent">
-                    <Check className="h-3.5 w-3.5" /> Gebot CHF {done}
-                  </span>
-                ) : (
-                  <button type="button" onClick={() => { setOpenForm(openForm === t.id ? null : t.id); setDraft(""); }} className="rounded-md bg-brand px-4 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-brand-600">
-                    Gebot abgeben
-                  </button>
-                )}
-              </div>
-              <AnimatePresence>
-                {openForm === t.id && (
-                  <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
-                    <div className="mt-3 flex items-center gap-2 border-t border-slate-100 pt-3">
-                      <div className="flex items-center gap-1 rounded-md border border-slate-200 px-2.5 py-1.5">
-                        <span className="text-[11px] text-slate-400">CHF</span>
-                        <input value={draft} onChange={(e) => setDraft(e.target.value)} type="number" placeholder={`Preis/${t.unit}`} className="w-28 bg-transparent text-sm text-slate-900 outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none" />
-                      </div>
-                      <button type="button" onClick={() => submit(t.id)} disabled={!draft} className="rounded-md bg-brand px-4 py-2 text-sm font-medium text-white hover:bg-brand-600 disabled:opacity-50">
-                        Sealed-Bid einreichen
-                      </button>
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-          );
-        })}
-      </div>
-    </div>
-  );
-}
-
 function ContractsPanel() {
   return (
     <div className="space-y-4">
       <div className={cn(CARD, "p-5")}>
         <h3 className="text-[15px] font-semibold text-slate-900">Aktive Pool-Teilnahmen</h3>
         <div className="mt-4 space-y-3">
-          {POOLS.map((p) => <PoolRow key={p.material} p={p} />)}
+          <MyBundles />
         </div>
       </div>
 

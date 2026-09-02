@@ -27,7 +27,22 @@ export type Bundle = {
   kbob_reference_price: number | null;
   min_participants_for_bidding: number;
   deadline: string;
+  /** Frist für Angebote — erst gesetzt, wenn die Ausschreibung läuft. */
+  bid_deadline: string | null;
+  awarded_price: number | null;
+  awarded_supplier_id: string | null;
+  failed_reason: string | null;
   status: BundleStatus;
+  created_at: string;
+};
+
+/** Das eigene Gebot auf ein Bündel. Fremde Gebote sieht niemand. */
+export type MyBid = {
+  id: string;
+  bundle_id: string;
+  list_price_net: number;
+  customer_price_net: number;
+  is_winning_bid: boolean;
   created_at: string;
 };
 
@@ -84,11 +99,18 @@ export function useBundles() {
   const [error, setError] = useState<string | null>(null);
 
   const reload = useCallback(async () => {
+    // Ohne Zeitgeber schalten fällige Bündel beim Lesen weiter: abgelaufene
+    // Sammelphasen gehen in die Ausschreibung oder werden aufgelöst,
+    // abgelaufene Angebotsfristen bekommen ihren Zuschlag. Idempotent —
+    // schlägt der Aufruf fehl (Migration noch nicht eingespielt), läuft
+    // der Rest trotzdem.
+    await supabase.rpc("advance_due_bundles").then(undefined, () => undefined);
+
     const [b, p] = await Promise.all([
       supabase
         .from("bundles")
         .select("*")
-        .in("status", ["OPEN", "SEALED_BIDDING"])
+        .in("status", ["OPEN", "SEALED_BIDDING", "AWARDED"])
         .order("deadline", { ascending: true }),
       supabase
         .from("bundle_participations")
@@ -156,6 +178,49 @@ export async function submitDemand(
   });
   if (error) return { error: error.message };
   return { bundleId: data as string };
+}
+
+/**
+ * Gebot abgeben oder nachbessern.
+ *
+ * Der Listenpreis ist optional und dient nur der Anzeige — bewertet wird
+ * gegen den KBOB-Referenzpreis des Bündels. Sonst könnte ein Werk seinen
+ * Listenpreis hochsetzen und mit grossem Rabatt gewinnen, ohne billiger
+ * zu sein.
+ */
+export async function placeBid(
+  supabase: ReturnType<typeof useSupabaseBrowser>,
+  bundleId: string,
+  customerPrice: number,
+  listPrice: number,
+): Promise<{ error?: string }> {
+  const { error } = await supabase.rpc("place_bid", {
+    p_bundle_id: bundleId,
+    p_list_price: listPrice || 0,
+    p_customer_price: customerPrice,
+  });
+  return error ? { error: error.message } : {};
+}
+
+/** Die eigenen Gebote. Fremde liefert die Datenbank grundsätzlich nicht. */
+export function useMyBids() {
+  const supabase = useSupabaseBrowser();
+  const [bids, setBids] = useState<MyBid[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const reload = useCallback(async () => {
+    const { data } = await supabase
+      .from("supplier_bids")
+      .select("id, bundle_id, list_price_net, customer_price_net, is_winning_bid, created_at");
+    setBids((data ?? []) as MyBid[]);
+    setLoading(false);
+  }, [supabase]);
+
+  useEffect(() => {
+    void reload();
+  }, [reload]);
+
+  return { bids, loading, reload };
 }
 
 export async function withdrawDemand(
