@@ -88,6 +88,18 @@ function initials(name: string) {
 /*  Composer                                                                  */
 /* -------------------------------------------------------------------------- */
 
+/**
+ * Was hochgeladen werden darf. Dieselbe Liste steht serverseitig am
+ * Bucket (Migration 20) — hier nur, damit der Nutzer es sofort erfährt
+ * statt erst nach dem Absenden.
+ */
+const IMAGE_EXT: Record<string, string> = {
+  "image/jpeg": "jpg",
+  "image/png": "png",
+  "image/webp": "webp",
+  "image/gif": "gif",
+};
+
 function Composer({ onCreated }: { onCreated: () => void }) {
   const { isSignedIn, userId } = useAuth();
   const supabase = useSupabaseBrowser();
@@ -105,6 +117,7 @@ function Composer({ onCreated }: { onCreated: () => void }) {
   const [content, setContent] = useState("");
   const [image, setImage] = useState<string | null>(null); // Vorschau (Data-URL)
   const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imageError, setImageError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const imgRef = useRef<HTMLInputElement>(null);
@@ -112,6 +125,19 @@ function Composer({ onCreated }: { onCreated: () => void }) {
   function onImage(e: React.ChangeEvent<HTMLInputElement>) {
     const f = e.target.files?.[0];
     if (!f) return;
+    // Sofort prüfen statt beim Absenden: sonst verschwindet ein
+    // HEIC-Foto vom iPhone kommentarlos aus dem Beitrag.
+    if (!IMAGE_EXT[f.type]) {
+      setImageError("Nur JPG, PNG, WebP oder GIF — dieses Format wird nicht unterstützt.");
+      if (imgRef.current) imgRef.current.value = "";
+      return;
+    }
+    if (f.size > 5 * 1024 * 1024) {
+      setImageError("Das Bild ist grösser als 5 MB.");
+      if (imgRef.current) imgRef.current.value = "";
+      return;
+    }
+    setImageError(null);
     setImageFile(f);
     const reader = new FileReader();
     reader.onload = () => setImage(typeof reader.result === "string" ? reader.result : null);
@@ -120,6 +146,7 @@ function Composer({ onCreated }: { onCreated: () => void }) {
   function clearImage() {
     setImage(null);
     setImageFile(null);
+    setImageError(null);
     if (imgRef.current) imgRef.current.value = "";
   }
 
@@ -160,7 +187,11 @@ function Composer({ onCreated }: { onCreated: () => void }) {
     let media_url: string | null = null;
     if (imageFile) {
       try {
-        const ext = imageFile.name.split(".").pop() || "jpg";
+        // Endung aus dem Dateityp, nicht aus dem Dateinamen: sonst landet
+        // über einen manipulierten Namen eine .html im öffentlich
+        // erreichbaren Bucket.
+        const ext = IMAGE_EXT[imageFile.type];
+        if (!ext) throw new Error("Nicht unterstütztes Bildformat.");
         const path = `${company.id}/${Date.now()}.${ext}`;
         const up = await supabase.storage.from("post-media").upload(path, imageFile, { upsert: true });
         if (!up.error) {
@@ -292,6 +323,10 @@ function Composer({ onCreated }: { onCreated: () => void }) {
               className="mt-2 w-full resize-none rounded-md border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 outline-none focus:border-brand/50"
             />
 
+            {imageError && (
+              <p className="mt-2 text-[12.5px] font-medium text-rose-600">{imageError}</p>
+            )}
+
             {image ? (
               <div className="relative mt-3 overflow-hidden rounded-lg border border-slate-200">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -314,7 +349,7 @@ function Composer({ onCreated }: { onCreated: () => void }) {
                 <ImageIcon className="h-4 w-4" /> Bild hinzufügen
               </button>
             )}
-            <input ref={imgRef} type="file" accept="image/*" className="hidden" onChange={onImage} />
+            <input ref={imgRef} type="file" accept="image/jpeg,image/png,image/webp,image/gif" className="hidden" onChange={onImage} />
           </div>
 
           <div className="flex flex-wrap items-center gap-2 border-t border-slate-100 bg-slate-50 px-4 py-3">

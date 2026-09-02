@@ -26,6 +26,24 @@ export async function sha256Hex(input: string): Promise<string> {
     .join("");
 }
 
+/**
+ * Zeichenkettenvergleich mit gleichbleibender Laufzeit.
+ *
+ * Ein gewöhnliches `===` bricht beim ersten abweichenden Zeichen ab. Aus
+ * den Laufzeitunterschieden lässt sich ein Passwort zeichenweise erraten.
+ * Über das Netz ist das schwer auszunutzen, aber der Aufwand hier ist
+ * eine Zeile.
+ */
+export function timingSafeEqual(a: string, b: string): boolean {
+  const ab = new TextEncoder().encode(a);
+  const bb = new TextEncoder().encode(b);
+  // Längenunterschied darf den Vergleich nicht verkürzen.
+  let diff = ab.length ^ bb.length;
+  const n = Math.max(ab.length, bb.length);
+  for (let i = 0; i < n; i++) diff |= (ab[i] ?? 0) ^ (bb[i] ?? 0);
+  return diff === 0;
+}
+
 /** Nur interne Pfade als Weiterleitungsziel zulassen (kein Open-Redirect). */
 export function safeNext(next: string | null | undefined): string {
   if (next && next.startsWith("/") && !next.startsWith("//")) return next;
