@@ -11,6 +11,9 @@ import { PREVIEW_COOKIE, sha256Hex, getBypassPassword } from "@/lib/preview";
 //                         (Warteliste). Alle anderen Seiten leiten auf "/".
 //  PREVIEW_PASSWORD=…   → Team-Zugang: nach Eingabe unter /preview wird ein
 //                         Cookie gesetzt, das Coming-Soon/Gate überspringt.
+//                         Ohne diese Variable gibt es KEINEN Team-Zugang
+//                         mehr — der frühere feste Standardwert im Code ist
+//                         entfernt.
 //
 // Ist nur PREVIEW_PASSWORD gesetzt (ohne COMING_SOON), liegt die GANZE Seite
 // hinter der Passworteingabe. Sind beide leer → normaler Betrieb.
@@ -34,10 +37,12 @@ const comingSoonOn =
   process.env.COMING_SOON === "1" || process.env.COMING_SOON === "true";
 
 export default clerkMiddleware(async (auth, req) => {
-  // Zugangs-Passwort: Env bevorzugt, sonst Standard — so gibt es immer einen Weg rein.
+  // Zugangs-Passwort ausschliesslich aus der Umgebung. Ist keines gesetzt,
+  // kann auch kein Cookie passen — der Vergleich fällt dann immer negativ
+  // aus, statt versehentlich jeden durchzulassen.
   const bypassPw = getBypassPassword();
-  const hasPreview =
-    req.cookies.get(PREVIEW_COOKIE)?.value === (await sha256Hex(bypassPw));
+  const cookie = req.cookies.get(PREVIEW_COOKIE)?.value;
+  const hasPreview = !!bypassPw && !!cookie && cookie === (await sha256Hex(bypassPw));
 
   const path = req.nextUrl.pathname;
 

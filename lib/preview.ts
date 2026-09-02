@@ -8,13 +8,20 @@
 
 export const PREVIEW_COOKIE = "cnx_preview";
 
-// Standard-Passwort für den Team-Zugang, falls PREVIEW_PASSWORD nicht als Env
-// gesetzt ist — damit man während der Coming-Soon-Phase immer reinkommt.
-export const DEFAULT_PREVIEW_PASSWORD = "View_obtanet@Previewsite003!!";
-
-/** Das gültige Zugangs-Passwort (Env bevorzugt, sonst Standard). */
-export function getBypassPassword(): string {
-  return process.env.PREVIEW_PASSWORD || DEFAULT_PREVIEW_PASSWORD;
+/**
+ * Das gültige Zugangs-Passwort — ausschliesslich aus der Umgebung.
+ *
+ * Früher stand hier ein fester Standardwert als Rückfalloption. Der machte
+ * die Sperre genau so stark wie die Verschwiegenheit des Repositorys: wer
+ * den Code sah, kam vorbei. Er ist entfernt.
+ *
+ * Ist nichts gesetzt, gibt es null — und damit keinen Weg hinein. Das ist
+ * Absicht: eine Sperre, die bei fehlender Konfiguration jeden durchlässt,
+ * ist keine. Ein leeres Passwort darf niemals passen.
+ */
+export function getBypassPassword(): string | null {
+  const pw = process.env.PREVIEW_PASSWORD?.trim();
+  return pw && pw.length > 0 ? pw : null;
 }
 
 /** SHA-256 als Hex — funktioniert in Edge-Middleware und Node-Route-Handlern. */
