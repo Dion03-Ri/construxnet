@@ -163,10 +163,12 @@ Supabase (server + browser client, `supabaseAdmin` service-role), Leaflet/OSM
   Nachricht umschreiben. Ein Trigger sperrt Inhalt und Beteiligte zusätzlich.
 - Tippanzeige und Online-Status laufen über Broadcast bzw. Presence auf
   einem Kanal je Gesprächspaar. Nichts davon wird gespeichert.
-- **Noch offen:** Benachrichtigung, wenn jemand offline ist (Web-Push oder
-  E-Mail). Das wäre der einzige Punkt, der einen zusätzlichen Dienst
-  bräuchte — Push über einen eigenen Service-Worker ist kostenlos, E-Mail
-  braucht einen Versanddienst.
+- **Vor dem Launch, nicht jetzt:** Benachrichtigung, wenn jemand nicht auf
+  der Seite ist.
+  - **Web-Push** — Service-Worker plus VAPID-Schlüsselpaar, keine laufenden
+    Kosten, kein Dienst nötig. Vorrang.
+  - **E-Mail** („neue Nachricht") — braucht einen Versanddienst (z. B.
+    Resend). Später, ausdrücklich nach Web-Push.
 
 ## OFFEN / als Nächstes
 - Startseite + Dashboard (`/dashboard`) sind auf Light Mode umgestellt. Andere
@@ -189,3 +191,18 @@ Supabase (server + browser client, `supabaseAdmin` service-role), Leaflet/OSM
     zweiten Mal gratis ist.
   - Danach: hochgeladene Leistungsverzeichnisse (#25) über dieselbe Route.
 - Migrationen `08`–`20` sind eingespielt; `21_realtime_chat.sql` ist neu.
+
+## Vor dem Launch — Pflicht
+Diese Punkte müssen erledigt sein, bevor echte Firmen darauf arbeiten:
+1. **Rabattstufen festlegen** (#27). Die aktuellen sind nachweislich nicht
+   haltbar — siehe oben. Ohne belastbare Zahlen darf keine Garantie raus.
+2. **KBOB-Referenz aus einer belegbaren Quelle.** Die Kurve ist heute eine
+   nachgebildete Reihe. Eine Garantie „X % unter KBOB" gegen einen
+   selbstgebauten Index ist angreifbar.
+3. **Vorstart-Sperre entfernen** (`COMING_SOON`, `PREVIEW_PASSWORD` in
+   Vercel löschen).
+4. **Web-Push** für Nachrichten (siehe Chat).
+5. **Ratenbegrenzung über einen gemeinsamen Speicher** statt im
+   Arbeitsspeicher (Upstash, Vercel KV oder Supabase-Tabelle).
+6. **Impressum, AGB, Datenschutz** inhaltlich prüfen — die Seiten
+   existieren, ich habe sie nie angefasst.
