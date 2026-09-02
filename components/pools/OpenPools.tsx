@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { Clock, MapPin, Users, Layers, Gavel, ArrowRight, Flame, Bookmark } from "lucide-react";
+import { Clock, MapPin, Users, Layers, Gavel, ArrowRight, Flame, Bookmark, Info } from "lucide-react";
 import { OPEN_POOLS, type Pool } from "@/data/pools";
 import { useSavedPools } from "@/lib/useSavedPools";
 import { CARD, badge } from "@/lib/ui";
@@ -60,11 +60,14 @@ function PoolCard({ p, saved, onToggleSave }: { p: Pool; saved: boolean; onToggl
         </div>
       </div>
 
-      {/* Fortschritt */}
+      {/* Fortschritt — der Wert ist die Garantie, nicht der Endpreis */}
       <div className="mt-4">
         <div className="mb-1 flex items-center justify-between text-[12px]">
           <span className="text-slate-500">{p.vol} / {p.target} {p.unit}</span>
-          <span className="font-semibold text-brand">−{p.disc}% (Tier {p.tier})</span>
+          <span className="font-semibold text-brand">
+            mind. {p.disc} %
+            <span className="ml-1 font-normal text-slate-400">Stufe {p.tier}</span>
+          </span>
         </div>
         <div className="h-2 w-full overflow-hidden rounded-full bg-slate-100">
           <div className="h-full rounded-full bg-brand" style={{ width: `${pct}%` }} />
@@ -82,9 +85,18 @@ function PoolCard({ p, saved, onToggleSave }: { p: Pool; saved: boolean; onToggl
         </span>
       </div>
 
+      {/* Zielvolumen noch nicht erreicht — sagen, was dann passiert */}
+      {pct < 100 && (
+        <p className="mt-2.5 flex items-start gap-1.5 text-[11.5px] leading-relaxed text-slate-400">
+          <Info className="mt-px h-3.5 w-3.5 shrink-0" />
+          Zielvolumen noch offen. Wird es bis zur Frist nicht erreicht, wird das Bündel
+          aufgelöst — ohne Verpflichtung für dich.
+        </p>
+      )}
+
       <Link
         href={`/beschaffung?material=${encodeURIComponent(p.matKey)}`}
-        className="mt-4 inline-flex items-center justify-center gap-1.5 rounded-md bg-brand px-4 py-2.5 text-sm font-semibold text-navy-900 transition-colors hover:bg-brand-500"
+        className="mt-auto pt-4 inline-flex items-center justify-center gap-1.5 self-stretch rounded-md bg-brand px-4 py-2.5 text-sm font-semibold text-navy-900 transition-colors hover:bg-brand-500"
       >
         Bedarf melden &amp; beitreten <ArrowRight className="h-4 w-4" />
       </Link>
@@ -120,14 +132,27 @@ export default function OpenPools() {
             </button>
           ))}
         </div>
-        <select
-          value={region}
-          onChange={(e) => setRegion(e.target.value)}
-          className="rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 outline-none focus:border-brand focus:ring-1 focus:ring-brand/30"
-        >
-          {REGIONS.map((r) => <option key={r} value={r}>{r === "Alle" ? "Alle Regionen" : r}</option>)}
-        </select>
+        <div className="flex items-center gap-2">
+          <Link
+            href="/pools/saved"
+            className="inline-flex items-center gap-1.5 rounded-md border border-slate-200 bg-white px-3 py-2 text-[13px] font-semibold text-slate-600 transition-colors hover:border-brand/40 hover:text-brand"
+          >
+            <Bookmark className="h-3.5 w-3.5" /> Merkliste
+          </Link>
+          <select
+            value={region}
+            onChange={(e) => setRegion(e.target.value)}
+            className="rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 outline-none focus:border-brand focus:ring-1 focus:ring-brand/30"
+          >
+            {REGIONS.map((r) => <option key={r} value={r}>{r === "Alle" ? "Alle Regionen" : r}</option>)}
+          </select>
+        </div>
       </div>
+
+      {/* Solange keine echten Bündel laufen, sind das Beispiele — das gehört dazugesagt. */}
+      <p className="mb-3 text-[11.5px] text-slate-400">
+        Beispiel-Bündel — sobald echte Bedarfe gemeldet sind, erscheinen hier die laufenden Pools.
+      </p>
 
       {list.length === 0 ? (
         <div className={cn(CARD, "border-dashed py-12 text-center text-sm text-slate-400")}>

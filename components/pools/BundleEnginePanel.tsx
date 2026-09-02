@@ -50,7 +50,7 @@ export default function BundleEnginePanel() {
           </p>
         </div>
         <span className="hidden shrink-0 items-center gap-1 text-[12px] font-semibold text-brand sm:inline-flex">
-          <TrendingDown className="h-3.5 w-3.5" /> bis 20 %
+          <TrendingDown className="h-3.5 w-3.5" /> Mindestvorteil
         </span>
         <span className="grid h-9 w-9 shrink-0 place-items-center rounded-md border border-white/15 text-white/70 transition-colors group-hover:border-brand/50 group-hover:text-brand">
           <Maximize2 className="h-4 w-4" />
