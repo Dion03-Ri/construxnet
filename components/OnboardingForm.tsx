@@ -58,7 +58,7 @@ export default function OnboardingForm() {
       {/* Firmenname */}
       <div>
         <label htmlFor="company_name" className={labelClass}>Firmenname *</label>
-        <input id="company_name" name="company_name" required placeholder="z. B. Bätschmann Bau AG" className={inputClass} />
+        <input id="company_name" name="company_name" required placeholder="z. B. Muster Bau AG" className={inputClass} />
       </div>
 
       {/* UID */}

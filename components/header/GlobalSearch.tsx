@@ -9,11 +9,11 @@ import { cn } from "@/lib/utils";
 type Item = { label: string; sub: string; href: string; icon: LucideIcon };
 
 const FIRMEN: Item[] = [
-  { label: "KIBAG Baustoffe", sub: "Baustoffwerk · Zürich", href: "/network", icon: Building2 },
-  { label: "Vigier Beton Mittelland", sub: "Baustoffwerk · Bern", href: "/network", icon: Building2 },
-  { label: "Gebr. Meier Hochbau AG", sub: "Bauunternehmen · Bern", href: "/network", icon: Building2 },
-  { label: "Rhomberg Bau AG", sub: "Bauunternehmen · Luzern", href: "/network", icon: Building2 },
-  { label: "Toggenburger Kies AG", sub: "Baustoffwerk · Wil", href: "/network", icon: Building2 },
+  { label: "Muster Baustoffe AG", sub: "Baustoffwerk · Zürich", href: "/network", icon: Building2 },
+  { label: "Beispiel Beton Mittelland", sub: "Baustoffwerk · Bern", href: "/network", icon: Building2 },
+  { label: "Muster Hochbau AG", sub: "Bauunternehmen · Bern", href: "/network", icon: Building2 },
+  { label: "Musterbau Innerschweiz AG", sub: "Bauunternehmen · Luzern", href: "/network", icon: Building2 },
+  { label: "Beispiel Kies AG", sub: "Baustoffwerk · Wil", href: "/network", icon: Building2 },
 ];
 
 const POOLS: Item[] = [

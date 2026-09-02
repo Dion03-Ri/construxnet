@@ -37,8 +37,8 @@ export const SAMPLE_POSTS: MockPost[] = [
     likes_count: 34,
     comments_count: 8,
     created_at: new Date(Date.now() - 2 * H).toISOString(),
-    company_id: "seed-kibag",
-    companies: { company_name: "KIBAG Baustoffe", city: "Zürich", verified: true, logo_url: null },
+    company_id: "seed-1",
+    companies: { company_name: "Muster Baustoffe AG", city: "Zürich", verified: true, logo_url: null },
     gradient: "from-navy-800 via-navy-700 to-brand/40",
   },
   {
@@ -51,8 +51,8 @@ export const SAMPLE_POSTS: MockPost[] = [
     likes_count: 21,
     comments_count: 5,
     created_at: new Date(Date.now() - 6 * H).toISOString(),
-    company_id: "seed-meier",
-    companies: { company_name: "Gebr. Meier Hochbau AG", city: "Bern", verified: true, logo_url: null },
+    company_id: "seed-3",
+    companies: { company_name: "Muster Hochbau AG", city: "Bern", verified: true, logo_url: null },
   },
   {
     id: "demo-3",
@@ -65,7 +65,7 @@ export const SAMPLE_POSTS: MockPost[] = [
     comments_count: 12,
     created_at: new Date(Date.now() - 20 * H).toISOString(),
     company_id: "seed-togg",
-    companies: { company_name: "Toggenburger Kies AG", city: "Wil", verified: false, logo_url: null },
+    companies: { company_name: "Beispiel Kies AG", city: "Wil", verified: false, logo_url: null },
     gradient: "from-brand/30 via-brand/10 to-navy-800",
   },
   {
@@ -78,8 +78,8 @@ export const SAMPLE_POSTS: MockPost[] = [
     likes_count: 63,
     comments_count: 9,
     created_at: new Date(Date.now() - 30 * H).toISOString(),
-    company_id: "seed-rhomberg",
-    companies: { company_name: "Rhomberg Bau AG", city: "Luzern", verified: true, logo_url: null },
+    company_id: "seed-4",
+    companies: { company_name: "Musterbau Innerschweiz AG", city: "Luzern", verified: true, logo_url: null },
   },
 ];
 
@@ -90,10 +90,10 @@ export const SAMPLE_PARTNERS: {
   city: string | null;
   verified: boolean;
 }[] = [
-  { id: "seed-kibag", company_name: "KIBAG Baustoffe", role: "SUPPLIER", city: "Zürich", verified: true },
-  { id: "seed-vigier", company_name: "Vigier Beton Mittelland", role: "SUPPLIER", city: "Bern", verified: true },
-  { id: "seed-meier", company_name: "Gebr. Meier Hochbau AG", role: "BUYER", city: "Bern", verified: true },
-  { id: "seed-rhomberg", company_name: "Rhomberg Bau AG", role: "BUYER", city: "Luzern", verified: true },
+  { id: "seed-1", company_name: "Muster Baustoffe AG", role: "SUPPLIER", city: "Zürich", verified: true },
+  { id: "seed-2", company_name: "Beispiel Beton Mittelland", role: "SUPPLIER", city: "Bern", verified: true },
+  { id: "seed-3", company_name: "Muster Hochbau AG", role: "BUYER", city: "Bern", verified: true },
+  { id: "seed-4", company_name: "Musterbau Innerschweiz AG", role: "BUYER", city: "Luzern", verified: true },
 ];
 
 export const GEWERKE = [

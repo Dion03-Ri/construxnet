@@ -16,15 +16,15 @@
 -- --- Demo-Firmen ---
 INSERT INTO companies (clerk_user_id, company_name, uid_number, role, canton, city, verified, bio)
 VALUES
-  ('seed-gebr-meier',   'Gebr. Meier Hochbau AG', 'CHE-101.234.567', 'BUYER',    'BE', 'Bern',    TRUE,
+  ('seed-gebr-meier',   'Muster Hochbau AG', 'CHE-101.234.567', 'BUYER',    'BE', 'Bern',    TRUE,
    'Hoch- und Tiefbau im Raum Bern. Spezialisiert auf Wohnbauten und Sanierungen.'),
-  ('seed-rhomberg',     'Rhomberg Bau AG',        'CHE-102.345.678', 'BUYER',    'LU', 'Luzern',  TRUE,
+  ('seed-4',     'Musterbau Innerschweiz AG',        'CHE-102.345.678', 'BUYER',    'LU', 'Luzern',  TRUE,
    'Generalunternehmung für Gewerbe- und Industriebauten in der Innerschweiz.'),
-  ('seed-kibag',        'KIBAG Baustoffe',        'CHE-103.456.789', 'SUPPLIER', 'ZH', 'Zürich',  TRUE,
+  ('seed-1',        'Muster Baustoffe AG',        'CHE-103.456.789', 'SUPPLIER', 'ZH', 'Zürich',  TRUE,
    'Beton, Kies und Recyclingbaustoffe. Werke im Raum Zürich / Limmattal.'),
-  ('seed-vigier',       'Vigier Beton Mittelland','CHE-104.567.890', 'SUPPLIER', 'BE', 'Bern',    TRUE,
+  ('seed-2',       'Beispiel Beton Mittelland','CHE-104.567.890', 'SUPPLIER', 'BE', 'Bern',    TRUE,
    'Transportbeton nach SN EN 206 für die Region Mittelland.'),
-  ('seed-toggenburger', 'Toggenburger Kies AG',   'CHE-105.678.901', 'SUPPLIER', 'SG', 'Wil',     FALSE,
+  ('seed-5', 'Beispiel Kies AG',   'CHE-105.678.901', 'SUPPLIER', 'SG', 'Wil',     FALSE,
    'Kies- und Hartschotterwerk. Lieferung in der Ostschweiz.')
 ON CONFLICT (uid_number) DO NOTHING;
 
