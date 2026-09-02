@@ -124,6 +124,29 @@ Supabase (server + browser client, `supabaseAdmin` service-role), Leaflet/OSM
   als ungelesen. Gesetzt über `mark_notifications_seen()`, weil `companies`
   bewusst keine allgemeine Update-Regel hat.
 
+## Sicherheit — was gilt
+- **Jede Tabelle im Schema `public` braucht RLS.** PostgREST stellt sie
+  direkt bereit, und der öffentliche Schlüssel steckt im Browser-Bundle;
+  ohne RLS ist eine Tabelle für das ganze Internet les- und schreibbar.
+  `delivery_notes` und `gap_closer_alerts` waren genau so offen (Mig. 20).
+- **Jede `SECURITY DEFINER`-Funktion braucht `SET search_path`** (Mig. 19).
+- **Storage-Policies ohne `TO authenticated` gelten auch für Nicht-Angemeldete.**
+  Der Bilder-Bucket war so offen; jetzt nur eigener Ordner, 5 MB, nur Bilder.
+- **RLS kennt keine Spalten-Ebene.** Wo einzelne Felder unveränderlich sein
+  müssen (Referenzpreis, Menge, Gebotspreis), braucht es einen Trigger.
+- **Schreibende Vorgänge mit Regeln laufen über SECURITY-DEFINER-Funktionen**,
+  nicht über Insert-Policies: `submit_demand`, `place_bid`, `award_bundle`,
+  `next_material_id`. Wer selbst schreiben darf, kann auch Rabattstufen und
+  Bewertungsgrundlagen schreiben.
+- **Offen und bewusst so:** Firmenverzeichnis samt Kontaktdaten ist
+  öffentlich (das ist der Zweck), Bündel sind für alle sichtbar (nur
+  Summen, nie wer beiträgt).
+- **Noch offen:** das Vorschau-Passwort hat einen fest im Code stehenden
+  Standardwert (`lib/preview.ts`). Solange `PREVIEW_PASSWORD` in Vercel
+  nicht gesetzt ist, ist die Sperre nur so stark wie die Verschwiegenheit
+  des Repos. Entscheidung liegt beim Nutzer. Ebenso: keine Ratenbegrenzung
+  auf Passworteingabe und Warteliste.
+
 ## OFFEN / als Nächstes
 - Startseite + Dashboard (`/dashboard`) sind auf Light Mode umgestellt. Andere
   Seiten (z.B. Coming-Soon, Netzwerk) sind noch dunkel — bei Bedarf einzeln
@@ -144,4 +167,5 @@ Supabase (server + browser client, `supabaseAdmin` service-role), Leaflet/OSM
     Ein KI-Treffer wird als Alias mit `source: 'AI'` gemerkt, damit er beim
     zweiten Mal gratis ist.
   - Danach: hochgeladene Leistungsverzeichnisse (#25) über dieselbe Route.
-- Migrationen `08`–`17` sind eingespielt; `18_notifications_seen.sql` ist neu.
+- Migrationen `08`–`18` sind eingespielt; `19_hardening.sql` und
+  `20_security_gaps.sql` sind neu.

@@ -8,7 +8,8 @@ export async function POST(req: Request) {
   let email = "";
   try {
     const body = await req.json();
-    email = String(body?.email ?? "").trim().toLowerCase();
+    // Deckel vor der Prüfung: eine gültige Adresse ist nie länger.
+    email = String(body?.email ?? "").trim().toLowerCase().slice(0, 254);
   } catch {
     return NextResponse.json({ error: "Ungültige Anfrage." }, { status: 400 });
   }
