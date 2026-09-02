@@ -4,8 +4,9 @@ import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { Handshake, X, Search, Send, Loader2, Info } from "lucide-react";
-import { PROC_MATERIALS, DELIVERY_WINDOWS, matchesMaterial } from "@/data/procurement";
+import { PROC_MATERIALS, DELIVERY_WINDOWS, matchesMaterial, type ProcMaterial } from "@/data/procurement";
 import { matchMaterial, WORTH_SHOWING } from "@/lib/materialMatch";
+import { rememberAlias } from "@/lib/useMaterialResolve";
 import { useProjects, projectLabel } from "@/lib/projects";
 import { useSupabaseBrowser } from "@/lib/supabase-browser";
 import { cn } from "@/lib/utils";
@@ -65,6 +66,17 @@ export default function DirectRequestModal({
   }, [query]);
 
   const valid = !!material && Number(qty) > 0;
+
+  /**
+   * Material wählen — und wenn die Suche nur über den Abgleich dorthin
+   * geführt hat, die Schreibweise merken. Beim nächsten Mal steht der
+   * Treffer sofort da, ohne Heuristik.
+   */
+  function pickMaterial(m: ProcMaterial) {
+    const literal = PROC_MATERIALS.some((x) => matchesMaterial(x, query.trim()));
+    if (!literal) void rememberAlias(supabase, query, m.id, myCompanyId, "MATCH");
+    setMaterialKey(m.key);
+  }
 
   async function submit() {
     if (!valid || !material || sending) return;
@@ -202,7 +214,7 @@ export default function DirectRequestModal({
                     <li key={m.key}>
                       <button
                         type="button"
-                        onClick={() => setMaterialKey(m.key)}
+                        onClick={() => pickMaterial(m)}
                         className="flex w-full items-center justify-between gap-2 border-b border-slate-100 px-3 py-2 text-left last:border-b-0 hover:bg-slate-50"
                       >
                         <span className="min-w-0">
