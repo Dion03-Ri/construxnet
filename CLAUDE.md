@@ -76,8 +76,19 @@ Supabase (server + browser client, `supabaseAdmin` service-role), Leaflet/OSM
   Seiten (z.B. Coming-Soon, Netzwerk) sind noch dunkel — bei Bedarf einzeln
   nachziehen, nicht automatisch annehmen, dass alles schon hell ist.
 - Branding einheitlich auf Obtanet umgestellt.
-- **KI-Abgleich auf Materialnummern (#25/#24):** freie Eingaben und hochgeladene
-  Dokumente auf `OB-...` mappen, Dubletten erkennen, eigene Materialien
-  (`OB-EIG-...`) in den gemeinsamen Katalog überführen. Das ist der Schritt, der
-  die Nummern erst nützlich macht.
-- Migrationen `08`–`13` sind eingespielt (Stand: Materialnummern).
+- **Materialabgleich Stufe 3 — KI (OFFEN, braucht API-Schlüssel).**
+  Stufe 1 (Alias-Nachschlag) und Stufe 2 (deterministisch, `lib/materialMatch.ts`)
+  sind gebaut und decken den Grossteil ab. Für den Rest fehlt ein Sprachmodell:
+  - `ANTHROPIC_API_KEY` in Vercel setzen (der Nutzer hat noch keinen).
+  - `npm i @anthropic-ai/sdk zod` — beim Bau bewusst wieder entfernt, damit
+    keine ungenutzte Abhängigkeit im Baum liegt.
+  - Route `app/api/material-match/route.ts`: Modell `claude-opus-5`,
+    strukturierte Ausgabe über `output_config.format` mit `zodOutputFormat`,
+    Eingabe = Freitext + Katalogliste, Ausgabe = `{ material_id, confidence,
+    reason }`. Nur aufrufen, wenn Stufe 1 und 2 nichts Sicheres liefern —
+    jeder Aufruf kostet.
+  - Einhängen in `lib/useMaterialResolve.ts`, dort ist die Stelle markiert.
+    Ein KI-Treffer wird als Alias mit `source: 'AI'` gemerkt, damit er beim
+    zweiten Mal gratis ist.
+  - Danach: hochgeladene Leistungsverzeichnisse (#25) über dieselbe Route.
+- Migrationen `08`–`13` sind eingespielt; `14_material_aliases.sql` ist neu.
