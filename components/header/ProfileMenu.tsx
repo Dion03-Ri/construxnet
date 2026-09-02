@@ -8,7 +8,6 @@ import {
   LayoutDashboard,
   Users,
   Layers,
-  Newspaper,
   Settings,
   LogOut,
 } from "lucide-react";
@@ -71,11 +70,11 @@ export default function ProfileMenu() {
             </div>
           </div>
           <Link
-            href="/dashboard"
+            href="/profile"
             onClick={() => setOpen(false)}
             className="mx-3 mb-2 mt-3 flex items-center justify-center rounded-md border border-brand/40 bg-brand/10 py-1.5 text-[13px] font-semibold text-brand transition-colors hover:bg-brand/20"
           >
-            Profil &amp; Dashboard ansehen
+            Mein Firmenprofil
           </Link>
 
           <div className="px-1.5 pb-1.5">
@@ -97,8 +96,7 @@ export default function ProfileMenu() {
 
             <div className="px-2.5 pb-1 pt-2 text-[10px] font-semibold uppercase tracking-wider text-slate-400">Verwalten</div>
             {[
-              { href: "/profile", icon: Newspaper, label: "Meine Beiträge" },
-              { href: "/dashboard", icon: Settings, label: "Einstellungen" },
+              { href: "/dashboard?view=settings", icon: Settings, label: "Einstellungen" },
             ].map((l) => (
               <Link
                 key={l.label}
