@@ -68,8 +68,12 @@ Supabase (server + browser client, `supabaseAdmin` service-role), Leaflet/OSM
   Nicht als Deko unter jeder Bezeichnung.
 - Einmal vergeben = nie wieder ändern. Katalogpositionen nur hinten anhängen,
   nie umsortieren; genommene Nummern bleiben belegt.
-- Selbst erfasste Materialien: `OB-EIG-<Nummer>` — Kennzeichen dafür, dass sie
-  noch in keinem gemeinsamen Katalog stehen und noch nicht abgeglichen sind.
+- Selbst erfasste Materialien bekommen sofort eine echte Kategorienummer aus
+  der Datenbank (`next_material_id`), keinen eigenen Namensraum. Grund: die
+  Nummer darf sich nie ändern — ein späterer Wechsel von `OB-EIG-001` auf
+  `OB-BET-100` hätte jede alte Bestellung ins Leere zeigen lassen.
+  Nummernkreis: 001–099 gehört dem Katalog in `data/procurement.ts`,
+  ab 100 vergibt die Datenbank.
 
 ## OFFEN / als Nächstes
 - Startseite + Dashboard (`/dashboard`) sind auf Light Mode umgestellt. Andere
@@ -91,4 +95,4 @@ Supabase (server + browser client, `supabaseAdmin` service-role), Leaflet/OSM
     Ein KI-Treffer wird als Alias mit `source: 'AI'` gemerkt, damit er beim
     zweiten Mal gratis ist.
   - Danach: hochgeladene Leistungsverzeichnisse (#25) über dieselbe Route.
-- Migrationen `08`–`13` sind eingespielt; `14_material_aliases.sql` ist neu.
+- Migrationen `08`–`14` sind eingespielt; `15_custom_materials.sql` ist neu.

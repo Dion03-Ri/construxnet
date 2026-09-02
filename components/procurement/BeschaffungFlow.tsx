@@ -5,6 +5,7 @@ import { useProjects, projectLabel } from "@/lib/projects";
 import { useSupabaseBrowser } from "@/lib/supabase-browser";
 import { useMaterialResolve, rememberAlias } from "@/lib/useMaterialResolve";
 import { matchMaterial, WORTH_SHOWING } from "@/lib/materialMatch";
+import { createCustomMaterial, useCustomMaterials } from "@/lib/customMaterials";
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 import {
@@ -35,7 +36,6 @@ import {
   DELIVERY_WINDOWS,
   tierForVolume,
   matchesMaterial,
-  ownMaterialId,
   type ProcMaterial,
   type ProcCategory,
 } from "@/data/procurement";
@@ -107,7 +107,6 @@ export default function BeschaffungFlow({
   const [positions, setPositions] = useState<Position[]>(presetPositions);
 
   // Im Formular neu erfasste Materialien — werden dem Katalog dieser Sitzung hinzugefügt
-  const [customMaterials, setCustomMaterials] = useState<ProcMaterial[]>([]);
 
   // Material-Browsing
   const [matQuery, setMatQuery] = useState("");
@@ -134,7 +133,10 @@ export default function BeschaffungFlow({
   // Smart Pool
   const [pool, setPool] = useState(true);
 
-  const catalog = useMemo(() => [...customMaterials, ...PROC_MATERIALS], [customMaterials]);
+  // Katalog aus dem Code plus alles, was Firmen selbst erfasst und
+  // freigegeben haben. Erst dadurch lässt sich auf Positionen bündeln,
+  // die der feste Katalog nicht führt.
+  const { catalog, reload: reloadMaterials } = useCustomMaterials(companyId);
 
   const filteredMaterials = useMemo(() => {
     const q = matQuery.trim().toLowerCase();
@@ -223,7 +225,9 @@ export default function BeschaffungFlow({
 
   /** Neues Material aus dem Modal: in den Katalog aufnehmen und direkt auswählen. */
   function addCustomMaterial(m: ProcMaterial) {
-    setCustomMaterials((prev) => [m, ...prev]);
+    // Das Material liegt jetzt in der Datenbank — Liste neu laden, damit es
+    // auch in Suche und Auswahl auftaucht, nicht nur im Warenkorb.
+    void reloadMaterials();
     setPositions((prev) => [...prev, { ...toPosition(m), isNew: true }]);
     setModalOpen(false);
   }
@@ -772,7 +776,6 @@ export default function BeschaffungFlow({
         <CustomMaterialModal
           onClose={() => setModalOpen(false)}
           onAdd={addCustomMaterial}
-          ownCount={customMaterials.length}
           companyId={companyId}
         />
       )}
@@ -787,13 +790,10 @@ export default function BeschaffungFlow({
 function CustomMaterialModal({
   onClose,
   onAdd,
-  ownCount,
   companyId,
 }: {
   onClose: () => void;
   onAdd: (m: ProcMaterial) => void;
-  /** Wie viele eigene Materialien es schon gibt — für die Nummerierung. */
-  ownCount: number;
   companyId: string;
 }) {
   const supabase = useSupabaseBrowser();
@@ -802,6 +802,11 @@ function CustomMaterialModal({
   const [price, setPrice] = useState("");
   const [sia, setSia] = useState("");
   const [category, setCategory] = useState<ProcCategory>(PROC_CATEGORIES[0]);
+  // Freigeben ist die Vorgabe: ein Material, das nur eine Firma sieht, kann
+  // nicht gebündelt werden — und genau dafür ist die Plattform da.
+  const [share, setShare] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   // Abgleich gegen den Katalog: Normbezeichnung, Wortüberschneidung und
   // bereits bestätigte Zuordnungen. Verhindert, dass "Transportbeton
@@ -817,17 +822,28 @@ function CustomMaterialModal({
     onAdd(m);
   }
 
-  function submit() {
-    if (!valid) return;
-    onAdd({
-      key: "custom-" + label.trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").slice(0, 32) + "-" + Date.now().toString(36),
-      id: ownMaterialId(ownCount),
-      label: label.trim(),
-      sia: sia.trim() || "Freie Erfassung — Spezifikation offen",
-      unit: unit.trim(),
-      kbobPrice: Number(price) || 0,
+  async function submit() {
+    if (!valid || saving) return;
+    setSaving(true);
+    setError(null);
+    const res = await createCustomMaterial(supabase, companyId, {
+      label,
+      sia,
+      unit,
+      price: Number(price) || 0,
       category,
+      share,
     });
+    setSaving(false);
+    if (res.error || !res.material) {
+      setError(
+        res.error?.includes("custom_materials")
+          ? "Material konnte nicht gespeichert werden. Ist die Migration 15_custom_materials.sql eingespielt?"
+          : (res.error ?? "Material konnte nicht gespeichert werden."),
+      );
+      return;
+    }
+    onAdd(res.material);
   }
 
   return (
@@ -928,19 +944,40 @@ function CustomMaterialModal({
             <input value={sia} onChange={(e) => setSia(e.target.value)} placeholder="z. B. SN EN 206 · C30/37" className="w-full rounded-md border border-slate-300 bg-slate-50 px-3 py-2 text-sm text-slate-900 outline-none focus:border-brand focus:bg-white" />
           </div>
 
-          <p className="text-[11.5px] leading-relaxed text-slate-400">
-            Das Material wird direkt ausgewählt und erscheint in deinem Katalog. Die Freigabe für
-            andere Firmen (damit sie demselben Bündel beitreten können) und der Abgleich gegen
-            bestehende Einträge folgen mit der Katalog-Anbindung.
-          </p>
+          <button
+            type="button"
+            onClick={() => setShare((v) => !v)}
+            className={cn(
+              "flex w-full items-start gap-3 rounded-lg border p-3 text-left transition-colors",
+              share ? "border-brand bg-brand/[0.05] ring-1 ring-brand/30" : "border-slate-200 hover:border-slate-300",
+            )}
+          >
+            <span className={cn("mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded border", share ? "border-brand bg-brand text-navy-900" : "border-slate-300 bg-white")}>
+              {share && <Check className="h-3.5 w-3.5" />}
+            </span>
+            <span>
+              <span className="block text-[13.5px] font-semibold text-slate-900">
+                Für andere Firmen freigeben
+              </span>
+              <span className="mt-0.5 block text-[11.5px] leading-relaxed text-slate-500">
+                Nur freigegebene Materialien lassen sich bündeln — sonst kann
+                niemand demselben Bedarf beitreten. Sichtbar wird die Position
+                mit Bezeichnung und Norm, nicht deine Menge oder dein Preis.
+                Lässt sich später jederzeit zurücknehmen.
+              </span>
+            </span>
+          </button>
+
+          {error && <p className="text-[12.5px] font-medium text-rose-600">{error}</p>}
         </div>
 
         <div className="flex items-center justify-end gap-2 border-t border-slate-200 bg-slate-50 px-5 py-3">
           <button type="button" onClick={onClose} className="rounded-md px-3.5 py-2 text-sm font-semibold text-slate-500 transition-colors hover:bg-slate-200">
             Abbrechen
           </button>
-          <button type="button" onClick={submit} disabled={!valid} className="inline-flex items-center gap-1.5 rounded-md bg-brand px-4 py-2 text-sm font-semibold text-navy-900 transition-colors hover:bg-brand-500 disabled:cursor-not-allowed disabled:opacity-50">
-            <Plus className="h-4 w-4" /> Hinzufügen & auswählen
+          <button type="button" onClick={submit} disabled={!valid || saving} className="inline-flex items-center gap-1.5 rounded-md bg-brand px-4 py-2 text-sm font-semibold text-navy-900 transition-colors hover:bg-brand-500 disabled:cursor-not-allowed disabled:opacity-50">
+            {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />}
+            Anlegen &amp; auswählen
           </button>
         </div>
       </motion.div>

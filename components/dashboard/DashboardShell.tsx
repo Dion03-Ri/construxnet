@@ -40,6 +40,7 @@ import {
   X,
   Building2,
   Handshake,
+  Package,
   UploadCloud,
   Trash2,
   Plus,
@@ -51,10 +52,12 @@ import { useSupabaseBrowser } from "@/lib/supabase-browser";
 import { useProjects, projectLabel } from "@/lib/projects";
 import ProjectsPanel from "@/components/dashboard/ProjectsPanel";
 import RequestsPanel from "@/components/dashboard/RequestsPanel";
+import MaterialsPanel from "@/components/dashboard/MaterialsPanel";
+import { useCustomMaterials } from "@/lib/customMaterials";
 import { useDirectRequests, isLive } from "@/lib/directRequests";
 import { CARD, badge } from "@/lib/ui";
 import { cn } from "@/lib/utils";
-import { matchesMaterial, PROC_MATERIALS, PROC_CATEGORIES, tierForVolume, type ProcMaterial, type ProcCategory } from "@/data/procurement";
+import { matchesMaterial, PROC_CATEGORIES, tierForVolume, type ProcMaterial, type ProcCategory } from "@/data/procurement";
 import kbobData from "@/data/kbobData.json";
 
 /** Feine Raster-Textur der dunklen Panels — identisch zu Feed und Startseite. */
@@ -159,6 +162,7 @@ const NAV_ALL = [
   { key: "overview", label: "Übersicht", icon: LayoutDashboard },
   { key: "projects", label: "Projekte", icon: Building2, buyerOnly: true },
   { key: "requests", label: "Direktanfragen", icon: Handshake },
+  { key: "materials", label: "Eigene Materialien", icon: Package },
   { key: "orders", label: "Bestellungen", icon: ShoppingCart, badge: 7 },
   { key: "tenders", label: "Ausschreibungen", icon: Gavel, badge: 3, supplierOnly: true },
   { key: "contracts", label: "SIA-118 Verträge", icon: FileText },
@@ -673,7 +677,14 @@ function ContractsPanel() {
 /*  Beschaffungs-Workspace: KI-Suche, PDF-Dropzone, Material-Tabelle          */
 /* -------------------------------------------------------------------------- */
 
-function WorkspacePanel({ onAdd }: { onAdd: (m: ProcMaterial) => void }) {
+function WorkspacePanel({
+  onAdd,
+  catalog,
+}: {
+  onAdd: (m: ProcMaterial) => void;
+  /** Fester Katalog plus eigene und freigegebene Materialien. */
+  catalog: ProcMaterial[];
+}) {
   const [query, setQuery] = useState("");
   const [cat, setCat] = useState<"ALL" | ProcCategory>("ALL");
   const [fileName, setFileName] = useState<string | null>(null);
@@ -681,7 +692,7 @@ function WorkspacePanel({ onAdd }: { onAdd: (m: ProcMaterial) => void }) {
 
   const results = useMemo(() => {
     const q = query.trim().toLowerCase();
-    return PROC_MATERIALS.filter((m) => {
+    return catalog.filter((m) => {
       if (cat !== "ALL" && m.category !== cat) return false;
       if (!q) return true;
       return (
@@ -689,7 +700,7 @@ function WorkspacePanel({ onAdd }: { onAdd: (m: ProcMaterial) => void }) {
         m.category.toLowerCase().includes(q)
       );
     });
-  }, [query, cat]);
+  }, [query, cat, catalog]);
 
   function handleFiles(files: FileList | null) {
     const f = files?.[0];
@@ -751,7 +762,7 @@ function WorkspacePanel({ onAdd }: { onAdd: (m: ProcMaterial) => void }) {
       <div className={cn(CARD, "overflow-hidden p-0")}>
         <div className="flex items-center justify-between border-b border-slate-100 px-4 py-3">
           <h3 className="text-[15px] font-semibold text-slate-900">Material-Katalog</h3>
-          <span className="text-[11px] text-slate-400">{results.length} von {PROC_MATERIALS.length}</span>
+          <span className="text-[11px] text-slate-400">{results.length} von {catalog.length}</span>
         </div>
         <div className="max-h-[440px] overflow-y-auto">
           <table className="w-full text-left text-[13px]">
@@ -1015,6 +1026,14 @@ export default function DashboardShell({ company }: { company: Company }) {
     reload: reloadRequests,
   } = useDirectRequests();
   const openRequests = requests.filter((r) => isLive(r.status)).length;
+  const {
+    rows: materialRows,
+    mine: myMaterials,
+    catalog: fullCatalog,
+    loading: materialsLoading,
+    error: materialsError,
+    reload: reloadMaterials,
+  } = useCustomMaterials(company.id);
 
   // Wie viele Bestellungen hängen an welcher Baustelle? Wird für die
   // Projektkarten gebraucht.
@@ -1165,7 +1184,7 @@ export default function DashboardShell({ company }: { company: Company }) {
         <div className="p-4 sm:p-6">
           <AnimatePresence mode="wait">
             <motion.div key={view} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }}>
-              {view === "workspace" && <WorkspacePanel onAdd={addToCart} />}
+              {view === "workspace" && <WorkspacePanel onAdd={addToCart} catalog={fullCatalog} />}
               {view === "overview" && <OverviewPanel role={role} />}
               {view === "requests" && (
                 <RequestsPanel
@@ -1175,6 +1194,15 @@ export default function DashboardShell({ company }: { company: Company }) {
                   loading={requestsLoading}
                   error={requestsError}
                   reload={reloadRequests}
+                />
+              )}
+              {view === "materials" && (
+                <MaterialsPanel
+                  rows={materialRows}
+                  mine={myMaterials}
+                  loading={materialsLoading}
+                  error={materialsError}
+                  reload={reloadMaterials}
                 />
               )}
               {view === "projects" && !isSupplier && (
