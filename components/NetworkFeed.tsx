@@ -23,6 +23,7 @@ import {
   HelpCircle,
 } from "lucide-react";
 import { useSupabaseBrowser } from "@/lib/supabase-browser";
+import { fetchMyCompanyId } from "@/lib/myCompany";
 import RecommendedPartners from "@/components/feed/RecommendedPartners";
 import FeedBundleHero from "@/components/feed/FeedBundleHero";
 import { SAMPLE_POSTS, type MockPost } from "@/data/feedMock";
@@ -126,10 +127,15 @@ function Composer({ onCreated }: { onCreated: () => void }) {
     if (!isSignedIn || !userId) return;
     let cancelled = false;
     (async () => {
+      const myId = await fetchMyCompanyId(supabase);
+      if (!myId) {
+        if (!cancelled) setCompany(null);
+        return;
+      }
       const { data } = await supabase
         .from("companies")
         .select("id, company_name, logo_url")
-        .eq("clerk_user_id", userId)
+        .eq("id", myId)
         .maybeSingle();
       if (!cancelled) setCompany((data as typeof company) ?? null);
     })();

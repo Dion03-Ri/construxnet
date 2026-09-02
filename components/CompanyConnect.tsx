@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useAuth } from "@clerk/nextjs";
 import { UserPlus, Check, Clock, MessageSquare } from "lucide-react";
 import { useSupabaseBrowser } from "@/lib/supabase-browser";
+import { fetchMyCompanyId } from "@/lib/myCompany";
 
 type ConnState = {
   id: string;
@@ -25,12 +26,7 @@ export default function CompanyConnect({ targetId }: { targetId: string }) {
       setReady(true);
       return;
     }
-    const { data: me } = await supabase
-      .from("companies")
-      .select("id")
-      .eq("clerk_user_id", userId)
-      .maybeSingle();
-    const mineId = (me as { id: string } | null)?.id ?? null;
+    const mineId = await fetchMyCompanyId(supabase);
     setMyId(mineId);
 
     if (mineId && mineId !== targetId) {

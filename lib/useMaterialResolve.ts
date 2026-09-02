@@ -35,7 +35,12 @@ const EMPTY: Resolution = { candidates: [], fromAlias: false, certain: false, lo
  * vorgeschlagen und nicht gesetzt. Eine still umgebogene Position wäre
  * schlimmer als eine doppelte, weil sie niemand bemerkt.
  */
-export function useMaterialResolve(input: string, delay = 250): Resolution {
+export function useMaterialResolve(
+  input: string,
+  delay = 250,
+  /** Eigene Firma — entscheidet, ob ein Alias als sicher gilt. */
+  myCompanyId?: string,
+): Resolution {
   const supabase = useSupabaseBrowser();
   const [state, setState] = useState<Resolution>(EMPTY);
   const seq = useRef(0);
@@ -51,15 +56,26 @@ export function useMaterialResolve(input: string, delay = 250): Resolution {
       setState((s) => ({ ...s, loading: true }));
 
       // 1. Alias — eine bestätigte Zuordnung schlägt jede Heuristik.
+      //
+      // Aliasse gelten firmenübergreifend, damit alle davon profitieren.
+      // Als *sicher* zählt aber nur, was die eigene Firma bestätigt hat:
+      // sonst könnte jemand "beton c25/30" auf ein falsches Material
+      // legen und damit fremde Bedarfe in den falschen Topf lenken. Eine
+      // fremde Zuordnung ist ein Vorschlag, keine Tatsache.
       let aliasMaterial: ProcMaterial | undefined;
+      let aliasIsMine = false;
       const { data } = await supabase
         .from("material_aliases")
-        .select("material_id")
+        .select("material_id, created_by_company_id, source")
         .eq("alias_norm", norm)
         .maybeSingle();
       if (data?.material_id) {
         aliasMaterial = materialById(data.material_id as string);
-        if (aliasMaterial) void supabase.rpc("material_alias_hit", { p_alias_norm: norm });
+        if (aliasMaterial) {
+          aliasIsMine =
+            !!myCompanyId && data.created_by_company_id === myCompanyId;
+          void supabase.rpc("material_alias_hit", { p_alias_norm: norm });
+        }
       }
 
       // 2. Deterministisch.
@@ -71,11 +87,17 @@ export function useMaterialResolve(input: string, delay = 250): Resolution {
         const rest = matches.filter((m) => m.material.key !== aliasMaterial!.key);
         setState({
           candidates: [
-            { material: aliasMaterial, score: 1, reason: "schon einmal so zugeordnet" },
+            {
+              material: aliasMaterial,
+              score: aliasIsMine ? 1 : 0.85,
+              reason: aliasIsMine
+                ? "von dir schon einmal so zugeordnet"
+                : "eine andere Firma ordnet das so zu",
+            },
             ...rest,
           ],
           fromAlias: true,
-          certain: true,
+          certain: aliasIsMine,
           loading: false,
         });
         return;
@@ -88,7 +110,7 @@ export function useMaterialResolve(input: string, delay = 250): Resolution {
         loading: false,
       });
     },
-    [supabase],
+    [supabase, myCompanyId],
   );
 
   useEffect(() => {

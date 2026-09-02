@@ -1,6 +1,6 @@
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
-import { createServerSupabaseClient } from "./supabase";
+import { supabaseAdmin } from "./supabase";
 
 export type Company = {
   id: string;
@@ -19,8 +19,11 @@ export type Company = {
 export async function getMyCompany(): Promise<Company | null> {
   const { userId } = await auth();
   if (!userId) return null;
-  const supabase = createServerSupabaseClient();
-  const { data } = await supabase
+  // Über die Service-Rolle, weil der Lesezugriff auf clerk_user_id seit
+  // Migration 19 entzogen ist — ohne ihn liesse sich die eigene Zeile hier
+  // weder filtern noch lesen. Sicher ist das, weil userId aus auth() kommt
+  // und nicht aus der Anfrage.
+  const { data } = await supabaseAdmin()
     .from("companies")
     .select("*")
     .eq("clerk_user_id", userId)

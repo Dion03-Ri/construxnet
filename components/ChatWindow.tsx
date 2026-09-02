@@ -27,6 +27,7 @@ import {
   ArrowRight,
 } from "lucide-react";
 import { useSupabaseBrowser } from "@/lib/supabase-browser";
+import { fetchMyCompanyId } from "@/lib/myCompany";
 import { CARD } from "@/lib/ui";
 import { cn } from "@/lib/utils";
 
@@ -217,8 +218,7 @@ export default function ChatWindow({ initialTo }: { initialTo?: string }) {
       setLoading(false);
       return;
     }
-    const { data: me } = await supabase.from("companies").select("id").eq("clerk_user_id", userId).maybeSingle();
-    const mineId = (me as { id: string } | null)?.id ?? null;
+    const mineId = await fetchMyCompanyId(supabase);
     setMyId(mineId);
 
     // connections (CONNECTED) + message counterparties

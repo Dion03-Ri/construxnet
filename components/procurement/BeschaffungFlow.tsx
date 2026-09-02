@@ -875,7 +875,7 @@ function CustomMaterialModal({
   // bereits bestätigte Zuordnungen. Verhindert, dass "Transportbeton
   // C25/30" als neues Material neben "Beton C25/30" landet — genau das
   // zerreisst sonst die Bündel.
-  const { candidates, fromAlias, certain, loading: resolving } = useMaterialResolve(label);
+  const { candidates, fromAlias, certain, loading: resolving } = useMaterialResolve(label, 250, companyId);
 
   const valid = label.trim().length >= 2 && unit.trim().length >= 1;
 
