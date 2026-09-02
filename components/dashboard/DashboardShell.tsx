@@ -38,6 +38,7 @@ import {
   Truck,
   X,
   Building2,
+  Handshake,
   UploadCloud,
   Trash2,
   Plus,
@@ -48,6 +49,8 @@ import type { Company } from "@/lib/company";
 import { useSupabaseBrowser } from "@/lib/supabase-browser";
 import { useProjects, projectLabel } from "@/lib/projects";
 import ProjectsPanel from "@/components/dashboard/ProjectsPanel";
+import RequestsPanel from "@/components/dashboard/RequestsPanel";
+import { useDirectRequests, isLive } from "@/lib/directRequests";
 import { CARD, badge } from "@/lib/ui";
 import { cn } from "@/lib/utils";
 import { PROC_MATERIALS, PROC_CATEGORIES, tierForVolume, type ProcMaterial, type ProcCategory } from "@/data/procurement";
@@ -152,6 +155,7 @@ const NAV_ALL = [
   { key: "workspace", label: "Beschaffung", icon: Search },
   { key: "overview", label: "Übersicht", icon: LayoutDashboard },
   { key: "projects", label: "Projekte", icon: Building2, buyerOnly: true },
+  { key: "requests", label: "Direktanfragen", icon: Handshake },
   { key: "orders", label: "Bestellungen", icon: ShoppingCart, badge: 7 },
   { key: "tenders", label: "Ausschreibungen", icon: Gavel, badge: 3, supplierOnly: true },
   { key: "contracts", label: "SIA-118 Verträge", icon: FileText },
@@ -993,6 +997,13 @@ export default function DashboardShell({ company }: { company: Company }) {
   // Bestellung gehört zu einem Projekt (Lager, Werkhof, Kleinbedarf).
   const [projectId, setProjectId] = useState("");
   const [orderCounts, setOrderCounts] = useState<Record<string, number>>({});
+  const {
+    requests,
+    loading: requestsLoading,
+    error: requestsError,
+    reload: reloadRequests,
+  } = useDirectRequests();
+  const openRequests = requests.filter((r) => isLive(r.status)).length;
 
   // Wie viele Bestellungen hängen an welcher Baustelle? Wird für die
   // Projektkarten gebraucht.
@@ -1107,9 +1118,9 @@ export default function DashboardShell({ company }: { company: Company }) {
               >
                 <n.icon className="h-4 w-4 shrink-0" />
                 <span className="flex-1 text-left">{n.label}</span>
-                {n.badge && (
+                {(n.key === "requests" ? openRequests > 0 : !!n.badge) && (
                   <span className={cn("rounded-md px-1.5 py-0.5 text-[10px] font-semibold", active ? "bg-brand text-navy-900" : "bg-white/10 text-white/70")}>
-                    {n.badge}
+                    {n.key === "requests" ? openRequests : n.badge}
                   </span>
                 )}
               </button>
@@ -1145,6 +1156,16 @@ export default function DashboardShell({ company }: { company: Company }) {
             <motion.div key={view} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }}>
               {view === "workspace" && <WorkspacePanel onAdd={addToCart} />}
               {view === "overview" && <OverviewPanel role={role} />}
+              {view === "requests" && (
+                <RequestsPanel
+                  myCompanyId={company.id}
+                  isSupplier={isSupplier}
+                  requests={requests}
+                  loading={requestsLoading}
+                  error={requestsError}
+                  reload={reloadRequests}
+                />
+              )}
               {view === "projects" && !isSupplier && (
                 <ProjectsPanel
                   companyId={company.id}
