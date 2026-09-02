@@ -34,6 +34,9 @@ import {
   Check,
   ChevronRight,
   Lock,
+  Info,
+  Truck,
+  X,
   Building2,
   UploadCloud,
   Trash2,
@@ -46,6 +49,13 @@ import { CARD, badge } from "@/lib/ui";
 import { cn } from "@/lib/utils";
 import { PROC_MATERIALS, PROC_CATEGORIES, tierForVolume, type ProcMaterial, type ProcCategory } from "@/data/procurement";
 import kbobData from "@/data/kbobData.json";
+
+/** Feine Raster-Textur der dunklen Panels — identisch zu Feed und Startseite. */
+const GRID_BG = {
+  backgroundImage:
+    "linear-gradient(rgba(255,255,255,.7) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.7) 1px,transparent 1px)",
+  backgroundSize: "26px 26px",
+};
 
 const C = {
   brand: "#D99000",
@@ -87,38 +97,46 @@ const MONTH_VOL = [
   { m: "Sep", v: 480 }, { m: "Okt", v: 540 }, { m: "Nov", v: 500 }, { m: "Dez", v: 360 },
 ]; // Tausend CHF
 
-const REV_COST = [
-  { m: "Q1", umsatz: 1.02, kosten: 0.74 },
-  { m: "Q2", umsatz: 1.18, kosten: 0.80 },
-  { m: "Q3", umsatz: 1.24, kosten: 0.83 },
-  { m: "Q4", umsatz: 1.36, kosten: 0.86 },
+/** Ausgaben nach Kategorie — Top 5 plus Sammelposten, Details im Fenster. */
+const SPEND_TOP = [
+  { name: "Beton", amount: 412_000 },
+  { name: "Bewehrungsstahl", amount: 268_000 },
+  { name: "Kies & Aushub", amount: 154_000 },
+  { name: "Zement & Bindemittel", amount: 96_000 },
+  { name: "Dämmung", amount: 61_000 },
+];
+const SPEND_REST = [
+  { name: "Belag & Asphalt", amount: 38_000 },
+  { name: "Mauerwerk", amount: 24_000 },
+  { name: "Entwässerung & Rohre", amount: 17_000 },
+  { name: "Holz", amount: 12_000 },
+  { name: "Bauchemie", amount: 7_400 },
 ];
 
-const PLANNED = [
-  { name: "Beton C25/30", amount: 220_000, pct: 74, color: C.brand },
-  { name: "Armierungsstahl B500B", amount: 180_000, pct: 67, color: C.accent },
-  { name: "Koffer-/Wandkies", amount: 96_000, pct: 70, color: C.navy },
-  { name: "Transport / Diesel", amount: 62_000, pct: 52, color: C.slate },
-];
+type Order = {
+  id: string;
+  material: string;
+  sia: string;
+  qty: number;
+  unit: string;
+  unitPrice: number;
+  amount: number;
+  date: string;
+  status: string;
+  contract: string | null;
+};
 
-const DONUT = [
-  { name: "Beton", value: 40, color: C.brand },
-  { name: "Armierungsstahl", value: 34, color: C.accent },
-  { name: "Kies", value: 18, color: C.navy },
-  { name: "Transport", value: 8, color: C.slate },
-];
-
-const ORDERS = [
-  { id: "#1543", material: "Beton C25/30", amount: "CHF 145'200", date: "12. Feb", status: "In Arbeit" },
-  { id: "#1521", material: "Armierungsstahl", amount: "CHF 75'300", date: "3. Feb", status: "In Arbeit" },
-  { id: "#1498", material: "Koffer-/Wandkies", amount: "CHF 23'900", date: "24. Jan", status: "Abgeschlossen" },
-  { id: "#1466", material: "Transportbeton", amount: "CHF 61'100", date: "9. Jan", status: "Abgeschlossen" },
+const ORDERS: Order[] = [
+  { id: "OBT-1543", material: "Beton C25/30", sia: "SN EN 206 · C25/30 · XC3", qty: 1000, unit: "m³", unitPrice: 145.2, amount: 145_200, date: "12.02.2026", status: "In Arbeit", contract: "OBT-2026-0142" },
+  { id: "OBT-1521", material: "Bewehrungsstahl B500B", sia: "SN EN 10080 · B500B", qty: 68, unit: "t", unitPrice: 1107.35, amount: 75_300, date: "03.02.2026", status: "In Arbeit", contract: "OBT-2026-0098" },
+  { id: "OBT-1498", material: "Koffer-/Wandkies 0/45", sia: "SN 670 119 · 0/45", qty: 721, unit: "t", unitPrice: 33.15, amount: 23_900, date: "24.01.2026", status: "Abgeschlossen", contract: "OBT-2026-0119" },
+  { id: "OBT-1466", material: "Transportbeton C25/30", sia: "SN EN 206 · C25/30", qty: 421, unit: "m³", unitPrice: 145.2, amount: 61_100, date: "09.01.2026", status: "Abgeschlossen", contract: null },
 ];
 
 const CONTRACTS = [
-  { no: "CNX-2026-0142", material: "Beton C25/30", vol: "180 m³", price: "145.20", status: "Aktiv" },
-  { no: "CNX-2026-0119", material: "Koffer-/Wandkies 0/45", vol: "300 t", price: "33.15", status: "Abgeschlossen" },
-  { no: "CNX-2026-0098", material: "Bewehrungsstahl B500B", vol: "42 t", price: "1'108.00", status: "Aktiv" },
+  { no: "OBT-2026-0142", material: "Beton C25/30", vol: "180 m³", price: "145.20", status: "Aktiv" },
+  { no: "OBT-2026-0119", material: "Koffer-/Wandkies 0/45", vol: "300 t", price: "33.15", status: "Abgeschlossen" },
+  { no: "OBT-2026-0098", material: "Bewehrungsstahl B500B", vol: "42 t", price: "1'108.00", status: "Aktiv" },
 ];
 
 const POOLS = [
@@ -205,30 +223,54 @@ function PoolRow({ p }: { p: (typeof POOLS)[number] }) {
 /* -------------------------------------------------------------------------- */
 
 function OverviewPanel({ role }: { role: "buyer" | "supplier" }) {
+  const isSupplier = role === "supplier";
+
+  // Was heute Aufmerksamkeit braucht — keine Jahresbilanz, sondern To-dos.
+  const soonClosing = POOLS.filter((p) => parseInt(p.deadline) <= 5);
+  const openTasks = [
+    { icon: Gavel, text: `${soonClosing.length} Bündel schliessen in den nächsten Tagen`, href: "/pools", cta: "Bündel ansehen" },
+    { icon: FileText, text: "1 Vertrag wartet auf deine Unterschrift", href: "#", cta: "Vertrag öffnen" },
+    { icon: Truck, text: "2 Lieferungen sind für diese Woche angekündigt", href: "#", cta: "Lieferungen" },
+  ];
+
   return (
     <div className="space-y-4">
-      <div className="flex items-center gap-3 rounded-lg border border-brand/20 bg-brand/[0.06] px-4 py-3">
-        <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-brand/15 text-brand">
-          <AlertTriangle className="h-4 w-4" />
-        </span>
-        <p className="text-[13px] text-slate-700">
-          <b>3 aktive Hinweise</b> · 2 Pools erreichen bald die Deadline, 1 Ausschreibung schliesst in 2 Tagen.
-        </p>
-        <Link href="/pools" className="ml-auto hidden shrink-0 items-center gap-1 text-[13px] font-semibold text-brand hover:text-brand-600 sm:inline-flex">
-          Ansehen <ChevronRight className="h-3.5 w-3.5" />
-        </Link>
+      {/* Offene Punkte */}
+      <div className={cn(CARD, "overflow-hidden")}>
+        <div className="border-b border-slate-100 px-5 py-3.5">
+          <h3 className="text-[15px] font-bold text-slate-900">Das braucht deine Aufmerksamkeit</h3>
+          <p className="mt-0.5 text-[12.5px] text-slate-500">
+            Offene Punkte aus Bündeln, Verträgen und Lieferungen.
+          </p>
+        </div>
+        <ul className="divide-y divide-slate-100">
+          {openTasks.map((t) => (
+            <li key={t.text} className="flex items-center gap-3 px-5 py-3">
+              <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-navy-900 text-brand">
+                <t.icon className="h-4 w-4" />
+              </span>
+              <span className="min-w-0 flex-1 text-[13.5px] text-slate-700">{t.text}</span>
+              <Link
+                href={t.href}
+                className="shrink-0 rounded-md border border-slate-200 px-3 py-1.5 text-[12.5px] font-semibold text-slate-600 transition-colors hover:border-brand/40 hover:text-brand"
+              >
+                {t.cta}
+              </Link>
+            </li>
+          ))}
+        </ul>
       </div>
 
-      <div className="grid grid-cols-2 gap-3 xl:grid-cols-4">
-        {KPIS[role].map((k) => (
-          <KpiCard key={k.label} k={k} />
-        ))}
-      </div>
-
+      {/* Laufende Bündel — hier kann man noch Menge einbringen */}
       <div className={cn(CARD, "p-5")}>
         <div className="mb-3 flex items-center justify-between">
-          <h3 className="text-[15px] font-semibold text-slate-900">Aktive Pool-Teilnahmen</h3>
-          <Link href="/pools" className="inline-flex items-center gap-1 text-[13px] font-semibold text-brand hover:text-brand-600">
+          <div>
+            <h3 className="text-[15px] font-bold text-slate-900">Deine laufenden Bündel</h3>
+            <p className="mt-0.5 text-[12.5px] text-slate-500">
+              Solange die Sammelphase läuft, zählt jede zusätzliche Menge.
+            </p>
+          </div>
+          <Link href="/pools" className="inline-flex shrink-0 items-center gap-1 text-[13px] font-semibold text-brand hover:text-brand-600">
             Alle Bündel <ChevronRight className="h-3.5 w-3.5" />
           </Link>
         </div>
@@ -237,38 +279,109 @@ function OverviewPanel({ role }: { role: "buyer" | "supplier" }) {
         </div>
       </div>
 
-      <OrdersPanel />
+      {isSupplier && (
+        <div className={cn(CARD, "flex items-center gap-3 p-5")}>
+          <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-navy-900 text-brand">
+            <Gavel className="h-4 w-4" />
+          </span>
+          <p className="flex-1 text-[13.5px] text-slate-700">
+            Offene Ausschreibungen warten auf dein Gebot.
+          </p>
+          <span className="text-[12.5px] text-slate-400">Reiter „Ausschreibungen"</span>
+        </div>
+      )}
     </div>
   );
 }
 
-function OrdersPanel() {
+/**
+ * Erzeugt ein druckfertiges Bestelldokument in einem eigenen Fenster.
+ * Der Browser übernimmt das Speichern als PDF — dafür braucht es weder eine
+ * zusätzliche Bibliothek noch einen Server.
+ */
+function printOrder(o: Order, companyName: string) {
+  const w = window.open("", "_blank", "width=820,height=1000");
+  if (!w) return;
+  const row = (k: string, v: string) =>
+    `<tr><td style="padding:6px 0;color:#64748B">${k}</td><td style="padding:6px 0;text-align:right;font-weight:600">${v}</td></tr>`;
+  w.document.write(`<!doctype html><html lang="de"><head><meta charset="utf-8">
+<title>Bestellung ${o.id}</title>
+<style>
+  *{box-sizing:border-box} body{font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:#0F172A;margin:0;padding:48px}
+  h1{font-size:22px;margin:0 0 2px} .sub{color:#64748B;font-size:13px;margin-bottom:28px}
+  .head{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:2px solid #0F2238;padding-bottom:16px;margin-bottom:24px}
+  .brand{font-size:18px;font-weight:800;letter-spacing:-.02em} .brand span{color:#D99000}
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  .box{border:1px solid #E2E8F0;border-radius:8px;padding:16px 18px;margin-bottom:16px}
+  .lbl{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:#94A3B8;margin-bottom:10px;font-weight:700}
+  .total{border-top:2px solid #0F2238;margin-top:8px;padding-top:10px;font-size:16px;font-weight:800;display:flex;justify-content:space-between}
+  .foot{margin-top:32px;font-size:11px;color:#94A3B8;line-height:1.6}
+  @media print{body{padding:24px}}
+</style></head><body>
+<div class="head">
+  <div><div class="brand">Obta<span>net</span></div><div class="sub" style="margin:2px 0 0">Schweizer Baubranche</div></div>
+  <div style="text-align:right"><h1>Bestellung ${o.id}</h1><div class="sub" style="margin:0">${o.date} · ${o.status}</div></div>
+</div>
+<div class="box"><div class="lbl">Besteller</div><div style="font-weight:600">${companyName}</div></div>
+<div class="box"><div class="lbl">Position</div><table>
+  ${row("Material", o.material)}
+  ${row("Spezifikation", o.sia)}
+  ${row("Menge", `${chf(o.qty)} ${o.unit}`)}
+  ${row("Preis pro Einheit", `CHF ${chf(o.unitPrice, 2)}`)}
+</table>
+<div class="total"><span>Bestellwert</span><span>CHF ${chf(o.amount)}</span></div></div>
+${o.contract ? `<div class="box"><div class="lbl">Vertrag</div><table>${row("SIA-118-Vertrag", o.contract)}</table></div>` : ""}
+<div class="foot">
+  Erzeugt über Obtanet am ${new Date().toLocaleDateString("de-CH")}.<br>
+  Preisbasis ist der KBOB-Referenzpreis; massgebend ist der zugehörige SIA-118-Vertrag.
+</div>
+</body></html>`);
+  w.document.close();
+  w.focus();
+  w.print();
+}
+
+function OrdersPanel({ companyName }: { companyName: string }) {
   return (
     <div className={cn(CARD, "p-5")}>
       <div className="mb-3 flex items-center justify-between">
-        <h3 className="text-[15px] font-semibold text-slate-900">Letzte Bestellungen</h3>
+        <h3 className="text-[15px] font-bold text-slate-900">Bestellungen</h3>
         <span className="rounded-md border border-slate-200 px-2.5 py-1 text-xs text-slate-500">letzte 60 Tage</span>
       </div>
       <div className="overflow-x-auto">
         <table className="w-full text-left text-[13px]">
           <thead>
             <tr className="text-[11px] uppercase tracking-wider text-slate-400">
-              <th className="pb-2 font-medium">ID</th>
+              <th className="pb-2 font-medium">Nummer</th>
               <th className="pb-2 font-medium">Material</th>
-              <th className="pb-2 font-medium">Betrag</th>
+              <th className="pb-2 text-right font-medium">Betrag</th>
               <th className="hidden pb-2 font-medium sm:table-cell">Datum</th>
-              <th className="pb-2 text-right font-medium">Status</th>
+              <th className="pb-2 font-medium">Status</th>
+              <th className="pb-2 text-right font-medium">Beleg</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
             {ORDERS.map((o) => (
               <tr key={o.id}>
                 <td className="py-2.5 font-semibold text-slate-800">{o.id}</td>
-                <td className="py-2.5 text-slate-600">{o.material}</td>
-                <td className="py-2.5 tabular-nums text-slate-700">{o.amount}</td>
+                <td className="py-2.5 text-slate-600">
+                  {o.material}
+                  <div className="text-[11px] text-slate-400">{chf(o.qty)} {o.unit}</div>
+                </td>
+                <td className="py-2.5 text-right tabular-nums text-slate-700">CHF {chf(o.amount)}</td>
                 <td className="hidden py-2.5 text-slate-500 sm:table-cell">{o.date}</td>
+                <td className="py-2.5">
+                  <span className={badge(o.status === "Abgeschlossen" ? "slate" : "gold", true)}>{o.status}</span>
+                </td>
                 <td className="py-2.5 text-right">
-                  <span className={badge(o.status === "Abgeschlossen" ? "accent" : "gold", true)}>{o.status}</span>
+                  <button
+                    type="button"
+                    onClick={() => printOrder(o, companyName)}
+                    title="Als PDF speichern"
+                    className="inline-flex items-center gap-1 rounded-md border border-slate-200 px-2.5 py-1.5 text-[12px] font-semibold text-slate-600 transition-colors hover:border-brand/40 hover:text-brand"
+                  >
+                    <Download className="h-3.5 w-3.5" /> PDF
+                  </button>
                 </td>
               </tr>
             ))}
@@ -279,127 +392,159 @@ function OrdersPanel() {
   );
 }
 
-function RevCostTooltip({ active, payload, label }: TooltipProps<number, string>) {
-  if (!active || !payload?.length) return null;
+/** Ausgaben nach Kategorie — Top 5, Rest als Sammelposten mit Detailfenster. */
+function SpendByCategory() {
+  const [showAll, setShowAll] = useState(false);
+  const restTotal = SPEND_REST.reduce((a, b) => a + b.amount, 0);
+  const rows = [...SPEND_TOP, { name: "Sonstige", amount: restTotal }];
+  const max = Math.max(...rows.map((r) => r.amount));
+
   return (
-    <div className="rounded-md border border-slate-200 bg-white px-3 py-2 text-xs shadow-cardhover">
-      <div className="mb-1 font-semibold text-slate-900">{label}</div>
-      {payload.map((p) => (
-        <div key={p.name} className="flex items-center gap-2 text-slate-600">
-          <span className="h-2 w-2 rounded-full" style={{ background: p.color }} />
-          {p.name === "umsatz" ? "Umsatz" : "Kosten"}: <b className="text-slate-900">CHF {p.value} Mio.</b>
+    <>
+      <div className={cn(CARD, "p-5")}>
+        <div className="flex items-center justify-between">
+          <h3 className="text-[14px] font-bold text-slate-900">Ausgaben nach Kategorie</h3>
+          <span className="text-[11.5px] text-slate-400">letzte 12 Monate</span>
         </div>
-      ))}
+        <ul className="mt-3 space-y-2">
+          {rows.map((r) => {
+            const isRest = r.name === "Sonstige";
+            const body = (
+              <>
+                <div className="flex items-baseline justify-between text-[13px]">
+                  <span className={cn("font-medium", isRest ? "text-slate-500" : "text-slate-700")}>
+                    {r.name}
+                    {isRest && <span className="ml-1 text-[11px] text-slate-400">({SPEND_REST.length} Kategorien)</span>}
+                  </span>
+                  <span className="tabular-nums text-slate-500">CHF {chf(r.amount)}</span>
+                </div>
+                <div className="mt-1 h-1.5 w-full overflow-hidden rounded-full bg-slate-100">
+                  <div
+                    className={cn("h-full rounded-full", isRest ? "bg-slate-300" : "bg-brand")}
+                    style={{ width: `${(r.amount / max) * 100}%` }}
+                  />
+                </div>
+              </>
+            );
+            return isRest ? (
+              <li key={r.name}>
+                <button
+                  type="button"
+                  onClick={() => setShowAll(true)}
+                  className="w-full rounded-md px-1 py-1 text-left transition-colors hover:bg-slate-50"
+                >
+                  {body}
+                  <span className="mt-1 inline-flex items-center gap-1 text-[11.5px] font-semibold text-brand">
+                    Alle Kategorien anzeigen <ChevronRight className="h-3 w-3" />
+                  </span>
+                </button>
+              </li>
+            ) : (
+              <li key={r.name} className="px-1">{body}</li>
+            );
+          })}
+        </ul>
+      </div>
+
+      {showAll && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-navy-950/60 backdrop-blur-sm" onClick={() => setShowAll(false)} />
+          <motion.div
+            initial={{ opacity: 0, scale: 0.97, y: 8 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            transition={{ duration: 0.16 }}
+            className="relative w-full max-w-md overflow-hidden rounded-xl border border-slate-200 bg-white shadow-2xl"
+          >
+            <div className="flex items-center justify-between border-b border-slate-200 px-5 py-3.5">
+              <h3 className="text-[15px] font-bold text-slate-900">Alle Kategorien</h3>
+              <button
+                type="button"
+                onClick={() => setShowAll(false)}
+                className="rounded-md p-1.5 text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-700"
+                aria-label="Schliessen"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+            <ul className="max-h-[60vh] divide-y divide-slate-100 overflow-y-auto">
+              {[...SPEND_TOP, ...SPEND_REST]
+                .sort((a, b) => b.amount - a.amount)
+                .map((r) => (
+                  <li key={r.name} className="flex items-center justify-between px-5 py-2.5 text-[13px]">
+                    <span className="text-slate-700">{r.name}</span>
+                    <span className="tabular-nums font-medium text-slate-900">CHF {chf(r.amount)}</span>
+                  </li>
+                ))}
+            </ul>
+            <div className="flex items-center justify-between border-t border-slate-200 bg-slate-50 px-5 py-3 text-[13px]">
+              <span className="font-semibold text-slate-900">Total</span>
+              <span className="font-bold tabular-nums text-slate-900">
+                CHF {chf([...SPEND_TOP, ...SPEND_REST].reduce((a, b) => a + b.amount, 0))}
+              </span>
+            </div>
+          </motion.div>
+        </div>
+      )}
+    </>
+  );
+}
+
+/** Kennzahlen — schlichte Zahlen statt weiterer Diagramme. */
+function ReportStat({ label, value, hint }: { label: string; value: string; hint: string }) {
+  return (
+    <div className={cn(CARD, "p-4")}>
+      <div className="text-[12.5px] text-slate-500">{label}</div>
+      <div className="mt-1 text-2xl font-bold tracking-tight text-slate-900">{value}</div>
+      <div className="mt-0.5 text-[11.5px] text-slate-400">{hint}</div>
     </div>
   );
 }
 
-function ReportsPanel() {
-  const totalRev = REV_COST.reduce((s, r) => s + r.umsatz, 0);
-  const totalCost = REV_COST.reduce((s, r) => s + r.kosten, 0);
-  const margin = (((totalRev - totalCost) / totalRev) * 100).toFixed(1);
+function ReportsPanel({ role }: { role: "buyer" | "supplier" }) {
+  const total = MONTH_VOL.reduce((a, b) => a + b.v, 0) * 1000;
+  const isSupplier = role === "supplier";
+
   return (
     <div className="space-y-4">
-      {/* Monatliches Beschaffungsvolumen */}
+      {/* Die drei Kennzahlen, die vorher in der Übersicht standen */}
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+        <ReportStat
+          label={isSupplier ? "Zugesprochenes Volumen" : "Beschaffungsvolumen"}
+          value={`CHF ${chf(total)}`}
+          hint="letzte 12 Monate"
+        />
+        <ReportStat label="Bestellungen" value="1'847" hint="letzte 12 Monate" />
+        <ReportStat label="Ø Mindestvorteil" value="13.8 %" hint="über alle Bündel" />
+      </div>
+
+      {/* Das einzige grosse Diagramm */}
       <div className={cn(CARD, "p-5")}>
         <div className="flex items-center justify-between">
           <div>
-            <div className="text-[13px] text-slate-500">Beschaffungsvolumen · letzte 12 Monate</div>
-            <div className="text-2xl font-bold text-slate-900">CHF 4.20 Mio.</div>
+            <h3 className="text-[15px] font-bold text-slate-900">Beschaffungsvolumen</h3>
+            <p className="mt-0.5 text-[12.5px] text-slate-500">Monatlich, letzte 12 Monate</p>
           </div>
           <span className="rounded-md border border-slate-200 px-2.5 py-1 text-xs text-slate-500">12 Monate</span>
         </div>
-        <div className="mt-4 h-56">
+        <div className="mt-4 h-60">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={MONTH_VOL} margin={{ top: 8, right: 4, left: -16, bottom: 0 }}>
               <CartesianGrid vertical={false} stroke={C.slateLight} strokeDasharray="3 3" />
               <XAxis dataKey="m" tickLine={false} axisLine={false} tick={{ fontSize: 11, fill: C.slate }} />
               <YAxis tickFormatter={(v) => `${v}k`} tickLine={false} axisLine={false} tick={{ fontSize: 11, fill: C.slate }} />
-              <Tooltip cursor={{ fill: "rgba(217,144,0,0.06)" }} formatter={(v: number) => [`CHF ${chf(v * 1000)}`, "Volumen"]} contentStyle={{ borderRadius: 8, border: "1px solid #E2E8F0", fontSize: 12 }} />
-              <Bar dataKey="v" radius={[4, 4, 0, 0]} fill={C.brand} maxBarSize={26} />
+              <Tooltip
+                cursor={{ fill: "rgba(217,144,0,0.06)" }}
+                formatter={(v: number) => [`CHF ${chf(v * 1000)}`, "Volumen"]}
+                contentStyle={{ borderRadius: 8, border: "1px solid #E2E8F0", fontSize: 12 }}
+              />
+              <Bar dataKey="v" radius={[4, 4, 0, 0]} fill={C.brand} maxBarSize={28} />
             </BarChart>
           </ResponsiveContainer>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-        {/* Umsatz vs Kosten */}
-        <div className={cn(CARD, "p-5")}>
-          <div className="flex flex-wrap items-center justify-between gap-2">
-            <h3 className="text-[15px] font-semibold text-slate-900">Umsatz vs. Kosten (2026)</h3>
-            <span className="inline-flex items-center gap-1 rounded-md bg-accent/10 px-2.5 py-1 text-xs font-semibold text-accent">
-              <ArrowUpRight className="h-3.5 w-3.5" /> {margin}% Marge
-            </span>
-          </div>
-          <div className="mt-4 h-52">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={REV_COST} margin={{ top: 8, right: 4, left: -18, bottom: 0 }} barGap={4}>
-                <CartesianGrid vertical={false} stroke={C.slateLight} strokeDasharray="3 3" />
-                <XAxis dataKey="m" tickLine={false} axisLine={false} tick={{ fontSize: 11, fill: C.slate }} />
-                <YAxis tickFormatter={(v) => `${v}M`} tickLine={false} axisLine={false} tick={{ fontSize: 11, fill: C.slate }} />
-                <Tooltip cursor={{ fill: "rgba(148,163,184,0.08)" }} content={<RevCostTooltip />} />
-                <Bar dataKey="umsatz" radius={[4, 4, 0, 0]} fill={C.brand} maxBarSize={26} />
-                <Bar dataKey="kosten" radius={[4, 4, 0, 0]} fill={C.slateLight} maxBarSize={26} />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-
-        {/* Ausgaben-Verteilung */}
-        <div className={cn(CARD, "p-5")}>
-          <div className="text-[15px] font-semibold text-slate-900">Ausgaben nach Kategorie</div>
-          <div className="mt-3 flex items-center gap-4">
-            <div className="relative h-40 w-40 shrink-0">
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie data={DONUT} dataKey="value" innerRadius={48} outerRadius={68} paddingAngle={3} stroke="none">
-                    {DONUT.map((d) => <Cell key={d.name} fill={d.color} />)}
-                  </Pie>
-                </PieChart>
-              </ResponsiveContainer>
-              <div className="pointer-events-none absolute inset-0 grid place-items-center text-center">
-                <div>
-                  <div className="text-lg font-bold text-slate-900">40%</div>
-                  <div className="text-[10px] text-slate-400">Beton</div>
-                </div>
-              </div>
-            </div>
-            <ul className="flex-1 space-y-2">
-              {DONUT.map((d) => (
-                <li key={d.name} className="flex items-center justify-between text-[13px]">
-                  <span className="inline-flex items-center gap-2 text-slate-600">
-                    <span className="h-2.5 w-2.5 rounded-sm" style={{ background: d.color }} /> {d.name}
-                  </span>
-                  <span className="font-semibold text-slate-900">{d.value}%</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-      </div>
-
-      {/* Geplante Ausgaben */}
-      <div className={cn(CARD, "p-5")}>
-        <div className="text-[15px] font-semibold text-slate-900">Geplante Ausgaben (Quartal)</div>
-        <div className="mt-4 space-y-4">
-          {PLANNED.map((p) => (
-            <div key={p.name}>
-              <div className="flex items-center justify-between text-[13px]">
-                <span className="font-medium text-slate-700">{p.name}</span>
-                <span className="text-slate-400">CHF {chf(p.amount)}</span>
-              </div>
-              <div className="mt-1.5 flex items-center gap-2">
-                <div className="flex flex-1 gap-[3px]">
-                  {Array.from({ length: 32 }).map((_, i) => (
-                    <span key={i} className="h-3.5 flex-1 rounded-[1px]" style={{ background: i < Math.round((p.pct / 100) * 32) ? p.color : C.slateLight }} />
-                  ))}
-                </div>
-                <span className="w-9 shrink-0 text-right text-[11px] font-semibold text-slate-500">{p.pct}%</span>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
+      {/* Nebenschauplatz, bewusst kleiner gehalten */}
+      <SpendByCategory />
     </div>
   );
 }
@@ -477,7 +622,17 @@ function ContractsPanel() {
       </div>
 
       <div className={cn(CARD, "p-5")}>
-        <h3 className="text-[15px] font-semibold text-slate-900">SIA-118 Verträge</h3>
+        <h3 className="text-[15px] font-bold text-slate-900">SIA-118 Verträge</h3>
+        <div className="mt-2 flex items-start gap-2.5 rounded-lg border border-slate-200 bg-slate-50 p-3.5">
+          <Info className="mt-0.5 h-4 w-4 shrink-0 text-slate-400" />
+          <p className="text-[12.5px] leading-relaxed text-slate-600">
+            <b className="text-slate-800">Wofür das gut ist:</b> SIA-118 ist die Schweizer Norm für
+            Bauverträge. Sie regelt Fristen, Mängelhaftung, Zahlungspläne und Verzug einheitlich,
+            damit nicht jede Firma eigene Verträge aufsetzen muss. Kommt über Obtanet ein Zuschlag
+            zustande, entsteht daraus automatisch ein fertiger, rechtlich sauberer Vertrag —
+            statt dass ihr das zu zweit aushandelt.
+          </p>
+        </div>
         <div className="mt-3 overflow-x-auto">
           <table className="w-full text-left text-[13px]">
             <thead>
@@ -837,8 +992,9 @@ export default function DashboardShell({ company }: { company: Company }) {
   return (
     <div className="grid grid-cols-1 gap-4 lg:grid-cols-[240px_minmax(0,1fr)] xl:grid-cols-[240px_minmax(0,1fr)_300px]">
       {/* Linke Spalte: Navigation & Projekt-Auswahl */}
-      <aside className={cn(CARD, "h-fit overflow-hidden")}>
-        <div className="flex items-center gap-2.5 border-b border-slate-200 px-3 py-3">
+      <aside className="relative h-fit overflow-hidden rounded-xl border border-white/10 bg-navy-900 text-white">
+        <div aria-hidden className="pointer-events-none absolute inset-0 opacity-[0.06]" style={GRID_BG} />
+        <div className="relative flex items-center gap-2.5 border-b border-white/10 px-3 py-3">
           <span className="grid h-9 w-9 shrink-0 place-items-center overflow-hidden rounded-lg bg-gradient-to-br from-brand to-brand-600 text-sm font-bold text-white">
             {company.logo_url ? (
               // eslint-disable-next-line @next/next/no-img-element
@@ -848,20 +1004,20 @@ export default function DashboardShell({ company }: { company: Company }) {
             )}
           </span>
           <div className="min-w-0 flex-1">
-            <div className="truncate text-[13px] font-semibold text-slate-900">{company.company_name}</div>
-            <div className="truncate text-[11px] text-slate-400">{isSupplier ? "Baustoffwerk / Lieferant" : "Bauunternehmen"}</div>
+            <div className="truncate text-[13px] font-semibold">{company.company_name}</div>
+            <div className="truncate text-[11px] text-white/40">{isSupplier ? "Baustoffwerk / Lieferant" : "Bauunternehmen"}</div>
           </div>
         </div>
 
         {!isSupplier && (
-          <div className="border-b border-slate-200 px-3 py-3">
-            <label className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+          <div className="relative border-b border-white/10 px-3 py-3">
+            <label className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-white/40">
               <Building2 className="h-3 w-3" /> Baustelle / Projekt
             </label>
             <select
               value={projectId}
               onChange={(e) => setProjectId(e.target.value)}
-              className="mt-1.5 w-full rounded-md border border-slate-300 bg-white px-2.5 py-2 text-[13px] text-slate-900 outline-none focus:border-brand focus:ring-1 focus:ring-brand/30"
+              className="mt-1.5 w-full rounded-md border border-white/15 bg-navy-800 px-2.5 py-2 text-[13px] text-white outline-none focus:border-brand"
             >
               {PROJECTS.map((p) => (
                 <option key={p.id} value={p.id}>{p.name} · {p.city}</option>
@@ -870,7 +1026,7 @@ export default function DashboardShell({ company }: { company: Company }) {
           </div>
         )}
 
-        <nav className="px-2 py-3">
+        <nav className="relative px-2 py-3">
           {nav.map((n) => {
             const active = view === n.key;
             return (
@@ -880,13 +1036,13 @@ export default function DashboardShell({ company }: { company: Company }) {
                 onClick={() => setView(n.key)}
                 className={cn(
                   "flex w-full items-center gap-2.5 rounded-md px-2.5 py-2 text-[13px] font-medium transition-colors",
-                  active ? "bg-brand/10 text-brand" : "text-slate-600 hover:bg-slate-100",
+                  active ? "bg-brand/15 text-brand" : "text-white/60 hover:bg-white/5 hover:text-white",
                 )}
               >
                 <n.icon className="h-4 w-4 shrink-0" />
                 <span className="flex-1 text-left">{n.label}</span>
                 {n.badge && (
-                  <span className={cn("rounded-md px-1.5 py-0.5 text-[10px] font-semibold", active ? "bg-brand text-white" : "bg-rose-100 text-rose-600")}>
+                  <span className={cn("rounded-md px-1.5 py-0.5 text-[10px] font-semibold", active ? "bg-brand text-navy-900" : "bg-white/10 text-white/70")}>
                     {n.badge}
                   </span>
                 )}
@@ -896,9 +1052,9 @@ export default function DashboardShell({ company }: { company: Company }) {
         </nav>
 
         {!isSupplier && (
-          <div className="border-t border-slate-200 px-3 py-3">
-            <div className="flex items-start gap-2 rounded-md bg-slate-100 p-2.5 text-[11px] text-slate-500">
-              <Lock className="mt-0.5 h-3.5 w-3.5 shrink-0 text-slate-400" />
+          <div className="relative border-t border-white/10 px-3 py-3">
+            <div className="flex items-start gap-2 rounded-md bg-white/[0.04] p-2.5 text-[11px] text-white/50">
+              <Lock className="mt-0.5 h-3.5 w-3.5 shrink-0 text-white/40" />
               <span>Als Bauunternehmen beschaffst du. Gebote auf Ausschreibungen sind Baustoffwerken vorbehalten.</span>
             </div>
           </div>
@@ -907,16 +1063,15 @@ export default function DashboardShell({ company }: { company: Company }) {
 
       {/* Mittlere Spalte: Arbeitsbereich */}
       <div className={cn(CARD, "min-w-0 overflow-hidden")}>
-        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200 bg-white px-4 py-3 sm:px-6">
-          <h2 className="text-lg font-bold tracking-tight text-slate-900">{title}</h2>
-          <div className="flex items-center gap-2">
-            <Link href="/kbob" className="hidden items-center gap-1 rounded-md border border-slate-200 px-2.5 py-1.5 text-xs text-slate-500 transition-colors hover:border-brand/40 hover:text-brand sm:inline-flex">
-              <Coins className="h-3.5 w-3.5 text-accent" /> KBOB-Index
-            </Link>
-            <button type="button" className="inline-flex items-center gap-1.5 rounded-md bg-brand px-3 py-1.5 text-sm font-semibold text-white transition-colors hover:bg-brand-600">
-              <Download className="h-4 w-4" /> Export
-            </button>
-          </div>
+        <div className="relative flex flex-wrap items-center justify-between gap-2 border-b border-white/10 bg-navy-900 px-4 py-3 text-white sm:px-6">
+          <div aria-hidden className="pointer-events-none absolute inset-0 opacity-[0.06]" style={GRID_BG} />
+          <h2 className="relative text-lg font-bold tracking-tight">{title}</h2>
+          <Link
+            href="/kbob"
+            className="relative hidden items-center gap-1.5 rounded-md border border-white/15 px-3 py-1.5 text-xs font-semibold text-white/80 transition-colors hover:border-brand/50 hover:text-brand sm:inline-flex"
+          >
+            <Coins className="h-3.5 w-3.5" /> KBOB-Index
+          </Link>
         </div>
 
         <div className="p-4 sm:p-6">
@@ -924,10 +1079,10 @@ export default function DashboardShell({ company }: { company: Company }) {
             <motion.div key={view} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }}>
               {view === "workspace" && <WorkspacePanel onAdd={addToCart} />}
               {view === "overview" && <OverviewPanel role={role} />}
-              {view === "orders" && <OrdersPanel />}
+              {view === "orders" && <OrdersPanel companyName={company.company_name} />}
               {view === "tenders" && isSupplier && <TendersPanel />}
               {view === "contracts" && <ContractsPanel />}
-              {view === "reports" && <ReportsPanel />}
+              {view === "reports" && <ReportsPanel role={role} />}
               {view === "settings" && (
                 <div className={cn(CARD, "p-6 text-sm text-slate-500")}>
                   <div className="flex items-center gap-2 font-semibold text-slate-900">
