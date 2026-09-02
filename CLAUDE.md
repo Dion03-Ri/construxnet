@@ -43,7 +43,10 @@ Supabase (server + browser client, `supabaseAdmin` service-role), Leaflet/OSM
 - `COMING_SOON=1` (Env) → Öffentlichkeit sieht nur `/coming-soon` (Warteliste),
   alle anderen Routen → `/`.
 - **Team-Zugang:** Passwort-Feld direkt auf der Coming-Soon-Seite. Passwort =
-  `PREVIEW_PASSWORD` (Env) **oder** Standard `View_obtanet@Previewsite003!!`.
+  ausschliesslich `PREVIEW_PASSWORD` (Env). Ist die Variable nicht gesetzt,
+  gibt es **keinen** Team-Zugang — auch nicht mit leerer Eingabe. Der frühere
+  feste Standardwert im Code ist entfernt; er steht noch in der Git-Historie
+  und darf nie wieder verwendet werden.
 - Migrationen sind manuell auszuführen (Supabase SQL): `04`–`07`
   (Kontakt, Lieferanten-Profil, Post-Media-Bucket, `waitlist`).
 
@@ -141,11 +144,13 @@ Supabase (server + browser client, `supabaseAdmin` service-role), Leaflet/OSM
 - **Offen und bewusst so:** Firmenverzeichnis samt Kontaktdaten ist
   öffentlich (das ist der Zweck), Bündel sind für alle sichtbar (nur
   Summen, nie wer beiträgt).
-- **Noch offen:** das Vorschau-Passwort hat einen fest im Code stehenden
-  Standardwert (`lib/preview.ts`). Solange `PREVIEW_PASSWORD` in Vercel
-  nicht gesetzt ist, ist die Sperre nur so stark wie die Verschwiegenheit
-  des Repos. Entscheidung liegt beim Nutzer. Ebenso: keine Ratenbegrenzung
-  auf Passworteingabe und Warteliste.
+- Vorschau-Passwort: kein Standardwert mehr im Code, nur `PREVIEW_PASSWORD`.
+  Fehlt sie, ist zu — bewusst so, eine Sperre die bei fehlender
+  Konfiguration jeden durchlässt ist keine.
+- Ratenbegrenzung (`lib/rateLimit.ts`) auf Passworteingabe und Warteliste.
+  **Im Arbeitsspeicher, also pro Instanz** — stoppt naives Durchprobieren,
+  nicht einen verteilten Angriff. Für dauerhaften Schutz braucht es einen
+  gemeinsamen Speicher (Upstash, Vercel KV oder eine Supabase-Tabelle).
 
 ## OFFEN / als Nächstes
 - Startseite + Dashboard (`/dashboard`) sind auf Light Mode umgestellt. Andere
