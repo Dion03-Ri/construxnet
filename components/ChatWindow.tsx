@@ -66,86 +66,90 @@ type Deal = {
 
 const DEMO_ID = "demo";
 
+// Beispiel-Konversationen. Bewusst frei erfundene Firmen — keine echten
+// Namen und vor allem keine anrufbaren Nummern oder anschreibbaren Adressen
+// realer Betriebe. E-Mail-Domain nach RFC 2606 (example.com), Telefon und
+// Website absichtlich leer.
 const DEMO_THREADS: Company[] = [
   {
-    id: "d-kibag",
-    company_name: "KIBAG Baustoffe",
+    id: "d-1",
+    company_name: "Muster Baustoffe AG",
     logo_url: null,
     city: "Zürich",
     verified: true,
     role: "SUPPLIER",
     canton: "ZH",
-    email: "beton@kibag.ch",
-    phone: "+41 44 733 22 11",
-    address: "Seestrasse 404, 8038 Zürich",
-    website: "www.kibag.ch",
+    email: "beton@example.com",
+    phone: null,
+    address: "Musterstrasse 12, 8000 Zürich",
+    website: null,
   },
   {
-    id: "d-vigier",
-    company_name: "Vigier Beton Mittelland",
+    id: "d-2",
+    company_name: "Beispiel Beton Mittelland",
     logo_url: null,
     city: "Bern",
     verified: true,
     role: "SUPPLIER",
     canton: "BE",
-    email: "mittelland@vigier-beton.ch",
-    phone: "+41 32 328 28 28",
-    address: "Höheweg 27, 2504 Biel/Bienne",
-    website: "www.vigier-beton.ch",
+    email: "verkauf@example.com",
+    phone: null,
+    address: "Beispielweg 4, 3000 Bern",
+    website: null,
   },
   {
-    id: "d-eberhard",
-    company_name: "Eberhard Bau AG",
+    id: "d-3",
+    company_name: "Testbau Nord GmbH",
     logo_url: null,
     city: "Kloten",
     verified: false,
     role: "BUYER",
     canton: "ZH",
-    email: "info@eberhard.ch",
-    phone: "+41 44 815 66 00",
-    address: "Steinackerstrasse 56, 8302 Kloten",
-    website: "www.eberhard.ch",
+    email: "info@example.com",
+    phone: null,
+    address: "Musterplatz 3, 8302 Kloten",
+    website: null,
   },
   {
-    id: "d-jura",
-    company_name: "Jura Cement Werke",
+    id: "d-4",
+    company_name: "Beispiel Zementwerk",
     logo_url: null,
     city: "Wildegg",
     verified: true,
     role: "SUPPLIER",
     canton: "AG",
-    email: "verkauf@juracement.ch",
-    phone: "+41 62 887 87 87",
-    address: "Zurlindenstrasse 21, 5103 Wildegg",
-    website: "www.juracement.ch",
+    email: "kontakt@example.com",
+    phone: null,
+    address: "Beispielstrasse 21, 5103 Wildegg",
+    website: null,
   },
 ];
 
 /** Deal-Kontext pro Demo-Thread. */
 const DEMO_DEALS: Record<string, Deal> = {
-  "d-kibag": { material: "Beton C25/30", volume: "230 m³", region: "Limmattal ZH", phase: "In Verhandlung", savingsPct: 9.4, unit: "m³" },
-  "d-vigier": { material: "Transportbeton", volume: "180 m³", region: "Mittelland BE", phase: "Offen", savingsPct: 7.1, unit: "m³" },
-  "d-eberhard": { material: "Armierungsstahl B500B", volume: "42 t", region: "Zürich Nord", phase: "Anfrage", savingsPct: 6.2, unit: "t" },
-  "d-jura": { material: "Zement CEM II", volume: "95 t", region: "Aargau", phase: "Offen", savingsPct: 5.8, unit: "t" },
+  "d-1": { material: "Beton C25/30", volume: "230 m³", region: "Limmattal ZH", phase: "In Verhandlung", savingsPct: 9.4, unit: "m³" },
+  "d-2": { material: "Transportbeton", volume: "180 m³", region: "Mittelland BE", phase: "Offen", savingsPct: 7.1, unit: "m³" },
+  "d-3": { material: "Armierungsstahl B500B", volume: "42 t", region: "Zürich Nord", phase: "Anfrage", savingsPct: 6.2, unit: "t" },
+  "d-4": { material: "Zement CEM II", volume: "95 t", region: "Aargau", phase: "Offen", savingsPct: 5.8, unit: "t" },
 };
 
 /** Ungelesen-Zähler für Demo-Threads (Erstansicht). */
-const DEMO_UNREAD: Record<string, number> = { "d-kibag": 2, "d-jura": 1 };
+const DEMO_UNREAD: Record<string, number> = { "d-1": 2, "d-4": 1 };
 
 function demoMsgs(counterId: string, meId: string): Msg[] {
   const t = (h: number) => new Date(Date.now() - h * 3600_000).toISOString();
-  if (counterId === "d-kibag")
+  if (counterId === "d-1")
     return [
       { id: "m1", sender_company_id: counterId, receiver_company_id: meId, content: "Grüezi! Wir haben Kapazität für euren Beton-C25/30-Pool im Limmattal.", is_negotiation_offer: false, offer_amount: null, created_at: t(6) },
       { id: "m2", sender_company_id: meId, receiver_company_id: counterId, content: "Perfekt. Aktuelles Poolvolumen liegt bei 230 m³. Was könnt ihr anbieten?", is_negotiation_offer: false, offer_amount: null, created_at: t(5) },
       { id: "m3", sender_company_id: counterId, receiver_company_id: meId, content: "Angebot: Beton C25/30 · 230 m³ · Lieferung Q4", is_negotiation_offer: true, offer_amount: 145.2, created_at: t(4) },
       { id: "m4", sender_company_id: counterId, receiver_company_id: meId, content: "Bei +40 m³ könnten wir sogar auf CHF 142 gehen.", is_negotiation_offer: false, offer_amount: null, created_at: t(1.5) },
     ];
-  if (counterId === "d-vigier")
+  if (counterId === "d-2")
     return [
       { id: "v1", sender_company_id: counterId, receiver_company_id: meId, content: "Transportbeton Region Mittelland verfügbar — gerne im Pool.", is_negotiation_offer: false, offer_amount: null, created_at: t(28) },
     ];
-  if (counterId === "d-jura")
+  if (counterId === "d-4")
     return [
       { id: "j1", sender_company_id: meId, receiver_company_id: counterId, content: "Wir bündeln Zement CEM II für vier Baustellen im Aargau. Interesse?", is_negotiation_offer: false, offer_amount: null, created_at: t(20) },
       { id: "j2", sender_company_id: counterId, receiver_company_id: meId, content: "Sehr gerne. Schickt uns die Mengen, dann rechnen wir eine Staffel.", is_negotiation_offer: false, offer_amount: null, created_at: t(2) },
@@ -619,7 +623,7 @@ export default function ChatWindow({ initialTo }: { initialTo?: string }) {
       {/* Kontakt-/Deal-Panel */}
       <aside className="hidden min-h-0 flex-col overflow-y-auto border-l border-slate-200 bg-slate-50/40 lg:flex">
         {activeCompany ? (
-          <ContactPanel company={activeCompany} deal={activeDeal} onOffer={() => setOfferMode(true)} />
+          <ContactPanel company={activeCompany} deal={activeDeal} isDemo={demo} onOffer={() => setOfferMode(true)} />
         ) : (
           <div className="flex flex-1 items-center justify-center px-4 text-center text-xs text-slate-400">
             Firmen-Kontaktdaten erscheinen hier, sobald du eine Konversation öffnest.
@@ -674,7 +678,7 @@ function ContactRow({
   return <div className="p-1">{body}</div>;
 }
 
-function ContactPanel({ company, deal, onOffer }: { company: Company; deal: Deal | null; onOffer: () => void }) {
+function ContactPanel({ company, deal, isDemo, onOffer }: { company: Company; deal: Deal | null; isDemo: boolean; onOffer: () => void }) {
   const hasContact = company.email || company.phone || company.address || company.website;
   const site = company.website
     ? company.website.startsWith("http")
@@ -773,13 +777,20 @@ function ContactPanel({ company, deal, onOffer }: { company: Company; deal: Deal
         >
           <Tag className="h-4 w-4" /> Angebot senden
         </button>
-        <Link
-          href={`/company/${company.id}`}
-          className="inline-flex w-full items-center justify-center gap-1.5 rounded-md border border-slate-200 px-3 py-2.5 text-sm font-semibold text-slate-600 transition-colors hover:bg-slate-50"
-        >
-          <Building2 className="h-4 w-4" /> Profil ansehen
-          <ExternalLink className="h-3.5 w-3.5 text-slate-400" />
-        </Link>
+        {/* Beispiel-Firmen haben kein echtes Profil — der Knopf liefe ins Leere. */}
+        {isDemo ? (
+          <p className="text-center text-[11.5px] leading-relaxed text-slate-400">
+            Beispiel-Konversation — ein Firmenprofil gibt es erst bei echten Kontakten.
+          </p>
+        ) : (
+          <Link
+            href={`/company/${company.id}`}
+            className="inline-flex w-full items-center justify-center gap-1.5 rounded-md border border-slate-200 px-3 py-2.5 text-sm font-semibold text-slate-600 transition-colors hover:bg-slate-50"
+          >
+            <Building2 className="h-4 w-4" /> Profil ansehen
+            <ExternalLink className="h-3.5 w-3.5 text-slate-400" />
+          </Link>
+        )}
       </div>
     </div>
   );
