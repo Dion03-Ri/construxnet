@@ -30,6 +30,8 @@ import {
   PROC_REGIONS,
   DELIVERY_WINDOWS,
   tierForVolume,
+  matchesMaterial,
+  ownMaterialId,
   type ProcMaterial,
   type ProcCategory,
 } from "@/data/procurement";
@@ -45,6 +47,7 @@ const STEPS = ["Materialien", "Mengen & Lieferung", "Smart Pool", "Übersicht"];
 /** Eine Position im Bedarf — ein Material mit eigener Menge und SIA-Angabe. */
 type Position = {
   key: string;
+  id: string;
   label: string;
   sia: string;
   unit: string;
@@ -56,7 +59,7 @@ type Position = {
 };
 
 function toPosition(m: ProcMaterial, qty = ""): Position {
-  return { key: m.key, label: m.label, sia: m.sia, unit: m.unit, kbobPrice: m.kbobPrice, category: m.category, qty };
+  return { key: m.key, id: m.id, label: m.label, sia: m.sia, unit: m.unit, kbobPrice: m.kbobPrice, category: m.category, qty };
 }
 
 export default function BeschaffungFlow({
@@ -76,7 +79,16 @@ export default function BeschaffungFlow({
     if (!initialMaterial) return [];
     return initialMaterial
       .split(",")
-      .map((k) => PROC_MATERIALS.find((m) => m.key === k.trim()))
+      // Sowohl der interne Schlüssel als auch die Materialnummer sind
+      // erlaubt: ?material=beton-25 und ?material=OB-BET-001 landen beide
+      // richtig. Nummern werden abgetippt, Schlüssel kommen aus Links.
+      .map((k) => {
+        const t = k.trim();
+        return (
+          PROC_MATERIALS.find((m) => m.key === t) ??
+          PROC_MATERIALS.find((m) => m.id === t.toUpperCase())
+        );
+      })
       .filter((m): m is ProcMaterial => !!m)
       .map((m, i) => toPosition(m, i === 0 ? (initialQty ?? "") : ""));
   }, [initialMaterial, initialQty]);
@@ -122,11 +134,9 @@ export default function BeschaffungFlow({
     return catalog.filter((m) => {
       if (matCat !== "ALL" && m.category !== matCat) return false;
       if (!q) return true;
-      return (
-        m.label.toLowerCase().includes(q) ||
-        m.sia.toLowerCase().includes(q) ||
-        m.category.toLowerCase().includes(q)
-      );
+      // Bezeichnung, Norm und Materialnummer — dazu die Kategorie, damit
+      // "Dämmung" als Suchbegriff weiterhin die ganze Gruppe bringt.
+      return matchesMaterial(m, q) || m.category.toLowerCase().includes(q);
     });
   }, [catalog, matQuery, matCat]);
 
@@ -317,7 +327,7 @@ export default function BeschaffungFlow({
                     <input
                       value={matQuery}
                       onChange={(e) => setMatQuery(e.target.value)}
-                      placeholder="Material suchen (z. B. Beton, Stahl, Dämmung …)"
+                      placeholder="Material oder Nummer suchen (z. B. Beton, OB-BET-001 …)"
                       className="h-10 w-full rounded-md border border-slate-300 bg-slate-50 pl-9 pr-3 text-sm text-slate-900 placeholder:text-slate-400 outline-none focus:border-brand focus:bg-white focus:ring-1 focus:ring-brand/30"
                     />
                   </div>
@@ -360,6 +370,7 @@ export default function BeschaffungFlow({
                           </span>
                           <span className="min-w-0">
                             <span className="block text-[14px] font-semibold text-slate-900">{m.label}</span>
+                            <span className="mt-0.5 block font-mono text-[10.5px] tracking-tight text-brand-700">{m.id}</span>
                             <span className="mt-0.5 block truncate text-[11px] text-slate-400">{m.sia}</span>
                             <span className="mt-1 inline-block text-[11px] text-slate-500">
                               KBOB-Ref CHF {chf(m.kbobPrice)}/{m.unit}
@@ -435,6 +446,7 @@ export default function BeschaffungFlow({
                         <div className="flex items-start justify-between gap-3">
                           <div className="min-w-0">
                             <div className="text-[14px] font-semibold text-slate-900">{p.label}</div>
+                            <div className="font-mono text-[10.5px] tracking-tight text-brand-700">{p.id}</div>
                             <div className="truncate text-[11px] text-slate-400">{p.sia}</div>
                           </div>
                           <div className="flex w-[170px] shrink-0 items-center rounded-md border border-slate-300 bg-slate-50 focus-within:border-brand focus-within:bg-white focus-within:ring-1 focus-within:ring-brand/30">
@@ -583,6 +595,7 @@ export default function BeschaffungFlow({
                           <tr key={l.pos.key}>
                             <td className="px-3.5 py-2.5">
                               <div className="font-semibold text-slate-900">{l.pos.label}</div>
+                              <div className="font-mono text-[10.5px] tracking-tight text-brand-700">{l.pos.id}</div>
                               <div className="truncate text-[11px] text-slate-400">{l.pos.sia}</div>
                             </td>
                             <td className="px-2 py-2.5 tabular-nums text-slate-600">{chf(l.qty)} {l.pos.unit}</td>
@@ -705,6 +718,7 @@ export default function BeschaffungFlow({
           onClose={() => setModalOpen(false)}
           onAdd={addCustomMaterial}
           existing={catalog}
+          ownCount={customMaterials.length}
         />
       )}
     </div>
@@ -719,10 +733,13 @@ function CustomMaterialModal({
   onClose,
   onAdd,
   existing,
+  ownCount,
 }: {
   onClose: () => void;
   onAdd: (m: ProcMaterial) => void;
   existing: ProcMaterial[];
+  /** Wie viele eigene Materialien es schon gibt — für die Nummerierung. */
+  ownCount: number;
 }) {
   const [label, setLabel] = useState("");
   const [unit, setUnit] = useState("");
@@ -743,6 +760,7 @@ function CustomMaterialModal({
     if (!valid) return;
     onAdd({
       key: "custom-" + label.trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").slice(0, 32) + "-" + Date.now().toString(36),
+      id: ownMaterialId(ownCount),
       label: label.trim(),
       sia: sia.trim() || "Freie Erfassung — Spezifikation offen",
       unit: unit.trim(),

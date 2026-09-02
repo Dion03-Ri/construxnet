@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { Handshake, X, Search, Send, Loader2, Info } from "lucide-react";
-import { PROC_MATERIALS, DELIVERY_WINDOWS } from "@/data/procurement";
+import { PROC_MATERIALS, DELIVERY_WINDOWS, matchesMaterial } from "@/data/procurement";
 import { useProjects, projectLabel } from "@/lib/projects";
 import { useSupabaseBrowser } from "@/lib/supabase-browser";
 import { cn } from "@/lib/utils";
@@ -52,11 +52,9 @@ export default function DirectRequestModal({
   const material = PROC_MATERIALS.find((m) => m.key === materialKey);
 
   const matches = useMemo(() => {
-    const q = query.trim().toLowerCase();
+    const q = query.trim();
     if (!q) return PROC_MATERIALS.slice(0, 6);
-    return PROC_MATERIALS.filter(
-      (m) => m.label.toLowerCase().includes(q) || m.sia.toLowerCase().includes(q),
-    ).slice(0, 6);
+    return PROC_MATERIALS.filter((m) => matchesMaterial(m, q)).slice(0, 6);
   }, [query]);
 
   const valid = !!material && Number(qty) > 0;
@@ -89,6 +87,7 @@ export default function DirectRequestModal({
       supplier_company_id: target.id,
       project_id: projectId || null,
       material_key: material.key,
+      material_id: material.id,
       material_label: material.label,
       spec: material.sia,
       unit: material.unit,
@@ -106,7 +105,7 @@ export default function DirectRequestModal({
 
     const lines = [
       "Direktanfrage",
-      `Material: ${material.label}`,
+      `Material: ${material.label} (${material.id})`,
       `Spezifikation: ${material.sia}`,
       `Menge: ${Number(qty).toLocaleString("de-CH")} ${material.unit}`,
       `Lieferung: ${window}`,
@@ -168,6 +167,7 @@ export default function DirectRequestModal({
               <div className="flex items-center gap-2 rounded-md border border-brand/30 bg-brand/[0.05] px-3 py-2">
                 <div className="min-w-0 flex-1">
                   <div className="truncate text-[13.5px] font-semibold text-slate-900">{material.label}</div>
+                  <div className="font-mono text-[10.5px] tracking-tight text-brand-700">{material.id}</div>
                   <div className="truncate text-[11px] text-slate-400">{material.sia}</div>
                 </div>
                 <button
@@ -187,7 +187,7 @@ export default function DirectRequestModal({
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
                     autoFocus
-                    placeholder="Material suchen …"
+                    placeholder="Material oder Nummer suchen …"
                     className="w-full rounded-md border border-slate-300 bg-slate-50 py-2 pl-9 pr-3 text-sm text-slate-900 placeholder:text-slate-400 outline-none focus:border-brand focus:bg-white"
                   />
                 </div>
@@ -201,6 +201,7 @@ export default function DirectRequestModal({
                       >
                         <span className="min-w-0">
                           <span className="block truncate text-[13px] font-medium text-slate-800">{m.label}</span>
+                          <span className="block font-mono text-[10.5px] tracking-tight text-brand-700">{m.id}</span>
                           <span className="block truncate text-[11px] text-slate-400">{m.sia}</span>
                         </span>
                         <span className="shrink-0 text-[11px] text-slate-400">CHF {m.kbobPrice}/{m.unit}</span>

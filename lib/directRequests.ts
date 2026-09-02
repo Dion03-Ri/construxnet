@@ -30,6 +30,7 @@ export type DirectRequest = {
   supplier_company_id: string;
   project_id: string | null;
   material_key: string;
+  material_id: string | null;
   material_label: string;
   spec: string | null;
   unit: string;
