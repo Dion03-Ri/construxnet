@@ -509,6 +509,11 @@ export default function RequestsPanel({
                           {other.city}
                         </span>
                       )}
+                      {r.material_id && (
+                        <span className="font-mono text-[11px] tracking-tight text-brand-700">
+                          {r.material_id}
+                        </span>
+                      )}
                       {r.spec && <span className="text-slate-400">{r.spec}</span>}
                     </p>
                   </div>

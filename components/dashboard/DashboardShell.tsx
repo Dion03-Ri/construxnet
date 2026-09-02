@@ -54,7 +54,7 @@ import RequestsPanel from "@/components/dashboard/RequestsPanel";
 import { useDirectRequests, isLive } from "@/lib/directRequests";
 import { CARD, badge } from "@/lib/ui";
 import { cn } from "@/lib/utils";
-import { PROC_MATERIALS, PROC_CATEGORIES, tierForVolume, type ProcMaterial, type ProcCategory } from "@/data/procurement";
+import { matchesMaterial, PROC_MATERIALS, PROC_CATEGORIES, tierForVolume, type ProcMaterial, type ProcCategory } from "@/data/procurement";
 import kbobData from "@/data/kbobData.json";
 
 /** Feine Raster-Textur der dunklen Panels — identisch zu Feed und Startseite. */
@@ -122,6 +122,8 @@ const SPEND_REST = [
 
 type Order = {
   id: string;
+  /** Obtanet-Materialnummer, z. B. OB-BET-001. */
+  materialId: string;
   material: string;
   sia: string;
   qty: number;
@@ -134,10 +136,10 @@ type Order = {
 };
 
 const ORDERS: Order[] = [
-  { id: "OBT-1543", material: "Beton C25/30", sia: "SN EN 206 · C25/30 · XC3", qty: 1000, unit: "m³", unitPrice: 145.2, amount: 145_200, date: "12.02.2026", status: "In Arbeit", contract: "OBT-2026-0142" },
-  { id: "OBT-1521", material: "Bewehrungsstahl B500B", sia: "SN EN 10080 · B500B", qty: 68, unit: "t", unitPrice: 1107.35, amount: 75_300, date: "03.02.2026", status: "In Arbeit", contract: "OBT-2026-0098" },
-  { id: "OBT-1498", material: "Koffer-/Wandkies 0/45", sia: "SN 670 119 · 0/45", qty: 721, unit: "t", unitPrice: 33.15, amount: 23_900, date: "24.01.2026", status: "Abgeschlossen", contract: "OBT-2026-0119" },
-  { id: "OBT-1466", material: "Transportbeton C25/30", sia: "SN EN 206 · C25/30", qty: 421, unit: "m³", unitPrice: 145.2, amount: 61_100, date: "09.01.2026", status: "Abgeschlossen", contract: null },
+  { id: "OBT-1543", materialId: "OB-BET-001", material: "Beton C25/30", sia: "SN EN 206 · C25/30 · XC3", qty: 1000, unit: "m³", unitPrice: 145.2, amount: 145_200, date: "12.02.2026", status: "In Arbeit", contract: "OBT-2026-0142" },
+  { id: "OBT-1521", materialId: "OB-ARM-001", material: "Bewehrungsstahl B500B", sia: "SN EN 10080 · B500B", qty: 68, unit: "t", unitPrice: 1107.35, amount: 75_300, date: "03.02.2026", status: "In Arbeit", contract: "OBT-2026-0098" },
+  { id: "OBT-1498", materialId: "OB-KIE-001", material: "Koffer-/Wandkies 0/45", sia: "SN 670 119 · 0/45", qty: 721, unit: "t", unitPrice: 33.15, amount: 23_900, date: "24.01.2026", status: "Abgeschlossen", contract: "OBT-2026-0119" },
+  { id: "OBT-1466", materialId: "OB-BET-001", material: "Transportbeton C25/30", sia: "SN EN 206 · C25/30", qty: 421, unit: "m³", unitPrice: 145.2, amount: 61_100, date: "09.01.2026", status: "Abgeschlossen", contract: null },
 ];
 
 const CONTRACTS = [
@@ -164,7 +166,7 @@ const NAV_ALL = [
   { key: "settings", label: "Einstellungen", icon: Settings },
 ];
 
-type CartItem = { key: string; label: string; unit: string; kbobPrice: number; qty: number };
+type CartItem = { key: string; id: string; label: string; unit: string; kbobPrice: number; qty: number };
 
 /* -------------------------------------------------------------------------- */
 /*  Kleinteile                                                                */
@@ -325,6 +327,7 @@ function printOrder(o: Order, companyName: string) {
 </div>
 <div class="box"><div class="lbl">Besteller</div><div style="font-weight:600">${companyName}</div></div>
 <div class="box"><div class="lbl">Position</div><table>
+  ${row("Materialnummer", o.materialId)}
   ${row("Material", o.material)}
   ${row("Spezifikation", o.sia)}
   ${row("Menge", `${chf(o.qty)} ${o.unit}`)}
@@ -367,6 +370,7 @@ function OrdersPanel({ companyName }: { companyName: string }) {
                 <td className="py-2.5 font-semibold text-slate-800">{o.id}</td>
                 <td className="py-2.5 text-slate-600">
                   {o.material}
+                  <div className="font-mono text-[10.5px] tracking-tight text-brand-700">{o.materialId}</div>
                   <div className="text-[11px] text-slate-400">{chf(o.qty)} {o.unit}</div>
                 </td>
                 <td className="py-2.5 text-right tabular-nums text-slate-700">CHF {chf(o.amount)}</td>
@@ -681,8 +685,7 @@ function WorkspacePanel({ onAdd }: { onAdd: (m: ProcMaterial) => void }) {
       if (cat !== "ALL" && m.category !== cat) return false;
       if (!q) return true;
       return (
-        m.label.toLowerCase().includes(q) ||
-        m.sia.toLowerCase().includes(q) ||
+        matchesMaterial(m, q) ||
         m.category.toLowerCase().includes(q)
       );
     });
@@ -704,7 +707,7 @@ function WorkspacePanel({ onAdd }: { onAdd: (m: ProcMaterial) => void }) {
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Material, SIA-Norm oder Bedarf beschreiben …"
+              placeholder="Material, Nummer (OB-BET-001) oder SIA-Norm …"
               className="w-full rounded-md border border-slate-300 bg-slate-50 py-2.5 pl-9 pr-3 text-sm text-slate-900 placeholder:text-slate-400 outline-none focus:border-brand focus:bg-white focus:ring-1 focus:ring-brand/30"
             />
           </div>
@@ -765,6 +768,7 @@ function WorkspacePanel({ onAdd }: { onAdd: (m: ProcMaterial) => void }) {
                 <tr key={m.key}>
                   <td className="px-4 py-2.5">
                     <div className="font-medium text-slate-800">{m.label}</div>
+                    <div className="font-mono text-[10.5px] tracking-tight text-brand-700">{m.id}</div>
                     <div className="text-[11px] text-slate-400">{m.category}</div>
                   </td>
                   <td className="hidden px-2 py-2.5 text-[12px] text-slate-500 sm:table-cell">{m.sia}</td>
@@ -840,7 +844,10 @@ function CartPanel({
           {cart.map((c) => (
             <div key={c.key} className="rounded-md border border-slate-200 p-2.5">
               <div className="flex items-start justify-between gap-2">
-                <span className="text-[13px] font-medium leading-tight text-slate-800">{c.label}</span>
+                <span className="min-w-0">
+                  <span className="block text-[13px] font-medium leading-tight text-slate-800">{c.label}</span>
+                  <span className="block font-mono text-[10px] tracking-tight text-brand-700">{c.id}</span>
+                </span>
                 <button type="button" onClick={() => onRemove(c.key)} className="shrink-0 text-slate-300 hover:text-rose-500">
                   <Trash2 className="h-3.5 w-3.5" />
                 </button>
@@ -1043,7 +1050,7 @@ export default function DashboardShell({ company }: { company: Company }) {
     setCart((prev) => {
       const existing = prev.find((c) => c.key === m.key);
       if (existing) return prev.map((c) => (c.key === m.key ? { ...c, qty: c.qty + 1 } : c));
-      return [...prev, { key: m.key, label: m.label, unit: m.unit, kbobPrice: m.kbobPrice, qty: 1 }];
+      return [...prev, { key: m.key, id: m.id, label: m.label, unit: m.unit, kbobPrice: m.kbobPrice, qty: 1 }];
     });
   }
   function updateQty(key: string, qty: number) {
