@@ -16,8 +16,10 @@ import {
   Layers,
   Inbox,
   Sparkle,
+  Handshake,
 } from "lucide-react";
 import { useSupabaseBrowser } from "@/lib/supabase-browser";
+import DirectRequestModal from "@/components/network/DirectRequestModal";
 import { CARD } from "@/lib/ui";
 import { cn } from "@/lib/utils";
 
@@ -95,6 +97,7 @@ export default function NetworkHub() {
   const [query, setQuery] = useState("");
   const [dismissed, setDismissed] = useState<Set<string>>(new Set());
   const [moreStats, setMoreStats] = useState(false);
+  const [requestTarget, setRequestTarget] = useState<Company | null>(null);
 
   const loadMine = useCallback(async () => {
     if (!isSignedIn || !userId) {
@@ -481,14 +484,28 @@ export default function NetworkHub() {
                       >
                         {c.role === "SUPPLIER" ? "Möglicher Lieferant" : "Möglicher Bündel-Partner"}
                       </span>
-                      <button
-                        type="button"
-                        onClick={() => connect(c.id)}
-                        disabled={!myCompanyId}
-                        className="mt-3.5 inline-flex w-full items-center justify-center gap-1.5 rounded-md bg-brand px-3 py-2 text-sm font-semibold text-navy-900 transition-colors hover:bg-brand-500 disabled:cursor-not-allowed disabled:opacity-50"
-                      >
-                        <UserPlus className="h-4 w-4" /> Vernetzen
-                      </button>
+                      <div className="mt-3.5 flex w-full gap-1.5">
+                        <button
+                          type="button"
+                          onClick={() => connect(c.id)}
+                          disabled={!myCompanyId}
+                          className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-md bg-brand px-3 py-2 text-sm font-semibold text-navy-900 transition-colors hover:bg-brand-500 disabled:cursor-not-allowed disabled:opacity-50"
+                        >
+                          <UserPlus className="h-4 w-4" /> Vernetzen
+                        </button>
+                        {/* Zweiter Weg zum Preis: ohne Bündelung direkt anfragen. */}
+                        {c.role === "SUPPLIER" && (
+                          <button
+                            type="button"
+                            onClick={() => setRequestTarget(c)}
+                            disabled={!myCompanyId}
+                            title="Direkt anfragen"
+                            className="inline-flex items-center justify-center gap-1.5 rounded-md border border-slate-200 px-3 py-2 text-sm font-semibold text-slate-600 transition-colors hover:border-brand/40 hover:text-brand disabled:cursor-not-allowed disabled:opacity-50"
+                          >
+                            <Handshake className="h-4 w-4" /> Anfragen
+                          </button>
+                        )}
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -621,6 +638,15 @@ export default function NetworkHub() {
           </div>
         </DarkPanel>
       </aside>
+
+      {requestTarget && myCompanyId && (
+        <DirectRequestModal
+          target={requestTarget}
+          myCompanyId={myCompanyId}
+          alreadyConnected={conns[requestTarget.id]?.status === "CONNECTED"}
+          onClose={() => setRequestTarget(null)}
+        />
+      )}
     </div>
   );
 }
