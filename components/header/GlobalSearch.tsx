@@ -1,52 +1,70 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
-import { Search, Building2, Package, LineChart, type LucideIcon } from "lucide-react";
+import { Search, Building2, Package, type LucideIcon } from "lucide-react";
+import { useSupabaseBrowser } from "@/lib/supabase-browser";
+import { useCustomMaterials } from "@/lib/customMaterials";
+import { matchesMaterial } from "@/data/procurement";
 import { cn } from "@/lib/utils";
 
 type Item = { label: string; sub: string; href: string; icon: LucideIcon };
 
-const FIRMEN: Item[] = [
-  { label: "Muster Baustoffe AG", sub: "Baustoffwerk · Zürich", href: "/network", icon: Building2 },
-  { label: "Beispiel Beton Mittelland", sub: "Baustoffwerk · Bern", href: "/network", icon: Building2 },
-  { label: "Muster Hochbau AG", sub: "Bauunternehmen · Bern", href: "/network", icon: Building2 },
-  { label: "Musterbau Innerschweiz AG", sub: "Bauunternehmen · Luzern", href: "/network", icon: Building2 },
-  { label: "Beispiel Kies AG", sub: "Baustoffwerk · Wil", href: "/network", icon: Building2 },
-];
-
-const POOLS: Item[] = [
-  { label: "Beton C25/30 · Raum Zürich", sub: "Smart Pool · Tier 2", href: "/pools", icon: Package },
-  { label: "Armierungsstahl B500B · Bern", sub: "Smart Pool · Sammelphase", href: "/pools", icon: Package },
-  { label: "Koffer-/Wandkies 0/45 · NWCH", sub: "Smart Pool · Sealed-Bid", href: "/pools", icon: Package },
-];
-
-const MATERIALIEN: Item[] = [
-  { label: "Beton C25/30", sub: "KBOB-Index · CHF 156/m³", href: "/kbob", icon: LineChart },
-  { label: "Bewehrungsstahl B500B", sub: "KBOB-Index · CHF 1'120/t", href: "/kbob", icon: LineChart },
-  { label: "Koffer-/Wandkies 0/45", sub: "KBOB-Index · CHF 39/t", href: "/kbob", icon: LineChart },
-];
-
-function match(items: Item[], q: string) {
-  const s = q.toLowerCase();
-  return items.filter((i) => i.label.toLowerCase().includes(s) || i.sub.toLowerCase().includes(s)).slice(0, 4);
-}
+type Firm = { id: string; company_name: string; role: string; city: string | null };
 
 export default function GlobalSearch() {
   const router = useRouter();
+  const supabase = useSupabaseBrowser();
   const [q, setQ] = useState("");
   const [focus, setFocus] = useState(false);
+  const [firms, setFirms] = useState<Firm[]>([]);
+  const { catalog } = useCustomMaterials();
 
-  const groups = useMemo(
-    () =>
-      [
-        { key: "Firmen", items: match(FIRMEN, q) },
-        { key: "Smart Pools", items: match(POOLS, q) },
-        { key: "Materialien (KBOB)", items: match(MATERIALIEN, q) },
-      ].filter((g) => g.items.length > 0),
-    [q],
-  );
+  // Firmen kommen aus dem Verzeichnis, nicht aus einer Liste im Code.
+  // Gesucht wird erst ab drei Zeichen — davor trifft ohnehin alles.
+  useEffect(() => {
+    const needle = q.trim();
+    if (needle.length < 3) {
+      setFirms([]);
+      return;
+    }
+    const t = setTimeout(async () => {
+      const { data } = await supabase
+        .from("companies")
+        .select("id, company_name, role, city")
+        .ilike("company_name", `%${needle}%`)
+        .limit(4);
+      setFirms((data ?? []) as Firm[]);
+    }, 200);
+    return () => clearTimeout(t);
+  }, [q, supabase]);
+
+  const groups = useMemo(() => {
+    const firmItems: Item[] = firms.map((f) => ({
+      label: f.company_name,
+      sub: `${f.role === "SUPPLIER" ? "Baustoffwerk" : "Bauunternehmen"}${f.city ? ` · ${f.city}` : ""}`,
+      href: `/company/${f.id}`,
+      icon: Building2,
+    }));
+
+    const materialItems: Item[] = q.trim().length >= 2
+      ? catalog
+          .filter((m) => matchesMaterial(m, q))
+          .slice(0, 4)
+          .map((m) => ({
+            label: m.label,
+            sub: `${m.id} · ${m.category}`,
+            href: `/beschaffung?material=${encodeURIComponent(m.id)}`,
+            icon: Package,
+          }))
+      : [];
+
+    return [
+      { key: "Firmen", items: firmItems },
+      { key: "Materialien", items: materialItems },
+    ].filter((g) => g.items.length > 0);
+  }, [firms, catalog, q]);
 
   const show = focus && q.trim().length > 0;
   const empty = show && groups.length === 0;
@@ -66,7 +84,7 @@ export default function GlobalSearch() {
         onChange={(e) => setQ(e.target.value)}
         onFocus={() => setFocus(true)}
         onBlur={() => setTimeout(() => setFocus(false), 150)}
-        placeholder="Firmen, Pools, Materialien …"
+        placeholder="Firmen oder Material suchen …"
         className="w-full rounded-md border border-white/15 bg-white/10 py-2 pl-9 pr-14 text-[13px] text-white placeholder:text-white/50 outline-none transition-colors focus:border-white/30 focus:bg-white/15"
       />
       <kbd className="pointer-events-none absolute right-2 top-1/2 hidden -translate-y-1/2 items-center gap-0.5 rounded border border-white/20 bg-white/5 px-1.5 py-0.5 text-[10px] font-semibold text-white/50 lg:inline-flex">

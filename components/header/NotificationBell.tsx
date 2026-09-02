@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 import { Bell, ArrowRight } from "lucide-react";
-import { NOTICES, type NoticeCat } from "@/data/notifications";
+import { useNotifications, relTime, type NoticeCat } from "@/lib/useNotifications";
 import { cn } from "@/lib/utils";
 
 type Tab = "all" | NoticeCat;
@@ -18,16 +18,16 @@ const TABS: { key: Tab; label: string }[] = [
 export default function NotificationBell() {
   const [open, setOpen] = useState(false);
   const [tab, setTab] = useState<Tab>("all");
-  const [read, setRead] = useState<Set<string>>(new Set());
+  const { notices, unread, isUnread, markAllSeen } = useNotifications();
 
-  const unread = NOTICES.filter((n) => !read.has(n.id)).length;
   const list = useMemo(
-    () => NOTICES.filter((n) => (tab === "all" ? true : n.cat === tab)),
-    [tab],
+    () => notices.filter((n) => (tab === "all" ? true : n.cat === tab)).slice(0, 8),
+    [notices, tab],
   );
 
-  function markRead(id: string) {
-    setRead((r) => new Set(r).add(id));
+  // Das Öffnen der Glocke gilt als gelesen — wer hinschaut, hat gesehen.
+  function markRead() {
+    void markAllSeen();
     setOpen(false);
   }
 
@@ -63,7 +63,7 @@ export default function NotificationBell() {
                 {unread > 0 && (
                   <button
                     type="button"
-                    onClick={() => setRead(new Set(NOTICES.map((n) => n.id)))}
+                    onClick={() => void markAllSeen()}
                     className="text-[11px] font-medium text-brand hover:text-brand-600"
                   >
                     Alle gelesen
@@ -92,12 +92,12 @@ export default function NotificationBell() {
                   <li className="px-4 py-8 text-center text-sm text-slate-400">Nichts Neues hier.</li>
                 ) : (
                   list.map((n) => {
-                    const isRead = read.has(n.id);
+                    const isRead = !isUnread(n);
                     return (
                       <li key={n.id}>
                         <Link
                           href={n.href}
-                          onClick={() => markRead(n.id)}
+                          onClick={markRead}
                           className={cn(
                             "flex gap-3 px-4 py-3 transition-colors hover:bg-slate-50",
                             !isRead && "bg-brand/[0.03]",
@@ -110,7 +110,7 @@ export default function NotificationBell() {
                             <p className="text-[13px] leading-snug text-slate-700">
                               <span className="font-semibold text-slate-900">{n.actor}</span> {n.text}
                             </p>
-                            <p className="mt-0.5 text-[11px] text-slate-400">{n.time}</p>
+                            <p className="mt-0.5 text-[11px] text-slate-400">{relTime(n.at)}</p>
                           </div>
                           {!isRead && <span className="ml-auto mt-1 h-2 w-2 shrink-0 rounded-full bg-brand" />}
                         </Link>
