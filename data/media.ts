@@ -26,3 +26,41 @@ export const PROCESS_VIDEO_POSTER = "";
 /** Kurze Beschreibung für Menschen, die den Ton nicht hören können. */
 export const PROCESS_VIDEO_LABEL =
   "Ablauf auf Obtanet: Bedarf melden, bündeln, verdeckte Angebote, Zuschlag.";
+
+/* ==================================================================
+   BILDPLÄTZE AUF DER STARTSEITE
+   ------------------------------------------------------------------
+   Die Hauptmomente der Seite brauchen kein Foto — die Bewehrungsstäbe
+   und die Bündelungs-Grafik sind selbst gebaut. Fotos helfen nur an
+   zwei Stellen, und dort ist es Material, nie Mensch.
+
+   Solange `src` leer ist, zeigt die Seite einen beschrifteten Platz
+   mit genau dieser Suchbeschreibung — so ist beim Ansehen klar, was
+   dorthin gehört und in welchem Seitenverhältnis.
+
+   Regeln fürs Aussuchen:
+   · Material, kein Mensch. Keine Helme, keine Tablets, kein Handschlag.
+   · Ruhiges, seitliches Licht. Keine bunten Sonnenuntergänge.
+   · Ausschnitt nah genug, dass die Struktur trägt.
+   · Vor dem Ablegen auf 1800 px verkleinern (mozjpeg, ~200 KB).
+   ================================================================== */
+export type PhotoSlot = {
+  /** Pfad unter /public, sobald ein Bild vorliegt. Leer = Platzhalter. */
+  src: string;
+  /** Was auf dem Bild zu sehen sein soll — auch der Alt-Text. */
+  alt: string;
+  /** Suchbegriffe für Unsplash, Pexels oder Adobe Stock. */
+  search: string;
+};
+
+export const PHOTO_POOLS: PhotoSlot = {
+  src: "",
+  alt: "Frisch geschalteter Beton, Oberfläche mit sichtbarer Schalungsstruktur",
+  search: "concrete formwork texture · Betonoberfläche Schalung · fresh concrete pour close up",
+};
+
+export const PHOTO_NETWORK: PhotoSlot = {
+  src: "",
+  alt: "Gestapelte Bewehrungsmatten auf einer Baustelle, von oben",
+  search: "rebar stack top view · Bewehrungsmatten gestapelt · steel reinforcement mesh pile",
+};

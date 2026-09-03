@@ -1,6 +1,10 @@
 import Link from "next/link";
 import TwoWays from "@/components/home/TwoWays";
 import ProcessVideo from "@/components/home/ProcessVideo";
+import RebarArt from "@/components/home/RebarArt";
+import PhotoSlot from "@/components/home/PhotoSlot";
+import { PHOTO_POOLS, PHOTO_NETWORK } from "@/data/media";
+import TrustBar from "@/components/home/TrustBar";
 import {
   ArrowRight,
   Megaphone,
@@ -127,15 +131,16 @@ export default function Home() {
   return (
     <main className="bg-slate-50">
       {/* ============================ HERO ============================ */}
-      <section className="relative overflow-hidden bg-navy-900 text-white">
-        <div aria-hidden className="pointer-events-none absolute inset-0 opacity-[0.06]" style={GRID_BG} />
-        <div
-          aria-hidden
-          className="pointer-events-none absolute -right-40 -top-40 h-[520px] w-[520px] rounded-full bg-brand/20 blur-3xl"
-        />
+      <section className="relative overflow-hidden bg-navy-950 text-white">
+        <div aria-hidden className="pointer-events-none absolute inset-0 opacity-[0.05]" style={GRID_BG} />
 
-        <div className="relative mx-auto grid max-w-6xl grid-cols-1 items-center gap-14 px-4 py-20 sm:px-6 sm:py-24 lg:grid-cols-[1.1fr_1fr] lg:py-32">
-          <div>
+        {/* Das Bild laeuft rechts ueber den Seitenrand hinaus, statt in einer
+            Spalte zu sitzen. Genau das trennt eine Marken-Startseite von einem
+            Baukasten-Layout: der Inhalt endet, das Bild nicht. */}
+        <RebarArt className="absolute inset-y-0 right-0 hidden w-[54%] lg:block" />
+
+        <div className="relative mx-auto max-w-6xl px-4 sm:px-6">
+          <div className="py-20 sm:py-28 lg:w-[54%] lg:py-40">
             <span className={EYEBROW}>Smart Bündeln</span>
 
             <h1 className={cn(D_XL, "mt-5 text-white")}>
@@ -156,17 +161,16 @@ export default function Home() {
                 Offene Bündel ansehen <ArrowRight className="h-4 w-4" />
               </Link>
             </div>
-
-            <div className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-2 border-t border-white/10 pt-6 text-[12.5px] text-white/45">
-              <span><b className="text-brand">5–28 %</b> garantierter Netto-Mindestvorteil</span>
-              <span>Verdeckte Sealed-Bid-Angebote</span>
-              <span>Geprüfte Schweizer Lieferanten</span>
-            </div>
           </div>
 
-          <AppPreview />
+          {/* Auf dem Handy steht das Bild unter dem Text und laeuft dort ueber
+              beide Raender — sonst wirkt es wie ein hineingeklebtes Kaestchen. */}
+          <RebarArt className="relative -mx-4 h-[280px] sm:-mx-6 sm:h-[340px] lg:hidden" />
         </div>
       </section>
+
+      {/* ================= Vertrauensanker ================= */}
+      <TrustBar />
 
       {/* ============ Zwei Wege zum besseren Preis ============ */}
       <TwoWays />
@@ -294,10 +298,43 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ================= Produktaufnahme ================= */}
+      {/* Nach dem Vorbild von Stripe: das Produkt selbst gross zeigen, in
+          einem Rahmen, der schwebt statt zu sitzen. Vorher steckte diese
+          Aufnahme klein neben der Hero-Ueberschrift und ging dort unter. */}
+      <section className="overflow-hidden bg-white">
+        <div className={cn("mx-auto max-w-6xl px-4 sm:px-6", SECTION)}>
+          <div className="mx-auto max-w-2xl text-center">
+            <span className={EYEBROW}>Im Dashboard</span>
+            <h2 className={cn(D_MD, "mt-5 text-slate-900")}>
+              Bedarf, Angebote und Vertrag an einem Ort.
+            </h2>
+            <p className={cn(LEAD, "mt-6 text-slate-500")}>
+              Materialpreise gegen die KBOB-Referenz, offene Bündel, eingegangene
+              Angebote — ohne Tabellen, ohne Mailverkehr.
+            </p>
+          </div>
+
+          <div className="relative mx-auto mt-14 max-w-4xl sm:mt-16">
+            <div
+              aria-hidden
+              className="pointer-events-none absolute -inset-x-10 -bottom-10 top-16 rounded-[40px] bg-gradient-to-b from-brand/10 to-accent-500/10 blur-2xl"
+            />
+            <div className="relative">
+              <AppPreview />
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* ================= Pools + Netzwerk ================= */}
       <section className={cn("mx-auto grid max-w-6xl grid-cols-1 gap-5 px-4 sm:px-6 lg:grid-cols-2", SECTION_TIGHT)}>
         {/* Pools */}
-        <div className={cn(CARD, "p-6")}>
+        <div className={cn(CARD, "overflow-hidden")}>
+          <div className="h-40 border-b border-slate-200 sm:h-44">
+            <PhotoSlot slot={PHOTO_POOLS} />
+          </div>
+          <div className="p-6">
           <div className="mb-4 flex items-center justify-between">
             <h2 className="text-[16px] font-bold tracking-tight text-slate-900">Aktive Smart Pools</h2>
             <Link href="/pools" className="inline-flex items-center gap-1 text-[13px] font-semibold text-brand hover:text-brand-600">
@@ -325,10 +362,15 @@ export default function Home() {
               </li>
             ))}
           </ul>
+          </div>
         </div>
 
         {/* Netzwerk */}
-        <div className={cn(CARD, "p-6")}>
+        <div className={cn(CARD, "overflow-hidden")}>
+          <div className="h-40 border-b border-slate-200 sm:h-44">
+            <PhotoSlot slot={PHOTO_NETWORK} />
+          </div>
+          <div className="p-6">
           <div className="mb-4 flex items-center justify-between">
             <h2 className="text-[16px] font-bold tracking-tight text-slate-900">Firmen im Netzwerk</h2>
             <Link href="/network" className="inline-flex items-center gap-1 text-[13px] font-semibold text-brand hover:text-brand-600">
@@ -356,6 +398,7 @@ export default function Home() {
               </li>
             ))}
           </ul>
+          </div>
         </div>
       </section>
       {/* ================= Abschluss-CTA ================= */}
