@@ -13,6 +13,7 @@ import {
   Gauge,
   ShieldCheck,
   Pencil,
+  Lock,
 } from "lucide-react";
 import { createServerSupabaseClient } from "@/lib/supabase";
 import { requireCompanyOrOnboard } from "@/lib/company";
@@ -47,10 +48,8 @@ type Company = {
   logo_url: string | null;
   bio: string | null;
   about?: string | null;
-  email?: string | null;
-  phone?: string | null;
-  address?: string | null;
-  website?: string | null;
+  // Kontaktfelder stehen bewusst NICHT hier: sie kommen ueber
+  // company_contact() und nur fuer bestaetigte Verbindungen.
   supply_materials?: string[] | null;
   supply_regions?: string[] | null;
   delivery_radius_km?: number | null;
@@ -87,7 +86,7 @@ export default async function CompanyPage({ params }: { params: Promise<{ id: st
   // Volles Profil versuchen; falls Migration 04/05 fehlt, auf Basis zurückfallen.
   const full = await supabase
     .from("companies")
-    .select("id, company_name, uid_number, role, canton, city, verified, logo_url, bio, about, email, phone, address, website, supply_materials, supply_regions, delivery_radius_km, capacity_note")
+    .select("id, company_name, uid_number, role, canton, city, verified, logo_url, bio, about, supply_materials, supply_regions, delivery_radius_km, capacity_note")
     .eq("id", id)
     .maybeSingle();
   const companyData = full.error
@@ -108,8 +107,18 @@ export default async function CompanyPage({ params }: { params: Promise<{ id: st
     .limit(20);
   const posts = (postsData ?? []) as Post[];
 
-  const hasContact = company.email || company.phone || company.address || company.website;
-  const site = company.website ? (company.website.startsWith("http") ? company.website : `https://${company.website}`) : null;
+  // Kontaktdaten nur für die Firma selbst und für bestätigte Verbindungen.
+  // Die Prüfung liegt in der Datenbank (Migration 23) — ausblenden allein
+  // würde nichts nützen, die Felder wären über die API weiter lesbar.
+  const { data: contactRows } = await supabase.rpc("company_contact", { p_company: id });
+  const contact = (Array.isArray(contactRows) ? contactRows[0] : null) as
+    | { email: string | null; phone: string | null; address: string | null; website: string | null }
+    | null;
+
+  const hasContact = !!(contact && (contact.email || contact.phone || contact.address || contact.website));
+  const site = contact?.website
+    ? (contact.website.startsWith("http") ? contact.website : `https://${contact.website}`)
+    : null;
 
   return (
     <main className="mx-auto max-w-3xl px-4 py-6 sm:px-6">
@@ -219,16 +228,32 @@ export default async function CompanyPage({ params }: { params: Promise<{ id: st
       )}
 
       {/* Kontakt */}
-      {hasContact && (
+      {hasContact ? (
         <section className={cn(CARD, "mt-4 p-6")}>
           <h2 className="text-[15px] font-semibold text-slate-900">Kontakt</h2>
           <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
-            {company.email && <a href={`mailto:${company.email}`} className="flex items-center gap-2.5 text-sm text-slate-700 hover:text-brand"><Mail className="h-4 w-4 text-slate-400" /> {company.email}</a>}
-            {company.phone && <a href={`tel:${company.phone.replace(/\s/g, "")}`} className="flex items-center gap-2.5 text-sm text-slate-700 hover:text-brand"><Phone className="h-4 w-4 text-slate-400" /> {company.phone}</a>}
-            {company.address && <div className="flex items-center gap-2.5 text-sm text-slate-700"><MapPin className="h-4 w-4 text-slate-400" /> {company.address}</div>}
-            {site && <a href={site} className="flex items-center gap-2.5 text-sm text-slate-700 hover:text-brand"><Globe className="h-4 w-4 text-slate-400" /> {company.website}</a>}
+            {contact?.email && <a href={`mailto:${contact.email}`} className="flex items-center gap-2.5 text-sm text-slate-700 hover:text-brand"><Mail className="h-4 w-4 text-slate-400" /> {contact.email}</a>}
+            {contact?.phone && <a href={`tel:${contact.phone.replace(/\s/g, "")}`} className="flex items-center gap-2.5 text-sm text-slate-700 hover:text-brand"><Phone className="h-4 w-4 text-slate-400" /> {contact.phone}</a>}
+            {contact?.address && <div className="flex items-center gap-2.5 text-sm text-slate-700"><MapPin className="h-4 w-4 text-slate-400" /> {contact.address}</div>}
+            {site && <a href={site} className="flex items-center gap-2.5 text-sm text-slate-700 hover:text-brand"><Globe className="h-4 w-4 text-slate-400" /> {contact?.website}</a>}
           </div>
+          {isMe && (
+            <p className="mt-3 border-t border-slate-100 pt-3 text-[12px] text-slate-400">
+              Diese Angaben sehen nur Firmen, mit denen du verbunden bist.
+            </p>
+          )}
         </section>
+      ) : (
+        !isMe && (
+          <section className={cn(CARD, "mt-4 flex items-start gap-2.5 p-5")}>
+            <Lock className="mt-0.5 h-4 w-4 shrink-0 text-slate-400" />
+            <p className="text-[13px] leading-relaxed text-slate-500">
+              <span className="font-semibold text-slate-700">Kontaktdaten sind Verbindungen vorbehalten.</span>{" "}
+              Vernetze dich mit {company.company_name}, um E-Mail, Telefon und Adresse zu sehen —
+              schreiben kannst du danach direkt hier im Netz.
+            </p>
+          </section>
+        )
       )}
 
       {/* Beiträge */}
