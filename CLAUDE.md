@@ -175,6 +175,23 @@ Supabase (server + browser client, `supabaseAdmin` service-role), Leaflet/OSM
   - **E-Mail** („neue Nachricht") — braucht einen Versanddienst (z. B.
     Resend). Später, ausdrücklich nach Web-Push.
 
+## Profil bearbeiten (`/profile/edit`)
+- Ein Formular für Firma, Standort, Kontakt, Beschreibung und (nur
+  Baustoffwerke) das Liefer-Profil. Erreichbar über Profilmenü, den Knopf auf
+  dem eigenen Firmenprofil und den Reiter Einstellungen im Dashboard.
+- Geschrieben wird über die Service-Role mit einer **festen Feldliste**.
+  `role`, `verified`, `id`, `clerk_user_id` und `show_on_map` sind bewusst
+  nicht dabei — sonst könnte sich jede Firma selbst verifizieren oder zum
+  Lieferanten machen. Die Zeile kommt über die Clerk-ID aus `auth()`, nie
+  über eine ID aus dem Formular.
+- Ändert sich die Adresse und steht die Karten-Zustimmung, wird der
+  Kartenpunkt beim Speichern gleich neu ermittelt.
+- Logo geht in den Bucket `post-media` unter `<Firmen-ID>/logo-…` — genau
+  der Ordner, den die Speicher-Regel aus Migration 20 erlaubt. Endung aus
+  dem Dateityp, nicht aus dem Dateinamen.
+- Kontaktdaten sind für **alle angemeldeten Firmen** sichtbar, nicht nur für
+  Verbindungen. Wenn das enger werden soll, ist das eine eigene Änderung.
+
 ## Karte (`/map`) — echte Standorte
 - Wer `show_on_map` einschaltet, wird **im selben Vorgang** über die amtliche
   Adresssuche von **swisstopo** (`api3.geo.admin.ch`, kostenlos, kein

@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
   BadgeCheck,
@@ -11,6 +12,7 @@ import {
   Ruler,
   Gauge,
   ShieldCheck,
+  Pencil,
 } from "lucide-react";
 import { createServerSupabaseClient } from "@/lib/supabase";
 import { requireCompanyOrOnboard } from "@/lib/company";
@@ -144,7 +146,12 @@ export default async function CompanyPage({ params }: { params: Promise<{ id: st
               )}
             </div>
             {isMe ? (
-              <span className="rounded-md border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-500">Das ist dein Profil</span>
+              <Link
+                href="/profile/edit"
+                className="inline-flex shrink-0 items-center gap-1.5 rounded-md bg-brand px-4 py-2 text-sm font-semibold text-navy-900 transition-colors hover:bg-brand-500"
+              >
+                <Pencil className="h-4 w-4" /> Profil bearbeiten
+              </Link>
             ) : (
               <CompanyConnect targetId={company.id} />
             )}
