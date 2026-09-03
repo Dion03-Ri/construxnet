@@ -170,6 +170,31 @@ Supabase (server + browser client, `supabaseAdmin` service-role), Leaflet/OSM
   - **E-Mail** („neue Nachricht") — braucht einen Versanddienst (z. B.
     Resend). Später, ausdrücklich nach Web-Push.
 
+## Netzwerk vs. Feed — die Rollentrennung
+- **Feed** (`/feed`) = *was passiert*: Beiträge, laufende Bündel, Aktivität.
+  Zeitachse.
+- **Netzwerk** (`/network`) = *mit wem du arbeitest*: Verbindungen verwalten,
+  erhaltene Anfragen beantworten, gesendete Einladungen zurückziehen. Drei
+  Reiter, echte Listen — kein zweiter Feed.
+- **Entdecken** (`/network/entdecken`) = die grosse Liste aller Firmen mit
+  Suche, Kanton-, Rollen- und Verifiziert-Filter, Sortierung und
+  „Weitere anzeigen". Ziel jedes „Passende Firmen finden"-Knopfs.
+- „Passend zuerst" sortiert nach **nachvollziehbaren** Merkmalen: gleicher
+  Kanton, ergänzende Rolle, verifiziert. Keine erfundenen Trefferquoten.
+- Gemeinsamer Unterbau: `lib/network.ts` (`useNetwork()` — Firmen,
+  Verbindungen, connect/accept/remove) und `components/network/CompanyCard.tsx`
+  (auf dem Handy kompakte Zeile, ab `sm` Karte).
+
+## Handy-Ansicht — was gilt
+- Inhalt zuerst: Seitenspalten sind auf dem Handy entweder ausgeblendet
+  (`hidden lg:block`) oder per `order` nach hinten sortiert. Das Dashboard
+  ersetzt die Seitenspalte durch eine waagrechte Tab-Leiste (`no-scrollbar`).
+- Lange Erklärtexte haben auf dem Handy eine Kurzfassung (`sm:hidden`) und
+  ab `sm` den vollen Absatz.
+- Feste Höhen mit `100dvh` statt `100vh` und immer minus der unteren
+  Navigation (`pb-safe-nav`, Safe-Area des iPhone-Home-Indikators).
+- Jede Tabelle steckt in einem `overflow-x-auto`-Behälter.
+
 ## OFFEN / als Nächstes
 - Startseite + Dashboard (`/dashboard`) sind auf Light Mode umgestellt. Andere
   Seiten (z.B. Coming-Soon, Netzwerk) sind noch dunkel — bei Bedarf einzeln

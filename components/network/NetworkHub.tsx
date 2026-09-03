@@ -1,15 +1,13 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import Link from "next/link";
-import { useAuth } from "@clerk/nextjs";
 import {
   BadgeCheck,
   Search,
   Loader2,
   UserPlus,
   Check,
-  X,
   ChevronDown,
   Map as MapIcon,
   ArrowRight,
@@ -17,53 +15,22 @@ import {
   Inbox,
   Sparkle,
   Handshake,
+  Users,
+  MessageSquare,
+  Clock,
+  Compass,
 } from "lucide-react";
-import { useSupabaseBrowser } from "@/lib/supabase-browser";
-import { fetchMyCompanyId } from "@/lib/myCompany";
 import DirectRequestModal from "@/components/network/DirectRequestModal";
+import CompanyCard from "@/components/network/CompanyCard";
+import {
+  useNetwork,
+  ROLE_LABEL,
+  GRID_BG,
+  initials,
+  type NetCompany,
+} from "@/lib/network";
 import { CARD } from "@/lib/ui";
 import { cn } from "@/lib/utils";
-
-type Company = {
-  id: string;
-  company_name: string;
-  uid_number: string;
-  role: string;
-  canton: string | null;
-  city: string | null;
-  verified: boolean;
-  logo_url: string | null;
-  bio: string | null;
-  created_at: string | null;
-};
-
-type ConnState = {
-  id: string;
-  status: "PENDING" | "CONNECTED";
-  direction: "outgoing" | "incoming";
-};
-
-const ROLE_LABEL: Record<string, string> = {
-  BUYER: "Bauunternehmen",
-  SUPPLIER: "Baustoffwerk",
-};
-
-const ROLE_FILTERS = [
-  { key: "ALL", label: "Alle" },
-  { key: "BUYER", label: "Bauunternehmen" },
-  { key: "SUPPLIER", label: "Baustoffwerke" },
-];
-
-/** Feine Raster-Textur der dunklen Panels — identisch zu Feed und Startseite. */
-const GRID_BG = {
-  backgroundImage:
-    "linear-gradient(rgba(255,255,255,.7) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.7) 1px,transparent 1px)",
-  backgroundSize: "26px 26px",
-};
-
-function initials(name: string) {
-  return name.split(" ").slice(0, 2).map((w) => w[0]).join("").toUpperCase();
-}
 
 /** Kleine Überschrift über einem Panel-Titel. */
 function Eyebrow({ children, dark }: { children: React.ReactNode; dark?: boolean }) {
@@ -84,133 +51,80 @@ function DarkPanel({ children, className }: { children: React.ReactNode; classNa
   );
 }
 
+/** Zeile einer Firma in den Listen des Netzwerks. */
+function CompanyRow({
+  company,
+  children,
+}: {
+  company: NetCompany;
+  children: React.ReactNode;
+}) {
+  return (
+    <li className="flex flex-wrap items-center gap-3 px-4 py-3 transition-colors hover:bg-slate-50/70">
+      <Link
+        href={`/company/${company.id}`}
+        className="grid h-10 w-10 shrink-0 place-items-center overflow-hidden rounded-full bg-slate-100 text-[12px] font-bold text-slate-700"
+      >
+        {company.logo_url ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={company.logo_url} alt={company.company_name} className="h-full w-full object-cover" />
+        ) : (
+          initials(company.company_name)
+        )}
+      </Link>
+      <div className="min-w-0 flex-1 basis-[calc(100%-3.25rem)] sm:basis-auto">
+        <Link
+          href={`/company/${company.id}`}
+          className="flex items-center gap-1 text-[14px] font-semibold text-slate-900 hover:text-brand"
+        >
+          <span className="truncate">{company.company_name}</span>
+          {company.verified && <BadgeCheck className="h-4 w-4 shrink-0 text-brand" />}
+        </Link>
+        <p className="truncate text-[12px] text-slate-500">
+          {ROLE_LABEL[company.role] ?? company.role}
+          {company.city ? ` · ${company.city}` : company.canton ? ` · ${company.canton}` : ""}
+        </p>
+      </div>
+      {/* Auf schmalen Geraeten unter den Namen statt daneben — sonst bleibt
+          vom Firmennamen nur ein Kuerzel uebrig. */}
+      <div className="flex w-full gap-1.5 [&>*]:flex-1 sm:w-auto sm:shrink-0 sm:[&>*]:flex-none">
+        {children}
+      </div>
+    </li>
+  );
+}
+
+const TABS = [
+  { key: "connected", label: "Verbindungen", icon: Users },
+  { key: "incoming", label: "Anfragen", icon: Inbox },
+  { key: "outgoing", label: "Gesendet", icon: Clock },
+];
+
 /* -------------------------------------------------------------------------- */
 
 export default function NetworkHub() {
-  const { isSignedIn, userId } = useAuth();
-  const supabase = useSupabaseBrowser();
+  const {
+    companies, conns, myCompanyId, me, loading, isSignedIn,
+    connected, incoming, outgoing,
+    connect, accept, remove,
+  } = useNetwork();
 
-  const [companies, setCompanies] = useState<Company[]>([]);
-  const [conns, setConns] = useState<Record<string, ConnState>>({});
-  const [myCompanyId, setMyCompanyId] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [role, setRole] = useState("ALL");
+  const [tab, setTab] = useState("connected");
   const [query, setQuery] = useState("");
-  const [dismissed, setDismissed] = useState<Set<string>>(new Set());
   const [moreStats, setMoreStats] = useState(false);
-  const [requestTarget, setRequestTarget] = useState<Company | null>(null);
+  const [requestTarget, setRequestTarget] = useState<NetCompany | null>(null);
 
-  const loadMine = useCallback(async () => {
-    if (!isSignedIn || !userId) {
-      setMyCompanyId(null);
-      setConns({});
-      return;
-    }
-    const mineId = await fetchMyCompanyId(supabase);
-    setMyCompanyId(mineId);
-    if (!mineId) return;
+  const region = me?.canton ?? null;
 
-    const { data: rows } = await supabase
-      .from("connections")
-      .select("id, company_id_a, company_id_b, status, requested_by")
-      .or(`company_id_a.eq.${mineId},company_id_b.eq.${mineId}`);
-
-    const map: Record<string, ConnState> = {};
-    for (const r of (rows ?? []) as {
-      id: string;
-      company_id_a: string;
-      company_id_b: string;
-      status: "PENDING" | "CONNECTED";
-      requested_by: string | null;
-    }[]) {
-      const other = r.company_id_a === mineId ? r.company_id_b : r.company_id_a;
-      map[other] = {
-        id: r.id,
-        status: r.status,
-        direction: r.requested_by === mineId ? "outgoing" : "incoming",
-      };
-    }
-    setConns(map);
-  }, [isSignedIn, userId, supabase]);
-
-  const loadCompanies = useCallback(async () => {
-    setLoading(true);
-    const { data } = await supabase
-      .from("companies")
-      .select("id, company_name, uid_number, role, canton, city, verified, logo_url, bio, created_at")
-      .neq("role", "ADMIN")
-      .order("verified", { ascending: false })
-      .order("company_name", { ascending: true });
-    setCompanies((data ?? []) as Company[]);
-    setLoading(false);
-  }, [supabase]);
-
-  useEffect(() => {
-    loadCompanies();
-  }, [loadCompanies]);
-  useEffect(() => {
-    loadMine();
-  }, [loadMine]);
-
-  async function connect(targetId: string) {
-    if (!myCompanyId) return;
-    const { error } = await supabase.from("connections").insert({
-      company_id_a: myCompanyId,
-      company_id_b: targetId,
-      requested_by: myCompanyId,
-      status: "PENDING",
-    });
-    if (!error) loadMine();
-  }
-  async function accept(connId: string) {
-    const { error } = await supabase.from("connections").update({ status: "CONNECTED" }).eq("id", connId);
-    if (!error) loadMine();
-  }
-  async function ignore(connId: string) {
-    const { error } = await supabase.from("connections").delete().eq("id", connId);
-    if (!error) loadMine();
-  }
-
-  const byId = useMemo(() => new Map(companies.map((c) => [c.id, c])), [companies]);
-
-  const connectedList = useMemo(
-    () =>
-      Object.entries(conns)
-        .filter(([, s]) => s.status === "CONNECTED")
-        .map(([id]) => byId.get(id))
-        .filter(Boolean) as Company[],
-    [conns, byId],
-  );
-
-  const invitations = useMemo(
-    () =>
-      Object.entries(conns)
-        .filter(([, s]) => s.status === "PENDING" && s.direction === "incoming")
-        .map(([id, s]) => ({ company: byId.get(id), conn: s }))
-        .filter((x) => x.company) as { company: Company; conn: ConnState }[],
-    [conns, byId],
-  );
-
-  const outgoing = useMemo(
-    () => Object.values(conns).filter((s) => s.status === "PENDING" && s.direction === "outgoing").length,
-    [conns],
-  );
-
-  const suggestions = companies.filter((c) => {
-    if (c.id === myCompanyId) return false;
-    if (conns[c.id]) return false;
-    if (dismissed.has(c.id)) return false;
-    if (role !== "ALL" && c.role !== role) return false;
-    if (query.trim()) {
-      const q = query.toLowerCase();
-      return (
-        c.company_name.toLowerCase().includes(q) ||
-        (c.city ?? "").toLowerCase().includes(q) ||
-        (c.canton ?? "").toLowerCase().includes(q)
-      );
-    }
-    return true;
-  });
+  /** Vorschläge: noch nicht verbunden, Region und ergänzende Rolle zuerst. */
+  const suggestions = useMemo(() => {
+    const open = companies.filter((c) => c.id !== myCompanyId && !conns[c.id]);
+    const score = (c: NetCompany) =>
+      (region && c.canton === region ? 4 : 0) +
+      (me?.role && c.role !== me.role ? 2 : 0) +
+      (c.verified ? 1 : 0);
+    return [...open].sort((a, b) => score(b) - score(a));
+  }, [companies, conns, myCompanyId, region, me?.role]);
 
   /** Zuletzt beigetretene Firmen — echte Daten, ohne erfundene Kennzahlen. */
   const newest = useMemo(
@@ -222,25 +136,37 @@ export default function NetworkHub() {
     [companies, myCompanyId],
   );
 
-  const bannerFirms = suggestions.slice(0, 5);
-  const region = companies.find((c) => c.id === myCompanyId)?.canton ?? null;
+  const filteredConnected = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return connected;
+    return connected.filter(
+      (c) =>
+        c.company_name.toLowerCase().includes(q) ||
+        (c.city ?? "").toLowerCase().includes(q) ||
+        (c.canton ?? "").toLowerCase().includes(q),
+    );
+  }, [connected, query]);
 
   const overview = [
-    { label: "Verbindungen", value: connectedList.length },
-    { label: "Einladungen gesendet", value: outgoing },
-    { label: "Erhaltene Anfragen", value: invitations.length },
+    { label: "Verbindungen", value: connected.length },
+    { label: "Einladungen gesendet", value: outgoing.length },
+    { label: "Erhaltene Anfragen", value: incoming.length },
   ];
   const overviewMore = [
-    { label: "Lieferanten", value: connectedList.filter((c) => c.role === "SUPPLIER").length },
-    { label: "Bauunternehmen", value: connectedList.filter((c) => c.role === "BUYER").length },
+    { label: "Lieferanten", value: connected.filter((c) => c.role === "SUPPLIER").length },
+    { label: "Bauunternehmen", value: connected.filter((c) => c.role === "BUYER").length },
   ];
-  const networkEmpty = connectedList.length === 0 && outgoing === 0 && invitations.length === 0;
+  const networkEmpty = connected.length === 0 && outgoing.length === 0 && incoming.length === 0;
+  const counts: Record<string, number> = {
+    connected: connected.length,
+    incoming: incoming.length,
+    outgoing: outgoing.length,
+  };
 
   return (
     <div className="grid grid-cols-1 gap-5 lg:grid-cols-[260px_minmax(0,1fr)_300px]">
       {/* ============================ LEFT RAIL ============================ */}
       <aside className="space-y-4">
-        {/* Dein Netzwerk */}
         <DarkPanel>
           <div className="border-b border-white/10 px-5 pb-3 pt-4">
             <Eyebrow dark>Dein Netzwerk</Eyebrow>
@@ -255,12 +181,12 @@ export default function NetworkHub() {
                 {region ? ` in ${region}` : " in deiner Region"} — mehr Verbindungen heisst
                 mehr Bündel-Möglichkeiten.
               </p>
-              <a
-                href="#vorschlaege"
+              <Link
+                href="/network/entdecken"
                 className="mt-3.5 inline-flex items-center gap-1.5 rounded-md bg-brand px-3.5 py-2 text-[13px] font-semibold text-navy-900 transition-colors hover:bg-brand-500"
               >
                 Firmen finden <ArrowRight className="h-3.5 w-3.5" />
-              </a>
+              </Link>
             </div>
           ) : (
             <>
@@ -283,6 +209,18 @@ export default function NetworkHub() {
             </>
           )}
         </DarkPanel>
+
+        {/* Was ist diese Seite — klarer Unterschied zum Feed */}
+        <div className={cn(CARD, "p-4")}>
+          <Eyebrow>Netzwerk statt Feed</Eyebrow>
+          <p className="mt-1.5 text-[12.5px] leading-relaxed text-slate-500">
+            Im <Link href="/feed" className="font-semibold text-brand hover:underline">Feed</Link>{" "}
+            siehst du, <b className="font-semibold text-slate-700">was passiert</b> — Beiträge und
+            laufende Bündel. Hier verwaltest du,{" "}
+            <b className="font-semibold text-slate-700">mit wem du arbeitest</b>: Verbindungen,
+            Anfragen und neue Partner.
+          </p>
+        </div>
 
         {/* Neu im Netzwerk — echte, zuletzt beigetretene Firmen */}
         {newest.length > 0 && (
@@ -335,181 +273,247 @@ export default function NetworkHub() {
       </aside>
 
       {/* ============================== MITTE ============================== */}
-      {/* Auf dem Handy zuerst: Suche und Vorschlaege stehen oben, die Rails darunter. */}
+      {/* Auf dem Handy zuerst: Verbindungen und Anfragen stehen oben. */}
       <div className="order-first min-w-0 space-y-4 lg:order-none">
-        {/* Wachstums-Banner */}
+        {/* Kopf: wofür diese Seite da ist, plus der Weg zu neuen Firmen */}
         <DarkPanel>
-          <div className="flex flex-col gap-5 p-6 sm:flex-row sm:items-center sm:justify-between">
-            <div className="max-w-md">
+          <div className="flex flex-col gap-5 p-5 sm:p-6 lg:flex-row lg:items-center lg:justify-between">
+            <div className="max-w-lg">
               <span className="inline-flex items-center gap-1.5 rounded-md border border-brand/30 bg-brand/10 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-brand">
-                Netzwerk erweitern
+                Dein Netzwerk
               </span>
-              <h2 className="mt-3 text-xl font-bold leading-snug sm:text-2xl">
-                Verbinde dich mit passenden Firmen{region ? ` in ${region}` : " in deiner Region"}
-              </h2>
+              <h1 className="mt-3 text-xl font-bold leading-snug sm:text-2xl">
+                Mit wem du baust{region ? ` — und wer in ${region} dazupasst` : ""}
+              </h1>
               <p className="mt-1.5 text-[13px] leading-relaxed text-white/55">
-                Mehr Verbindungen bedeuten mehr Bündel-Möglichkeiten — mit Bauunternehmen und
-                Lieferanten deiner Region.
+                Verbindungen verwalten, Anfragen beantworten und neue Partner finden.
+                <span className="hidden sm:inline">
+                  {" "}Jede Verbindung ist ein möglicher Bündel-Partner, Lieferant oder Abnehmer.
+                </span>
               </p>
-              <a
-                href="#vorschlaege"
-                className="mt-4 inline-flex items-center gap-1.5 rounded-md bg-brand px-4 py-2.5 text-sm font-semibold text-navy-900 transition-colors hover:bg-brand-500"
-              >
-                Passende Firmen finden <ArrowRight className="h-4 w-4" />
-              </a>
+              <div className="mt-4 flex flex-wrap gap-2">
+                <Link
+                  href="/network/entdecken"
+                  className="inline-flex items-center gap-1.5 rounded-md bg-brand px-4 py-2.5 text-sm font-semibold text-navy-900 transition-colors hover:bg-brand-500"
+                >
+                  <Compass className="h-4 w-4" /> Passende Firmen finden
+                </Link>
+                <Link
+                  href="/map"
+                  className="inline-flex items-center gap-1.5 rounded-md border border-white/15 px-4 py-2.5 text-sm font-semibold text-white/85 transition-colors hover:bg-white/5"
+                >
+                  <MapIcon className="h-4 w-4" /> Auf der Karte
+                </Link>
+              </div>
             </div>
 
             {/* Echte Firmen statt grauer Platzhalter — sonst gar nichts */}
-            {bannerFirms.length > 0 && (
-              <div className="flex shrink-0 -space-x-3">
-                {bannerFirms.map((c) => (
-                  <Link
-                    key={c.id}
-                    href={`/company/${c.id}`}
-                    title={c.company_name}
-                    className="grid h-12 w-12 place-items-center overflow-hidden rounded-full border-2 border-navy-900 bg-white/10 text-[13px] font-bold text-white"
-                  >
-                    {c.logo_url ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img src={c.logo_url} alt={c.company_name} className="h-full w-full object-cover" />
-                    ) : (
-                      initials(c.company_name)
-                    )}
-                  </Link>
-                ))}
-              </div>
+            {suggestions.length > 0 && (
+              <Link href="/network/entdecken" className="hidden shrink-0 lg:block">
+                <span className="flex -space-x-3">
+                  {suggestions.slice(0, 5).map((c) => (
+                    <span
+                      key={c.id}
+                      title={c.company_name}
+                      className="grid h-12 w-12 place-items-center overflow-hidden rounded-full border-2 border-navy-900 bg-white/10 text-[13px] font-bold text-white"
+                    >
+                      {c.logo_url ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img src={c.logo_url} alt={c.company_name} className="h-full w-full object-cover" />
+                      ) : (
+                        initials(c.company_name)
+                      )}
+                    </span>
+                  ))}
+                </span>
+                <span className="mt-2 block text-right text-[12px] font-semibold text-brand">
+                  {suggestions.length} offene Kontakte
+                </span>
+              </Link>
             )}
           </div>
         </DarkPanel>
 
-        {/* Firmen, die du kennen könntest */}
-        <div id="vorschlaege" className={cn(CARD, "overflow-hidden")}>
-          <div className="flex flex-col gap-3 border-b border-slate-100 px-5 py-3.5 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <Eyebrow>Empfohlen für dich</Eyebrow>
-              <h3 className="mt-0.5 text-[15px] font-bold text-slate-900">
-                {region ? `Firmen in der Region ${region}` : "Firmen, die du kennen könntest"}
-              </h3>
-            </div>
-            <div className="flex flex-wrap gap-1.5">
-              {ROLE_FILTERS.map((r) => (
-                <button
-                  key={r.key}
-                  type="button"
-                  onClick={() => setRole(r.key)}
+        {/* Verbindungen verwalten */}
+        <div className={cn(CARD, "overflow-hidden")}>
+          <div className="no-scrollbar flex gap-1.5 overflow-x-auto border-b border-slate-100 px-4 py-3">
+            {TABS.map((t) => (
+              <button
+                key={t.key}
+                type="button"
+                onClick={() => setTab(t.key)}
+                className={cn(
+                  "flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-md px-3.5 py-1.5 text-[13px] font-semibold transition-colors",
+                  tab === t.key
+                    ? "bg-navy-900 text-white"
+                    : "border border-slate-200 bg-white text-slate-500 hover:border-slate-300 hover:text-slate-900",
+                )}
+              >
+                <t.icon className="h-3.5 w-3.5" />
+                {t.label}
+                <span
                   className={cn(
-                    "rounded-md px-3.5 py-1.5 text-xs font-semibold transition-colors",
-                    role === r.key
-                      ? "bg-navy-900 text-white"
-                      : "border border-slate-200 bg-white text-slate-500 hover:border-slate-300 hover:text-slate-900",
+                    "rounded px-1.5 py-0.5 text-[10.5px] font-bold",
+                    tab === t.key
+                      ? "bg-white/15 text-white"
+                      : counts[t.key] > 0 && t.key === "incoming"
+                        ? "bg-brand/15 text-brand-700"
+                        : "bg-slate-100 text-slate-500",
                   )}
                 >
-                  {r.label}
-                </button>
-              ))}
-            </div>
+                  {counts[t.key]}
+                </span>
+              </button>
+            ))}
           </div>
 
-          <div className="p-5">
-            <div className="relative mb-4">
-              <Search className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-              <input
-                type="text"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder="Firma, Ort oder Kanton suchen …"
-                className="w-full rounded-md border border-slate-200 bg-slate-50 py-2.5 pl-10 pr-3 text-sm text-slate-900 placeholder:text-slate-400 outline-none transition-colors focus:border-brand focus:bg-white focus:ring-1 focus:ring-brand/30"
-              />
+          {loading ? (
+            <div className="flex items-center justify-center gap-2 py-12 text-sm text-slate-500">
+              <Loader2 className="h-4 w-4 animate-spin" /> Netzwerk wird geladen …
             </div>
-
-            {loading ? (
-              <div className="flex items-center justify-center gap-2 py-12 text-sm text-slate-500">
-                <Loader2 className="h-4 w-4 animate-spin" /> Firmen werden geladen …
-              </div>
-            ) : suggestions.length === 0 ? (
-              <div className="rounded-lg border border-dashed border-slate-200 bg-slate-50 py-12 text-center text-sm text-slate-500">
-                Keine weiteren Firmen gefunden.
+          ) : tab === "connected" ? (
+            connected.length === 0 ? (
+              <div className="px-6 py-12 text-center">
+                <p className="text-sm text-slate-500">
+                  Noch keine Verbindungen. Firmen, mit denen du dich vernetzt, erscheinen hier —
+                  mit Chat und Direktanfrage.
+                </p>
+                <Link
+                  href="/network/entdecken"
+                  className="mt-3 inline-flex items-center gap-1.5 rounded-md bg-brand px-4 py-2 text-[13px] font-semibold text-navy-900 transition-colors hover:bg-brand-500"
+                >
+                  <Compass className="h-4 w-4" /> Firmen entdecken
+                </Link>
               </div>
             ) : (
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
-                {suggestions.map((c) => (
-                  <div
-                    key={c.id}
-                    className="group relative flex flex-col overflow-hidden rounded-xl border border-slate-200 text-center transition-all hover:border-brand/40 hover:shadow-cardhover"
-                  >
-                    <button
-                      type="button"
-                      onClick={() => setDismissed((d) => new Set(d).add(c.id))}
-                      aria-label="Vorschlag ausblenden"
-                      className="absolute right-2 top-2 z-10 grid h-7 w-7 place-items-center rounded-full text-white/70 transition-colors hover:bg-white/15 hover:text-white"
-                    >
-                      <X className="h-4 w-4" />
-                    </button>
-                    <div className="relative h-14 overflow-hidden bg-navy-900">
-                      <div aria-hidden className="pointer-events-none absolute inset-0 opacity-[0.07]" style={GRID_BG} />
-                    </div>
-                    <div className="flex flex-1 flex-col items-center px-4 pb-4">
+              <>
+                {connected.length > 6 && (
+                  <div className="relative border-b border-slate-100 px-4 py-3">
+                    <Search className="pointer-events-none absolute left-7 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                    <input
+                      type="search"
+                      value={query}
+                      onChange={(e) => setQuery(e.target.value)}
+                      placeholder="In deinen Verbindungen suchen …"
+                      className="w-full rounded-md border border-slate-200 bg-slate-50 py-2 pl-9 pr-3 text-[13px] text-slate-900 placeholder:text-slate-400 outline-none focus:border-brand focus:bg-white"
+                    />
+                  </div>
+                )}
+                <ul className="divide-y divide-slate-100">
+                  {filteredConnected.map((c) => (
+                    <CompanyRow key={c.id} company={c}>
                       <Link
-                        href={`/company/${c.id}`}
-                        className="-mt-8 flex h-16 w-16 items-center justify-center overflow-hidden rounded-full border-4 border-white bg-slate-100 text-base font-bold text-slate-700 shadow-sm"
+                        href={`/messages?to=${c.id}`}
+                        className="inline-flex items-center gap-1.5 rounded-md border border-slate-200 px-3 py-1.5 text-[12.5px] font-semibold text-slate-600 transition-colors hover:border-brand/40 hover:text-brand"
                       >
-                        {c.logo_url ? (
-                          // eslint-disable-next-line @next/next/no-img-element
-                          <img src={c.logo_url} alt={c.company_name} className="h-full w-full object-cover" />
-                        ) : (
-                          initials(c.company_name)
-                        )}
+                        <MessageSquare className="h-3.5 w-3.5" /> Nachricht
                       </Link>
-                      <Link
-                        href={`/company/${c.id}`}
-                        className="mt-2 flex items-center justify-center gap-1 text-[15px] font-semibold text-slate-900 hover:text-brand"
-                      >
-                        <span className="max-w-full truncate">{c.company_name}</span>
-                        {c.verified && <BadgeCheck className="h-4 w-4 shrink-0 text-brand" />}
-                      </Link>
-                      <p className="text-xs text-slate-500">
-                        {ROLE_LABEL[c.role] ?? c.role}
-                        {c.city ? ` · ${c.city}` : ""}
-                      </p>
-                      <span
-                        className={cn(
-                          "mt-2 rounded-md border px-2.5 py-0.5 text-[11px] font-medium",
-                          c.role === "SUPPLIER"
-                            ? "border-brand/25 bg-brand/5 text-brand-700"
-                            : "border-slate-200 bg-slate-50 text-slate-500",
-                        )}
-                      >
-                        {c.role === "SUPPLIER" ? "Möglicher Lieferant" : "Möglicher Bündel-Partner"}
-                      </span>
-                      <div className="mt-3.5 flex w-full gap-1.5">
+                      {c.role === "SUPPLIER" && (
                         <button
                           type="button"
-                          onClick={() => connect(c.id)}
-                          disabled={!myCompanyId}
-                          className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-md bg-brand px-3 py-2 text-sm font-semibold text-navy-900 transition-colors hover:bg-brand-500 disabled:cursor-not-allowed disabled:opacity-50"
+                          onClick={() => setRequestTarget(c)}
+                          className="inline-flex items-center gap-1.5 rounded-md bg-brand px-3 py-1.5 text-[12.5px] font-semibold text-navy-900 transition-colors hover:bg-brand-500"
                         >
-                          <UserPlus className="h-4 w-4" /> Vernetzen
+                          <Handshake className="h-3.5 w-3.5" /> Anfragen
                         </button>
-                        {/* Zweiter Weg zum Preis: ohne Bündelung direkt anfragen. */}
-                        {c.role === "SUPPLIER" && (
-                          <button
-                            type="button"
-                            onClick={() => setRequestTarget(c)}
-                            disabled={!myCompanyId}
-                            title="Direkt anfragen"
-                            className="inline-flex items-center justify-center gap-1.5 rounded-md border border-slate-200 px-3 py-2 text-sm font-semibold text-slate-600 transition-colors hover:border-brand/40 hover:text-brand disabled:cursor-not-allowed disabled:opacity-50"
-                          >
-                            <Handshake className="h-4 w-4" /> Anfragen
-                          </button>
-                        )}
-                      </div>
-                    </div>
-                  </div>
+                      )}
+                    </CompanyRow>
+                  ))}
+                  {filteredConnected.length === 0 && (
+                    <li className="px-4 py-10 text-center text-sm text-slate-400">
+                      Keine Verbindung passt zur Suche.
+                    </li>
+                  )}
+                </ul>
+              </>
+            )
+          ) : tab === "incoming" ? (
+            incoming.length === 0 ? (
+              <p className="px-6 py-12 text-center text-sm text-slate-500">
+                Keine offenen Anfragen. Sobald dich eine Firma vernetzen möchte, erscheint sie hier.
+              </p>
+            ) : (
+              <ul className="divide-y divide-slate-100">
+                {incoming.map(({ company, conn }) => (
+                  <CompanyRow key={conn.id} company={company}>
+                    <button
+                      type="button"
+                      onClick={() => accept(conn.id)}
+                      className="inline-flex items-center gap-1.5 rounded-md bg-brand px-3 py-1.5 text-[12.5px] font-semibold text-navy-900 transition-colors hover:bg-brand-500"
+                    >
+                      <Check className="h-3.5 w-3.5" /> Annehmen
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => remove(conn.id)}
+                      className="rounded-md border border-slate-200 px-3 py-1.5 text-[12.5px] font-semibold text-slate-500 transition-colors hover:bg-slate-50"
+                    >
+                      Ignorieren
+                    </button>
+                  </CompanyRow>
                 ))}
-              </div>
-            )}
-          </div>
+              </ul>
+            )
+          ) : outgoing.length === 0 ? (
+            <p className="px-6 py-12 text-center text-sm text-slate-500">
+              Keine offenen Einladungen. Was du versendest, steht hier, bis es beantwortet ist.
+            </p>
+          ) : (
+            <ul className="divide-y divide-slate-100">
+              {outgoing.map(({ company, conn }) => (
+                <CompanyRow key={conn.id} company={company}>
+                  <span className="inline-flex items-center gap-1.5 rounded-md bg-slate-100 px-3 py-1.5 text-[12.5px] font-semibold text-slate-500">
+                    <Clock className="h-3.5 w-3.5" /> Wartet
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => remove(conn.id)}
+                    className="rounded-md border border-slate-200 px-3 py-1.5 text-[12.5px] font-semibold text-slate-500 transition-colors hover:bg-slate-50"
+                  >
+                    Zurückziehen
+                  </button>
+                </CompanyRow>
+              ))}
+            </ul>
+          )}
         </div>
+
+        {/* Vorschläge — die Vollansicht liegt auf /network/entdecken */}
+        {suggestions.length > 0 && (
+          <div className={cn(CARD, "overflow-hidden")}>
+            <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 px-5 py-3.5">
+              <div>
+                <Eyebrow>Empfohlen für dich</Eyebrow>
+                <h3 className="mt-0.5 text-[15px] font-bold text-slate-900">
+                  {region ? `Firmen in der Region ${region}` : "Firmen, die du kennen könntest"}
+                </h3>
+              </div>
+              <Link
+                href="/network/entdecken"
+                className="inline-flex items-center gap-1 text-[13px] font-semibold text-brand transition-colors hover:text-brand-600"
+              >
+                Alle {suggestions.length} ansehen <ArrowRight className="h-3.5 w-3.5" />
+              </Link>
+            </div>
+            <div className="grid grid-cols-1 gap-4 p-5 sm:grid-cols-2">
+              {suggestions.slice(0, 6).map((c) => (
+                <CompanyCard
+                  key={c.id}
+                  company={c}
+                  canAct={!!myCompanyId}
+                  onConnect={connect}
+                  onRequest={setRequestTarget}
+                />
+              ))}
+            </div>
+            <Link
+              href="/network/entdecken"
+              className="flex items-center justify-center gap-1.5 border-t border-slate-100 py-3 text-[13px] font-semibold text-brand transition-colors hover:bg-brand/5"
+            >
+              <Compass className="h-4 w-4" /> Weitere Firmen entdecken
+            </Link>
+          </div>
+        )}
 
         {isSignedIn && !myCompanyId && !loading && (
           <p className="text-center text-xs text-slate-500">
@@ -520,84 +524,29 @@ export default function NetworkHub() {
 
       {/* ============================ RIGHT RAIL ============================ */}
       <aside className="order-last space-y-4 lg:order-none">
-        {/* Erhaltene Anfragen — jetzt dauerhaft sichtbar statt versteckt */}
-        <div className={cn(CARD, "overflow-hidden")}>
-          <div className="flex items-center justify-between border-b border-slate-100 px-4 py-3">
-            <h3 className="flex items-center gap-1.5 text-[13px] font-bold text-slate-900">
-              <Inbox className="h-4 w-4 text-brand" /> Erhaltene Anfragen
-            </h3>
-            {invitations.length > 0 && (
-              <span className="rounded-md bg-brand/15 px-1.5 py-0.5 text-[11px] font-bold text-brand-700">
-                {invitations.length}
-              </span>
-            )}
+        {/* Entdecken — der Einstieg in die grosse Liste */}
+        <Link
+          href="/network/entdecken"
+          className={cn(CARD, "group block overflow-hidden transition-colors hover:border-brand/40")}
+        >
+          <div className="relative h-24 overflow-hidden bg-navy-900">
+            <div aria-hidden className="pointer-events-none absolute inset-0 opacity-[0.07]" style={GRID_BG} />
+            <div className="absolute inset-0 grid place-items-center">
+              <Compass className="h-8 w-8 text-brand/70" />
+            </div>
           </div>
-
-          {invitations.length === 0 ? (
-            <p className="px-4 py-4 text-[12.5px] leading-relaxed text-slate-400">
-              Keine offenen Anfragen. Sobald dich eine Firma vernetzen möchte, erscheint sie hier.
-            </p>
-          ) : (
-            <>
-              <ul className="divide-y divide-slate-100">
-                {invitations.slice(0, 3).map(({ company, conn }) => (
-                  <li key={conn.id} className="px-4 py-3">
-                    <div className="flex items-center gap-2.5">
-                      <Link
-                        href={`/company/${company.id}`}
-                        className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full bg-slate-100 text-[11px] font-semibold text-slate-700"
-                      >
-                        {company.logo_url ? (
-                          // eslint-disable-next-line @next/next/no-img-element
-                          <img src={company.logo_url} alt={company.company_name} className="h-full w-full object-cover" />
-                        ) : (
-                          initials(company.company_name)
-                        )}
-                      </Link>
-                      <div className="min-w-0 flex-1">
-                        <Link
-                          href={`/company/${company.id}`}
-                          className="flex items-center gap-1 truncate text-[13px] font-semibold text-slate-900 hover:text-brand"
-                        >
-                          <span className="truncate">{company.company_name}</span>
-                          {company.verified && <BadgeCheck className="h-3.5 w-3.5 shrink-0 text-brand" />}
-                        </Link>
-                        <p className="truncate text-[11px] text-slate-400">
-                          {ROLE_LABEL[company.role] ?? company.role}
-                          {company.city ? ` · ${company.city}` : ""}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="mt-2 flex gap-1.5">
-                      <button
-                        type="button"
-                        onClick={() => accept(conn.id)}
-                        className="inline-flex flex-1 items-center justify-center gap-1 rounded-md bg-brand px-3 py-1.5 text-[12.5px] font-semibold text-navy-900 transition-colors hover:bg-brand-500"
-                      >
-                        <Check className="h-3.5 w-3.5" /> Annehmen
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => ignore(conn.id)}
-                        className="rounded-md border border-slate-200 px-3 py-1.5 text-[12.5px] font-semibold text-slate-500 transition-colors hover:bg-slate-50"
-                      >
-                        Ignorieren
-                      </button>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-              {invitations.length > 3 && (
-                <Link
-                  href="/network/requests"
-                  className="flex items-center justify-center gap-1 border-t border-slate-100 py-2.5 text-[12.5px] font-semibold text-brand transition-colors hover:bg-brand/5"
-                >
-                  Alle {invitations.length} anzeigen <ArrowRight className="h-3.5 w-3.5" />
-                </Link>
-              )}
-            </>
-          )}
-        </div>
+          <div className="flex items-center gap-2 px-4 py-3">
+            <div className="min-w-0 flex-1">
+              <div className="text-[13px] font-bold text-slate-900">Firmen entdecken</div>
+              <div className="text-[11px] text-slate-500">
+                {suggestions.length > 0
+                  ? `${suggestions.length} Firmen, mit denen du noch nicht verbunden bist`
+                  : "Nach Kanton, Rolle und Namen filtern"}
+              </div>
+            </div>
+            <ArrowRight className="h-4 w-4 shrink-0 text-slate-300 transition-transform group-hover:translate-x-0.5" />
+          </div>
+        </Link>
 
         {/* Lieferanten-Karte */}
         <Link href="/map" className={cn(CARD, "group block overflow-hidden transition-colors hover:border-brand/40")}>
