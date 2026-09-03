@@ -9,6 +9,7 @@ import {
   Users,
   Layers,
   Settings,
+  UserCog,
   LogOut,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -96,6 +97,7 @@ export default function ProfileMenu() {
 
             <div className="px-2.5 pb-1 pt-2 text-[10px] font-semibold uppercase tracking-wider text-slate-400">Verwalten</div>
             {[
+              { href: "/profile/edit", icon: UserCog, label: "Profil bearbeiten" },
               { href: "/dashboard?view=settings", icon: Settings, label: "Einstellungen" },
             ].map((l) => (
               <Link

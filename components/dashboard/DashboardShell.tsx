@@ -1346,9 +1346,23 @@ export default function DashboardShell({ company }: { company: Company }) {
                     <Settings className="h-4 w-4" /> Einstellungen
                   </div>
                   <p className="mt-2">
-                    Firmenprofil, Kontaktdaten und Benachrichtigungen verwaltest du über dein{" "}
-                    <Link href={`/company/${company.id}`} className="font-medium text-brand hover:underline">Firmenprofil</Link>.
+                    Firmenname, Adresse, Kontaktdaten{isSupplier ? " und Liefer-Profil" : ""} bearbeitest du
+                    im Firmenprofil.
                   </p>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    <Link
+                      href="/profile/edit"
+                      className="inline-flex items-center gap-1.5 rounded-md bg-brand px-4 py-2 text-[13px] font-semibold text-navy-900 transition-colors hover:bg-brand-500"
+                    >
+                      Profil bearbeiten
+                    </Link>
+                    <Link
+                      href={`/company/${company.id}`}
+                      className="inline-flex items-center gap-1.5 rounded-md border border-slate-200 px-4 py-2 text-[13px] font-semibold text-slate-600 transition-colors hover:border-brand/40 hover:text-brand"
+                    >
+                      Profil ansehen
+                    </Link>
+                  </div>
                 </div>
               )}
             </motion.div>
