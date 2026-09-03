@@ -44,6 +44,17 @@ export const PROCESS_VIDEO_LABEL =
    · Ausschnitt nah genug, dass die Struktur trägt.
    · Vor dem Ablegen auf 1800 px verkleinern (mozjpeg, ~200 KB).
    ================================================================== */
+/* Herkunft und Lizenz der abgelegten Bilder — bitte pflegen, sobald weitere
+   dazukommen. Alle von Pexels, freie kommerzielle Nutzung, keine
+   Namensnennung nötig (Pexels-Lizenz). Vor dem Ablegen auf 1700–2400 px
+   verkleinert, mozjpeg:
+     /hero-kran.jpg   Kran bei Nacht          — Tima Miroshnichenko
+     /mat-lager.jpg   Materiallager von oben  — Maarten Ceulemans
+     /logistik.jpg    Umschlagplatz von oben  — Marcin Jozwiak
+     /baugrube.jpg    Baugrube mit Bohrpfählen — Wolfgang Weiser
+   Aussortiert und nicht abgelegt: ein weisser KI-Render (kein Bezug zum Bau),
+   eine Luftaufnahme voller grüner Schutznetze (Farbregel) und eine generische
+   Kranlandschaft mit matschigem Vordergrund. */
 export type PhotoSlot = {
   /** Pfad unter /public, sobald ein Bild vorliegt. Leer = Platzhalter. */
   src: string;
@@ -54,13 +65,21 @@ export type PhotoSlot = {
 };
 
 export const PHOTO_POOLS: PhotoSlot = {
-  src: "",
-  alt: "Frisch geschalteter Beton, Oberfläche mit sichtbarer Schalungsstruktur",
-  search: "concrete formwork texture · Betonoberfläche Schalung · fresh concrete pour close up",
+  src: "/mat-lager.jpg",
+  alt: "Materiallager von oben: gestapelte Betonelemente und Stahlprofile",
+  search: "material yard aerial · Betonelemente gestapelt · precast storage top view",
 };
 
 export const PHOTO_NETWORK: PhotoSlot = {
-  src: "",
-  alt: "Gestapelte Bewehrungsmatten auf einer Baustelle, von oben",
-  search: "rebar stack top view · Bewehrungsmatten gestapelt · steel reinforcement mesh pile",
+  src: "/logistik.jpg",
+  alt: "Umschlagplatz von oben: Lastwagen an den Verladerampen einer Halle",
+  search: "logistics hub aerial · Verladerampe Lastwagen · distribution centre top view",
+};
+
+/** Noch ungenutzt, aber geprüft und in der richtigen Grösse abgelegt:
+ *  Baugrube mit Bohrpfählen. Vorgesehen für die KBOB- oder Beschaffungsseite. */
+export const PHOTO_EXCAVATION: PhotoSlot = {
+  src: "/baugrube.jpg",
+  alt: "Baugrube mit freigelegten Bohrpfählen, Spundwand im Hintergrund",
+  search: "excavation bored piles · Baugrube Bohrpfähle · foundation pit",
 };

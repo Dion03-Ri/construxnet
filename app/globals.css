@@ -48,21 +48,3 @@
     transition-duration: 0.001ms !important;
   }
 }
-
-/* ==================================================================
-   Materialbewegung — Bewehrungsstäbe im Hero
-   ------------------------------------------------------------------
-   Sehr langsames vertikales Driften, unterschiedlich lang je Stab.
-   Kein JavaScript, keine Scroll-Bindung: die Bewegung läuft für sich
-   und lenkt nicht ab. Die Regel für reduzierte Bewegung oben schaltet
-   sie vollständig ab.
-   ================================================================== */
-@keyframes rod-drift {
-  0%,
-  100% {
-    transform: translateY(-2.5%);
-  }
-  50% {
-    transform: translateY(2.5%);
-  }
-}

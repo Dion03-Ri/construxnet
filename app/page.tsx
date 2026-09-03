@@ -1,7 +1,6 @@
 import Link from "next/link";
 import TwoWays from "@/components/home/TwoWays";
 import ProcessVideo from "@/components/home/ProcessVideo";
-import RebarArt from "@/components/home/RebarArt";
 import PhotoSlot from "@/components/home/PhotoSlot";
 import { PHOTO_POOLS, PHOTO_NETWORK } from "@/data/media";
 import TrustBar from "@/components/home/TrustBar";
@@ -131,16 +130,30 @@ export default function Home() {
   return (
     <main className="bg-slate-50">
       {/* ============================ HERO ============================ */}
-      <section className="relative overflow-hidden bg-navy-950 text-white">
-        <div aria-hidden className="pointer-events-none absolute inset-0 opacity-[0.05]" style={GRID_BG} />
-
-        {/* Das Bild laeuft rechts ueber den Seitenrand hinaus, statt in einer
-            Spalte zu sitzen. Genau das trennt eine Marken-Startseite von einem
-            Baukasten-Layout: der Inhalt endet, das Bild nicht. */}
-        <RebarArt className="absolute inset-y-0 right-0 hidden w-[54%] lg:block" />
+      {/* Vollflaechiges Bild statt einer Grafik neben dem Text. Der Kran bei
+          Nacht bringt das Navy der Marke schon mit — es muss nichts eingefaerbt
+          werden. Zwei Verlaeufe legen sich darueber: einer von links, damit die
+          Schrift steht, einer von unten, damit der Uebergang zum naechsten
+          Abschnitt nicht abreisst. */}
+      <section className="relative isolate overflow-hidden bg-navy-950 text-white">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/hero-kran.jpg"
+          alt=""
+          aria-hidden
+          className="absolute inset-0 h-full w-full object-cover object-[62%_28%]"
+        />
+        <div
+          aria-hidden
+          className="absolute inset-0 bg-gradient-to-r from-navy-950 via-navy-950/82 to-navy-950/5"
+        />
+        <div
+          aria-hidden
+          className="absolute inset-0 bg-gradient-to-t from-navy-950 via-transparent to-navy-950/45"
+        />
 
         <div className="relative mx-auto max-w-6xl px-4 sm:px-6">
-          <div className="py-20 sm:py-28 lg:w-[54%] lg:py-40">
+          <div className="py-24 sm:py-32 lg:w-[56%] lg:py-44">
             <span className={EYEBROW}>Smart Bündeln</span>
 
             <h1 className={cn(D_XL, "mt-5 text-white")}>
@@ -148,7 +161,7 @@ export default function Home() {
               <span className="text-brand">Sparen.</span>
             </h1>
 
-            <p className={cn(LEAD, "mt-7 max-w-lg text-white/60")}>
+            <p className={cn(LEAD, "mt-7 max-w-lg text-white/70")}>
               Obtanet bündelt deinen Materialbedarf mit anderen Schweizer Baufirmen und
               holt Mengenrabatte heraus — auch kleine Bestellungen profitieren.
             </p>
@@ -162,10 +175,6 @@ export default function Home() {
               </Link>
             </div>
           </div>
-
-          {/* Auf dem Handy steht das Bild unter dem Text und laeuft dort ueber
-              beide Raender — sonst wirkt es wie ein hineingeklebtes Kaestchen. */}
-          <RebarArt className="relative -mx-4 h-[280px] sm:-mx-6 sm:h-[340px] lg:hidden" />
         </div>
       </section>
 

@@ -1,5 +1,15 @@
 import Link from "next/link";
-import { Layers, TrendingDown, ChevronRight, LineChart } from "lucide-react";
+import { TrendingDown, ChevronRight } from "lucide-react";
+import { CARD } from "@/lib/ui";
+import { cn } from "@/lib/utils";
+
+/**
+ * Rechte Schiene des Feeds.
+ *
+ * Die Bündel-Chancen sind hell wie der übrige eingeloggte Bereich. Dunkel
+ * bleibt allein die KBOB-Karte: EIN dunkler Anker je Seite lenkt den Blick
+ * auf die Zahl, die zählt — zehn dunkle Kästen lenken ihn nirgendwohin.
+ */
 
 type Pool = { material: string; region: string; vol: string; pct: number; disc: number };
 
@@ -37,25 +47,23 @@ export default function BundleOpportunities() {
   return (
     <div className="space-y-4">
       {/* Bündel-Chancen */}
-      <div className="overflow-hidden rounded-lg border border-white/10 bg-navy-900 text-white shadow-card">
-        <div className="flex items-center justify-between border-b border-white/10 px-4 py-3">
-          <h3 className="flex items-center gap-2 text-[13px] font-semibold text-white">
-            <Layers className="h-4 w-4 text-brand" /> Bündel-Chancen
-          </h3>
-          <span className="text-[11px] text-white/40">deine Region</span>
+      <div className={cn(CARD, "overflow-hidden")}>
+        <div className="flex items-baseline justify-between px-5 pb-3 pt-4">
+          <h3 className="text-[14px] font-bold tracking-tight text-slate-900">Bündel-Chancen</h3>
+          <span className="text-[11px] text-slate-400">deine Region</span>
         </div>
-        <ul className="divide-y divide-white/[0.07]">
+        <ul className="divide-y divide-slate-200 border-t border-slate-200">
           {POOLS.map((p) => (
             <li key={p.material}>
-              <Link href="/pools" className="block px-4 py-3 transition-colors hover:bg-white/[0.03]">
+              <Link href="/pools" className="block px-5 py-3.5 transition-colors hover:bg-slate-50">
                 <div className="flex items-center justify-between gap-2">
-                  <span className="truncate text-[13px] font-semibold text-white">{p.material}</span>
-                  <span className="shrink-0 rounded-sm border border-brand/40 bg-brand/10 px-1.5 py-0.5 text-[10px] font-bold tabular-nums text-brand">
+                  <span className="truncate text-[13px] font-semibold text-slate-900">{p.material}</span>
+                  <span className="shrink-0 rounded-full border border-brand/30 bg-brand/10 px-2 py-0.5 text-[10.5px] font-bold tabular-nums text-brand">
                     −{p.disc}%
                   </span>
                 </div>
-                <div className="mt-0.5 text-[11px] text-white/45">{p.region} · {p.vol}</div>
-                <div className="mt-2 h-1 w-full overflow-hidden rounded-full bg-white/10">
+                <div className="mt-1 text-[11.5px] text-slate-400">{p.region} · {p.vol}</div>
+                <div className="mt-2.5 h-1 w-full overflow-hidden rounded-full bg-slate-100">
                   <div className="h-full rounded-full bg-brand" style={{ width: `${p.pct}%` }} />
                 </div>
               </Link>
@@ -64,31 +72,33 @@ export default function BundleOpportunities() {
         </ul>
         <Link
           href="/pools"
-          className="flex items-center justify-center gap-1 border-t border-white/10 py-2.5 text-[12px] font-semibold text-white/70 transition-colors hover:text-brand"
+          className="flex items-center justify-center gap-1 border-t border-slate-200 py-3 text-[12.5px] font-semibold text-slate-500 transition-colors hover:text-brand"
         >
           Alle Smart Pools <ChevronRight className="h-3.5 w-3.5" />
         </Link>
       </div>
 
-      {/* Markt / KBOB-Mini */}
-      <div className="rounded-lg border border-white/10 bg-navy-900 p-4 text-white shadow-card">
-        <div className="flex items-center justify-between">
-          <h3 className="flex items-center gap-2 text-[13px] font-semibold text-white">
-            <LineChart className="h-4 w-4 text-brand" /> KBOB-Markt
-          </h3>
-          <Link href="/kbob" className="text-[11px] font-semibold text-brand hover:underline">Index</Link>
+      {/* Markt / KBOB — der eine dunkle Anker der Seite */}
+      <div className="rounded-2xl border border-white/[0.08] bg-navy-950 p-5 text-white shadow-card">
+        <div className="flex items-baseline justify-between">
+          <h3 className="text-[14px] font-bold tracking-tight text-white">KBOB-Markt</h3>
+          <Link href="/kbob" className="text-[11.5px] font-semibold text-brand hover:underline">
+            Index
+          </Link>
         </div>
-        <div className="mt-1 text-[11px] text-white/45">Beton C25/30 · Referenzpreis</div>
-        <div className="mt-1 flex items-baseline gap-2">
-          <span className="text-xl font-bold text-white">CHF 156.–</span>
-          <span className="text-[11px] text-white/40">/ m³</span>
+        <div className="mt-1 text-[11.5px] text-white/40">Beton C25/30 · Referenzpreis</div>
+        <div className="mt-3 flex items-baseline gap-2">
+          <span className="font-display text-[34px] font-bold leading-none tabular-nums text-white">
+            156.–
+          </span>
+          <span className="text-[12px] text-white/40">CHF / m³</span>
         </div>
         <Sparkline />
-        <div className="mt-2 flex items-center justify-between border-t border-white/10 pt-2 text-[12px]">
-          <span className="inline-flex items-center gap-1 text-white/55">
+        <div className="mt-3 flex items-center justify-between border-t border-white/10 pt-3 text-[12.5px]">
+          <span className="inline-flex items-center gap-1.5 text-white/55">
             <TrendingDown className="h-3.5 w-3.5 text-brand" /> Ø Pool-Preis
           </span>
-          <span className="font-bold text-brand">−13.8 %</span>
+          <span className="font-bold tabular-nums text-brand">−13.8 %</span>
         </div>
       </div>
     </div>
