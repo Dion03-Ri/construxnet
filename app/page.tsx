@@ -1,5 +1,4 @@
 import Link from "next/link";
-import BundleScroll from "@/components/home/BundleScroll";
 import TwoWays from "@/components/home/TwoWays";
 import ProcessVideo from "@/components/home/ProcessVideo";
 import {
@@ -169,8 +168,102 @@ export default function Home() {
       {/* ============ Zwei Wege zum besseren Preis ============ */}
       <TwoWays />
 
-      {/* ================= Smart Pools (Scroll-Erzählung) ================= */}
-      <BundleScroll />
+      {/* ================= Smart Pools ================= */}
+      <section className="border-y border-slate-200 bg-white">
+        <div className="mx-auto grid max-w-6xl grid-cols-1 items-center gap-12 px-4 py-16 sm:px-6 lg:grid-cols-[1fr_1.1fr] lg:py-20">
+          <div>
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-brand/30 bg-brand/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-brand">
+              <Layers className="h-3.5 w-3.5" /> Smart Pools
+            </span>
+            <h2 className="mt-4 text-3xl font-bold leading-tight tracking-tight text-slate-900 sm:text-[2.4rem]">
+              Mengenrabatte,<br />die alleine niemand bekommt.
+            </h2>
+            <p className="mt-5 max-w-lg text-[15px] leading-relaxed text-slate-500">
+              Wer alleine einkauft, zahlt Einzelpreise. Obtanet bündelt den Bedarf mehrerer
+              Baufirmen zu einem gemeinsamen Auftrag und verhandelt mit dem gesamten Volumen
+              bei den Werken. <b className="text-slate-800">Je grösser das Bündel, desto höher
+              der Rabatt</b> — auch für kleine Einzelbestellungen.
+            </p>
+            <Link
+              href="/pools"
+              className="mt-7 inline-flex items-center gap-2 rounded-full bg-navy-900 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-navy-800"
+            >
+              So funktioniert ein Pool <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+
+          {/* Bündelungs-Grafik */}
+          <div className="relative overflow-hidden rounded-[26px] border border-white/[0.09] bg-navy-900 p-6 text-white shadow-[0_24px_60px_-24px_rgba(8,17,30,0.6)] sm:rounded-[30px] sm:p-7">
+            <div aria-hidden className="pointer-events-none absolute inset-0 opacity-[0.06]" style={GRID_BG} />
+            <div
+              aria-hidden
+              className="pointer-events-none absolute -bottom-24 -right-16 h-64 w-64 rounded-full bg-brand/15 blur-3xl"
+            />
+
+            <div className="relative">
+              <div className="flex items-center justify-between">
+                <div>
+                  <div className="text-[13px] font-bold">Beton C25/30 · Raum Zürich</div>
+                  <div className="text-[11px] text-white/40">Sammelphase läuft</div>
+                </div>
+                <span className="rounded-full border border-brand/30 bg-brand/10 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-brand">
+                  Beispiel
+                </span>
+              </div>
+
+              {/* Beitragende Firmen */}
+              <div className="mt-5 grid grid-cols-3 gap-2">
+                {[
+                  { n: "Firma A", v: "120 m³" },
+                  { n: "Firma B", v: "90 m³" },
+                  { n: "Firma C", v: "90 m³" },
+                ].map((f) => (
+                  <div key={f.n} className="rounded-2xl border border-white/[0.09] bg-white/[0.04] px-3 py-2.5 text-center">
+                    <Building2 className="mx-auto h-4 w-4 text-white/35" />
+                    <div className="mt-1.5 text-[11px] text-white/50">{f.n}</div>
+                    <div className="text-[13px] font-bold">{f.v}</div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Zusammenführung */}
+              <div className="relative mt-3 flex justify-center">
+                <div className="h-5 w-px bg-gradient-to-b from-white/10 to-brand/60" />
+              </div>
+
+              {/* Gebündeltes Volumen */}
+              <div className="rounded-2xl border border-brand/30 bg-brand/10 px-4 py-3.5">
+                <div className="flex items-center justify-between">
+                  <span className="text-[12.5px] font-semibold text-white/85">Gebündeltes Volumen</span>
+                  <span className="text-[15px] font-bold text-brand">300 m³</span>
+                </div>
+                <div className="mt-2.5 h-1.5 w-full overflow-hidden rounded-full bg-white/10">
+                  <div className="h-full w-[86%] rounded-full bg-brand" />
+                </div>
+              </div>
+
+              {/* Ergebnis */}
+              <div className="mt-4 grid grid-cols-2 gap-2 border-t border-white/10 pt-4">
+                <div className="rounded-2xl bg-white/[0.04] px-3 py-2.5">
+                  <div className="text-[10px] uppercase tracking-wider text-white/40">Mengenrabatt</div>
+                  <div className="mt-0.5 text-[19px] font-bold text-brand">16 %</div>
+                  <div className="text-[10.5px] text-white/40">garantiert, ggü. KBOB</div>
+                </div>
+                <div className="rounded-2xl bg-white/[0.04] px-3 py-2.5">
+                  <div className="text-[10px] uppercase tracking-wider text-white/40">Ersparnis</div>
+                  <div className="mt-0.5 text-[19px] font-bold text-white">CHF 19'200</div>
+                  <div className="text-[10.5px] text-white/40">für alle Teilnehmer</div>
+                </div>
+              </div>
+
+              <p className="relative mt-4 flex items-start gap-2 text-[11.5px] leading-relaxed text-white/45">
+                <ShieldCheck className="mt-0.5 h-3.5 w-3.5 shrink-0 text-brand" />
+                Das beste Sealed-Bid-Angebot kann die Garantie sogar übertreffen.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* ================= So funktioniert's (kompakt) ================= */}
       <section className="mx-auto max-w-6xl px-4 py-14 sm:px-6">
@@ -197,101 +290,69 @@ export default function Home() {
       </section>
 
       {/* ================= Pools + Netzwerk ================= */}
-      {/* Zwei Karten auf Bildgrund: das Bild liegt hinten, darüber ein dunkler
-          Verlauf für die Lesbarkeit, darauf die Zeilen als leichte Glasflächen.
-          Fehlt eine Bilddatei, bleibt der dunkle Grund — es bricht nichts. */}
       <section className="mx-auto grid max-w-6xl grid-cols-1 gap-5 px-4 pb-16 sm:px-6 lg:grid-cols-2">
         {/* Pools */}
-        <div className="relative overflow-hidden rounded-[26px] border border-white/[0.09] bg-[#08111C] p-5 text-white sm:rounded-[30px] sm:p-6">
-          <div
-            aria-hidden
-            className="pointer-events-none absolute inset-0 bg-cover bg-center opacity-[0.52]"
-            style={{ backgroundImage: "url('/bg-pools.jpg')" }}
-          />
-          <div
-            aria-hidden
-            className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[#050B14]/94 via-[#050B14]/62 to-[#050B14]/92"
-          />
-          <div className="relative">
-            <div className="mb-4 flex items-center justify-between">
-              <h2 className="text-[16px] font-bold tracking-tight text-white">Aktive Smart Pools</h2>
-              <Link href="/pools" className="inline-flex items-center gap-1 text-[13px] font-semibold text-brand hover:text-brand-400">
-                Alle <ArrowRight className="h-3.5 w-3.5" />
-              </Link>
-            </div>
-            <ul className="space-y-2">
-              {POOLS.map((p) => (
-                <li
-                  key={p.material}
-                  className="flex items-center gap-3 rounded-2xl border border-white/[0.12] bg-white/[0.07] p-3 backdrop-blur-sm transition-colors hover:border-brand/50 hover:bg-white/[0.11]"
-                >
-                  <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-brand/15 text-brand ring-1 ring-brand/25">
-                    <Layers className="h-4 w-4" />
-                  </span>
-                  <div className="min-w-0 flex-1">
-                    <div className="truncate text-[13px] font-semibold text-white">{p.material}</div>
-                    <div className="mt-0.5 flex items-center gap-1 text-[11px] text-white/50">
-                      <MapPin className="h-3 w-3" /> {p.region} · {p.volume}
-                    </div>
-                    <div className="mt-1.5 h-1.5 w-full overflow-hidden rounded-full bg-white/15">
-                      <div className="h-full rounded-full bg-brand" style={{ width: `${p.fill}%` }} />
-                    </div>
-                  </div>
-                  <span className="hidden shrink-0 items-center gap-1 self-start text-[11px] text-white/45 sm:inline-flex">
-                    <Clock className="h-3 w-3" /> {p.deadline}
-                  </span>
-                </li>
-              ))}
-            </ul>
+        <div className={cn(CARD, "p-6")}>
+          <div className="mb-4 flex items-center justify-between">
+            <h2 className="text-[16px] font-bold tracking-tight text-slate-900">Aktive Smart Pools</h2>
+            <Link href="/pools" className="inline-flex items-center gap-1 text-[13px] font-semibold text-brand hover:text-brand-600">
+              Alle <ArrowRight className="h-3.5 w-3.5" />
+            </Link>
           </div>
+          <ul className="space-y-2">
+            {POOLS.map((p) => (
+              <li key={p.material} className="flex items-center gap-3 rounded-2xl border border-slate-200 p-3 transition-colors hover:border-brand/40">
+                <span className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-navy-900 text-brand">
+                  <Layers className="h-4 w-4" />
+                </span>
+                <div className="min-w-0 flex-1">
+                  <div className="truncate text-[13px] font-semibold text-slate-900">{p.material}</div>
+                  <div className="mt-0.5 flex items-center gap-1 text-[11px] text-slate-400">
+                    <MapPin className="h-3 w-3" /> {p.region} · {p.volume}
+                  </div>
+                  <div className="mt-1.5 h-1.5 w-full overflow-hidden rounded-full bg-slate-100">
+                    <div className="h-full rounded-full bg-brand" style={{ width: `${p.fill}%` }} />
+                  </div>
+                </div>
+                <span className="hidden shrink-0 items-center gap-1 self-start text-[11px] text-slate-400 sm:inline-flex">
+                  <Clock className="h-3 w-3" /> {p.deadline}
+                </span>
+              </li>
+            ))}
+          </ul>
         </div>
 
         {/* Netzwerk */}
-        <div className="relative overflow-hidden rounded-[26px] border border-white/[0.09] bg-[#08111C] p-5 text-white sm:rounded-[30px] sm:p-6">
-          <div
-            aria-hidden
-            className="pointer-events-none absolute inset-0 bg-cover bg-center opacity-[0.62]"
-            style={{ backgroundImage: "url('/bg-netzwerk.jpg')" }}
-          />
-          <div
-            aria-hidden
-            className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[#050B14]/94 via-[#050B14]/62 to-[#050B14]/92"
-          />
-          <div className="relative">
-            <div className="mb-4 flex items-center justify-between">
-              <h2 className="text-[16px] font-bold tracking-tight text-white">Firmen im Netzwerk</h2>
-              <Link href="/network" className="inline-flex items-center gap-1 text-[13px] font-semibold text-brand hover:text-brand-400">
-                Zum Netzwerk <ArrowRight className="h-3.5 w-3.5" />
-              </Link>
-            </div>
-            <ul className="space-y-2">
-              {COMPANIES.map((c) => (
-                <li
-                  key={c.uid}
-                  className="flex items-center gap-3 rounded-2xl border border-white/[0.12] bg-white/[0.07] p-3 backdrop-blur-sm transition-colors hover:border-brand/50 hover:bg-white/[0.11]"
-                >
-                  <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-white/10 text-[11px] font-bold text-white ring-1 ring-white/15">
-                    {c.name.split(" ").slice(0, 2).map((w) => w[0]).join("")}
-                  </span>
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-center gap-1 truncate text-[13px] font-semibold text-white">
-                      {c.name} <BadgeCheck className="h-3.5 w-3.5 shrink-0 text-brand" />
-                    </div>
-                    <div className="truncate text-[11px] text-white/50">{c.cat} · {c.city}</div>
-                  </div>
-                  <Link
-                    href="/network"
-                    className="shrink-0 rounded-full border border-brand/50 px-3.5 py-1.5 text-[12px] font-semibold text-brand transition-colors hover:bg-brand/15"
-                  >
-                    Vernetzen
-                  </Link>
-                </li>
-              ))}
-            </ul>
+        <div className={cn(CARD, "p-6")}>
+          <div className="mb-4 flex items-center justify-between">
+            <h2 className="text-[16px] font-bold tracking-tight text-slate-900">Firmen im Netzwerk</h2>
+            <Link href="/network" className="inline-flex items-center gap-1 text-[13px] font-semibold text-brand hover:text-brand-600">
+              Zum Netzwerk <ArrowRight className="h-3.5 w-3.5" />
+            </Link>
           </div>
+          <ul className="space-y-2">
+            {COMPANIES.map((c) => (
+              <li key={c.uid} className="flex items-center gap-3 rounded-2xl border border-slate-200 p-3 transition-colors hover:border-brand/40">
+                <span className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-navy-900 text-[11px] font-bold text-white">
+                  {c.name.split(" ").slice(0, 2).map((w) => w[0]).join("")}
+                </span>
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-1 truncate text-[13px] font-semibold text-slate-900">
+                    {c.name} <BadgeCheck className="h-3.5 w-3.5 shrink-0 text-brand" />
+                  </div>
+                  <div className="truncate text-[11px] text-slate-400">{c.cat} · {c.city}</div>
+                </div>
+                <Link
+                  href="/network"
+                  className="shrink-0 rounded-full border border-brand/40 px-3.5 py-1.5 text-[12px] font-semibold text-brand transition-colors hover:bg-brand/10"
+                >
+                  Vernetzen
+                </Link>
+              </li>
+            ))}
+          </ul>
         </div>
       </section>
-
       {/* ================= Abschluss-CTA ================= */}
       <section className="mx-auto max-w-6xl px-4 pb-20 sm:px-6">
         <div className="relative overflow-hidden rounded-[28px] border border-white/10 bg-navy-900 px-6 py-12 text-white sm:rounded-[32px] sm:px-12 sm:py-16">

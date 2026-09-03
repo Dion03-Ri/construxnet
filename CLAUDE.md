@@ -175,14 +175,7 @@ Supabase (server + browser client, `supabaseAdmin` service-role), Leaflet/OSM
   - **E-Mail** („neue Nachricht") — braucht einen Versanddienst (z. B.
     Resend). Später, ausdrücklich nach Web-Push.
 
-## Bilder und Videos auf der Startseite
-- `public/bg-pools.jpg` → Karte „Aktive Smart Pools", `public/bg-netzwerk.jpg`
-  → Karte „Firmen im Netzwerk". Sie liegen als Hintergrund unter einem
-  dunklen Verlauf, der oben und unten dichter ist als in der Mitte — so
-  bleibt die Kopfzeile lesbar und das Bild kommt trotzdem durch.
-- **Bilder vor dem Ablegen verkleinern.** Die Originale waren 13 MB; auf
-  1800 px Breite mit mozjpeg sind es 380 KB. Rohbilder gehören nicht auf eine
-  Startseite.
+## Video auf der Startseite
 - **Videos gehören nicht ins Repository**, sondern in den **Vercel Blob
   Store**. Die Adresse steht in `data/media.ts`; ist sie leer, rendert
   `ProcessVideo` gar nichts. Hochladen:
@@ -190,7 +183,14 @@ Supabase (server + browser client, `supabaseAdmin` service-role), Leaflet/OSM
 - Das Video läuft **nie von selbst** — `controls`, kein `autoplay`,
   `preload="metadata"`. Ein Video, das auf einer Geschäftsseite von selbst
   losläuft, ist Störung und kostet mobil fremde Daten.
-- Bilder nur ablegen, wenn eine Lizenz dafür vorliegt.
+- **Keine Fotohintergründe auf den Startseiten-Karten.** Die Karten
+  „Aktive Smart Pools" und „Firmen im Netzwerk" bleiben schlichte helle
+  Karten. Ein Versuch mit Bildern darunter (PR #115/#116) wurde auf Wunsch
+  wieder entfernt — die Zahlen darauf lasen sich schlechter, und die Seite
+  verlor ihre ruhige Linie. Bitte nicht erneut einbauen.
+- Sollten doch einmal Bilder nötig sein: nur mit Lizenz, und vorher
+  verkleinern (1800 px, mozjpeg) — Rohbilder mit 13 MB gehören nicht auf
+  eine Startseite.
 
 ## Formensprache — weiche Ecken, dünne Ränder
 - Vorbild ist der Aufbau grosser Produktkarten: sehr weiche Ecken
@@ -201,26 +201,17 @@ Supabase (server + browser client, `supabaseAdmin` service-role), Leaflet/OSM
   geändert in `lib/ui.ts` (`CARD`, `CARD_HOVER`, `INPUT`, `badge`,
   `SEGMENT_GROUP`, `segment`) — dort anpassen, nicht in einzelnen Dateien.
 
-## Scroll-Animation auf der Startseite
-- `components/home/BundleScroll.tsx`: hohe Bahn (240vh / ab sm 300vh) mit
-  klebendem Block. **Die Bewegung bleibt im rechten Panel** — links steht der
-  Text still. Ein bildschirmfüllender Übergang war zu viel und wurde
-  verworfen. Ein `requestAnimationFrame`-gedrosselter Scroll-Hörer setzt
-  genau EINE CSS-Variable `--p` (0…1); alles andere hängt in CSS mit
-  `clamp()` daran. Kein React-Rendern je Bild, nur `transform` und `opacity`.
-- **Warum nicht framer-motion:** `useTransform` verhielt sich hier
-  unzuverlässig — Werte liefen jenseits des Eingabebereichs zurück statt zu
-  begrenzen (Hintergrund wurde nach der Mitte wieder dunkel, Blöcke
-  verschwanden am Ende). Mit CSS-`clamp()` ist der Bereich hart begrenzt und
-  jeder Zustand nachmessbar. Für diesen Abschnitt bitte nicht zurückbauen.
-- Choreografie über `--p`: Kopfzeile 0–0.10 · Karte gross→normal 0.05–0.34 ·
-  helle Fläche schiebt sich hoch 0.14–0.36 · Auffächern 0.30–0.52 · Volumen
-  120→300 m³ 0.54–0.76 · Ergebnis 0.76–0.96.
-- Handy hat eigene Werte über `--fan` und `--rot`, sonst laufen die Karten
-  über den Rand. Unten `pb-16`, damit nichts hinter der festen Navigation
-  liegt.
-- `prefers-reduced-motion`: `--p` wird auf 1 gesetzt, der Endzustand steht
-  still da.
+## Startseite: keine Scroll-Erzählung
+- Der Abschnitt „Smart Pools" ist eine **stille** Sektion: Text links,
+  Bündelungs-Grafik rechts. Fertig.
+- Es gab einen Versuch mit einer scroll-getriebenen Erzählung
+  (`components/home/BundleScroll.tsx`, PR #113/#114) — auf Wunsch wieder
+  entfernt. Bitte nicht erneut einbauen.
+- Falls doch je wieder Scroll-Bewegung gefragt ist: **nicht** mit
+  framer-motion. `useTransform` verhielt sich hier unzuverlässig — Werte
+  liefen jenseits des Eingabebereichs zurück statt zu begrenzen. Ein
+  `requestAnimationFrame`-gedrosselter Hörer, der genau EINE CSS-Variable
+  setzt, und `clamp()` in CSS war die Lösung, die trug.
 
 ## Rechtsseiten
 - `data/legal.ts` hält alle rechtlichen Eckdaten an einer Stelle. Werte mit
