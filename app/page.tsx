@@ -1,6 +1,7 @@
 import Link from "next/link";
 import BundleScroll from "@/components/home/BundleScroll";
 import TwoWays from "@/components/home/TwoWays";
+import ProcessVideo from "@/components/home/ProcessVideo";
 import {
   ArrowRight,
   Megaphone,
@@ -190,6 +191,9 @@ export default function Home() {
             </div>
           ))}
         </div>
+
+        {/* Ablauf als Video — erscheint, sobald die Adresse in data/media.ts steht */}
+        <ProcessVideo />
       </section>
 
       {/* ================= Pools + Netzwerk ================= */}
@@ -201,12 +205,12 @@ export default function Home() {
         <div className="relative overflow-hidden rounded-[26px] border border-white/[0.09] bg-[#08111C] p-5 text-white sm:rounded-[30px] sm:p-6">
           <div
             aria-hidden
-            className="pointer-events-none absolute inset-0 bg-cover bg-center opacity-[0.42]"
+            className="pointer-events-none absolute inset-0 bg-cover bg-center opacity-[0.52]"
             style={{ backgroundImage: "url('/bg-pools.jpg')" }}
           />
           <div
             aria-hidden
-            className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[#050B14]/85 via-[#050B14]/80 to-[#050B14]/95"
+            className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[#050B14]/94 via-[#050B14]/62 to-[#050B14]/92"
           />
           <div className="relative">
             <div className="mb-4 flex items-center justify-between">
@@ -246,12 +250,12 @@ export default function Home() {
         <div className="relative overflow-hidden rounded-[26px] border border-white/[0.09] bg-[#08111C] p-5 text-white sm:rounded-[30px] sm:p-6">
           <div
             aria-hidden
-            className="pointer-events-none absolute inset-0 bg-cover bg-center opacity-[0.42]"
+            className="pointer-events-none absolute inset-0 bg-cover bg-center opacity-[0.62]"
             style={{ backgroundImage: "url('/bg-netzwerk.jpg')" }}
           />
           <div
             aria-hidden
-            className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[#050B14]/85 via-[#050B14]/80 to-[#050B14]/95"
+            className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[#050B14]/94 via-[#050B14]/62 to-[#050B14]/92"
           />
           <div className="relative">
             <div className="mb-4 flex items-center justify-between">

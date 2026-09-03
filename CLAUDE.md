@@ -175,13 +175,22 @@ Supabase (server + browser client, `supabaseAdmin` service-role), Leaflet/OSM
   - **E-Mail** („neue Nachricht") — braucht einen Versanddienst (z. B.
     Resend). Später, ausdrücklich nach Web-Push.
 
-## Bilder auf der Startseite
+## Bilder und Videos auf der Startseite
 - `public/bg-pools.jpg` → Karte „Aktive Smart Pools", `public/bg-netzwerk.jpg`
-  → Karte „Firmen im Netzwerk". Beide liegen als Hintergrund mit 42 %
-  Deckkraft unter einem dunklen Verlauf; **fehlt eine Datei, bleibt die Karte
-  einfach dunkel** — nichts bricht.
+  → Karte „Firmen im Netzwerk". Sie liegen als Hintergrund unter einem
+  dunklen Verlauf, der oben und unten dichter ist als in der Mitte — so
+  bleibt die Kopfzeile lesbar und das Bild kommt trotzdem durch.
+- **Bilder vor dem Ablegen verkleinern.** Die Originale waren 13 MB; auf
+  1800 px Breite mit mozjpeg sind es 380 KB. Rohbilder gehören nicht auf eine
+  Startseite.
+- **Videos gehören nicht ins Repository**, sondern in den **Vercel Blob
+  Store**. Die Adresse steht in `data/media.ts`; ist sie leer, rendert
+  `ProcessVideo` gar nichts. Hochladen:
+  `npx vercel blob put ./ablauf.mp4 --pathname video/ablauf.mp4 --access public`
+- Das Video läuft **nie von selbst** — `controls`, kein `autoplay`,
+  `preload="metadata"`. Ein Video, das auf einer Geschäftsseite von selbst
+  losläuft, ist Störung und kostet mobil fremde Daten.
 - Bilder nur ablegen, wenn eine Lizenz dafür vorliegt.
-  `public/README-bilder.md` hält Format und Anforderungen fest.
 
 ## Formensprache — weiche Ecken, dünne Ränder
 - Vorbild ist der Aufbau grosser Produktkarten: sehr weiche Ecken
