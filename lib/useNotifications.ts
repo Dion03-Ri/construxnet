@@ -288,7 +288,9 @@ export function useNotifications() {
       });
     }
 
-    out.sort((a, b) => b.at.localeCompare(a.at));
+    // Null-sicher: ein Bündel ohne Frist oder eine Firma ohne Anlegedatum
+    // hat kein `at` — das darf die Glocke nicht zum Absturz bringen.
+    out.sort((a, b) => (b.at ?? "").localeCompare(a.at ?? ""));
     setNotices(out);
     setLoading(false);
   }, [supabase]);

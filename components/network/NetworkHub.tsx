@@ -546,8 +546,8 @@ export default function NetworkHub() {
           </div>
           <div className="flex items-center gap-2 px-4 py-3">
             <div className="min-w-0 flex-1">
-              <div className="text-[13px] font-bold text-slate-900">Lieferanten-Karte</div>
-              <div className="text-[11px] text-slate-500">Baustoffwerke am Standort entdecken</div>
+              <div className="text-[13px] font-bold text-slate-900">Firmen-Karte</div>
+              <div className="text-[11px] text-slate-500">Standorte in der ganzen Schweiz</div>
             </div>
             <ArrowRight className="h-4 w-4 shrink-0 text-slate-300 transition-transform group-hover:translate-x-0.5" />
           </div>
