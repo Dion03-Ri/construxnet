@@ -175,6 +175,25 @@ Supabase (server + browser client, `supabaseAdmin` service-role), Leaflet/OSM
   - **E-Mail** („neue Nachricht") — braucht einen Versanddienst (z. B.
     Resend). Später, ausdrücklich nach Web-Push.
 
+## Scroll-Animation auf der Startseite
+- `components/home/BundleScroll.tsx`: hohe Bahn (300vh / ab sm 400vh) mit
+  klebendem Block. Ein `requestAnimationFrame`-gedrosselter Scroll-Hörer setzt
+  genau EINE CSS-Variable `--p` (0…1); alles andere hängt in CSS mit
+  `clamp()` daran. Kein React-Rendern je Bild, nur `transform` und `opacity`.
+- **Warum nicht framer-motion:** `useTransform` verhielt sich hier
+  unzuverlässig — Werte liefen jenseits des Eingabebereichs zurück statt zu
+  begrenzen (Hintergrund wurde nach der Mitte wieder dunkel, Blöcke
+  verschwanden am Ende). Mit CSS-`clamp()` ist der Bereich hart begrenzt und
+  jeder Zustand nachmessbar. Für diesen Abschnitt bitte nicht zurückbauen.
+- Choreografie über `--p`: Kopfzeile 0–0.10 · Karte gross→normal 0.05–0.34 ·
+  helle Fläche schiebt sich hoch 0.14–0.36 · Auffächern 0.30–0.52 · Volumen
+  120→300 m³ 0.54–0.76 · Ergebnis 0.76–0.96.
+- Handy hat eigene Werte über `--fan` und `--rot`, sonst laufen die Karten
+  über den Rand. Unten `pb-16`, damit nichts hinter der festen Navigation
+  liegt.
+- `prefers-reduced-motion`: `--p` wird auf 1 gesetzt, der Endzustand steht
+  still da.
+
 ## Rechtsseiten
 - `data/legal.ts` hält alle rechtlichen Eckdaten an einer Stelle. Werte mit
   `[[…]]` sind noch offen und werden auf der Seite golden markiert statt
