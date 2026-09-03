@@ -92,7 +92,7 @@ function TopBar() {
 function MobileNav() {
   const isActive = useActive();
   return (
-    <nav className="fixed inset-x-0 bottom-0 z-50 grid grid-cols-5 border-t border-slate-200 glass md:hidden">
+    <nav className="fixed inset-x-0 bottom-0 z-50 grid grid-cols-5 border-t border-slate-200 glass pb-[env(safe-area-inset-bottom)] md:hidden">
       {NAV.map((item) => {
         const active = isActive(item.href);
         return (
@@ -100,12 +100,12 @@ function MobileNav() {
             key={item.href}
             href={item.href}
             className={cn(
-              "flex flex-col items-center gap-1 py-2.5 text-[10px] font-medium transition-colors",
+              "flex min-w-0 flex-col items-center gap-1 px-1 py-2.5 text-[10px] font-medium leading-tight transition-colors",
               active ? "text-brand" : "text-slate-500 hover:text-slate-900",
             )}
           >
-            <item.icon className="h-5 w-5" />
-            {item.label}
+            <item.icon className="h-5 w-5 shrink-0" />
+            <span className="w-full truncate text-center">{item.label}</span>
           </Link>
         );
       })}
@@ -154,7 +154,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
 
       <SignedIn>
         <TopBar />
-        <div className="pb-20 md:pb-0">{children}</div>
+        <div className="pb-safe-nav md:pb-0">{children}</div>
         <MobileNav />
       </SignedIn>
     </>

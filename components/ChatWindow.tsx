@@ -539,7 +539,7 @@ export default function ChatWindow({ initialTo }: { initialTo?: string }) {
   }
 
   return (
-    <div className={cn(CARD, "grid h-[calc(100vh-9rem)] grid-cols-1 overflow-hidden sm:grid-cols-[300px_1fr] lg:grid-cols-[300px_minmax(0,1fr)_300px]")}>
+    <div className={cn(CARD, "grid h-[calc(100dvh-12rem)] grid-cols-1 overflow-hidden sm:grid-cols-[300px_1fr] md:h-[calc(100vh-9rem)] lg:grid-cols-[300px_minmax(0,1fr)_300px]")}>
       {/* Thread list */}
       <aside className={cn("flex min-h-0 flex-col border-r border-slate-200 bg-slate-50/60", active && "hidden sm:flex")}>
         <div className="border-b border-slate-200 bg-white px-4 pb-3 pt-4">

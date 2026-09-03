@@ -5,6 +5,8 @@
 @layer base {
   html {
     -webkit-font-smoothing: antialiased;
+    /* Auf schmalen Geraeten nie ueber die Bildschirmbreite hinaus */
+    -webkit-text-size-adjust: 100%;
     text-rendering: optimizeLegibility;
     /* Verhindert horizontales Ruckeln, wenn der Scrollbalken auftaucht/verschwindet */
     scrollbar-gutter: stable;
@@ -20,6 +22,18 @@
   .glass {
     background-color: rgb(255 255 255 / 0.95);
     backdrop-filter: blur(12px);
+  }
+  /* Horizontale Tab-Leisten auf dem Handy: scrollbar, aber ohne sichtbaren Balken */
+  .no-scrollbar {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  /* Safe-Area unter der fixen Handy-Navigation (iPhone Home-Indicator) */
+  .pb-safe-nav {
+    padding-bottom: calc(5rem + env(safe-area-inset-bottom));
   }
 }
 
