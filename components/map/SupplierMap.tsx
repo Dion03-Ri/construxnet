@@ -275,30 +275,22 @@ export default function SupplierMap({
         })}
       </div>
 
+      {/* Statt eines Deckels auf der Karte nur eine schmale Zeile: die Karte
+          bleibt sichtbar und bedienbar, auch wenn noch niemand darauf steht. */}
+      {empty && (
+        <p className="flex items-start gap-1.5 border-b border-slate-100 bg-slate-50 px-4 py-2 text-[12px] leading-relaxed text-slate-500 sm:px-5">
+          <Info className="mt-px h-3.5 w-3.5 shrink-0 text-slate-400" />
+          {rows.length === 0
+            ? "Noch keine Standorte freigegeben. Wer zustimmt, erscheint hier automatisch."
+            : "Keine Firma in dieser Auswahl."}
+        </p>
+      )}
+
       {/* `isolate`: Leaflet zeichnet seine Ebenen mit z-index 400+. Ohne
           eigenen Stapelkontext liegen die Nadeln sonst ueber der festen
           Navigation am unteren Rand des Telefons. */}
       <div className="relative isolate">
         <LeafletMap points={points} />
-
-        {empty && (
-          <div className="pointer-events-none absolute inset-0 z-[500] flex items-center justify-center p-6">
-            <div className="pointer-events-auto max-w-sm rounded-lg border border-slate-200 bg-white/95 px-5 py-4 text-center shadow-cardhover backdrop-blur">
-              <span className="mx-auto grid h-10 w-10 place-items-center rounded-full bg-brand/10 text-brand">
-                <MapPin className="h-5 w-5" />
-              </span>
-              <p className="mt-2.5 text-sm font-semibold text-slate-900">
-                {rows.length === 0 ? "Noch keine Standorte freigegeben" : "Keine Firma in dieser Auswahl"}
-              </p>
-              <p className="mt-1 text-[12px] leading-relaxed text-slate-500">
-                Auf der Karte steht nur, wer ausdrücklich zugestimmt hat. Wer
-                zustimmt, wird sofort anhand seiner Adresse verortet und
-                erscheint hier.
-                {!consent && " Du kannst das oben rechts für dich einschalten."}
-              </p>
-            </div>
-          </div>
-        )}
       </div>
 
       <p className="flex items-start gap-1.5 px-4 py-2.5 text-[11px] leading-relaxed text-slate-400 sm:px-5">
