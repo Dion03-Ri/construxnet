@@ -31,6 +31,11 @@ Supabase (server + browser client, `supabaseAdmin` service-role), Leaflet/OSM
 - Arbeits-Branch: `claude/construxnet-platform-rebuild-jll7j9`.
 - Ablauf: committen → PR → **squash-merge** nach `main` → Branch neu von main
   (`git fetch origin main && git checkout -B <branch> origin/main`).
+- **Den PR immer selbst mergen** (ausdrücklicher Wunsch des Nutzers). Ein
+  Push allein bringt nichts: obtanet.com wird von `main` deployed, der
+  Arbeits-Branch ist unsichtbar. Ein Thema gilt erst als geliefert, wenn es
+  auf `main` liegt — nicht, wenn es gepusht ist. Nach dem Merge den
+  Commit auf `origin/main` prüfen und dem Nutzer melden.
 - Push: `git push --force-with-lease=<branch>:<remote-sha> -u origin <branch>`.
 
 ## Build-Check (Dummy-Envs)
