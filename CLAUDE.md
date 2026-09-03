@@ -175,6 +175,14 @@ Supabase (server + browser client, `supabaseAdmin` service-role), Leaflet/OSM
   - **E-Mail** („neue Nachricht") — braucht einen Versanddienst (z. B.
     Resend). Später, ausdrücklich nach Web-Push.
 
+## Bilder auf der Startseite
+- `public/bg-pools.jpg` → Karte „Aktive Smart Pools", `public/bg-netzwerk.jpg`
+  → Karte „Firmen im Netzwerk". Beide liegen als Hintergrund mit 42 %
+  Deckkraft unter einem dunklen Verlauf; **fehlt eine Datei, bleibt die Karte
+  einfach dunkel** — nichts bricht.
+- Bilder nur ablegen, wenn eine Lizenz dafür vorliegt.
+  `public/README-bilder.md` hält Format und Anforderungen fest.
+
 ## Formensprache — weiche Ecken, dünne Ränder
 - Vorbild ist der Aufbau grosser Produktkarten: sehr weiche Ecken
   (`rounded-2xl` für Karten, `rounded-[28px]`/`[32px]` für grosse Panels),
