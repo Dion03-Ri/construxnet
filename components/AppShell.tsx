@@ -89,6 +89,21 @@ function TopBar() {
   );
 }
 
+/** Schmale Rechtszeile unter dem Inhalt — auf dem Handy ueber der Navigation. */
+function LegalBar() {
+  return (
+    <div className="border-t border-slate-200 bg-white">
+      <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-center gap-x-3 gap-y-1 px-4 py-4 text-[12px] text-slate-400 sm:px-6">
+        <span>© {new Date().getFullYear()} Obtanet</span>
+        <span aria-hidden>·</span>
+        <Link href="/impressum" className="transition-colors hover:text-brand">Impressum</Link>
+        <Link href="/agb" className="transition-colors hover:text-brand">AGB</Link>
+        <Link href="/datenschutz" className="transition-colors hover:text-brand">Datenschutz</Link>
+      </div>
+    </div>
+  );
+}
+
 function MobileNav() {
   const isActive = useActive();
   return (
@@ -154,7 +169,10 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
 
       <SignedIn>
         <TopBar />
-        <div className="pb-safe-nav md:pb-0">{children}</div>
+        <div className="pb-safe-nav md:pb-0">
+          {children}
+          <LegalBar />
+        </div>
         <MobileNav />
       </SignedIn>
     </>

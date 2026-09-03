@@ -457,7 +457,7 @@ export default function Home() {
 
       {/* ================= Footer ================= */}
       <footer className="border-t border-slate-200 bg-white">
-        <div className="mx-auto grid max-w-6xl grid-cols-2 gap-8 px-4 py-12 sm:px-6 md:grid-cols-4">
+        <div className="mx-auto grid max-w-6xl grid-cols-2 gap-8 px-4 py-12 sm:px-6 md:grid-cols-5">
           <div className="col-span-2 md:col-span-1">
             <div className="flex items-center gap-2 font-bold tracking-tight text-slate-900">
               <span className="grid h-8 w-8 place-items-center rounded-lg bg-navy-900 text-brand">
@@ -473,6 +473,7 @@ export default function Home() {
             { h: "Plattform", links: [["Feed", "/feed"], ["Netzwerk", "/network"], ["Smart Pools", "/pools"], ["KBOB Index", "/kbob"]] },
             { h: "Beschaffung", links: [["Bedarf melden", "/beschaffung"], ["Nachrichten", "/messages"], ["Dashboard", "/dashboard"]] },
             { h: "Konto", links: [["Registrieren", "/sign-up"], ["Login", "/sign-in"]] },
+            { h: "Rechtliches", links: [["Impressum", "/impressum"], ["AGB", "/agb"], ["Datenschutz", "/datenschutz"]] },
           ].map((col) => (
             <div key={col.h}>
               <div className="text-[11px] font-bold uppercase tracking-wider text-slate-400">{col.h}</div>
@@ -486,8 +487,12 @@ export default function Home() {
             </div>
           ))}
         </div>
-        <div className="border-t border-slate-200 py-5 text-center text-[12px] text-slate-400">
-          © {new Date().getFullYear()} Obtanet · Schweizer Baubranche
+        <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 border-t border-slate-200 py-5 text-center text-[12px] text-slate-400">
+          <span>© {new Date().getFullYear()} Obtanet · Schweizer Baubranche</span>
+          <span aria-hidden>·</span>
+          <Link href="/impressum" className="transition-colors hover:text-brand">Impressum</Link>
+          <Link href="/agb" className="transition-colors hover:text-brand">AGB</Link>
+          <Link href="/datenschutz" className="transition-colors hover:text-brand">Datenschutz</Link>
         </div>
       </footer>
     </main>

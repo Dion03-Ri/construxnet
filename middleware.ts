@@ -31,6 +31,12 @@ const isPublicRoute = createRouteMatcher([
   "/api/preview(.*)",
   "/coming-soon",
   "/api/waitlist(.*)",
+  // Rechtsseiten muessen immer erreichbar sein — auch ohne Konto und auch
+  // hinter der Vorstart-Sperre. Die Impressumspflicht haengt am Angebot,
+  // nicht am Login.
+  "/impressum",
+  "/agb",
+  "/datenschutz",
 ]);
 
 const comingSoonOn =
@@ -50,6 +56,9 @@ export default clerkMiddleware(async (auth, req) => {
   if (comingSoonOn && !hasPreview) {
     const allowed =
       path === "/coming-soon" ||
+      path === "/impressum" ||
+      path === "/agb" ||
+      path === "/datenschutz" ||
       path === "/preview" ||
       path.startsWith("/api/preview") ||
       path.startsWith("/api/waitlist");
