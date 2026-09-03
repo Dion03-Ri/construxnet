@@ -1,4 +1,5 @@
 import Link from "next/link";
+import BundleScroll from "@/components/home/BundleScroll";
 import {
   ArrowRight,
   Megaphone,
@@ -218,102 +219,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ================= Smart Pools ================= */}
-      <section className="border-y border-slate-200 bg-white">
-        <div className="mx-auto grid max-w-6xl grid-cols-1 items-center gap-12 px-4 py-16 sm:px-6 lg:grid-cols-[1fr_1.1fr] lg:py-20">
-          <div>
-            <span className="inline-flex items-center gap-1.5 rounded-md border border-brand/30 bg-brand/10 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-brand">
-              <Layers className="h-3.5 w-3.5" /> Smart Pools
-            </span>
-            <h2 className="mt-4 text-3xl font-bold leading-tight tracking-tight text-slate-900 sm:text-[2.4rem]">
-              Mengenrabatte,<br />die alleine niemand bekommt.
-            </h2>
-            <p className="mt-5 max-w-lg text-[15px] leading-relaxed text-slate-500">
-              Wer alleine einkauft, zahlt Einzelpreise. Obtanet bündelt den Bedarf mehrerer
-              Baufirmen zu einem gemeinsamen Auftrag und verhandelt mit dem gesamten Volumen
-              bei den Werken. <b className="text-slate-800">Je grösser das Bündel, desto höher
-              der Rabatt</b> — auch für kleine Einzelbestellungen.
-            </p>
-            <Link
-              href="/pools"
-              className="mt-7 inline-flex items-center gap-2 rounded-md bg-navy-900 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-navy-800"
-            >
-              So funktioniert ein Pool <ArrowRight className="h-4 w-4" />
-            </Link>
-          </div>
-
-          {/* Bündelungs-Grafik */}
-          <div className="relative overflow-hidden rounded-xl border border-white/10 bg-navy-900 p-6 text-white shadow-[0_24px_60px_-24px_rgba(8,17,30,0.6)] sm:p-7">
-            <div aria-hidden className="pointer-events-none absolute inset-0 opacity-[0.06]" style={GRID_BG} />
-            <div
-              aria-hidden
-              className="pointer-events-none absolute -bottom-24 -right-16 h-64 w-64 rounded-full bg-brand/15 blur-3xl"
-            />
-
-            <div className="relative">
-              <div className="flex items-center justify-between">
-                <div>
-                  <div className="text-[13px] font-bold">Beton C25/30 · Raum Zürich</div>
-                  <div className="text-[11px] text-white/40">Sammelphase läuft</div>
-                </div>
-                <span className="rounded-md border border-brand/30 bg-brand/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-brand">
-                  Beispiel
-                </span>
-              </div>
-
-              {/* Beitragende Firmen */}
-              <div className="mt-5 grid grid-cols-3 gap-2">
-                {[
-                  { n: "Firma A", v: "120 m³" },
-                  { n: "Firma B", v: "90 m³" },
-                  { n: "Firma C", v: "90 m³" },
-                ].map((f) => (
-                  <div key={f.n} className="rounded-lg border border-white/10 bg-white/[0.04] px-3 py-2.5 text-center">
-                    <Building2 className="mx-auto h-4 w-4 text-white/35" />
-                    <div className="mt-1.5 text-[11px] text-white/50">{f.n}</div>
-                    <div className="text-[13px] font-bold">{f.v}</div>
-                  </div>
-                ))}
-              </div>
-
-              {/* Zusammenführung */}
-              <div className="relative mt-3 flex justify-center">
-                <div className="h-5 w-px bg-gradient-to-b from-white/10 to-brand/60" />
-              </div>
-
-              {/* Gebündeltes Volumen */}
-              <div className="rounded-lg border border-brand/30 bg-brand/10 px-4 py-3.5">
-                <div className="flex items-center justify-between">
-                  <span className="text-[12.5px] font-semibold text-white/85">Gebündeltes Volumen</span>
-                  <span className="text-[15px] font-bold text-brand">300 m³</span>
-                </div>
-                <div className="mt-2.5 h-1.5 w-full overflow-hidden rounded-full bg-white/10">
-                  <div className="h-full w-[86%] rounded-full bg-brand" />
-                </div>
-              </div>
-
-              {/* Ergebnis */}
-              <div className="mt-4 grid grid-cols-2 gap-2 border-t border-white/10 pt-4">
-                <div className="rounded-lg bg-white/[0.04] px-3 py-2.5">
-                  <div className="text-[10px] uppercase tracking-wider text-white/40">Mengenrabatt</div>
-                  <div className="mt-0.5 text-[19px] font-bold text-brand">16 %</div>
-                  <div className="text-[10.5px] text-white/40">garantiert, ggü. KBOB</div>
-                </div>
-                <div className="rounded-lg bg-white/[0.04] px-3 py-2.5">
-                  <div className="text-[10px] uppercase tracking-wider text-white/40">Ersparnis</div>
-                  <div className="mt-0.5 text-[19px] font-bold text-white">CHF 19'200</div>
-                  <div className="text-[10.5px] text-white/40">für alle Teilnehmer</div>
-                </div>
-              </div>
-
-              <p className="relative mt-4 flex items-start gap-2 text-[11.5px] leading-relaxed text-white/45">
-                <ShieldCheck className="mt-0.5 h-3.5 w-3.5 shrink-0 text-brand" />
-                Das beste Sealed-Bid-Angebot kann die Garantie sogar übertreffen.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* ================= Smart Pools (Scroll-Erzählung) ================= */}
+      <BundleScroll />
 
       {/* ================= So funktioniert's (kompakt) ================= */}
       <section className="mx-auto max-w-6xl px-4 py-14 sm:px-6">
