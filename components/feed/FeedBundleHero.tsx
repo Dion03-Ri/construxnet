@@ -1,13 +1,19 @@
 "use client";
 
 import Link from "next/link";
-import { Megaphone, Layers, TrendingDown, ArrowRight, MapPin, Users } from "lucide-react";
+import { Megaphone, ArrowRight, MapPin, Users } from "lucide-react";
 import { useBundles, nextStep } from "@/lib/bundles";
+import { PANEL, ROW_HOVER } from "@/lib/ui";
 import { cn } from "@/lib/utils";
 
 /**
- * Hero am Kopf des Feeds — hebt den Kern des Modells hervor: Materialbedarf
- * melden → bündeln → sparen. Bewusst grösser/dominanter als der Composer.
+ * Kopf des Feeds: die Handlung, nicht die Werbung.
+ *
+ * Vorher stand hier ein Marketing-Block mit Ueberschrift und Absatz —
+ * derselbe Text wie auf der Startseite. Wer eingeloggt ist, hat sich
+ * laengst entschieden; er will handeln, nicht ueberzeugt werden. Geblieben
+ * sind die zwei Aktionen und die laufenden Buendel, weil das die Sachen
+ * sind, auf die jemand klickt.
  */
 export default function FeedBundleHero() {
   const { bundles } = useBundles();
@@ -18,60 +24,39 @@ export default function FeedBundleHero() {
     .slice(0, 3);
 
   return (
-    <section className="overflow-hidden rounded-xl border border-white/10 bg-navy-900 text-white shadow-card">
-      <div className="relative px-4 py-4 sm:px-6 sm:py-6">
-        {/* dezentes Raster */}
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-0 opacity-[0.06]"
-          style={{
-            backgroundImage:
-              "linear-gradient(rgba(255,255,255,.7) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.7) 1px,transparent 1px)",
-            backgroundSize: "26px 26px",
-          }}
-        />
-        <div className="relative">
-          <span className="inline-flex items-center gap-1.5 rounded-md border border-brand/30 bg-brand/10 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-brand">
-            <Layers className="h-3.5 w-3.5" /> Smart Bündeln
-          </span>
-          <h2 className="mt-3 text-[19px] font-bold leading-snug tracking-tight sm:text-2xl">
-            Bündle deinen Materialbedarf mit der Branche —{" "}
-            <span className="text-brand">garantiert unter KBOB.</span>
+    <section className={cn(PANEL, "overflow-hidden")}>
+      <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-4 px-5 py-4">
+        <div className="min-w-0">
+          <h2 className="text-[15px] font-bold tracking-tight text-white">
+            Was brauchst du auf der Baustelle?
           </h2>
-          {/* Handy: eine Zeile statt Absatz — die Bündel darunter sind wichtiger. */}
-          <p className="mt-1.5 text-[13px] leading-relaxed text-white/60 sm:hidden">
-            Gleiche Bedarfe deiner Region werden gebündelt, die Werke bieten verdeckt dagegen.
+          <p className="mt-1 text-[12.5px] text-white/40">
+            Gleiche Bedarfe deiner Region werden gebündelt — die Werke bieten verdeckt dagegen.
           </p>
-          <p className="mt-1.5 hidden max-w-2xl text-[13px] leading-relaxed text-white/60 sm:block">
-            Melde, was du brauchst. Obtanet bündelt gleiche Bedarfe deiner Region zu einem Pool,
-            die Werke bieten verdeckt im Sealed-Bid — je grösser das Bündel, desto höher der
-            garantierte Netto-Mindestvorteil für alle Teilnehmer.
-          </p>
-
-          <div className="mt-4 flex flex-wrap gap-2">
-            <Link
-              href="/beschaffung"
-              className="inline-flex items-center gap-2 rounded-md bg-brand px-4 py-2.5 text-sm font-semibold text-navy-900 transition-colors hover:bg-brand-500"
-            >
-              <Megaphone className="h-4 w-4" /> Bedarf melden
-            </Link>
-            <Link
-              href="/pools"
-              className="inline-flex items-center gap-2 rounded-md border border-white/15 px-4 py-2.5 text-sm font-semibold text-white/85 transition-colors hover:bg-white/5"
-            >
-              Offene Bündel ansehen <ArrowRight className="h-4 w-4" />
-            </Link>
-          </div>
+        </div>
+        <div className="flex shrink-0 flex-wrap gap-2">
+          <Link
+            href="/beschaffung"
+            className="inline-flex items-center gap-2 rounded-full bg-brand px-4 py-2.5 text-[13px] font-semibold text-navy-950 transition-colors hover:bg-brand/100"
+          >
+            <Megaphone className="h-4 w-4" /> Bedarf melden
+          </Link>
+          <Link
+            href="/pools"
+            className="inline-flex items-center gap-2 rounded-full border border-white/[0.16] px-4 py-2.5 text-[13px] font-semibold text-white/75 transition-colors hover:bg-white/[0.05]"
+          >
+            Offene Bündel <ArrowRight className="h-4 w-4" />
+          </Link>
         </div>
       </div>
 
       {/* Laufende Bündel — echte, oder gar keine */}
       {top.length > 0 && (
-        <div className="border-t border-white/10 bg-navy-950/40 px-3 py-3 sm:px-4">
-          <div className="mb-2 px-1 text-[11px] font-semibold uppercase tracking-wider text-white/45">
+        <div className="border-t border-white/[0.08] bg-white/[0.02] px-5 py-4">
+          <div className="text-[10.5px] font-semibold uppercase tracking-[0.14em] text-white/40">
             Laufende Bündel
           </div>
-          <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
+          <div className="mt-3 grid grid-cols-1 gap-2.5 sm:grid-cols-3">
             {top.map((b) => {
               const step = nextStep(b.current_volume);
               const goal = step?.at ?? b.current_volume;
@@ -80,27 +65,26 @@ export default function FeedBundleHero() {
                 <Link
                   key={b.id}
                   href={`/beschaffung?material=${encodeURIComponent(b.material_id ?? "")}`}
-                  className="group rounded-lg border border-white/10 bg-navy-900 p-3 transition-colors hover:border-brand/40"
+                  className="group rounded-2xl border border-white/[0.08] bg-[#0B1522] p-3.5 transition-colors hover:border-brand/40"
                 >
                   <div className="flex items-start justify-between gap-2">
                     <span className="truncate text-[13px] font-semibold text-white">
                       {b.material_label ?? b.title}
                     </span>
-                    <span className="shrink-0 rounded border border-brand/30 bg-brand/10 px-1.5 py-0.5 text-[11px] font-bold text-brand">
-                      mind. {b.current_discount_pct} %
+                    <span className="shrink-0 rounded-full border border-brand/30 bg-brand/10 px-2 py-0.5 text-[10.5px] font-bold tabular-nums text-brand">
+                      −{b.current_discount_pct} %
                     </span>
                   </div>
-                  <div className="mt-1 flex items-center gap-2 text-[11px] text-white/50">
-                    <MapPin className="h-3 w-3" /> {b.region}
+                  <div className="mt-1.5 flex items-center gap-2.5 text-[11.5px] text-white/40">
+                    <span className="inline-flex items-center gap-1">
+                      <MapPin className="h-3 w-3" /> {b.region}
+                    </span>
                     <span className="inline-flex items-center gap-1">
                       <Users className="h-3 w-3" /> {b.participant_count}
                     </span>
                   </div>
-                  <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-white/10">
+                  <div className="mt-2.5 h-1 w-full overflow-hidden rounded-full bg-white/10">
                     <div className="h-full rounded-full bg-brand" style={{ width: `${pct}%` }} />
-                  </div>
-                  <div className="mt-1.5 flex items-center gap-1 text-[11px] font-semibold text-brand opacity-0 transition-opacity group-hover:opacity-100">
-                    <TrendingDown className="h-3 w-3" /> Beitreten
                   </div>
                 </Link>
               );

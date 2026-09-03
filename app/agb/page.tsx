@@ -16,7 +16,7 @@ export default function AgbPage() {
       <H2>1. Wer diese Bedingungen bindet</H2>
       <P>
         Diese Bedingungen gelten zwischen{" "}
-        <strong className="font-semibold text-slate-900">
+        <strong className="font-semibold text-white">
           <Fill value={LEGAL.betreiberin} />
         </strong>{" "}
         („Obtanet") und jeder Firma, die ein Konto auf der Plattform eröffnet („Nutzerin").
@@ -43,7 +43,7 @@ export default function AgbPage() {
         Anfrage, Angebot und Verhandlung bereit.
       </P>
       <P>
-        <strong className="font-semibold text-slate-900">
+        <strong className="font-semibold text-white">
           Obtanet wird nicht Partei der Liefergeschäfte.
         </strong>{" "}
         Kauf- und Werkverträge über Material kommen ausschliesslich zwischen der
@@ -80,22 +80,22 @@ export default function AgbPage() {
       <H3>4.1 Ablauf</H3>
       <UL>
         <LI>
-          <strong className="font-semibold text-slate-900">Bedarf melden.</strong> Eine
+          <strong className="font-semibold text-white">Bedarf melden.</strong> Eine
           beschaffende Firma meldet Material, Menge, Region und Zeitraum. Gleichartiger
           Bedarf mehrerer Firmen wird zu einem Bündel zusammengefasst.
         </LI>
         <LI>
-          <strong className="font-semibold text-slate-900">Sammelphase.</strong> Das Bündel
+          <strong className="font-semibold text-white">Sammelphase.</strong> Das Bündel
           wächst, bis die Frist abläuft. Je grösser das Volumen, desto höher der
           ausgewiesene Mindestvorteil.
         </LI>
         <LI>
-          <strong className="font-semibold text-slate-900">Verdeckte Gebote.</strong> Werke
+          <strong className="font-semibold text-white">Verdeckte Gebote.</strong> Werke
           geben Angebote ab, ohne die Gebote der übrigen zu sehen. Bis zum Zuschlag bleiben
           sie verdeckt.
         </LI>
         <LI>
-          <strong className="font-semibold text-slate-900">Zuschlag.</strong> Nach Fristablauf
+          <strong className="font-semibold text-white">Zuschlag.</strong> Nach Fristablauf
           erhält das beste Angebot den Zuschlag. Danach schliessen die Beteiligten ihren
           Vertrag — Grundlage ist in der Regel die SIA-Norm 118.
         </LI>

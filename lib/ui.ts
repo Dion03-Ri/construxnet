@@ -5,25 +5,27 @@
 import { cn } from "@/lib/utils";
 
 /** Standard-Karte: weiss, hauchdünne Border, flache Elevation, weiche Ecken. */
-export const CARD = "rounded-2xl border border-slate-200 bg-white shadow-card";
+/** @deprecated Es gibt nur noch das dunkle Register — bitte PANEL benutzen. */
+export const CARD = "rounded-2xl border border-white/[0.08] bg-[#0B1522]";
 
 /** Karte mit dezenter Hover-Elevation (für klickbare/interaktive Karten). */
+/** @deprecated Bitte PANEL_HOVER benutzen. */
 export const CARD_HOVER =
-  "rounded-2xl border border-slate-200 bg-white shadow-card transition-shadow duration-200 hover:shadow-cardhover hover:border-slate-300";
+  "rounded-2xl border border-white/[0.08] bg-[#0B1522] transition-colors hover:border-brand/40 hover:bg-[#0E1A2A]";
 
 /** Haupt-Input: umrandet, Slate-Grund, weiche Ecken. */
 export const INPUT =
-  "rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 outline-none focus:border-brand focus:bg-white focus:ring-1 focus:ring-brand/30";
+  "rounded-xl border border-white/[0.10] bg-white/[0.04] px-3 py-2 text-sm text-white placeholder:text-white/35 outline-none focus:border-brand/60 focus:bg-white/[0.07] focus:ring-1 focus:ring-brand/25";
 
 /** Umrandete Status-Badge als Pille. */
 export type BadgeTone = "gold" | "accent" | "navy" | "red" | "slate";
 
 const BADGE_TONES: Record<BadgeTone, string> = {
   gold: "border-brand/30 bg-brand/10 text-brand",
-  accent: "border-accent-500/30 bg-accent-50 text-accent-700",
-  navy: "border-accent/30 bg-accent/5 text-accent",
-  red: "border-rose-300 bg-rose-50 text-rose-600",
-  slate: "border-slate-300 bg-slate-100 text-slate-600",
+  accent: "border-accent-500/40 bg-accent-500/15 text-accent-200",
+  navy: "border-white/15 bg-white/[0.06] text-white/75",
+  red: "border-rose-400/35 bg-rose-500/10 text-rose-300",
+  slate: "border-white/12 bg-white/[0.06] text-white/60",
 };
 
 /** Klassen für eine scharfe Badge; `upper` = Uppercase-Kategorie-Look. */
@@ -37,15 +39,15 @@ export function badge(tone: BadgeTone = "slate", upper = false) {
 
 /** Wrapper für eine Gruppe Segmented-Tabs. */
 export const SEGMENT_GROUP =
-  "inline-flex rounded-full border border-slate-200 bg-slate-50 p-0.5";
+  "inline-flex rounded-full border border-white/[0.08] bg-white/[0.03] p-0.5";
 
 /** Einzelner Segmented-Tab; `active` steuert den gefüllten Zustand. */
 export function segment(active: boolean) {
   return cn(
     "inline-flex items-center justify-center gap-1.5 rounded-full px-3.5 py-1.5 text-[13px] font-medium transition-colors",
     active
-      ? "bg-white text-slate-900 shadow-sm"
-      : "text-slate-500 hover:text-slate-900",
+      ? "bg-white/[0.12] text-white"
+      : "text-white/45 hover:text-white",
   );
 }
 
@@ -102,3 +104,53 @@ export const BTN_OUTLINE_LIGHT = cn(
   BTN_BASE,
   "border border-slate-300 text-slate-800 hover:bg-slate-100",
 );
+
+/* ==================================================================
+   EIN DUNKLES REGISTER FÜR DIE GANZE SEITE
+   ------------------------------------------------------------------
+   Frueher gab es zwei Sprachen: dunkel im Marketing, hell in der App.
+   Das las sich wie zwei Websites in einer. Es gibt jetzt nur noch eine,
+   und sie ist dunkel — Startseite wie eingeloggter Bereich.
+
+   Drei Flaechenstufen, mehr nicht. Wer eine vierte braucht, hat den
+   Aufbau zu tief verschachtelt.
+     GROUND  der Seitengrund, das Dunkelste
+     PANEL   Karten und Bloecke, die auf dem Grund liegen
+     ROW     Zeilen und Felder INNERHALB eines Panels
+   ================================================================== */
+
+/** Seitengrund. Gehoert auf das <main> jeder Seite. */
+export const GROUND = "bg-[#060B12] text-white";
+
+/** Karte auf dem Grund. */
+export const PANEL = "rounded-2xl border border-white/[0.08] bg-[#0B1522]";
+
+/** Anklickbare Karte. */
+export const PANEL_HOVER =
+  "rounded-2xl border border-white/[0.08] bg-[#0B1522] transition-colors hover:border-brand/40 hover:bg-[#0E1A2A]";
+
+/** Zeile oder Feld innerhalb eines Panels. */
+export const ROW = "rounded-xl border border-white/[0.07] bg-white/[0.03]";
+
+/** Anklickbare Zeile innerhalb eines Panels. */
+export const ROW_HOVER =
+  "rounded-xl border border-white/[0.07] bg-white/[0.03] transition-colors hover:border-brand/40 hover:bg-white/[0.06]";
+
+/** Trennlinie auf dunklem Grund. */
+export const HAIRLINE = "border-white/[0.08]";
+
+/* ---- Textstufen. Nur drei, sonst franst die Hierarchie aus. ---- */
+export const T_HI = "text-white";
+export const T_MID = "text-white/60";
+export const T_LOW = "text-white/40";
+
+/** Eingabefeld auf dunklem Grund. */
+export const INPUT_DARK =
+  "rounded-xl border border-white/[0.10] bg-white/[0.04] px-3 py-2 text-sm text-white placeholder:text-white/35 outline-none focus:border-brand/60 focus:bg-white/[0.07]";
+
+/** Feines technisches Raster — die Hightech-Note der Seite. */
+export const GRID_TEXTURE = {
+  backgroundImage:
+    "linear-gradient(rgba(255,255,255,.7) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.7) 1px,transparent 1px)",
+  backgroundSize: "26px 26px",
+};

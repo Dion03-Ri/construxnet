@@ -3,6 +3,8 @@ import ProfileRail from "@/components/feed/ProfileRail";
 import BundleOpportunities from "@/components/feed/BundleOpportunities";
 import { requireCompanyOrOnboard } from "@/lib/company";
 import { createServerSupabaseClient } from "@/lib/supabase";
+import { GROUND } from "@/lib/ui";
+import { cn } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
 
@@ -30,12 +32,7 @@ export default async function FeedPage() {
   const pools = poolCount ?? 0;
 
   return (
-    <main className="relative mx-auto max-w-6xl px-4 py-6 sm:px-6">
-      {/* dezenter Navy-Verlauf, damit die dunklen Rails nicht als Blöcke auf reinem Weiss stehen */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-72 bg-gradient-to-b from-navy-900/[0.06] via-navy-900/[0.02] to-transparent"
-      />
+    <main className={cn(GROUND, "relative mx-auto max-w-6xl px-4 py-6 sm:px-6")}>
       <div className="grid grid-cols-1 gap-5 lg:grid-cols-[260px_minmax(0,1fr)_300px]">
         {/* Left · dunkle Profil-Rail */}
         <aside className="hidden lg:block">

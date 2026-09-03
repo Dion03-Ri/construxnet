@@ -17,10 +17,10 @@ export default async function DeliveryNotesPage() {
           <ScanLine className="h-6 w-6" />
         </span>
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900">
+          <h1 className="text-2xl font-bold tracking-tight text-white">
             Lieferschein-Scan
           </h1>
-          <p className="mt-2 text-slate-500">
+          <p className="mt-2 text-white/55">
             Lieferscheine per Foto erfassen, Menge/Material auslesen und gegen
             SIA-Verträge abgleichen.
           </p>

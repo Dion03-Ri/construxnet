@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ArrowLeft, Scale } from "lucide-react";
 import { LEGAL, isOpen } from "@/data/legal";
-import { CARD } from "@/lib/ui";
+import { PANEL } from "@/lib/ui";
 import { cn } from "@/lib/utils";
 
 /** Ein noch nicht gesetzter Wert — sichtbar, nicht versteckt. */
@@ -18,19 +18,19 @@ export function Fill({ value }: { value: string }) {
 }
 
 export function H2({ children }: { children: React.ReactNode }) {
-  return <h2 className="mt-8 text-[17px] font-bold tracking-tight text-slate-900">{children}</h2>;
+  return <h2 className="mt-8 text-[17px] font-bold tracking-tight text-white">{children}</h2>;
 }
 
 export function H3({ children }: { children: React.ReactNode }) {
-  return <h3 className="mt-5 text-[14.5px] font-semibold text-slate-900">{children}</h3>;
+  return <h3 className="mt-5 text-[14.5px] font-semibold text-white">{children}</h3>;
 }
 
 export function P({ children }: { children: React.ReactNode }) {
-  return <p className="mt-2.5 text-[14px] leading-relaxed text-slate-600">{children}</p>;
+  return <p className="mt-2.5 text-[14px] leading-relaxed text-white/70">{children}</p>;
 }
 
 export function UL({ children }: { children: React.ReactNode }) {
-  return <ul className="mt-2.5 space-y-1.5 text-[14px] leading-relaxed text-slate-600">{children}</ul>;
+  return <ul className="mt-2.5 space-y-1.5 text-[14px] leading-relaxed text-white/70">{children}</ul>;
 }
 
 export function LI({ children }: { children: React.ReactNode }) {
@@ -44,7 +44,7 @@ export function LI({ children }: { children: React.ReactNode }) {
 
 /** Kleine Fussnote auf ein Gesetz — belegt, worauf sich ein Abschnitt stützt. */
 export function Ref({ children }: { children: React.ReactNode }) {
-  return <span className="text-[13px] text-slate-400"> ({children})</span>;
+  return <span className="text-[13px] text-white/40"> ({children})</span>;
 }
 
 const NAV = [
@@ -68,7 +68,7 @@ export default function LegalPage({
     <main className="mx-auto max-w-3xl px-4 py-6 sm:px-6 sm:py-8">
       <Link
         href="/"
-        className="mb-4 inline-flex items-center gap-1.5 text-[13px] font-medium text-slate-500 transition-colors hover:text-brand"
+        className="mb-4 inline-flex items-center gap-1.5 text-[13px] font-medium text-white/55 transition-colors hover:text-brand"
       >
         <ArrowLeft className="h-4 w-4" /> Zur Startseite
       </Link>
@@ -101,7 +101,7 @@ export default function LegalPage({
               "shrink-0 whitespace-nowrap rounded-md px-3.5 py-1.5 text-[13px] font-semibold transition-colors",
               active === n.href
                 ? "bg-navy-900 text-white"
-                : "border border-slate-200 bg-white text-slate-500 hover:border-slate-300 hover:text-slate-900",
+                : "border border-white/[0.08] bg-[#0B1522] text-white/55 hover:border-white/[0.16] hover:text-white",
             )}
           >
             {n.label}
@@ -109,7 +109,7 @@ export default function LegalPage({
         ))}
       </nav>
 
-      <article className={cn(CARD, "mt-4 p-5 sm:p-7")}>{children}</article>
+      <article className={cn(PANEL, "mt-4 p-5 sm:p-7")}>{children}</article>
     </main>
   );
 }

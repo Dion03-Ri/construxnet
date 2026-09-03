@@ -24,7 +24,7 @@ export default function DatenschutzPage() {
 
       <H2>1. Verantwortliche Stelle</H2>
       <P>
-        <strong className="font-semibold text-slate-900">
+        <strong className="font-semibold text-white">
           <Fill value={LEGAL.betreiberin} />
         </strong>
         , <Fill value={LEGAL.strasse} />, <Fill value={LEGAL.plzOrt} />, {LEGAL.land}
@@ -68,17 +68,17 @@ export default function DatenschutzPage() {
       <H3>Was wir nicht tun</H3>
       <UL>
         <LI>
-          <strong className="font-semibold text-slate-900">Kein Standort-Zugriff.</strong> Die
+          <strong className="font-semibold text-white">Kein Standort-Zugriff.</strong> Die
           Karte fragt den Browser nie nach deinem Aufenthaltsort. Der Punkt auf der Karte
           entsteht ausschliesslich aus der Firmenadresse, die du selbst einträgst.
         </LI>
         <LI>
-          <strong className="font-semibold text-slate-900">Keine Werbe- oder Analyse-Dienste.</strong>{" "}
+          <strong className="font-semibold text-white">Keine Werbe- oder Analyse-Dienste.</strong>{" "}
           Es sind keine Zählpixel, keine Werbenetzwerke und keine Besucher-Auswertung
           eingebunden.
         </LI>
         <LI>
-          <strong className="font-semibold text-slate-900">Kein Verkauf von Daten.</strong> Wir
+          <strong className="font-semibold text-white">Kein Verkauf von Daten.</strong> Wir
           geben Daten nicht zu Werbezwecken weiter.
         </LI>
       </UL>
@@ -112,21 +112,21 @@ export default function DatenschutzPage() {
       <H3>Andere Firmen auf der Plattform</H3>
       <UL>
         <LI>
-          <strong className="font-semibold text-slate-900">Für alle angemeldeten Firmen sichtbar:</strong>{" "}
+          <strong className="font-semibold text-white">Für alle angemeldeten Firmen sichtbar:</strong>{" "}
           Firmenname, UID, Rolle, Ort und Kanton, Logo, Beschreibung, Sortiment und
           Liefergebiete, Beiträge im Feed.
         </LI>
         <LI>
-          <strong className="font-semibold text-slate-900">Nur für bestätigte Verbindungen:</strong>{" "}
+          <strong className="font-semibold text-white">Nur für bestätigte Verbindungen:</strong>{" "}
           E-Mail, Telefon, Adresse und Website. Diese Einschränkung ist in der Datenbank
           verankert, nicht bloss in der Anzeige.
         </LI>
         <LI>
-          <strong className="font-semibold text-slate-900">Nur mit Zustimmung:</strong> der Standort
+          <strong className="font-semibold text-white">Nur mit Zustimmung:</strong> der Standort
           auf der Karte. Ohne Zustimmung sind gar keine Koordinaten gespeichert.
         </LI>
         <LI>
-          <strong className="font-semibold text-slate-900">Nur die Beteiligten:</strong> Nachrichten,
+          <strong className="font-semibold text-white">Nur die Beteiligten:</strong> Nachrichten,
           Direktanfragen und Angebote. Gebote in einem Bündel bleiben bis zum Zuschlag
           verdeckt.
         </LI>
@@ -139,16 +139,16 @@ export default function DatenschutzPage() {
       </P>
       <UL>
         <LI>
-          <strong className="font-semibold text-slate-900">Clerk</strong> (USA) — Anmeldung und
+          <strong className="font-semibold text-white">Clerk</strong> (USA) — Anmeldung und
           Sitzungsverwaltung.
         </LI>
         <LI>
-          <strong className="font-semibold text-slate-900">Supabase</strong> — Datenbank, Speicher
+          <strong className="font-semibold text-white">Supabase</strong> — Datenbank, Speicher
           für hochgeladene Bilder und Echtzeit-Zustellung der Nachrichten. Serverstandort:{" "}
           <Fill value={LEGAL.datenbankRegion} />.
         </LI>
         <LI>
-          <strong className="font-semibold text-slate-900">Vercel</strong> (USA) — Betrieb und
+          <strong className="font-semibold text-white">Vercel</strong> (USA) — Betrieb und
           Auslieferung der Seite.
         </LI>
       </UL>
@@ -156,14 +156,14 @@ export default function DatenschutzPage() {
       <H3>Aufrufe an Dritte beim Betrieb</H3>
       <UL>
         <LI>
-          <strong className="font-semibold text-slate-900">swisstopo</strong>{" "}
+          <strong className="font-semibold text-white">swisstopo</strong>{" "}
           (Bundesamt für Landestopografie, Schweiz) — schaltest du den Karteneintrag ein
           oder änderst du die Adresse, senden wir die eingetragene{" "}
           <em>Firmenadresse</em> einmalig an die amtliche Adresssuche, um die Koordinaten
           zu erhalten. Es geht keine Nutzerkennung mit.
         </LI>
         <LI>
-          <strong className="font-semibold text-slate-900">OpenStreetMap</strong> — das
+          <strong className="font-semibold text-white">OpenStreetMap</strong> — das
           Kartenbild wird von deren Servern geladen. Dabei erfährt OpenStreetMap deine
           IP-Adresse. Das lässt sich beim Anzeigen einer Karte technisch nicht vermeiden;
           betroffen ist nur, wer die Kartenseite öffnet.

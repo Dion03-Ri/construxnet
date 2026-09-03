@@ -29,13 +29,13 @@ import {
   initials,
   type NetCompany,
 } from "@/lib/network";
-import { CARD } from "@/lib/ui";
+import { PANEL } from "@/lib/ui";
 import { cn } from "@/lib/utils";
 
 /** Kleine Überschrift über einem Panel-Titel. */
 function Eyebrow({ children, dark }: { children: React.ReactNode; dark?: boolean }) {
   return (
-    <div className={cn("text-[11px] font-semibold uppercase tracking-[0.12em]", dark ? "text-white/40" : "text-slate-400")}>
+    <div className={cn("text-[11px] font-semibold uppercase tracking-[0.12em]", dark ? "text-white/40" : "text-white/40")}>
       {children}
     </div>
   );
@@ -60,10 +60,10 @@ function CompanyRow({
   children: React.ReactNode;
 }) {
   return (
-    <li className="flex flex-wrap items-center gap-3 px-4 py-3 transition-colors hover:bg-slate-50/70">
+    <li className="flex flex-wrap items-center gap-3 px-4 py-3 transition-colors hover:bg-white/[0.05]/70">
       <Link
         href={`/company/${company.id}`}
-        className="grid h-10 w-10 shrink-0 place-items-center overflow-hidden rounded-full bg-slate-100 text-[12px] font-bold text-slate-700"
+        className="grid h-10 w-10 shrink-0 place-items-center overflow-hidden rounded-full bg-white/10 text-[12px] font-bold text-white/75"
       >
         {company.logo_url ? (
           // eslint-disable-next-line @next/next/no-img-element
@@ -75,12 +75,12 @@ function CompanyRow({
       <div className="min-w-0 flex-1 basis-[calc(100%-3.25rem)] sm:basis-auto">
         <Link
           href={`/company/${company.id}`}
-          className="flex items-center gap-1 text-[14px] font-semibold text-slate-900 hover:text-brand"
+          className="flex items-center gap-1 text-[14px] font-semibold text-white hover:text-brand"
         >
           <span className="truncate">{company.company_name}</span>
           {company.verified && <BadgeCheck className="h-4 w-4 shrink-0 text-brand" />}
         </Link>
-        <p className="truncate text-[12px] text-slate-500">
+        <p className="truncate text-[12px] text-white/55">
           {ROLE_LABEL[company.role] ?? company.role}
           {company.city ? ` · ${company.city}` : company.canton ? ` · ${company.canton}` : ""}
         </p>
@@ -183,7 +183,7 @@ export default function NetworkHub() {
               </p>
               <Link
                 href="/network/entdecken"
-                className="mt-3.5 inline-flex items-center gap-1.5 rounded-md bg-brand px-3.5 py-2 text-[13px] font-semibold text-navy-900 transition-colors hover:bg-brand-500"
+                className="mt-3.5 inline-flex items-center gap-1.5 rounded-md bg-brand px-3.5 py-2 text-[13px] font-semibold text-navy-900 transition-colors hover:bg-brand/100"
               >
                 Firmen finden <ArrowRight className="h-3.5 w-3.5" />
               </Link>
@@ -282,7 +282,7 @@ export default function NetworkHub() {
               <div className="mt-4 flex flex-wrap gap-2">
                 <Link
                   href="/network/entdecken"
-                  className="inline-flex items-center gap-1.5 rounded-md bg-brand px-4 py-2.5 text-sm font-semibold text-navy-900 transition-colors hover:bg-brand-500"
+                  className="inline-flex items-center gap-1.5 rounded-md bg-brand px-4 py-2.5 text-sm font-semibold text-navy-900 transition-colors hover:bg-brand/100"
                 >
                   <Compass className="h-4 w-4" /> Passende Firmen finden
                 </Link>
@@ -323,8 +323,8 @@ export default function NetworkHub() {
         </DarkPanel>
 
         {/* Verbindungen verwalten */}
-        <div className={cn(CARD, "overflow-hidden")}>
-          <div className="no-scrollbar flex gap-1.5 overflow-x-auto border-b border-slate-100 px-4 py-3">
+        <div className={cn(PANEL, "overflow-hidden")}>
+          <div className="no-scrollbar flex gap-1.5 overflow-x-auto border-b border-white/[0.06] px-4 py-3">
             {TABS.map((t) => (
               <button
                 key={t.key}
@@ -334,7 +334,7 @@ export default function NetworkHub() {
                   "flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-md px-3.5 py-1.5 text-[13px] font-semibold transition-colors",
                   tab === t.key
                     ? "bg-navy-900 text-white"
-                    : "border border-slate-200 bg-white text-slate-500 hover:border-slate-300 hover:text-slate-900",
+                    : "border border-white/[0.08] bg-[#0B1522] text-white/55 hover:border-white/[0.16] hover:text-white",
                 )}
               >
                 <t.icon className="h-3.5 w-3.5" />
@@ -346,7 +346,7 @@ export default function NetworkHub() {
                       ? "bg-white/15 text-white"
                       : counts[t.key] > 0 && t.key === "incoming"
                         ? "bg-brand/15 text-brand-700"
-                        : "bg-slate-100 text-slate-500",
+                        : "bg-white/10 text-white/55",
                   )}
                 >
                   {counts[t.key]}
@@ -356,19 +356,19 @@ export default function NetworkHub() {
           </div>
 
           {loading ? (
-            <div className="flex items-center justify-center gap-2 py-12 text-sm text-slate-500">
+            <div className="flex items-center justify-center gap-2 py-12 text-sm text-white/55">
               <Loader2 className="h-4 w-4 animate-spin" /> Netzwerk wird geladen …
             </div>
           ) : tab === "connected" ? (
             connected.length === 0 ? (
               <div className="px-6 py-12 text-center">
-                <p className="text-sm text-slate-500">
+                <p className="text-sm text-white/55">
                   Noch keine Verbindungen. Firmen, mit denen du dich vernetzt, erscheinen hier —
                   mit Chat und Direktanfrage.
                 </p>
                 <Link
                   href="/network/entdecken"
-                  className="mt-3 inline-flex items-center gap-1.5 rounded-md bg-brand px-4 py-2 text-[13px] font-semibold text-navy-900 transition-colors hover:bg-brand-500"
+                  className="mt-3 inline-flex items-center gap-1.5 rounded-md bg-brand px-4 py-2 text-[13px] font-semibold text-navy-900 transition-colors hover:bg-brand/100"
                 >
                   <Compass className="h-4 w-4" /> Firmen entdecken
                 </Link>
@@ -376,23 +376,23 @@ export default function NetworkHub() {
             ) : (
               <>
                 {connected.length > 6 && (
-                  <div className="relative border-b border-slate-100 px-4 py-3">
-                    <Search className="pointer-events-none absolute left-7 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                  <div className="relative border-b border-white/[0.06] px-4 py-3">
+                    <Search className="pointer-events-none absolute left-7 top-1/2 h-4 w-4 -translate-y-1/2 text-white/40" />
                     <input
                       type="search"
                       value={query}
                       onChange={(e) => setQuery(e.target.value)}
                       placeholder="In deinen Verbindungen suchen …"
-                      className="w-full rounded-md border border-slate-200 bg-slate-50 py-2 pl-9 pr-3 text-[13px] text-slate-900 placeholder:text-slate-400 outline-none focus:border-brand focus:bg-white"
+                      className="w-full rounded-md border border-white/[0.08] bg-white/[0.03] py-2 pl-9 pr-3 text-[13px] text-white placeholder:text-white/40 outline-none focus:border-brand focus:bg-[#0B1522]"
                     />
                   </div>
                 )}
-                <ul className="divide-y divide-slate-100">
+                <ul className="divide-y divide-white/[0.06]">
                   {filteredConnected.map((c) => (
                     <CompanyRow key={c.id} company={c}>
                       <Link
                         href={`/messages?to=${c.id}`}
-                        className="inline-flex items-center gap-1.5 rounded-md border border-slate-200 px-3 py-1.5 text-[12.5px] font-semibold text-slate-600 transition-colors hover:border-brand/40 hover:text-brand"
+                        className="inline-flex items-center gap-1.5 rounded-md border border-white/[0.08] px-3 py-1.5 text-[12.5px] font-semibold text-white/70 transition-colors hover:border-brand/40 hover:text-brand"
                       >
                         <MessageSquare className="h-3.5 w-3.5" /> Nachricht
                       </Link>
@@ -400,7 +400,7 @@ export default function NetworkHub() {
                         <button
                           type="button"
                           onClick={() => setRequestTarget(c)}
-                          className="inline-flex items-center gap-1.5 rounded-md bg-brand px-3 py-1.5 text-[12.5px] font-semibold text-navy-900 transition-colors hover:bg-brand-500"
+                          className="inline-flex items-center gap-1.5 rounded-md bg-brand px-3 py-1.5 text-[12.5px] font-semibold text-navy-900 transition-colors hover:bg-brand/100"
                         >
                           <Handshake className="h-3.5 w-3.5" /> Anfragen
                         </button>
@@ -408,7 +408,7 @@ export default function NetworkHub() {
                     </CompanyRow>
                   ))}
                   {filteredConnected.length === 0 && (
-                    <li className="px-4 py-10 text-center text-sm text-slate-400">
+                    <li className="px-4 py-10 text-center text-sm text-white/40">
                       Keine Verbindung passt zur Suche.
                     </li>
                   )}
@@ -417,24 +417,24 @@ export default function NetworkHub() {
             )
           ) : tab === "incoming" ? (
             incoming.length === 0 ? (
-              <p className="px-6 py-12 text-center text-sm text-slate-500">
+              <p className="px-6 py-12 text-center text-sm text-white/55">
                 Keine offenen Anfragen. Sobald dich eine Firma vernetzen möchte, erscheint sie hier.
               </p>
             ) : (
-              <ul className="divide-y divide-slate-100">
+              <ul className="divide-y divide-white/[0.06]">
                 {incoming.map(({ company, conn }) => (
                   <CompanyRow key={conn.id} company={company}>
                     <button
                       type="button"
                       onClick={() => accept(conn.id)}
-                      className="inline-flex items-center gap-1.5 rounded-md bg-brand px-3 py-1.5 text-[12.5px] font-semibold text-navy-900 transition-colors hover:bg-brand-500"
+                      className="inline-flex items-center gap-1.5 rounded-md bg-brand px-3 py-1.5 text-[12.5px] font-semibold text-navy-900 transition-colors hover:bg-brand/100"
                     >
                       <Check className="h-3.5 w-3.5" /> Annehmen
                     </button>
                     <button
                       type="button"
                       onClick={() => remove(conn.id)}
-                      className="rounded-md border border-slate-200 px-3 py-1.5 text-[12.5px] font-semibold text-slate-500 transition-colors hover:bg-slate-50"
+                      className="rounded-md border border-white/[0.08] px-3 py-1.5 text-[12.5px] font-semibold text-white/55 transition-colors hover:bg-white/[0.05]"
                     >
                       Ignorieren
                     </button>
@@ -443,20 +443,20 @@ export default function NetworkHub() {
               </ul>
             )
           ) : outgoing.length === 0 ? (
-            <p className="px-6 py-12 text-center text-sm text-slate-500">
+            <p className="px-6 py-12 text-center text-sm text-white/55">
               Keine offenen Einladungen. Was du versendest, steht hier, bis es beantwortet ist.
             </p>
           ) : (
-            <ul className="divide-y divide-slate-100">
+            <ul className="divide-y divide-white/[0.06]">
               {outgoing.map(({ company, conn }) => (
                 <CompanyRow key={conn.id} company={company}>
-                  <span className="inline-flex items-center gap-1.5 rounded-md bg-slate-100 px-3 py-1.5 text-[12.5px] font-semibold text-slate-500">
+                  <span className="inline-flex items-center gap-1.5 rounded-md bg-white/10 px-3 py-1.5 text-[12.5px] font-semibold text-white/55">
                     <Clock className="h-3.5 w-3.5" /> Wartet
                   </span>
                   <button
                     type="button"
                     onClick={() => remove(conn.id)}
-                    className="rounded-md border border-slate-200 px-3 py-1.5 text-[12.5px] font-semibold text-slate-500 transition-colors hover:bg-slate-50"
+                    className="rounded-md border border-white/[0.08] px-3 py-1.5 text-[12.5px] font-semibold text-white/55 transition-colors hover:bg-white/[0.05]"
                   >
                     Zurückziehen
                   </button>
@@ -468,11 +468,11 @@ export default function NetworkHub() {
 
         {/* Vorschläge — die Vollansicht liegt auf /network/entdecken */}
         {suggestions.length > 0 && (
-          <div className={cn(CARD, "overflow-hidden")}>
-            <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 px-5 py-3.5">
+          <div className={cn(PANEL, "overflow-hidden")}>
+            <div className="flex flex-wrap items-center justify-between gap-2 border-b border-white/[0.06] px-5 py-3.5">
               <div>
                 <Eyebrow>Empfohlen für dich</Eyebrow>
-                <h3 className="mt-0.5 text-[15px] font-bold text-slate-900">
+                <h3 className="mt-0.5 text-[15px] font-bold text-white">
                   {region ? `Firmen in der Region ${region}` : "Firmen, die du kennen könntest"}
                 </h3>
               </div>
@@ -496,7 +496,7 @@ export default function NetworkHub() {
             </div>
             <Link
               href="/network/entdecken"
-              className="flex items-center justify-center gap-1.5 border-t border-slate-100 py-3 text-[13px] font-semibold text-brand transition-colors hover:bg-brand/5"
+              className="flex items-center justify-center gap-1.5 border-t border-white/[0.06] py-3 text-[13px] font-semibold text-brand transition-colors hover:bg-brand/5"
             >
               <Compass className="h-4 w-4" /> Weitere Firmen entdecken
             </Link>
@@ -504,7 +504,7 @@ export default function NetworkHub() {
         )}
 
         {isSignedIn && !myCompanyId && !loading && (
-          <p className="text-center text-xs text-slate-500">
+          <p className="text-center text-xs text-white/55">
             Lege ein Firmenprofil an, um dich mit anderen Firmen zu vernetzen.
           </p>
         )}
@@ -515,7 +515,7 @@ export default function NetworkHub() {
         {/* Entdecken — der Einstieg in die grosse Liste */}
         <Link
           href="/network/entdecken"
-          className={cn(CARD, "group block overflow-hidden transition-colors hover:border-brand/40")}
+          className={cn(PANEL, "group block overflow-hidden transition-colors hover:border-brand/40")}
         >
           <div className="relative h-24 overflow-hidden bg-navy-900">
             <div aria-hidden className="pointer-events-none absolute inset-0 opacity-[0.07]" style={GRID_BG} />
@@ -525,19 +525,19 @@ export default function NetworkHub() {
           </div>
           <div className="flex items-center gap-2 px-4 py-3">
             <div className="min-w-0 flex-1">
-              <div className="text-[13px] font-bold text-slate-900">Firmen entdecken</div>
-              <div className="text-[11px] text-slate-500">
+              <div className="text-[13px] font-bold text-white">Firmen entdecken</div>
+              <div className="text-[11px] text-white/55">
                 {suggestions.length > 0
                   ? `${suggestions.length} Firmen, mit denen du noch nicht verbunden bist`
                   : "Nach Kanton, Rolle und Namen filtern"}
               </div>
             </div>
-            <ArrowRight className="h-4 w-4 shrink-0 text-slate-300 transition-transform group-hover:translate-x-0.5" />
+            <ArrowRight className="h-4 w-4 shrink-0 text-white/25 transition-transform group-hover:translate-x-0.5" />
           </div>
         </Link>
 
         {/* Lieferanten-Karte */}
-        <Link href="/map" className={cn(CARD, "group block overflow-hidden transition-colors hover:border-brand/40")}>
+        <Link href="/map" className={cn(PANEL, "group block overflow-hidden transition-colors hover:border-brand/40")}>
           <div className="relative h-24 overflow-hidden bg-navy-900">
             <div aria-hidden className="pointer-events-none absolute inset-0 opacity-[0.07]" style={GRID_BG} />
             <div className="absolute inset-0 grid place-items-center">
@@ -546,10 +546,10 @@ export default function NetworkHub() {
           </div>
           <div className="flex items-center gap-2 px-4 py-3">
             <div className="min-w-0 flex-1">
-              <div className="text-[13px] font-bold text-slate-900">Firmen-Karte</div>
-              <div className="text-[11px] text-slate-500">Standorte in der ganzen Schweiz</div>
+              <div className="text-[13px] font-bold text-white">Firmen-Karte</div>
+              <div className="text-[11px] text-white/55">Standorte in der ganzen Schweiz</div>
             </div>
-            <ArrowRight className="h-4 w-4 shrink-0 text-slate-300 transition-transform group-hover:translate-x-0.5" />
+            <ArrowRight className="h-4 w-4 shrink-0 text-white/25 transition-transform group-hover:translate-x-0.5" />
           </div>
         </Link>
 
@@ -565,7 +565,7 @@ export default function NetworkHub() {
             </p>
             <Link
               href="/pools"
-              className="mt-3.5 inline-flex items-center gap-1.5 rounded-md bg-brand px-3.5 py-2 text-[13px] font-semibold text-navy-900 transition-colors hover:bg-brand-500"
+              className="mt-3.5 inline-flex items-center gap-1.5 rounded-md bg-brand px-3.5 py-2 text-[13px] font-semibold text-navy-900 transition-colors hover:bg-brand/100"
             >
               Zu den Bündeln <ArrowRight className="h-3.5 w-3.5" />
             </Link>

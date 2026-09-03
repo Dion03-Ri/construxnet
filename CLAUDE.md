@@ -208,48 +208,44 @@ eigenen Commit mit `git cherry-pick <sha>` darauf setzen. Niemals stattdessen
 einen Merge-Commit von `main` in den Branch ziehen — das schleppt die
 doppelte Historie mit.
 
-## Design-Fundament — zwei Register
-Die Seite hat **zwei getrennte Gestaltungssprachen**. Sie nie vermischen.
+## Design-Fundament — EIN dunkles Register
+Es gab einmal zwei Gestaltungssprachen: dunkel im Marketing, hell in der App.
+Das las sich wie zwei Websites in einer und wurde verworfen. **Die ganze
+Seite ist dunkel** — Startseite wie eingeloggter Bereich. Vorbild ist
+Robinhood, wo Marketing und Anwendung dieselbe Sprache sprechen.
 
-- **Register A — öffentlich** (`/`, Rechtsseiten, Sign-in): gross, luftig,
-  wenig Text pro Bild. Vorbild Robinhood und Revolut. Höchstens eine Aussage
-  pro Bildschirm.
-- **Register B — eingeloggt** (Feed, Netzwerk, Pools, KBOB, Beschaffung,
-  Dashboard): hell, präzise, dicht, echte Daten, keine Deko. Vorbild Stripe.
+### Flächen — genau drei Stufen
+Alle in `lib/ui.ts`. Wer eine vierte braucht, hat zu tief verschachtelt.
+- `GROUND` `#060B12` — der Seitengrund. Sitzt auf dem `<body>` in
+  `app/layout.tsx`, nicht in den einzelnen Seiten. So bleibt nirgends eine
+  helle Lücke, wenn eine neue Seite dazukommt.
+- `PANEL` `#0B1522` mit `border-white/[0.08]` — Karten auf dem Grund.
+- `ROW` `bg-white/[0.03]` — Zeilen und Felder **innerhalb** eines Panels.
 
-### Typografie
-- **Archivo** (`font-display`, `--font-display`) für Marketing-Überschriften,
-  **Inter** für alles andere. Die beiden treffen sich nie in derselben Zeile.
-- Stufen in `tailwind.config.ts`: `d-sm` 32 px · `d-md` 44 px · `d-lg` 60 px ·
-  `d-xl` 92 px. Die Bausteine `D_XL`/`D_LG`/`D_MD` in `lib/ui.ts` benutzen,
-  nicht selbst zusammensetzen.
-- **Zwischen Lauftext (15–17 px) und Display darf nichts Mittelmässiges
-  stehen.** Der fehlende Grössensprung ist das Erkennungszeichen generierter
-  Seiten — vorher lag die grösste Überschrift bei 38 px, das war zu wenig.
+### Text — genau drei Stufen
+`T_HI` weiss · `T_MID` `white/60` · `T_LOW` `white/40`. Mehr franst aus.
 
 ### Was nicht mehr vorkommt
-- **Icons in abgerundeten Kacheln.** In keinem der Vorbilder (Stripe,
-  Robinhood, Revolut) gibt es das ein einziges Mal. Stattdessen ein echtes
-  Objekt pro Abschnitt — Render, Foto oder UI-Aufnahme.
-- **Rahmen um alles.** Der Ablauf-Abschnitt der Startseite hat bewusst keine
-  Karten: vier Nummern, vier Titel, vier Zeilen, viel Luft.
-- **Kleine Kategorie-Badges mit Icon.** Ersetzt durch `EYEBROW` — nur
-  Versalien, gesperrt, Gold, ohne Kasten.
+- **Helle Flächen.** Kein `bg-white`, kein `bg-slate-50`, kein
+  `text-slate-900`. `CARD`/`CARD_HOVER` sind nur noch Altlasten und zeigen
+  auf die dunklen Werte; neuer Code nimmt `PANEL`/`PANEL_HOVER`.
+- **Pastellkästen** (`bg-amber-50` und Verwandte). Ein Hinweis ist auf
+  dunklem Grund ein leuchtender Rand auf durchscheinender Fläche, kein
+  hellgelbes Rechteck.
+- **Icons in abgerundeten Kacheln** und **Rahmen um alles** — siehe unten.
 
-### Rhythmus und Farbe
-- Drei Abstands-Stufen: `SECTION_TIGHT` / `SECTION` / `SECTION_WIDE`. Ein
-  luftiger Abschnitt muss auf einen dichten folgen; gleichförmiges `py-14`
-  überall liest sich wie eine Liste.
-- **Gold ist die knappste Ressource: höchstens EIN gefüllter Gold-Knopf pro
-  Bildschirm.** Alles andere weiss (`BTN_LIGHT`), dunkel (`BTN_DARK`) oder
-  offen. Deshalb sind die Knöpfe in „Zwei Wege" weiss, nicht golden.
+### Trennung ohne Farbe
+Auf einer durchweg dunklen Seite trennt nicht mehr Hell gegen Dunkel,
+sondern **Raum und Haarlinie**. Ein Abschnitt setzt sich ab durch
+`border-t border-white/[0.08]`, einen leicht anderen Grundton
+(`#040810` gegen `#060B12`) und den weitesten Abstand — nicht durch eine
+weisse Fläche.
 
-### Tailwind-Fallstrick
-`content` in `tailwind.config.ts` muss **`./lib/**` und `./data/**`**
-mitscannen. Die Bausteine in `lib/ui.ts` sind reine Klassen-Strings; fehlt der
-Pfad, erzeugt Tailwind sie nicht und sie kommen im CSS nie an — sichtbar nur
-dort, wo dieselbe Klasse zufällig auch woanders steht. Genau das war der Grund,
-warum die neue Typo-Skala zuerst nicht wirkte.
+### Bilder auf schwarzem Grund
+`art-buendel.jpg` und `art-direkt.jpg` liegen auf reinem `rgb(0,0,0)`.
+Die Karten in „Zwei Wege" sind deshalb `bg-black` — so ist die Bildkante
+unsichtbar. **Kein Schimmer hinter so ein Bild legen:** das deckend
+schwarze Bild stanzt ihn aus, und der Rest bleibt als heller Rahmen stehen.
 
 ## Formensprache — weiche Ecken, dünne Ränder
 - Vorbild ist der Aufbau grosser Produktkarten: sehr weiche Ecken
@@ -386,6 +382,17 @@ warum die neue Typo-Skala zuerst nicht wirkte.
 
 ## Vor dem Launch — Pflicht
 Diese Punkte müssen erledigt sein, bevor echte Firmen darauf arbeiten:
+0. **Preismodell festlegen und auf die Startseite bringen.** Geplant ist
+   ein Abschnitt mit den Stufen (Gratis gegen Pro) direkt auf `/`. Der Bau
+   steht, es fehlen einzig die Angaben — und die dürfen **nicht erfunden**
+   werden:
+   · Was kostet Pro pro Monat (und pro Jahr, falls es das gibt)?
+   · Was ist in der Gratisstufe enthalten, was nur in Pro?
+   · Gibt es eine Stufe für Lieferanten/Baustoffwerke, und wenn ja welche?
+   · Läuft die Vermittlungsgebühr getrennt vom Abo oder ist sie darin?
+   Sobald die Zahlen stehen: Abschnitt zwischen „Der Unterschied in Zahlen"
+   und den Pools-/Netzwerk-Karten, drei Säulen im dunklen Register, die
+   mittlere golden hervorgehoben.
 1. **Rabattstufen festlegen** (#27). Die aktuellen sind nachweislich nicht
    haltbar — siehe oben. Ohne belastbare Zahlen darf keine Garantie raus.
 2. **KBOB-Referenz aus einer belegbaren Quelle.** Die Kurve ist heute eine

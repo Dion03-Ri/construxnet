@@ -46,7 +46,7 @@ export default async function PreviewPage({
           />
           <button
             type="submit"
-            className="mt-3 w-full rounded-lg bg-brand px-4 py-3 text-sm font-bold text-navy-900 transition-colors hover:bg-brand-500"
+            className="mt-3 w-full rounded-lg bg-brand px-4 py-3 text-sm font-bold text-navy-900 transition-colors hover:bg-brand/100"
           >
             Zugang
           </button>

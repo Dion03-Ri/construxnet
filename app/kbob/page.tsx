@@ -20,10 +20,10 @@ export default async function KbobPage({
   return (
     <main className="mx-auto max-w-5xl px-4 py-6 sm:px-6">
       <header className="mb-5">
-        <h1 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+        <h1 className="text-2xl font-bold tracking-tight text-white sm:text-3xl">
           Referenzpreise
         </h1>
-        <p className="mt-1 max-w-2xl text-slate-500">
+        <p className="mt-1 max-w-2xl text-white/55">
           Wo der Markt steht — und was du selbst bezahlt hast. Jeder Abschluss
           wird gegen den Referenzpreis gemessen, der zum Zeitpunkt deiner
           Anfrage galt.
@@ -33,7 +33,7 @@ export default async function KbobPage({
       {/* Woher die Zahlen kommen. Gehört sichtbar auf die Seite, nicht in
           eine Fussnote — sonst liest sich eine Modellreihe wie ein amtlicher
           Index. */}
-      <p className="mb-5 flex items-start gap-2 rounded-md border border-amber-200 bg-amber-50 px-3.5 py-2.5 text-[12.5px] leading-relaxed text-amber-900">
+      <p className="mb-5 flex items-start gap-2 rounded-md border border-brand/25 bg-brand/10 px-3.5 py-2.5 text-[12.5px] leading-relaxed text-brand">
         <Info className="mt-px h-4 w-4 shrink-0" />
         <span>
           <b>Zur Datenlage:</b> Die Referenzkurve ist derzeit eine

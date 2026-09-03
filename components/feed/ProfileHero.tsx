@@ -17,7 +17,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import type { Company } from "@/lib/company";
-import { CARD } from "@/lib/ui";
+import { PANEL } from "@/lib/ui";
 import { cn } from "@/lib/utils";
 
 const ROLE_LABEL: Record<string, string> = {
@@ -118,7 +118,7 @@ export default function ProfileHero({
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35, ease: "easeOut" }}
-      className={cn(CARD, "overflow-hidden")}
+      className={cn(PANEL, "overflow-hidden")}
     >
       {/* Cover — sauberes 120px-Banner, keine schwebenden Textboxen */}
       <div className="relative h-[120px] bg-gradient-to-r from-brand via-brand-600 to-accent">
@@ -144,7 +144,7 @@ export default function ProfileHero({
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           {/* Identity */}
           <div className="min-w-0">
-            <div className="-mt-12 flex h-24 w-24 items-center justify-center overflow-hidden rounded-lg border-4 border-white bg-slate-100 text-2xl font-bold text-slate-700 shadow-card sm:-mt-14 sm:h-28 sm:w-28">
+            <div className="-mt-12 flex h-24 w-24 items-center justify-center overflow-hidden rounded-lg border-4 border-white bg-white/10 text-2xl font-bold text-white/75 shadow-card sm:-mt-14 sm:h-28 sm:w-28">
               {company.logo_url ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img src={company.logo_url} alt={company.company_name} className="h-full w-full object-cover" />
@@ -153,16 +153,16 @@ export default function ProfileHero({
               )}
             </div>
             <div className="mt-3 flex items-center gap-2">
-              <h1 className="truncate text-xl font-bold tracking-tight text-slate-900 sm:text-2xl">
+              <h1 className="truncate text-xl font-bold tracking-tight text-white sm:text-2xl">
                 {company.company_name}
               </h1>
               {company.verified && <BadgeCheck className="h-5 w-5 shrink-0 text-accent" />}
             </div>
-            <p className="mt-0.5 text-sm text-slate-500">
+            <p className="mt-0.5 text-sm text-white/55">
               {ROLE_LABEL[company.role] ?? company.role}
               {company.bio ? ` · ${company.bio}` : ""}
             </p>
-            <div className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-[13px] text-slate-500">
+            <div className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-[13px] text-white/55">
               {(company.city || company.canton) && (
                 <span className="inline-flex items-center gap-1">
                   <MapPin className="h-3.5 w-3.5" />
@@ -188,23 +188,23 @@ export default function ProfileHero({
               className={cn(
                 "inline-flex items-center gap-1.5 rounded-md px-4 py-2 text-sm font-semibold transition-colors",
                 openForWork
-                  ? "bg-accent text-white shadow-sm shadow-accent/30 hover:bg-accent-500"
-                  : "border border-slate-200 text-slate-600 hover:bg-slate-50",
+                  ? "bg-accent text-white shadow-sm shadow-accent/30 hover:bg-accent-500/150"
+                  : "border border-white/[0.08] text-white/70 hover:bg-white/[0.05]",
               )}
             >
-              <span className={cn("h-2 w-2 rounded-full", openForWork ? "bg-white" : "bg-accent")} />
+              <span className={cn("h-2 w-2 rounded-full", openForWork ? "bg-[#0B1522]" : "bg-accent")} />
               Offen für Aufträge
             </button>
             <Link
               href={`/company/${company.id}`}
-              className="inline-flex items-center gap-1.5 rounded-md border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-600 transition-colors hover:bg-slate-50"
+              className="inline-flex items-center gap-1.5 rounded-md border border-white/[0.08] px-4 py-2 text-sm font-semibold text-white/70 transition-colors hover:bg-white/[0.05]"
             >
               <Pencil className="h-4 w-4" />
               Profil bearbeiten
             </Link>
             <button
               type="button"
-              className="grid h-9 w-9 place-items-center rounded-full border border-slate-200 text-slate-500 transition-colors hover:bg-slate-50"
+              className="grid h-9 w-9 place-items-center rounded-full border border-white/[0.08] text-white/55 transition-colors hover:bg-white/[0.05]"
               aria-label="Mehr"
             >
               <MoreHorizontal className="h-4 w-4" />
@@ -213,12 +213,12 @@ export default function ProfileHero({
         </div>
 
         {/* Profilstärke */}
-        <div className="mt-5 rounded-lg border border-slate-200 bg-slate-50/60 p-3.5">
+        <div className="mt-5 rounded-lg border border-white/[0.08] bg-white/[0.03]/60 p-3.5">
           <div className="flex items-center justify-between text-[13px]">
-            <span className="font-medium text-slate-600">
+            <span className="font-medium text-white/70">
               Profilstärke: <span className="font-semibold text-brand">{strengthLabel(pct)}</span>
             </span>
-            <span className="font-semibold text-slate-900">{pct}% vollständig</span>
+            <span className="font-semibold text-white">{pct}% vollständig</span>
           </div>
           <div className="mt-2 h-2 overflow-hidden rounded-full bg-slate-200">
             <motion.div
@@ -229,7 +229,7 @@ export default function ProfileHero({
             />
           </div>
           {pct < 100 && (
-            <p className="mt-2 text-[11px] text-slate-400">
+            <p className="mt-2 text-[11px] text-white/40">
               Vervollständige Bio, Logo und Verifizierung, um in Smart-Pool-Suchen weiter oben zu erscheinen.
             </p>
           )}
@@ -237,7 +237,7 @@ export default function ProfileHero({
 
         {/* Dashboard-KPIs */}
         <div className="mt-4">
-          <div className="mb-2 flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wide text-slate-400">
+          <div className="mb-2 flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wide text-white/40">
             Analytics · nur für dich sichtbar
           </div>
           <div className="grid grid-cols-3 gap-2.5">
@@ -245,7 +245,7 @@ export default function ProfileHero({
               <div
                 key={k.label}
                 className={cn(
-                  "rounded-lg border border-slate-200 bg-gradient-to-br p-3",
+                  "rounded-lg border border-white/[0.08] bg-gradient-to-br p-3",
                   k.tint,
                 )}
               >
@@ -256,8 +256,8 @@ export default function ProfileHero({
                     {k.trend}
                   </span>
                 </div>
-                <div className="mt-1.5 text-lg font-bold text-slate-900">{k.value}</div>
-                <div className="truncate text-[11px] text-slate-500">{k.label}</div>
+                <div className="mt-1.5 text-lg font-bold text-white">{k.value}</div>
+                <div className="truncate text-[11px] text-white/55">{k.label}</div>
               </div>
             ))}
           </div>

@@ -7,7 +7,7 @@ import { UserPlus, BadgeCheck, Check, Sparkles } from "lucide-react";
 import { useSupabaseBrowser } from "@/lib/supabase-browser";
 import { fetchMyCompanyId } from "@/lib/myCompany";
 import { SAMPLE_PARTNERS } from "@/data/feedMock";
-import { CARD } from "@/lib/ui";
+import { PANEL } from "@/lib/ui";
 import { cn } from "@/lib/utils";
 
 type Company = {
@@ -78,14 +78,14 @@ export default function RecommendedPartners() {
   if (items.length === 0) return null;
 
   return (
-    <div className={cn(CARD, "p-4")}>
+    <div className={cn(PANEL, "p-4")}>
       <div className="mb-1 flex items-center gap-2">
         <Sparkles className="h-4 w-4 text-brand" />
-        <h3 className="text-[15px] font-semibold text-slate-900">
+        <h3 className="text-[15px] font-semibold text-white">
           Partner für deine Beschaffung
         </h3>
       </div>
-      <p className="mb-3 text-[12px] text-slate-400">
+      <p className="mb-3 text-[12px] text-white/40">
         Vernetze dich mit Werken &amp; Firmen, mit denen du bündeln kannst.
       </p>
       <ul className="space-y-3">
@@ -93,19 +93,19 @@ export default function RecommendedPartners() {
           <li key={c.id} className="flex items-center gap-3">
             <Link
               href={`/company/${c.id}`}
-              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-xs font-semibold text-slate-700"
+              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-white/10 text-xs font-semibold text-white/75"
             >
               {initials(c.company_name)}
             </Link>
             <div className="min-w-0 flex-1">
               <Link
                 href={`/company/${c.id}`}
-                className="flex items-center gap-1 truncate text-[13px] font-semibold text-slate-800 hover:text-brand"
+                className="flex items-center gap-1 truncate text-[13px] font-semibold text-white/90 hover:text-brand"
               >
                 <span className="truncate">{c.company_name}</span>
                 {c.verified && <BadgeCheck className="h-3.5 w-3.5 shrink-0 text-accent" />}
               </Link>
-              <p className="truncate text-[11px] text-slate-400">
+              <p className="truncate text-[11px] text-white/40">
                 {ROLE_LABEL[c.role] ?? c.role}
                 {c.city ? ` · ${c.city}` : ""}
               </p>

@@ -19,9 +19,12 @@
 }
 
 @layer utilities {
+  /* Milchglas fuer die feste Handy-Navigation. Dunkel, seit die ganze
+     Seite dunkel ist — vorher stand hier eine weisse Leiste unter jeder
+     Seite und war der letzte helle Rest. */
   .glass {
-    background-color: rgb(255 255 255 / 0.95);
-    backdrop-filter: blur(12px);
+    background-color: rgb(8 15 25 / 0.88);
+    backdrop-filter: blur(14px);
   }
   /* Horizontale Tab-Leisten auf dem Handy: scrollbar, aber ohne sichtbaren Balken */
   .no-scrollbar {
@@ -46,23 +49,5 @@
     animation-duration: 0.001ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
-  }
-}
-
-/* ==================================================================
-   Materialbewegung — Bewehrungsstäbe im Hero
-   ------------------------------------------------------------------
-   Sehr langsames vertikales Driften, unterschiedlich lang je Stab.
-   Kein JavaScript, keine Scroll-Bindung: die Bewegung läuft für sich
-   und lenkt nicht ab. Die Regel für reduzierte Bewegung oben schaltet
-   sie vollständig ab.
-   ================================================================== */
-@keyframes rod-drift {
-  0%,
-  100% {
-    transform: translateY(-2.5%);
-  }
-  50% {
-    transform: translateY(2.5%);
   }
 }

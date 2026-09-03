@@ -52,8 +52,8 @@ export default function CompanyCard({
   return (
     <div
       className={cn(
-        "group relative flex h-full flex-col rounded-xl border bg-white p-4 transition-all",
-        connected ? "border-brand/30" : "border-slate-200 hover:border-brand/40 hover:shadow-cardhover",
+        "group relative flex h-full flex-col rounded-xl border bg-[#0B1522] p-4 transition-all",
+        connected ? "border-brand/30" : "border-white/[0.08] hover:border-brand/40 hover:shadow-cardhover",
       )}
     >
       {onDismiss && !conn && (
@@ -61,7 +61,7 @@ export default function CompanyCard({
           type="button"
           onClick={() => onDismiss(company.id)}
           aria-label="Vorschlag ausblenden"
-          className="absolute right-2 top-2 grid h-7 w-7 place-items-center rounded-full text-slate-300 transition-colors hover:bg-slate-100 hover:text-slate-500"
+          className="absolute right-2 top-2 grid h-7 w-7 place-items-center rounded-full text-white/25 transition-colors hover:bg-white/[0.07] hover:text-white/55"
         >
           <X className="h-4 w-4" />
         </button>
@@ -88,17 +88,17 @@ export default function CompanyCard({
         <div className={cn("min-w-0 flex-1", onDismiss && !conn && "pr-5")}>
           <Link
             href={`/company/${company.id}`}
-            className="flex items-center gap-1 text-[14.5px] font-semibold leading-tight text-slate-900 hover:text-brand"
+            className="flex items-center gap-1 text-[14.5px] font-semibold leading-tight text-white hover:text-brand"
           >
             <span className="truncate">{company.company_name}</span>
             {company.verified && <BadgeCheck className="h-4 w-4 shrink-0 text-brand" />}
           </Link>
-          <p className="mt-0.5 flex items-center gap-1 truncate text-[12.5px] text-slate-500">
-            <RoleIcon className="h-3.5 w-3.5 shrink-0 text-slate-400" />
+          <p className="mt-0.5 flex items-center gap-1 truncate text-[12.5px] text-white/55">
+            <RoleIcon className="h-3.5 w-3.5 shrink-0 text-white/40" />
             {ROLE_LABEL[company.role] ?? company.role}
           </p>
           {(company.city || company.canton) && (
-            <p className="mt-0.5 flex items-center gap-1 truncate text-[12.5px] text-slate-400">
+            <p className="mt-0.5 flex items-center gap-1 truncate text-[12.5px] text-white/40">
               <MapPin className="h-3.5 w-3.5 shrink-0" />
               {[company.city, company.canton].filter(Boolean).join(" · ")}
             </p>
@@ -113,7 +113,7 @@ export default function CompanyCard({
             <Check className="h-3 w-3" /> Verbunden
           </span>
         ) : pendingOut ? (
-          <span className="inline-flex items-center gap-1 rounded-md border border-slate-200 bg-slate-50 px-2 py-0.5 text-[11px] font-medium text-slate-500">
+          <span className="inline-flex items-center gap-1 rounded-md border border-white/[0.08] bg-white/[0.03] px-2 py-0.5 text-[11px] font-medium text-white/55">
             <Clock className="h-3 w-3" /> Einladung offen
           </span>
         ) : pendingIn ? (
@@ -121,18 +121,18 @@ export default function CompanyCard({
             Möchte sich vernetzen
           </span>
         ) : (
-          <span className="inline-flex items-center gap-1 rounded-md border border-slate-200 bg-slate-50 px-2 py-0.5 text-[11px] font-medium text-slate-500">
+          <span className="inline-flex items-center gap-1 rounded-md border border-white/[0.08] bg-white/[0.03] px-2 py-0.5 text-[11px] font-medium text-white/55">
             {isSupplier ? "Möglicher Lieferant" : "Möglicher Bündel-Partner"}
           </span>
         )}
       </div>
 
-      <div className="mt-3 flex gap-1.5 border-t border-slate-100 pt-3">
+      <div className="mt-3 flex gap-1.5 border-t border-white/[0.06] pt-3">
         {connected ? (
           <>
             <Link
               href={`/messages?to=${company.id}`}
-              className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-md border border-slate-200 px-3 py-2 text-[13px] font-semibold text-slate-600 transition-colors hover:border-brand/40 hover:text-brand"
+              className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-md border border-white/[0.08] px-3 py-2 text-[13px] font-semibold text-white/70 transition-colors hover:border-brand/40 hover:text-brand"
             >
               <MessageSquare className="h-4 w-4" /> Nachricht
             </Link>
@@ -142,7 +142,7 @@ export default function CompanyCard({
                 onClick={() => onRequest(company)}
                 title="Direkt anfragen"
                 aria-label={`${company.company_name} direkt anfragen`}
-                className="inline-flex items-center justify-center rounded-md bg-brand px-3 py-2 text-[13px] font-semibold text-navy-900 transition-colors hover:bg-brand-500"
+                className="inline-flex items-center justify-center rounded-md bg-brand px-3 py-2 text-[13px] font-semibold text-navy-900 transition-colors hover:bg-brand/100"
               >
                 <Handshake className="h-4 w-4" />
               </button>
@@ -153,14 +153,14 @@ export default function CompanyCard({
             <button
               type="button"
               onClick={() => onAccept(conn!.id)}
-              className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-md bg-brand px-3 py-2 text-[13px] font-semibold text-navy-900 transition-colors hover:bg-brand-500"
+              className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-md bg-brand px-3 py-2 text-[13px] font-semibold text-navy-900 transition-colors hover:bg-brand/100"
             >
               <Check className="h-4 w-4" /> Annehmen
             </button>
             <button
               type="button"
               onClick={() => onRemove(conn!.id)}
-              className="rounded-md border border-slate-200 px-3 py-2 text-[13px] font-semibold text-slate-500 transition-colors hover:bg-slate-50"
+              className="rounded-md border border-white/[0.08] px-3 py-2 text-[13px] font-semibold text-white/55 transition-colors hover:bg-white/[0.05]"
             >
               Ignorieren
             </button>
@@ -169,7 +169,7 @@ export default function CompanyCard({
           <button
             type="button"
             onClick={() => onRemove?.(conn!.id)}
-            className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-md border border-slate-200 px-3 py-2 text-[13px] font-semibold text-slate-500 transition-colors hover:border-slate-300 hover:text-slate-700"
+            className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-md border border-white/[0.08] px-3 py-2 text-[13px] font-semibold text-white/55 transition-colors hover:border-white/[0.16] hover:text-white/75"
           >
             Einladung zurückziehen
           </button>
@@ -179,7 +179,7 @@ export default function CompanyCard({
               type="button"
               onClick={() => onConnect(company.id)}
               disabled={!canAct}
-              className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-md bg-brand px-3 py-2 text-[13px] font-semibold text-navy-900 transition-colors hover:bg-brand-500 disabled:cursor-not-allowed disabled:opacity-50"
+              className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-md bg-brand px-3 py-2 text-[13px] font-semibold text-navy-900 transition-colors hover:bg-brand/100 disabled:cursor-not-allowed disabled:opacity-50"
             >
               <UserPlus className="h-4 w-4" /> Vernetzen
             </button>
@@ -191,7 +191,7 @@ export default function CompanyCard({
                 disabled={!canAct}
                 title="Direkt anfragen"
                 aria-label={`${company.company_name} direkt anfragen`}
-                className="inline-flex items-center justify-center rounded-md border border-slate-200 px-3 py-2 text-[13px] font-semibold text-slate-600 transition-colors hover:border-brand/40 hover:text-brand disabled:cursor-not-allowed disabled:opacity-50"
+                className="inline-flex items-center justify-center rounded-md border border-white/[0.08] px-3 py-2 text-[13px] font-semibold text-white/70 transition-colors hover:border-brand/40 hover:text-brand disabled:cursor-not-allowed disabled:opacity-50"
               >
                 <Handshake className="h-4 w-4" />
               </button>

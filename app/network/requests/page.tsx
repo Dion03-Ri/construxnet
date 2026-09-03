@@ -14,7 +14,7 @@ export default async function RequestsPage() {
   await requireCompanyOrOnboard();
   return (
     <main className="mx-auto max-w-3xl px-4 py-6 sm:px-6 sm:py-8">
-      <Link href="/network" className="mb-4 inline-flex items-center gap-1.5 text-[13px] font-medium text-slate-500 transition-colors hover:text-brand">
+      <Link href="/network" className="mb-4 inline-flex items-center gap-1.5 text-[13px] font-medium text-white/55 transition-colors hover:text-brand">
         <ArrowLeft className="h-4 w-4" /> Zurück zum Netzwerk
       </Link>
       <header className="mb-6 flex items-center gap-3">
@@ -22,8 +22,8 @@ export default async function RequestsPage() {
           <Inbox className="h-6 w-6" />
         </span>
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900">Empfangene Anfragen</h1>
-          <p className="text-sm text-slate-500">Vernetzungs-Anfragen anderer Firmen — annehmen oder ignorieren.</p>
+          <h1 className="text-2xl font-bold tracking-tight text-white">Empfangene Anfragen</h1>
+          <p className="text-sm text-white/55">Vernetzungs-Anfragen anderer Firmen — annehmen oder ignorieren.</p>
         </div>
       </header>
       <ReceivedRequests />

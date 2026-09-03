@@ -45,7 +45,10 @@ export default function RootLayout({
       appearance={clerkAppearance}
     >
       <html lang="de-CH" className={`${inter.variable} ${archivo.variable}`}>
-        <body className="min-h-screen font-sans text-slate-900 antialiased">
+        {/* Der dunkle Grund sitzt hier, nicht in jeder Seite. Es gibt genau EIN
+            Register auf dieser Seite — Startseite wie eingeloggter Bereich —
+            und der Ort dafuer ist der Koerper des Dokuments. */}
+        <body className="min-h-screen bg-[#060B12] font-sans text-white antialiased">
           <CacheBuster />
           <AppShell>{children}</AppShell>
         </body>
