@@ -175,6 +175,23 @@ Supabase (server + browser client, `supabaseAdmin` service-role), Leaflet/OSM
   - **E-Mail** („neue Nachricht") — braucht einen Versanddienst (z. B.
     Resend). Später, ausdrücklich nach Web-Push.
 
+## Karte (`/map`) — echte Standorte
+- Wer `show_on_map` einschaltet, wird **im selben Vorgang** über die amtliche
+  Adresssuche von **swisstopo** (`api3.geo.admin.ch`, kostenlos, kein
+  Schlüssel) verortet; `lat`/`lng`/`geo_label` landen in `companies`.
+- Fällt die Suche aus oder ist die Adresse zu dünn, bleibt es bei der groben
+  Einordnung nach Ort bzw. Kanton aus `data/chMap.ts` — solche Punkte sind
+  blass und im Popup als „ungefähr" gekennzeichnet. Nie so tun, als wäre eine
+  Schätzung eine Adresse.
+- **Datenschutz:** Koordinaten stehen nur in der Zeile, solange die
+  Zustimmung steht. Zieht jemand sie zurück, löscht die Anwendung sie — und
+  ein Trigger (Migration 22) räumt zusätzlich auf, falls das im Code je
+  vergessen geht.
+- Die Karte zeigt **alle** zugestimmten Firmen, nicht nur Baustoffwerke;
+  Gold = Baustoffwerk, Navy = Bauunternehmen, grosse Punkte = verifiziert.
+- Der Kartenbehälter braucht `isolate`: Leaflet zeichnet mit z-index 400+ und
+  legt seine Nadeln sonst über die feste Handy-Navigation.
+
 ## Netzwerk vs. Feed — die Rollentrennung
 - **Feed** (`/feed`) = *was passiert*: Beiträge, laufende Bündel, Aktivität.
   Zeitachse.
