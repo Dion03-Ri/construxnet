@@ -1,5 +1,6 @@
 import Link from "next/link";
 import BundleScroll from "@/components/home/BundleScroll";
+import TwoWays from "@/components/home/TwoWays";
 import {
   ArrowRight,
   Megaphone,
@@ -56,7 +57,7 @@ const GRID_BG = {
 /* ------------------------------------------------------------------ */
 function AppPreview() {
   return (
-    <div className="overflow-hidden rounded-xl border border-white/10 bg-white shadow-[0_30px_70px_-25px_rgba(0,0,0,0.55)]">
+    <div className="overflow-hidden rounded-[26px] border border-white/10 bg-white shadow-[0_30px_70px_-25px_rgba(0,0,0,0.55)]">
       <div className="flex items-center gap-2 border-b border-slate-200 bg-slate-50 px-4 py-2.5">
         <span className="h-2.5 w-2.5 rounded-full bg-slate-300" />
         <span className="h-2.5 w-2.5 rounded-full bg-slate-300" />
@@ -124,7 +125,7 @@ export default function Home() {
 
         <div className="relative mx-auto grid max-w-6xl grid-cols-1 items-center gap-12 px-4 py-16 sm:px-6 lg:grid-cols-[1.05fr_1fr] lg:py-24">
           <div>
-            <span className="inline-flex items-center gap-1.5 rounded-md border border-brand/30 bg-brand/10 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-brand">
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-brand/30 bg-brand/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-brand">
               <Layers className="h-3.5 w-3.5" /> Smart Bündeln
             </span>
 
@@ -141,13 +142,13 @@ export default function Home() {
             <div className="mt-7 flex flex-wrap gap-2.5">
               <Link
                 href="/beschaffung"
-                className="inline-flex items-center gap-2 rounded-md bg-brand px-5 py-3 text-sm font-semibold text-navy-900 transition-colors hover:bg-brand-500"
+                className="inline-flex items-center gap-2 rounded-full bg-brand px-6 py-3 text-sm font-semibold text-navy-900 transition-colors hover:bg-brand-500"
               >
                 <Megaphone className="h-4 w-4" /> Materialbedarf melden
               </Link>
               <Link
                 href="/pools"
-                className="inline-flex items-center gap-2 rounded-md border border-white/15 px-5 py-3 text-sm font-semibold text-white/85 transition-colors hover:bg-white/5"
+                className="inline-flex items-center gap-2 rounded-full border border-white/15 px-6 py-3 text-sm font-semibold text-white/85 transition-colors hover:bg-white/5"
               >
                 Offene Bündel ansehen <ArrowRight className="h-4 w-4" />
               </Link>
@@ -165,59 +166,7 @@ export default function Home() {
       </section>
 
       {/* ============ Zwei Wege zum besseren Preis ============ */}
-      <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:py-20">
-        <div className="mb-8 max-w-2xl">
-          <span className="text-[11px] font-bold uppercase tracking-[0.18em] text-brand">Zwei Wege</span>
-          <h2 className="mt-2 text-3xl font-bold leading-tight tracking-tight text-slate-900 sm:text-[2.4rem]">
-            Zum besseren Preis — gebündelt oder direkt.
-          </h2>
-        </div>
-
-        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-          {/* Gebündelt */}
-          <Link
-            href="/pools"
-            className="group relative overflow-hidden rounded-xl border border-white/10 bg-navy-900 p-6 text-white transition-colors hover:border-brand/40 sm:p-7"
-          >
-            <div aria-hidden className="pointer-events-none absolute inset-0 opacity-[0.06]" style={GRID_BG} />
-            <div className="relative">
-              <span className="grid h-11 w-11 place-items-center rounded-lg bg-brand/15 text-brand">
-                <Combine className="h-5 w-5" />
-              </span>
-              <h3 className="mt-4 text-xl font-bold tracking-tight">Gemeinsam bündeln</h3>
-              <p className="mt-2 text-[14px] leading-relaxed text-white/55">
-                Dein Bedarf wird mit gleichen Bedarfen deiner Region zu einem grossen Volumen
-                zusammengelegt. Die Werke bieten verdeckt darauf — je grösser das Bündel,
-                desto höher der Mengenrabatt.
-              </p>
-              <span className="mt-5 inline-flex items-center gap-1.5 text-[13.5px] font-semibold text-brand">
-                Smart Pools ansehen <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-              </span>
-            </div>
-          </Link>
-
-          {/* Direkt */}
-          <Link
-            href="/network"
-            className="group relative overflow-hidden rounded-xl border border-white/10 bg-navy-800 p-6 text-white transition-colors hover:border-white/25 sm:p-7"
-          >
-            <div aria-hidden className="pointer-events-none absolute inset-0 opacity-[0.06]" style={GRID_BG} />
-            <div className="relative">
-              <span className="grid h-11 w-11 place-items-center rounded-lg bg-white/10 text-white">
-                <Handshake className="h-5 w-5" />
-              </span>
-              <h3 className="mt-4 text-xl font-bold tracking-tight">Direkt verhandeln</h3>
-              <p className="mt-2 text-[14px] leading-relaxed text-white/55">
-                Du willst nicht bündeln? Finde geprüfte Baustoffwerke im Netzwerk und
-                verhandle direkt — mit dem KBOB-Referenzpreis als transparenter Basis.
-              </p>
-              <span className="mt-5 inline-flex items-center gap-1.5 text-[13.5px] font-semibold text-white">
-                Zum Netzwerk <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-              </span>
-            </div>
-          </Link>
-        </div>
-      </section>
+      <TwoWays />
 
       {/* ================= Smart Pools (Scroll-Erzählung) ================= */}
       <BundleScroll />
@@ -255,7 +204,7 @@ export default function Home() {
           </div>
           <ul className="space-y-2">
             {POOLS.map((p) => (
-              <li key={p.material} className="flex items-center gap-3 rounded-lg border border-slate-200 p-3 transition-colors hover:border-brand/40">
+              <li key={p.material} className="flex items-center gap-3 rounded-2xl border border-slate-200 p-3 transition-colors hover:border-brand/40">
                 <span className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-navy-900 text-brand">
                   <Layers className="h-4 w-4" />
                 </span>
@@ -286,7 +235,7 @@ export default function Home() {
           </div>
           <ul className="space-y-2">
             {COMPANIES.map((c) => (
-              <li key={c.uid} className="flex items-center gap-3 rounded-lg border border-slate-200 p-3 transition-colors hover:border-brand/40">
+              <li key={c.uid} className="flex items-center gap-3 rounded-2xl border border-slate-200 p-3 transition-colors hover:border-brand/40">
                 <span className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-navy-900 text-[11px] font-bold text-white">
                   {c.name.split(" ").slice(0, 2).map((w) => w[0]).join("")}
                 </span>
@@ -298,7 +247,7 @@ export default function Home() {
                 </div>
                 <Link
                   href="/network"
-                  className="shrink-0 rounded-md border border-brand/40 px-3 py-1.5 text-[12px] font-semibold text-brand transition-colors hover:bg-brand/10"
+                  className="shrink-0 rounded-full border border-brand/40 px-3.5 py-1.5 text-[12px] font-semibold text-brand transition-colors hover:bg-brand/10"
                 >
                   Vernetzen
                 </Link>
@@ -310,7 +259,7 @@ export default function Home() {
 
       {/* ================= Abschluss-CTA ================= */}
       <section className="mx-auto max-w-6xl px-4 pb-20 sm:px-6">
-        <div className="relative overflow-hidden rounded-xl border border-white/10 bg-navy-900 px-6 py-12 text-white sm:px-12 sm:py-16">
+        <div className="relative overflow-hidden rounded-[28px] border border-white/10 bg-navy-900 px-6 py-12 text-white sm:rounded-[32px] sm:px-12 sm:py-16">
           <div aria-hidden className="pointer-events-none absolute inset-0 opacity-[0.06]" style={GRID_BG} />
           <div
             aria-hidden
@@ -318,7 +267,7 @@ export default function Home() {
           />
           <div className="relative grid grid-cols-1 items-center gap-8 lg:grid-cols-[1.3fr_1fr]">
             <div>
-              <span className="inline-flex items-center gap-1.5 rounded-md border border-brand/30 bg-brand/10 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-brand">
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-brand/30 bg-brand/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-brand">
                 <ShieldCheck className="h-3.5 w-3.5" /> Erst zahlen, wenn du sparst
               </span>
               <h2 className="mt-4 text-3xl font-bold tracking-tight sm:text-[2.3rem]">
@@ -330,13 +279,13 @@ export default function Home() {
               <div className="mt-7 flex flex-wrap gap-2.5">
                 <Link
                   href="/sign-up"
-                  className="inline-flex items-center gap-2 rounded-md bg-brand px-5 py-3 text-sm font-semibold text-navy-900 transition-colors hover:bg-brand-500"
+                  className="inline-flex items-center gap-2 rounded-full bg-brand px-6 py-3 text-sm font-semibold text-navy-900 transition-colors hover:bg-brand-500"
                 >
                   Kostenlos registrieren <ArrowRight className="h-4 w-4" />
                 </Link>
                 <Link
                   href="/beschaffung"
-                  className="inline-flex items-center gap-2 rounded-md border border-white/15 px-5 py-3 text-sm font-semibold text-white/85 transition-colors hover:bg-white/5"
+                  className="inline-flex items-center gap-2 rounded-full border border-white/15 px-6 py-3 text-sm font-semibold text-white/85 transition-colors hover:bg-white/5"
                 >
                   Materialbedarf melden
                 </Link>
@@ -349,7 +298,7 @@ export default function Home() {
                 { icon: Coins, t: "KBOB als Preisbasis", d: "Jedes Angebot messbar gegen den Referenzpreis." },
                 { icon: Truck, t: "Regional geliefert", d: "Werke aus deiner Region, kurze Wege." },
               ].map((f) => (
-                <div key={f.t} className="flex items-start gap-3 rounded-lg border border-white/10 bg-white/[0.04] px-4 py-3">
+                <div key={f.t} className="flex items-start gap-3 rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3">
                   <f.icon className="mt-0.5 h-4 w-4 shrink-0 text-brand" />
                   <div>
                     <div className="text-[13px] font-semibold">{f.t}</div>
