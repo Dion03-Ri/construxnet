@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useAuth } from "@clerk/nextjs";
 import { useSupabaseBrowser } from "@/lib/supabase-browser";
 import { fetchMyCompanyId } from "@/lib/myCompany";
@@ -33,6 +33,36 @@ export const ROLE_FILTERS = [
   { key: "ALL", label: "Alle" },
   { key: "BUYER", label: "Bauunternehmen" },
   { key: "SUPPLIER", label: "Baustoffwerke" },
+];
+
+/** Alle 26 Kantone — der Filter zeigt die Schweiz, nicht nur wer schon da ist. */
+export const SWISS_CANTONS: { code: string; name: string }[] = [
+  { code: "AG", name: "Aargau" },
+  { code: "AI", name: "Appenzell Innerrhoden" },
+  { code: "AR", name: "Appenzell Ausserrhoden" },
+  { code: "BE", name: "Bern" },
+  { code: "BL", name: "Basel-Landschaft" },
+  { code: "BS", name: "Basel-Stadt" },
+  { code: "FR", name: "Freiburg" },
+  { code: "GE", name: "Genf" },
+  { code: "GL", name: "Glarus" },
+  { code: "GR", name: "Graubünden" },
+  { code: "JU", name: "Jura" },
+  { code: "LU", name: "Luzern" },
+  { code: "NE", name: "Neuenburg" },
+  { code: "NW", name: "Nidwalden" },
+  { code: "OW", name: "Obwalden" },
+  { code: "SG", name: "St. Gallen" },
+  { code: "SH", name: "Schaffhausen" },
+  { code: "SO", name: "Solothurn" },
+  { code: "SZ", name: "Schwyz" },
+  { code: "TG", name: "Thurgau" },
+  { code: "TI", name: "Tessin" },
+  { code: "UR", name: "Uri" },
+  { code: "VD", name: "Waadt" },
+  { code: "VS", name: "Wallis" },
+  { code: "ZG", name: "Zug" },
+  { code: "ZH", name: "Zürich" },
 ];
 
 /** Feine Raster-Textur der dunklen Panels — identisch zu Feed und Startseite. */
@@ -92,15 +122,22 @@ export function useNetwork() {
     setConns(map);
   }, [isSignedIn, userId, supabase]);
 
+  // Nur beim ersten Mal einen Ladezustand zeigen. Sonst leert ein stiller
+  // Neuaufbau des Clients (Clerk erneuert das Token) kurz die ganze Liste —
+  // das war das Flackern, bei dem Firmen verschwanden und wiederkamen.
+  const loadedOnce = useRef(false);
+
   const loadCompanies = useCallback(async () => {
-    setLoading(true);
+    if (!loadedOnce.current) setLoading(true);
     const { data } = await supabase
       .from("companies")
       .select("id, company_name, uid_number, role, canton, city, verified, logo_url, bio, created_at")
       .neq("role", "ADMIN")
       .order("verified", { ascending: false })
       .order("company_name", { ascending: true });
-    setCompanies((data ?? []) as NetCompany[]);
+    // Ein fehlgeschlagener Abruf darf die bereits gezeigte Liste nicht loeschen.
+    if (data) setCompanies(data as NetCompany[]);
+    loadedOnce.current = true;
     setLoading(false);
   }, [supabase]);
 

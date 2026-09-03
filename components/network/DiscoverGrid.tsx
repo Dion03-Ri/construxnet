@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { Search, Loader2, Users, ArrowLeft, MapPin, SlidersHorizontal } from "lucide-react";
-import { useNetwork, ROLE_FILTERS, GRID_BG, type NetCompany } from "@/lib/network";
+import { useNetwork, ROLE_FILTERS, SWISS_CANTONS, GRID_BG, type NetCompany } from "@/lib/network";
 import CompanyCard from "@/components/network/CompanyCard";
 import DirectRequestModal from "@/components/network/DirectRequestModal";
 import { CARD } from "@/lib/ui";
@@ -35,25 +35,27 @@ export default function DiscoverGrid() {
   const [canton, setCanton] = useState("ALL");
   const [sort, setSort] = useState("FIT");
   const [onlyVerified, setOnlyVerified] = useState(false);
-  const [withConnected, setWithConnected] = useState(false);
   const [limit, setLimit] = useState(PAGE);
   const [requestTarget, setRequestTarget] = useState<NetCompany | null>(null);
 
   const myCanton = me?.canton ?? null;
   const myRole = me?.role ?? null;
 
-  /** Alle Kantone, in denen wirklich jemand registriert ist. */
-  const cantons = useMemo(
-    () =>
-      Array.from(new Set(companies.map((c) => c.canton).filter(Boolean) as string[])).sort(),
-    [companies],
-  );
+  /** Wie viele Firmen je Kanton — die Auswahl zeigt die ganze Schweiz und
+      dahinter, wo tatsächlich jemand registriert ist. */
+  const perCanton = useMemo(() => {
+    const m: Record<string, number> = {};
+    for (const c of companies) {
+      if (c.id === myCompanyId || !c.canton) continue;
+      m[c.canton] = (m[c.canton] ?? 0) + 1;
+    }
+    return m;
+  }, [companies, myCompanyId]);
 
   const results = useMemo(() => {
     const q = query.trim().toLowerCase();
     const list = companies.filter((c) => {
       if (c.id === myCompanyId) return false;
-      if (!withConnected && conns[c.id]) return false;
       if (role !== "ALL" && c.role !== role) return false;
       if (canton !== "ALL" && c.canton !== canton) return false;
       if (onlyVerified && !c.verified) return false;
@@ -74,23 +76,21 @@ export default function DiscoverGrid() {
         (a, b) => new Date(b.created_at ?? 0).getTime() - new Date(a.created_at ?? 0).getTime(),
       );
     }
-    // Passend zuerst: gleicher Kanton, dann ergänzende Rolle, dann verifiziert.
+    // Passend zuerst: offene Kontakte vor bestehenden, dann gleicher Kanton,
+    // ergänzende Rolle, verifiziert. Alles nachvollziehbar, nichts erfunden.
     const score = (c: NetCompany) =>
+      (conns[c.id] ? 0 : 8) +
       (myCanton && c.canton === myCanton ? 4 : 0) +
       (myRole && c.role !== myRole ? 2 : 0) +
       (c.verified ? 1 : 0);
     return [...list].sort(
       (a, b) => score(b) - score(a) || a.company_name.localeCompare(b.company_name, "de-CH"),
     );
-  }, [companies, conns, myCompanyId, withConnected, role, canton, onlyVerified, query, sort, myCanton, myRole]);
+  }, [companies, conns, myCompanyId, role, canton, onlyVerified, query, sort, myCanton, myRole]);
 
   const shown = results.slice(0, limit);
+  const connectedCount = results.filter((c) => conns[c.id]?.status === "CONNECTED").length;
   const filtersOn = role !== "ALL" || canton !== "ALL" || onlyVerified || !!query.trim();
-
-  // Nur der Grund, den die Karte nicht ohnehin schon zeigt: die Region.
-  function why(c: NetCompany) {
-    return myCanton && c.canton === myCanton ? `Gleiche Region · ${c.canton}` : null;
-  }
 
   return (
     <div className="space-y-5">
@@ -176,8 +176,10 @@ export default function DiscoverGrid() {
               className="w-full appearance-none rounded-md border border-slate-200 bg-white py-2 pl-9 pr-3 text-[13px] text-slate-800 outline-none focus:border-brand"
             >
               <option value="ALL">Alle Kantone</option>
-              {cantons.map((k) => (
-                <option key={k} value={k}>{k}</option>
+              {SWISS_CANTONS.map((k) => (
+                <option key={k.code} value={k.code}>
+                  {k.name}{perCanton[k.code] ? ` (${perCanton[k.code]})` : ""}
+                </option>
               ))}
             </select>
           </label>
@@ -193,15 +195,6 @@ export default function DiscoverGrid() {
           </select>
         </div>
 
-        <label className="mt-2.5 flex cursor-pointer items-center gap-2 text-[12px] leading-tight text-slate-500">
-          <input
-            type="checkbox"
-            checked={withConnected}
-            onChange={(e) => setWithConnected(e.target.checked)}
-            className="h-4 w-4 rounded border-slate-300 text-brand focus:ring-brand"
-          />
-          Bestehende Verbindungen und offene Anfragen mitzeigen
-        </label>
       </div>
 
       {/* Ergebnisse */}
@@ -236,25 +229,22 @@ export default function DiscoverGrid() {
             </p>
             <p className="text-[12px] text-slate-400">
               {Math.min(limit, results.length)} angezeigt
+              {connectedCount > 0 ? ` · ${connectedCount} bereits verbunden` : ""}
             </p>
           </div>
 
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
             {shown.map((c) => (
-              <div key={c.id} className="flex flex-col">
-                <CompanyCard
-                  company={c}
-                  conn={conns[c.id]}
-                  canAct={!!myCompanyId}
-                  onConnect={connect}
-                  onAccept={accept}
-                  onRemove={remove}
-                  onRequest={setRequestTarget}
-                />
-                {why(c) && (
-                  <p className="mt-1.5 text-center text-[11px] text-slate-400">{why(c)}</p>
-                )}
-              </div>
+              <CompanyCard
+                key={c.id}
+                company={c}
+                conn={conns[c.id]}
+                canAct={!!myCompanyId}
+                onConnect={connect}
+                onAccept={accept}
+                onRemove={remove}
+                onRequest={setRequestTarget}
+              />
             ))}
           </div>
 
