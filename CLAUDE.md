@@ -175,6 +175,23 @@ Supabase (server + browser client, `supabaseAdmin` service-role), Leaflet/OSM
   - **E-Mail** („neue Nachricht") — braucht einen Versanddienst (z. B.
     Resend). Später, ausdrücklich nach Web-Push.
 
+## Kontaktdaten — nur für Verbindungen
+- E-Mail, Telefon, Adresse und Website sind **nicht** Teil der allgemeinen
+  Firmen-Freigabe. Sie kommen über `company_contact(p_company)` — eine
+  SECURITY-DEFINER-Funktion, die prüft, ob die Firma man selbst ist oder eine
+  **bestätigte** Verbindung besteht. Ohne Argument liefert sie alle erlaubten
+  Kontakte (Chat), mit Argument einen (Firmenprofil).
+- Migration 23 setzt dafür die Freigabe auf `companies` spaltenweise neu.
+  **Postgres-Eigenheit:** ein `REVOKE` einzelner Spalten greift nicht, solange
+  eine Freigabe auf Tabellenebene besteht — deshalb wird sie zuerst ganz
+  entzogen und dann als Liste neu erteilt. Aus demselben Grund wirkt der
+  Entzug von `clerk_user_id` aus Migration 19 erst jetzt wirklich.
+- **Folge fürs Weiterbauen:** eine NEUE Spalte auf `companies` ist für
+  angemeldete Nutzer erst lesbar, wenn sie in Migration 23 in die Liste
+  aufgenommen wird. Privat als Vorgabe — aber daran denken.
+- Nicht freigegeben: `clerk_user_id`, `email`, `phone`, `address`, `website`,
+  `geo_query`, `geo_at`. Die Service-Rolle sieht weiterhin alles.
+
 ## Profil bearbeiten (`/profile/edit`)
 - Ein Formular für Firma, Standort, Kontakt, Beschreibung und (nur
   Baustoffwerke) das Liefer-Profil. Erreichbar über Profilmenü, den Knopf auf

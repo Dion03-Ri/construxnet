@@ -260,22 +260,32 @@ export default function ChatWindow({ initialTo }: { initialTo?: string }) {
       return;
     }
 
-    // Kontaktfelder mitladen; falls Migration 04 noch nicht lief, Fallback.
     const ids = [...counterIds];
-    const full = await supabase
+    const base = await supabase
       .from("companies")
-      .select("id, company_name, logo_url, city, verified, role, canton, email, phone, address, website")
+      .select("id, company_name, logo_url, city, verified, role, canton")
       .in("id", ids);
-    const list = (
-      full.error
-        ? (
-            await supabase
-              .from("companies")
-              .select("id, company_name, logo_url, city, verified, role, canton")
-              .in("id", ids)
-          ).data ?? []
-        : full.data ?? []
-    ) as Company[];
+
+    // Kontaktdaten kommen getrennt und nur fuer bestaetigte Verbindungen
+    // (Migration 23). Genau das sind die Firmen in dieser Liste — wer hier
+    // steht, ist verbunden.
+    const { data: contactRows } = await supabase.rpc("company_contact");
+    const contacts = new Map(
+      ((contactRows ?? []) as {
+        company_id: string;
+        email: string | null;
+        phone: string | null;
+        address: string | null;
+        website: string | null;
+      }[]).map((c) => [c.company_id, c]),
+    );
+
+    const list = ((base.data ?? []) as Company[]).map((c) => {
+      const k = contacts.get(c.id);
+      return k
+        ? { ...c, email: k.email, phone: k.phone, address: k.address, website: k.website }
+        : c;
+    });
     const map: Record<string, Msg[]> = {};
     for (const id of counterIds) map[id] = [];
     for (const m of allMsgs) {
