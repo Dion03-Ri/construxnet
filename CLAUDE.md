@@ -192,6 +192,49 @@ Supabase (server + browser client, `supabaseAdmin` service-role), Leaflet/OSM
   verkleinern (1800 px, mozjpeg) — Rohbilder mit 13 MB gehören nicht auf
   eine Startseite.
 
+## Design-Fundament — zwei Register
+Die Seite hat **zwei getrennte Gestaltungssprachen**. Sie nie vermischen.
+
+- **Register A — öffentlich** (`/`, Rechtsseiten, Sign-in): gross, luftig,
+  wenig Text pro Bild. Vorbild Robinhood und Revolut. Höchstens eine Aussage
+  pro Bildschirm.
+- **Register B — eingeloggt** (Feed, Netzwerk, Pools, KBOB, Beschaffung,
+  Dashboard): hell, präzise, dicht, echte Daten, keine Deko. Vorbild Stripe.
+
+### Typografie
+- **Archivo** (`font-display`, `--font-display`) für Marketing-Überschriften,
+  **Inter** für alles andere. Die beiden treffen sich nie in derselben Zeile.
+- Stufen in `tailwind.config.ts`: `d-sm` 32 px · `d-md` 44 px · `d-lg` 60 px ·
+  `d-xl` 92 px. Die Bausteine `D_XL`/`D_LG`/`D_MD` in `lib/ui.ts` benutzen,
+  nicht selbst zusammensetzen.
+- **Zwischen Lauftext (15–17 px) und Display darf nichts Mittelmässiges
+  stehen.** Der fehlende Grössensprung ist das Erkennungszeichen generierter
+  Seiten — vorher lag die grösste Überschrift bei 38 px, das war zu wenig.
+
+### Was nicht mehr vorkommt
+- **Icons in abgerundeten Kacheln.** In keinem der Vorbilder (Stripe,
+  Robinhood, Revolut) gibt es das ein einziges Mal. Stattdessen ein echtes
+  Objekt pro Abschnitt — Render, Foto oder UI-Aufnahme.
+- **Rahmen um alles.** Der Ablauf-Abschnitt der Startseite hat bewusst keine
+  Karten: vier Nummern, vier Titel, vier Zeilen, viel Luft.
+- **Kleine Kategorie-Badges mit Icon.** Ersetzt durch `EYEBROW` — nur
+  Versalien, gesperrt, Gold, ohne Kasten.
+
+### Rhythmus und Farbe
+- Drei Abstands-Stufen: `SECTION_TIGHT` / `SECTION` / `SECTION_WIDE`. Ein
+  luftiger Abschnitt muss auf einen dichten folgen; gleichförmiges `py-14`
+  überall liest sich wie eine Liste.
+- **Gold ist die knappste Ressource: höchstens EIN gefüllter Gold-Knopf pro
+  Bildschirm.** Alles andere weiss (`BTN_LIGHT`), dunkel (`BTN_DARK`) oder
+  offen. Deshalb sind die Knöpfe in „Zwei Wege" weiss, nicht golden.
+
+### Tailwind-Fallstrick
+`content` in `tailwind.config.ts` muss **`./lib/**` und `./data/**`**
+mitscannen. Die Bausteine in `lib/ui.ts` sind reine Klassen-Strings; fehlt der
+Pfad, erzeugt Tailwind sie nicht und sie kommen im CSS nie an — sichtbar nur
+dort, wo dieselbe Klasse zufällig auch woanders steht. Genau das war der Grund,
+warum die neue Typo-Skala zuerst nicht wirkte.
+
 ## Formensprache — weiche Ecken, dünne Ränder
 - Vorbild ist der Aufbau grosser Produktkarten: sehr weiche Ecken
   (`rounded-2xl` für Karten, `rounded-[28px]`/`[32px]` für grosse Panels),

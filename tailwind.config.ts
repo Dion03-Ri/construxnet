@@ -1,10 +1,27 @@
 import type { Config } from "tailwindcss";
 
 const config: Config = {
-  content: ["./app/**/*.{ts,tsx}", "./components/**/*.{ts,tsx}"],
+  // lib/ und data/ MUESSEN mitgescannt werden: die Design-Bausteine in
+  // lib/ui.ts sind reine Klassen-Strings. Fehlt der Pfad, erzeugt Tailwind
+  // sie nicht und die Klassen kommen im CSS nie an — sichtbar nur dort, wo
+  // dieselbe Klasse zufaellig auch woanders steht.
+  content: [
+    "./app/**/*.{ts,tsx}",
+    "./components/**/*.{ts,tsx}",
+    "./lib/**/*.{ts,tsx}",
+    "./data/**/*.{ts,tsx}",
+  ],
   theme: {
     extend: {
       fontFamily: {
+        // Marketing-Ueberschriften. Nur fuer Display-Groessen ab ~32 px.
+        display: [
+          "var(--font-display)",
+          "var(--font-sans)",
+          "Helvetica Neue",
+          "Arial",
+          "sans-serif",
+        ],
         sans: [
           "var(--font-sans)",
           "-apple-system",
@@ -48,6 +65,15 @@ const config: Config = {
         // Datenlinien (nur Visualisierung) — SourceOn-Blau
         "kbob-blue": "#254D7A",
         "pool-green": "#254D7A",
+      },
+      // Display-Stufen fuer die oeffentlichen Seiten. Die Sprungweite ist
+      // Absicht: zwischen Lauftext (15 px) und Hero (bis 92 px) darf nichts
+      // Mittelmaessiges stehen, sonst liest sich die Seite wie eine Liste.
+      fontSize: {
+        "d-sm": ["2rem", { lineHeight: "1.1", letterSpacing: "-0.022em" }],
+        "d-md": ["2.75rem", { lineHeight: "1.05", letterSpacing: "-0.026em" }],
+        "d-lg": ["3.75rem", { lineHeight: "1.02", letterSpacing: "-0.03em" }],
+        "d-xl": ["5.75rem", { lineHeight: "0.96", letterSpacing: "-0.035em" }],
       },
       boxShadow: {
         // Präzise, flache Enterprise-Elevation (Stripe/Salesforce-Stil)

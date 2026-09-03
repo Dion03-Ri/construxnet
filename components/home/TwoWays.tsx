@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { Building2 } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { D_LG, D_MD, EYEBROW, BTN_LIGHT, SECTION } from "@/lib/ui";
 
 /**
  * Zwei Wege zum besseren Preis — im Aufbau der grossen Produktkarten:
@@ -36,13 +38,13 @@ function Card({
       <div aria-hidden className="pointer-events-none absolute inset-0 opacity-[0.04]" style={GRID_BG} />
 
       <div className="relative px-6 text-center sm:px-10">
-        <h3 className="text-[26px] font-bold tracking-tight text-white sm:text-[34px]">{title}</h3>
-        <p className="mx-auto mt-3 max-w-[22rem] text-[13.5px] font-medium leading-relaxed text-white/60 sm:text-[14.5px]">
+        <h3 className={cn(D_MD, "text-white")}>{title}</h3>
+        <p className="mx-auto mt-4 max-w-[24rem] text-[14.5px] font-medium leading-relaxed text-white/60 sm:text-[15.5px]">
           {lead}
         </p>
         <Link
           href={href}
-          className="mt-6 inline-flex items-center justify-center rounded-full bg-brand px-6 py-2.5 text-[14px] font-semibold text-navy-950 transition-colors hover:bg-brand-500 sm:mt-7"
+          className={cn(BTN_LIGHT, "mt-7 sm:mt-8")}
         >
           {cta}
         </Link>
@@ -130,12 +132,12 @@ function DirectArt() {
 export default function TwoWays() {
   return (
     <section className="bg-[#05090F]">
-      <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:py-24">
-        <div className="mb-9 max-w-2xl sm:mb-12">
-          <span className="text-[11px] font-bold uppercase tracking-[0.18em] text-brand">
+      <div className={cn("mx-auto max-w-6xl px-4 sm:px-6", SECTION)}>
+        <div className="mb-12 max-w-2xl sm:mb-16">
+          <span className={EYEBROW}>
             Zwei Wege
           </span>
-          <h2 className="mt-3 text-[28px] font-bold leading-[1.1] tracking-tight text-white sm:text-[2.6rem]">
+          <h2 className={cn(D_LG, "mt-5 text-white")}>
             Zum besseren Preis — gebündelt oder direkt.
           </h2>
         </div>
