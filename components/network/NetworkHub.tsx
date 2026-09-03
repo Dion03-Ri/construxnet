@@ -210,18 +210,6 @@ export default function NetworkHub() {
           )}
         </DarkPanel>
 
-        {/* Was ist diese Seite — klarer Unterschied zum Feed */}
-        <div className={cn(CARD, "p-4")}>
-          <Eyebrow>Netzwerk statt Feed</Eyebrow>
-          <p className="mt-1.5 text-[12.5px] leading-relaxed text-slate-500">
-            Im <Link href="/feed" className="font-semibold text-brand hover:underline">Feed</Link>{" "}
-            siehst du, <b className="font-semibold text-slate-700">was passiert</b> — Beiträge und
-            laufende Bündel. Hier verwaltest du,{" "}
-            <b className="font-semibold text-slate-700">mit wem du arbeitest</b>: Verbindungen,
-            Anfragen und neue Partner.
-          </p>
-        </div>
-
         {/* Neu im Netzwerk — echte, zuletzt beigetretene Firmen */}
         {newest.length > 0 && (
           <DarkPanel>
