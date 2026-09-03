@@ -193,67 +193,98 @@ export default function Home() {
       </section>
 
       {/* ================= Pools + Netzwerk ================= */}
+      {/* Zwei Karten auf Bildgrund: das Bild liegt hinten, darüber ein dunkler
+          Verlauf für die Lesbarkeit, darauf die Zeilen als leichte Glasflächen.
+          Fehlt eine Bilddatei, bleibt der dunkle Grund — es bricht nichts. */}
       <section className="mx-auto grid max-w-6xl grid-cols-1 gap-5 px-4 pb-16 sm:px-6 lg:grid-cols-2">
         {/* Pools */}
-        <div className={cn(CARD, "p-6")}>
-          <div className="mb-4 flex items-center justify-between">
-            <h2 className="text-[16px] font-bold tracking-tight text-slate-900">Aktive Smart Pools</h2>
-            <Link href="/pools" className="inline-flex items-center gap-1 text-[13px] font-semibold text-brand hover:text-brand-600">
-              Alle <ArrowRight className="h-3.5 w-3.5" />
-            </Link>
+        <div className="relative overflow-hidden rounded-[26px] border border-white/[0.09] bg-[#08111C] p-5 text-white sm:rounded-[30px] sm:p-6">
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0 bg-cover bg-center opacity-[0.42]"
+            style={{ backgroundImage: "url('/bg-pools.jpg')" }}
+          />
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[#050B14]/85 via-[#050B14]/80 to-[#050B14]/95"
+          />
+          <div className="relative">
+            <div className="mb-4 flex items-center justify-between">
+              <h2 className="text-[16px] font-bold tracking-tight text-white">Aktive Smart Pools</h2>
+              <Link href="/pools" className="inline-flex items-center gap-1 text-[13px] font-semibold text-brand hover:text-brand-400">
+                Alle <ArrowRight className="h-3.5 w-3.5" />
+              </Link>
+            </div>
+            <ul className="space-y-2">
+              {POOLS.map((p) => (
+                <li
+                  key={p.material}
+                  className="flex items-center gap-3 rounded-2xl border border-white/[0.12] bg-white/[0.07] p-3 backdrop-blur-sm transition-colors hover:border-brand/50 hover:bg-white/[0.11]"
+                >
+                  <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-brand/15 text-brand ring-1 ring-brand/25">
+                    <Layers className="h-4 w-4" />
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <div className="truncate text-[13px] font-semibold text-white">{p.material}</div>
+                    <div className="mt-0.5 flex items-center gap-1 text-[11px] text-white/50">
+                      <MapPin className="h-3 w-3" /> {p.region} · {p.volume}
+                    </div>
+                    <div className="mt-1.5 h-1.5 w-full overflow-hidden rounded-full bg-white/15">
+                      <div className="h-full rounded-full bg-brand" style={{ width: `${p.fill}%` }} />
+                    </div>
+                  </div>
+                  <span className="hidden shrink-0 items-center gap-1 self-start text-[11px] text-white/45 sm:inline-flex">
+                    <Clock className="h-3 w-3" /> {p.deadline}
+                  </span>
+                </li>
+              ))}
+            </ul>
           </div>
-          <ul className="space-y-2">
-            {POOLS.map((p) => (
-              <li key={p.material} className="flex items-center gap-3 rounded-2xl border border-slate-200 p-3 transition-colors hover:border-brand/40">
-                <span className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-navy-900 text-brand">
-                  <Layers className="h-4 w-4" />
-                </span>
-                <div className="min-w-0 flex-1">
-                  <div className="truncate text-[13px] font-semibold text-slate-900">{p.material}</div>
-                  <div className="mt-0.5 flex items-center gap-1 text-[11px] text-slate-400">
-                    <MapPin className="h-3 w-3" /> {p.region} · {p.volume}
-                  </div>
-                  <div className="mt-1.5 h-1.5 w-full overflow-hidden rounded-full bg-slate-100">
-                    <div className="h-full rounded-full bg-brand" style={{ width: `${p.fill}%` }} />
-                  </div>
-                </div>
-                <span className="hidden shrink-0 items-center gap-1 self-start text-[11px] text-slate-400 sm:inline-flex">
-                  <Clock className="h-3 w-3" /> {p.deadline}
-                </span>
-              </li>
-            ))}
-          </ul>
         </div>
 
         {/* Netzwerk */}
-        <div className={cn(CARD, "p-6")}>
-          <div className="mb-4 flex items-center justify-between">
-            <h2 className="text-[16px] font-bold tracking-tight text-slate-900">Firmen im Netzwerk</h2>
-            <Link href="/network" className="inline-flex items-center gap-1 text-[13px] font-semibold text-brand hover:text-brand-600">
-              Zum Netzwerk <ArrowRight className="h-3.5 w-3.5" />
-            </Link>
-          </div>
-          <ul className="space-y-2">
-            {COMPANIES.map((c) => (
-              <li key={c.uid} className="flex items-center gap-3 rounded-2xl border border-slate-200 p-3 transition-colors hover:border-brand/40">
-                <span className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-navy-900 text-[11px] font-bold text-white">
-                  {c.name.split(" ").slice(0, 2).map((w) => w[0]).join("")}
-                </span>
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-center gap-1 truncate text-[13px] font-semibold text-slate-900">
-                    {c.name} <BadgeCheck className="h-3.5 w-3.5 shrink-0 text-brand" />
-                  </div>
-                  <div className="truncate text-[11px] text-slate-400">{c.cat} · {c.city}</div>
-                </div>
-                <Link
-                  href="/network"
-                  className="shrink-0 rounded-full border border-brand/40 px-3.5 py-1.5 text-[12px] font-semibold text-brand transition-colors hover:bg-brand/10"
+        <div className="relative overflow-hidden rounded-[26px] border border-white/[0.09] bg-[#08111C] p-5 text-white sm:rounded-[30px] sm:p-6">
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0 bg-cover bg-center opacity-[0.42]"
+            style={{ backgroundImage: "url('/bg-netzwerk.jpg')" }}
+          />
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[#050B14]/85 via-[#050B14]/80 to-[#050B14]/95"
+          />
+          <div className="relative">
+            <div className="mb-4 flex items-center justify-between">
+              <h2 className="text-[16px] font-bold tracking-tight text-white">Firmen im Netzwerk</h2>
+              <Link href="/network" className="inline-flex items-center gap-1 text-[13px] font-semibold text-brand hover:text-brand-400">
+                Zum Netzwerk <ArrowRight className="h-3.5 w-3.5" />
+              </Link>
+            </div>
+            <ul className="space-y-2">
+              {COMPANIES.map((c) => (
+                <li
+                  key={c.uid}
+                  className="flex items-center gap-3 rounded-2xl border border-white/[0.12] bg-white/[0.07] p-3 backdrop-blur-sm transition-colors hover:border-brand/50 hover:bg-white/[0.11]"
                 >
-                  Vernetzen
-                </Link>
-              </li>
-            ))}
-          </ul>
+                  <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-white/10 text-[11px] font-bold text-white ring-1 ring-white/15">
+                    {c.name.split(" ").slice(0, 2).map((w) => w[0]).join("")}
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-1 truncate text-[13px] font-semibold text-white">
+                      {c.name} <BadgeCheck className="h-3.5 w-3.5 shrink-0 text-brand" />
+                    </div>
+                    <div className="truncate text-[11px] text-white/50">{c.cat} · {c.city}</div>
+                  </div>
+                  <Link
+                    href="/network"
+                    className="shrink-0 rounded-full border border-brand/50 px-3.5 py-1.5 text-[12px] font-semibold text-brand transition-colors hover:bg-brand/15"
+                  >
+                    Vernetzen
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
       </section>
 
