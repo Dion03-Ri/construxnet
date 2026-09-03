@@ -175,9 +175,20 @@ Supabase (server + browser client, `supabaseAdmin` service-role), Leaflet/OSM
   - **E-Mail** („neue Nachricht") — braucht einen Versanddienst (z. B.
     Resend). Später, ausdrücklich nach Web-Push.
 
+## Formensprache — weiche Ecken, dünne Ränder
+- Vorbild ist der Aufbau grosser Produktkarten: sehr weiche Ecken
+  (`rounded-2xl` für Karten, `rounded-[28px]`/`[32px]` für grosse Panels),
+  hauchdünne Ränder (`border-white/[0.09]` auf dunklem, `border-slate-200`
+  auf hellem Grund), Knöpfe und Badges als **Pillen** (`rounded-full`).
+- Die alten scharfen 8px-Kanten überall wirkten wie von der Stange. Zentral
+  geändert in `lib/ui.ts` (`CARD`, `CARD_HOVER`, `INPUT`, `badge`,
+  `SEGMENT_GROUP`, `segment`) — dort anpassen, nicht in einzelnen Dateien.
+
 ## Scroll-Animation auf der Startseite
-- `components/home/BundleScroll.tsx`: hohe Bahn (300vh / ab sm 400vh) mit
-  klebendem Block. Ein `requestAnimationFrame`-gedrosselter Scroll-Hörer setzt
+- `components/home/BundleScroll.tsx`: hohe Bahn (240vh / ab sm 300vh) mit
+  klebendem Block. **Die Bewegung bleibt im rechten Panel** — links steht der
+  Text still. Ein bildschirmfüllender Übergang war zu viel und wurde
+  verworfen. Ein `requestAnimationFrame`-gedrosselter Scroll-Hörer setzt
   genau EINE CSS-Variable `--p` (0…1); alles andere hängt in CSS mit
   `clamp()` daran. Kein React-Rendern je Bild, nur `transform` und `opacity`.
 - **Warum nicht framer-motion:** `useTransform` verhielt sich hier
