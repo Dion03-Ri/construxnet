@@ -192,6 +192,22 @@ Supabase (server + browser client, `supabaseAdmin` service-role), Leaflet/OSM
   verkleinern (1800 px, mozjpeg) — Rohbilder mit 13 MB gehören nicht auf
   eine Startseite.
 
+## Nach jedem Merge: Branch auf main zurücksetzen
+Pull Requests werden **squash**-gemerged. Dabei entsteht auf `main` ein neuer
+Commit; der alte Commit bleibt auf dem Arbeits-Branch liegen. Beim nächsten
+Pull Request meldet GitHub dann `merge conflicts`, obwohl inhaltlich nichts
+kollidiert — es sind schlicht zwei Historien derselben Änderung.
+
+Darum direkt nach jedem Merge:
+
+    git fetch origin main
+    git checkout -B claude/construxnet-platform-rebuild-jll7j9 origin/main
+
+Wer es vergisst, holt es nach: `git checkout -B <branch> origin/main` und den
+eigenen Commit mit `git cherry-pick <sha>` darauf setzen. Niemals stattdessen
+einen Merge-Commit von `main` in den Branch ziehen — das schleppt die
+doppelte Historie mit.
+
 ## Design-Fundament — zwei Register
 Die Seite hat **zwei getrennte Gestaltungssprachen**. Sie nie vermischen.
 
