@@ -8,19 +8,28 @@ import {
   BadgeCheck,
   MapPin,
   Clock,
-  Gavel,
-  Combine,
   ShieldCheck,
   Building2,
   Search,
   Plus,
   Coins,
   Handshake,
-  FileCheck,
   Truck,
   Users,
 } from "lucide-react";
-import { CARD } from "@/lib/ui";
+import {
+  CARD,
+  D_XL,
+  D_LG,
+  D_MD,
+  LEAD,
+  EYEBROW,
+  SECTION,
+  SECTION_TIGHT,
+  BTN_GOLD,
+  BTN_DARK,
+  BTN_OUTLINE_DARK,
+} from "@/lib/ui";
 import { cn } from "@/lib/utils";
 
 /* ------------------------------------------------------------------ */
@@ -38,11 +47,13 @@ const COMPANIES = [
   { name: "Musterbau Innerschweiz AG", city: "Luzern", uid: "CHE-108.556.019", cat: "Bauunternehmen" },
 ];
 
+// Bewusst ohne Icons: eine Nummer und zwei Zeilen Text tragen den Ablauf
+// besser als vier Symbolkacheln, die alle gleich aussehen.
 const STEPS = [
-  { icon: Megaphone, t: "Bedarf melden", d: "Material, Menge, Region — oder Ausschreibung als PDF." },
-  { icon: Combine, t: "Bündeln", d: "Gleiche Bedarfe der Region werden zu einem Volumen." },
-  { icon: Gavel, t: "Sealed-Bid", d: "Werke bieten verdeckt gegen den KBOB-Referenzpreis." },
-  { icon: FileCheck, t: "Vertrag & Lieferung", d: "Zuschlag, SIA-118-Vertrag, Lieferung — im Dashboard." },
+  { t: "Bedarf melden", d: "Material, Menge, Region — oder die Ausschreibung als PDF." },
+  { t: "Bündeln", d: "Gleiche Bedarfe derselben Region werden zu einem Volumen." },
+  { t: "Sealed-Bid", d: "Werke bieten verdeckt gegen den KBOB-Referenzpreis." },
+  { t: "Vertrag & Lieferung", d: "Zuschlag, SIA-118-Vertrag, Lieferung — alles im Dashboard." },
 ];
 
 /* Feine Raster-Textur der dunklen Panels (identisch zum Feed) */
@@ -123,38 +134,30 @@ export default function Home() {
           className="pointer-events-none absolute -right-40 -top-40 h-[520px] w-[520px] rounded-full bg-brand/20 blur-3xl"
         />
 
-        <div className="relative mx-auto grid max-w-6xl grid-cols-1 items-center gap-12 px-4 py-16 sm:px-6 lg:grid-cols-[1.05fr_1fr] lg:py-24">
+        <div className="relative mx-auto grid max-w-6xl grid-cols-1 items-center gap-14 px-4 py-20 sm:px-6 sm:py-24 lg:grid-cols-[1.1fr_1fr] lg:py-32">
           <div>
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-brand/30 bg-brand/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-brand">
-              <Layers className="h-3.5 w-3.5" /> Smart Bündeln
-            </span>
+            <span className={EYEBROW}>Smart Bündeln</span>
 
-            <h1 className="mt-4 text-[2.7rem] font-bold leading-[1.05] tracking-tight sm:text-[3.6rem]">
-              Vernetzen. Bündeln.<br />
+            <h1 className={cn(D_XL, "mt-5 text-white")}>
+              Vernetzen.<br />Bündeln.<br />
               <span className="text-brand">Sparen.</span>
             </h1>
 
-            <p className="mt-5 max-w-lg text-[16px] leading-relaxed text-white/60">
+            <p className={cn(LEAD, "mt-7 max-w-lg text-white/60")}>
               Obtanet bündelt deinen Materialbedarf mit anderen Schweizer Baufirmen und
               holt Mengenrabatte heraus — auch kleine Bestellungen profitieren.
             </p>
 
-            <div className="mt-7 flex flex-wrap gap-2.5">
-              <Link
-                href="/beschaffung"
-                className="inline-flex items-center gap-2 rounded-full bg-brand px-6 py-3 text-sm font-semibold text-navy-900 transition-colors hover:bg-brand-500"
-              >
+            <div className="mt-9 flex flex-wrap gap-3">
+              <Link href="/beschaffung" className={BTN_GOLD}>
                 <Megaphone className="h-4 w-4" /> Materialbedarf melden
               </Link>
-              <Link
-                href="/pools"
-                className="inline-flex items-center gap-2 rounded-full border border-white/15 px-6 py-3 text-sm font-semibold text-white/85 transition-colors hover:bg-white/5"
-              >
+              <Link href="/pools" className={BTN_OUTLINE_DARK}>
                 Offene Bündel ansehen <ArrowRight className="h-4 w-4" />
               </Link>
             </div>
 
-            <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-2 border-t border-white/10 pt-5 text-[12.5px] text-white/45">
+            <div className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-2 border-t border-white/10 pt-6 text-[12.5px] text-white/45">
               <span><b className="text-brand">5–28 %</b> garantierter Netto-Mindestvorteil</span>
               <span>Verdeckte Sealed-Bid-Angebote</span>
               <span>Geprüfte Schweizer Lieferanten</span>
@@ -170,24 +173,19 @@ export default function Home() {
 
       {/* ================= Smart Pools ================= */}
       <section className="border-y border-slate-200 bg-white">
-        <div className="mx-auto grid max-w-6xl grid-cols-1 items-center gap-12 px-4 py-16 sm:px-6 lg:grid-cols-[1fr_1.1fr] lg:py-20">
+        <div className={cn("mx-auto grid max-w-6xl grid-cols-1 items-center gap-14 px-4 sm:px-6 lg:grid-cols-[1fr_1.1fr]", SECTION)}>
           <div>
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-brand/30 bg-brand/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-brand">
-              <Layers className="h-3.5 w-3.5" /> Smart Pools
-            </span>
-            <h2 className="mt-4 text-3xl font-bold leading-tight tracking-tight text-slate-900 sm:text-[2.4rem]">
+            <span className={EYEBROW}>Smart Pools</span>
+            <h2 className={cn(D_LG, "mt-5 text-slate-900")}>
               Mengenrabatte,<br />die alleine niemand bekommt.
             </h2>
-            <p className="mt-5 max-w-lg text-[15px] leading-relaxed text-slate-500">
+            <p className={cn(LEAD, "mt-7 max-w-lg text-slate-500")}>
               Wer alleine einkauft, zahlt Einzelpreise. Obtanet bündelt den Bedarf mehrerer
               Baufirmen zu einem gemeinsamen Auftrag und verhandelt mit dem gesamten Volumen
               bei den Werken. <b className="text-slate-800">Je grösser das Bündel, desto höher
               der Rabatt</b> — auch für kleine Einzelbestellungen.
             </p>
-            <Link
-              href="/pools"
-              className="mt-7 inline-flex items-center gap-2 rounded-full bg-navy-900 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-navy-800"
-            >
+            <Link href="/pools" className={cn(BTN_DARK, "mt-9")}>
               So funktioniert ein Pool <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
@@ -265,32 +263,39 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ================= So funktioniert's (kompakt) ================= */}
-      <section className="mx-auto max-w-6xl px-4 py-14 sm:px-6">
-        <div className="mb-7 flex flex-wrap items-baseline justify-between gap-2">
-          <h2 className="text-[19px] font-bold tracking-tight text-slate-900">Von der Anfrage zum Vertrag</h2>
-          <span className="text-[12px] text-slate-400">Vier Schritte, vollständig im Dashboard</span>
-        </div>
-        <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2 lg:grid-cols-4">
-          {STEPS.map((s) => (
-            <div key={s.t} className={cn(CARD, "flex items-start gap-3 p-4")}>
-              <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-navy-900 text-brand">
-                <s.icon className="h-4 w-4" />
-              </span>
-              <div className="min-w-0">
-                <div className="text-[13.5px] font-bold text-slate-900">{s.t}</div>
-                <p className="mt-1 text-[12.5px] leading-relaxed text-slate-500">{s.d}</p>
-              </div>
-            </div>
-          ))}
-        </div>
+      {/* ================= Von der Anfrage zum Vertrag ================= */}
+      {/* Bewusst ohne Karten und ohne Symbole. Vier Nummern, vier Titel,
+          vier Zeilen — der Ablauf braucht keinen Rahmen, um Ablauf zu sein. */}
+      <section className="bg-navy-950 text-white">
+        <div className={cn("mx-auto max-w-6xl px-4 sm:px-6", SECTION)}>
+          <div className="max-w-2xl">
+            <span className={EYEBROW}>Ablauf</span>
+            <h2 className={cn(D_MD, "mt-5 text-white")}>Von der Anfrage zum Vertrag</h2>
+            <p className={cn(LEAD, "mt-6 text-white/55")}>
+              Vier Schritte, vollständig im Dashboard — von der ersten Meldung bis zur
+              Lieferung auf die Baustelle.
+            </p>
+          </div>
 
-        {/* Ablauf als Video — erscheint, sobald die Adresse in data/media.ts steht */}
-        <ProcessVideo />
+          <ol className="mt-16 grid grid-cols-1 gap-x-10 gap-y-12 sm:grid-cols-2 lg:mt-20 lg:grid-cols-4">
+            {STEPS.map((step, i) => (
+              <li key={step.t} className="border-t border-white/15 pt-5">
+                <div className="font-display text-[26px] font-bold tabular-nums leading-none text-brand">
+                  {String(i + 1).padStart(2, "0")}
+                </div>
+                <h3 className="mt-5 text-[19px] font-bold tracking-tight text-white">{step.t}</h3>
+                <p className="mt-3 text-[14px] leading-relaxed text-white/50">{step.d}</p>
+              </li>
+            ))}
+          </ol>
+
+          {/* Ablauf als Video — erscheint, sobald die Adresse in data/media.ts steht */}
+          <ProcessVideo />
+        </div>
       </section>
 
       {/* ================= Pools + Netzwerk ================= */}
-      <section className="mx-auto grid max-w-6xl grid-cols-1 gap-5 px-4 pb-16 sm:px-6 lg:grid-cols-2">
+      <section className={cn("mx-auto grid max-w-6xl grid-cols-1 gap-5 px-4 sm:px-6 lg:grid-cols-2", SECTION_TIGHT)}>
         {/* Pools */}
         <div className={cn(CARD, "p-6")}>
           <div className="mb-4 flex items-center justify-between">
@@ -354,8 +359,8 @@ export default function Home() {
         </div>
       </section>
       {/* ================= Abschluss-CTA ================= */}
-      <section className="mx-auto max-w-6xl px-4 pb-20 sm:px-6">
-        <div className="relative overflow-hidden rounded-[28px] border border-white/10 bg-navy-900 px-6 py-12 text-white sm:rounded-[32px] sm:px-12 sm:py-16">
+      <section className="mx-auto max-w-6xl px-4 pb-24 sm:px-6 lg:pb-32">
+        <div className="relative overflow-hidden rounded-[28px] border border-white/10 bg-navy-900 px-6 py-14 text-white sm:rounded-[32px] sm:px-14 sm:py-20">
           <div aria-hidden className="pointer-events-none absolute inset-0 opacity-[0.06]" style={GRID_BG} />
           <div
             aria-hidden
@@ -363,26 +368,18 @@ export default function Home() {
           />
           <div className="relative grid grid-cols-1 items-center gap-8 lg:grid-cols-[1.3fr_1fr]">
             <div>
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-brand/30 bg-brand/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-brand">
-                <ShieldCheck className="h-3.5 w-3.5" /> Erst zahlen, wenn du sparst
-              </span>
-              <h2 className="mt-4 text-3xl font-bold tracking-tight sm:text-[2.3rem]">
+              <span className={EYEBROW}>Erst zahlen, wenn du sparst</span>
+              <h2 className={cn(D_MD, "mt-5")}>
                 Bereit, günstiger und vernetzter zu bauen?
               </h2>
-              <p className="mt-3 max-w-lg text-[15px] leading-relaxed text-white/55">
+              <p className={cn(LEAD, "mt-6 max-w-lg text-white/55")}>
                 Firmenprofil erstellen, ersten Materialbedarf melden — in wenigen Minuten.
               </p>
-              <div className="mt-7 flex flex-wrap gap-2.5">
-                <Link
-                  href="/sign-up"
-                  className="inline-flex items-center gap-2 rounded-full bg-brand px-6 py-3 text-sm font-semibold text-navy-900 transition-colors hover:bg-brand-500"
-                >
+              <div className="mt-9 flex flex-wrap gap-3">
+                <Link href="/sign-up" className={BTN_GOLD}>
                   Kostenlos registrieren <ArrowRight className="h-4 w-4" />
                 </Link>
-                <Link
-                  href="/beschaffung"
-                  className="inline-flex items-center gap-2 rounded-full border border-white/15 px-6 py-3 text-sm font-semibold text-white/85 transition-colors hover:bg-white/5"
-                >
+                <Link href="/beschaffung" className={BTN_OUTLINE_DARK}>
                   Materialbedarf melden
                 </Link>
               </div>
