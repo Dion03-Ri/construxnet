@@ -27,7 +27,7 @@ import { fetchMyCompanyId } from "@/lib/myCompany";
 import RecommendedPartners from "@/components/feed/RecommendedPartners";
 import FeedBundleHero from "@/components/feed/FeedBundleHero";
 import { SAMPLE_POSTS, type MockPost } from "@/data/feedMock";
-import { CARD, badge } from "@/lib/ui";
+import { PANEL, badge } from "@/lib/ui";
 import { cn } from "@/lib/utils";
 
 const REGIONS = ["Zürich", "Bern", "Nordwestschweiz", "Innerschweiz"] as const;
@@ -225,20 +225,20 @@ function Composer({ onCreated }: { onCreated: () => void }) {
   }
 
   const avatar = (
-    <span className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full bg-slate-100 text-sm font-semibold text-slate-700">
+    <span className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full bg-white/10 text-sm font-semibold text-white/75">
       {company?.logo_url ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img src={company.logo_url} alt="" className="h-full w-full object-cover" />
       ) : company ? (
         initials(company.company_name)
       ) : (
-        <ImageIcon className="h-5 w-5 text-slate-400" />
+        <ImageIcon className="h-5 w-5 text-white/40" />
       )}
     </span>
   );
 
   return (
-    <div className={cn(CARD, "overflow-hidden")}>
+    <div className={cn(PANEL, "overflow-hidden")}>
       {!open ? (
         <div className="p-4">
           <div className="flex items-center gap-3">
@@ -247,20 +247,20 @@ function Composer({ onCreated }: { onCreated: () => void }) {
               type="button"
               onClick={() => setOpen(true)}
               disabled={!company}
-              className="h-11 flex-1 rounded-lg border border-slate-200 bg-slate-50 px-4 text-left text-sm text-slate-500 transition-colors hover:border-brand/40 hover:bg-white disabled:opacity-60"
+              className="h-11 flex-1 rounded-lg border border-white/[0.08] bg-white/[0.03] px-4 text-left text-sm text-white/55 transition-colors hover:border-brand/40 hover:bg-[#0B1522] disabled:opacity-60"
             >
               {company ? "Beitrag hinzufügen …" : "Firmenprofil nötig, um zu posten"}
             </button>
           </div>
 
-          <div className="mt-3 grid grid-cols-3 gap-1.5 border-t border-slate-100 pt-3">
+          <div className="mt-3 grid grid-cols-3 gap-1.5 border-t border-white/[0.06] pt-3">
             {COMPOSER_TYPES.map((t) => (
               <button
                 key={t.key}
                 type="button"
                 onClick={() => start(t.key)}
                 disabled={!company}
-                className="inline-flex items-center justify-center gap-2 rounded-md px-2 py-2 text-[13px] font-semibold text-slate-600 transition-colors hover:bg-slate-100 disabled:opacity-50"
+                className="inline-flex items-center justify-center gap-2 rounded-md px-2 py-2 text-[13px] font-semibold text-white/70 transition-colors hover:bg-white/[0.07] disabled:opacity-50"
               >
                 <t.icon className="h-4 w-4 text-brand" />
                 {t.label}
@@ -271,16 +271,16 @@ function Composer({ onCreated }: { onCreated: () => void }) {
       ) : (
         <div>
           {/* Kopf mit Art-Auswahl */}
-          <div className="flex items-center gap-3 border-b border-slate-100 px-4 py-3">
+          <div className="flex items-center gap-3 border-b border-white/[0.06] px-4 py-3">
             {avatar}
             <div className="min-w-0 flex-1">
-              <div className="truncate text-sm font-semibold text-slate-900">{company?.company_name}</div>
-              <div className="text-[11.5px] text-slate-400">Beitrag hinzufügen</div>
+              <div className="truncate text-sm font-semibold text-white">{company?.company_name}</div>
+              <div className="text-[11.5px] text-white/40">Beitrag hinzufügen</div>
             </div>
             <button
               type="button"
               onClick={() => setOpen(false)}
-              className="rounded-md p-1.5 text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-700"
+              className="rounded-md p-1.5 text-white/40 transition-colors hover:bg-white/[0.07] hover:text-white/75"
               aria-label="Schliessen"
             >
               <X className="h-4 w-4" />
@@ -288,7 +288,7 @@ function Composer({ onCreated }: { onCreated: () => void }) {
           </div>
 
           <div className="px-4 pt-3">
-            <div className="inline-flex rounded-md border border-slate-200 bg-slate-50 p-0.5">
+            <div className="inline-flex rounded-md border border-white/[0.08] bg-white/[0.03] p-0.5">
               {COMPOSER_TYPES.map((t) => (
                 <button
                   key={t.key}
@@ -296,7 +296,7 @@ function Composer({ onCreated }: { onCreated: () => void }) {
                   onClick={() => setPostType(t.key)}
                   className={cn(
                     "inline-flex items-center gap-1.5 rounded-[5px] px-3 py-1.5 text-[13px] font-semibold transition-colors",
-                    postType === t.key ? "bg-navy-900 text-white" : "text-slate-500 hover:text-slate-900",
+                    postType === t.key ? "bg-navy-900 text-white" : "text-white/55 hover:text-white",
                   )}
                 >
                   <t.icon className="h-3.5 w-3.5" />
@@ -312,7 +312,7 @@ function Composer({ onCreated }: { onCreated: () => void }) {
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="Titel (optional)"
-              className="w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-900 placeholder:font-normal placeholder:text-slate-400 outline-none focus:border-brand/50"
+              className="w-full rounded-md border border-white/[0.08] bg-[#0B1522] px-3 py-2 text-sm font-semibold text-white placeholder:font-normal placeholder:text-white/40 outline-none focus:border-brand/50"
             />
             <textarea
               value={content}
@@ -320,15 +320,15 @@ function Composer({ onCreated }: { onCreated: () => void }) {
               placeholder={activeType.placeholder}
               rows={5}
               autoFocus
-              className="mt-2 w-full resize-none rounded-md border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 outline-none focus:border-brand/50"
+              className="mt-2 w-full resize-none rounded-md border border-white/[0.08] bg-[#0B1522] px-3 py-2 text-sm text-white placeholder:text-white/40 outline-none focus:border-brand/50"
             />
 
             {imageError && (
-              <p className="mt-2 text-[12.5px] font-medium text-rose-600">{imageError}</p>
+              <p className="mt-2 text-[12.5px] font-medium text-rose-300">{imageError}</p>
             )}
 
             {image ? (
-              <div className="relative mt-3 overflow-hidden rounded-lg border border-slate-200">
+              <div className="relative mt-3 overflow-hidden rounded-lg border border-white/[0.08]">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={image} alt="Vorschau" className="max-h-80 w-full object-cover" />
                 <button
@@ -344,7 +344,7 @@ function Composer({ onCreated }: { onCreated: () => void }) {
               <button
                 type="button"
                 onClick={() => imgRef.current?.click()}
-                className="mt-3 flex w-full items-center justify-center gap-2 rounded-lg border border-dashed border-slate-300 bg-slate-50 py-3 text-[13px] font-medium text-slate-500 transition-colors hover:border-brand hover:text-brand"
+                className="mt-3 flex w-full items-center justify-center gap-2 rounded-lg border border-dashed border-white/[0.16] bg-white/[0.03] py-3 text-[13px] font-medium text-white/55 transition-colors hover:border-brand hover:text-brand"
               >
                 <ImageIcon className="h-4 w-4" /> Bild hinzufügen
               </button>
@@ -352,11 +352,11 @@ function Composer({ onCreated }: { onCreated: () => void }) {
             <input ref={imgRef} type="file" accept="image/jpeg,image/png,image/webp,image/gif" className="hidden" onChange={onImage} />
           </div>
 
-          <div className="flex flex-wrap items-center gap-2 border-t border-slate-100 bg-slate-50 px-4 py-3">
+          <div className="flex flex-wrap items-center gap-2 border-t border-white/[0.06] bg-white/[0.03] px-4 py-3">
             <select
               value={region}
               onChange={(e) => setRegion(e.target.value)}
-              className="rounded-md border border-slate-200 bg-white px-2.5 py-1.5 text-xs text-slate-700 outline-none focus:border-brand/50"
+              className="rounded-md border border-white/[0.08] bg-[#0B1522] px-2.5 py-1.5 text-xs text-white/75 outline-none focus:border-brand/50"
             >
               <option value="">Region / Kanton (optional)</option>
               {CANTON_GROUPS.map((g) => (
@@ -371,7 +371,7 @@ function Composer({ onCreated }: { onCreated: () => void }) {
               type="button"
               onClick={submit}
               disabled={submitting || !content.trim()}
-              className="ml-auto inline-flex items-center gap-2 rounded-md bg-brand px-5 py-2 text-sm font-semibold text-navy-900 transition-colors hover:bg-brand-500 disabled:cursor-not-allowed disabled:opacity-50"
+              className="ml-auto inline-flex items-center gap-2 rounded-md bg-brand px-5 py-2 text-sm font-semibold text-navy-900 transition-colors hover:bg-brand/100 disabled:cursor-not-allowed disabled:opacity-50"
             >
               {submitting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
               Teilen
@@ -404,8 +404,8 @@ function EngagementButton({
   href?: string;
 }) {
   const cls = cn(
-    "inline-flex flex-1 items-center justify-center gap-2 rounded-lg py-2 text-[13px] font-medium transition-colors hover:bg-slate-100",
-    active ? accent : "text-slate-500",
+    "inline-flex flex-1 items-center justify-center gap-2 rounded-lg py-2 text-[13px] font-medium transition-colors hover:bg-white/[0.07]",
+    active ? accent : "text-white/55",
   );
   const inner = (
     <>
@@ -443,12 +443,12 @@ function PostCard({ post, index }: { post: Post; index: number }) {
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.25, delay: Math.min(index * 0.04, 0.24), ease: "easeOut" }}
-      className={cn(CARD, "p-4 sm:p-5")}
+      className={cn(PANEL, "p-4 sm:p-5")}
     >
       <div className="flex items-center gap-3">
         <Link
           href={`/company/${post.company_id}`}
-          className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full bg-slate-100 text-sm font-semibold text-slate-700"
+          className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full bg-white/10 text-sm font-semibold text-white/75"
         >
           {c?.logo_url ? (
             // eslint-disable-next-line @next/next/no-img-element
@@ -459,12 +459,12 @@ function PostCard({ post, index }: { post: Post; index: number }) {
         </Link>
         <div className="min-w-0">
           <div className="flex items-center gap-1.5">
-            <Link href={`/company/${post.company_id}`} className="truncate font-semibold text-slate-900 hover:text-brand">
+            <Link href={`/company/${post.company_id}`} className="truncate font-semibold text-white hover:text-brand">
               {name}
             </Link>
             {c?.verified && <BadgeCheck className="h-4 w-4 shrink-0 text-accent" />}
           </div>
-          <div className="flex items-center gap-2 text-xs text-slate-400">
+          <div className="flex items-center gap-2 text-xs text-white/40">
             {c?.city && (
               <span className="inline-flex items-center gap-1">
                 <MapPin className="h-3 w-3" />
@@ -477,13 +477,13 @@ function PostCard({ post, index }: { post: Post; index: number }) {
         <span className={cn("ml-auto shrink-0", badge("gold", true))}>
           {POST_TYPES[post.post_type]?.label ?? post.post_type}
         </span>
-        <button type="button" className="rounded-lg p-1 text-slate-400 hover:bg-slate-100" aria-label="Optionen">
+        <button type="button" className="rounded-lg p-1 text-white/40 hover:bg-white/[0.07]" aria-label="Optionen">
           <MoreHorizontal className="h-4 w-4" />
         </button>
       </div>
 
-      {post.title && <h3 className="mt-3 font-semibold text-slate-900">{post.title}</h3>}
-      <p className="mt-1.5 whitespace-pre-wrap text-[15px] leading-relaxed text-slate-700">
+      {post.title && <h3 className="mt-3 font-semibold text-white">{post.title}</h3>}
+      <p className="mt-1.5 whitespace-pre-wrap text-[15px] leading-relaxed text-white/75">
         {shown}
         {isLong && (
           <button
@@ -497,7 +497,7 @@ function PostCard({ post, index }: { post: Post; index: number }) {
       </p>
 
       {post.media_url ? (
-        <div className="mt-3 overflow-hidden rounded-lg border border-slate-200">
+        <div className="mt-3 overflow-hidden rounded-lg border border-white/[0.08]">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={post.media_url} alt={post.title ?? name} className="max-h-96 w-full object-cover" />
         </div>
@@ -514,12 +514,12 @@ function PostCard({ post, index }: { post: Post; index: number }) {
         </div>
       )}
 
-      <div className="mt-3 flex items-center justify-between text-[11px] text-slate-400">
+      <div className="mt-3 flex items-center justify-between text-[11px] text-white/40">
         <span>{likeCount} Reaktionen</span>
         <span>{post.comments_count} Kommentare</span>
       </div>
 
-      <div className="mt-1 flex items-center gap-1 border-t border-slate-100 pt-1">
+      <div className="mt-1 flex items-center gap-1 border-t border-white/[0.06] pt-1">
         <EngagementButton
           icon={ThumbsUp}
           label="Gefällt mir"
@@ -549,7 +549,7 @@ function ChipRow({
   onChange: (v: string) => void;
 }) {
   return (
-    <div className="flex flex-wrap gap-1 rounded-md border border-slate-200 bg-slate-50 p-1">
+    <div className="flex flex-wrap gap-1 rounded-md border border-white/[0.08] bg-white/[0.03] p-1">
       {options.map((o) => (
         <button
           key={o.key}
@@ -558,8 +558,8 @@ function ChipRow({
           className={cn(
             "rounded-[5px] px-3 py-1.5 text-xs font-medium transition-colors",
             value === o.key
-              ? "bg-white text-brand shadow-sm"
-              : "text-slate-500 hover:text-slate-900",
+              ? "bg-[#0B1522] text-brand shadow-sm"
+              : "text-white/55 hover:text-white",
           )}
         >
           {o.label}
@@ -571,17 +571,17 @@ function ChipRow({
 
 function SkeletonCard() {
   return (
-    <div className={cn(CARD, "animate-pulse p-5")}>
+    <div className={cn(PANEL, "animate-pulse p-5")}>
       <div className="flex items-center gap-3">
-        <div className="h-11 w-11 rounded-full bg-slate-100" />
+        <div className="h-11 w-11 rounded-full bg-white/10" />
         <div className="space-y-2">
-          <div className="h-3 w-40 rounded bg-slate-100" />
-          <div className="h-2.5 w-24 rounded bg-slate-100" />
+          <div className="h-3 w-40 rounded bg-white/10" />
+          <div className="h-2.5 w-24 rounded bg-white/10" />
         </div>
       </div>
       <div className="mt-4 space-y-2">
-        <div className="h-3 w-full rounded bg-slate-100" />
-        <div className="h-3 w-3/4 rounded bg-slate-100" />
+        <div className="h-3 w-full rounded bg-white/10" />
+        <div className="h-3 w-3/4 rounded bg-white/10" />
       </div>
     </div>
   );
@@ -719,7 +719,7 @@ export default function NetworkFeed() {
       </div>
 
       {isDemo && (
-        <p className="px-1 text-[11px] text-slate-400">
+        <p className="px-1 text-[11px] text-white/40">
           Beispiel-Beiträge — dein erster eigener Beitrag ersetzt diese Vorschau.
         </p>
       )}
@@ -730,15 +730,15 @@ export default function NetworkFeed() {
           <SkeletonCard />
         </>
       ) : error ? (
-        <div className="flex items-start gap-2 rounded-lg border border-rose-200 bg-rose-50 p-4 text-sm text-rose-700">
+        <div className="flex items-start gap-2 rounded-lg border border-rose-400/30 bg-rose-500/10 p-4 text-sm text-rose-300">
           <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />
           <div>
             <p className="font-medium">Feed konnte nicht geladen werden.</p>
-            <p className="mt-0.5 text-rose-600">{error}</p>
+            <p className="mt-0.5 text-rose-300">{error}</p>
           </div>
         </div>
       ) : posts.length === 0 ? (
-        <div className={cn(CARD, "border-dashed py-12 text-center text-sm text-slate-400")}>
+        <div className={cn(PANEL, "border-dashed py-12 text-center text-sm text-white/40")}>
           Keine Beiträge in dieser Auswahl.
         </div>
       ) : (
@@ -751,7 +751,7 @@ export default function NetworkFeed() {
           <div ref={sentinelRef} aria-hidden className="h-px" />
           {loadingMore && <SkeletonCard />}
           {!hasMore && (
-            <p className="py-6 text-center text-[12.5px] text-slate-400">
+            <p className="py-6 text-center text-[12.5px] text-white/40">
               Du bist auf dem neuesten Stand.
             </p>
           )}

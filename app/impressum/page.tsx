@@ -15,7 +15,7 @@ export default function ImpressumPage() {
     >
       <H2>Betreiberin</H2>
       <P>
-        <strong className="font-semibold text-slate-900">
+        <strong className="font-semibold text-white">
           <Fill value={LEGAL.betreiberin} />
         </strong>
         <br />

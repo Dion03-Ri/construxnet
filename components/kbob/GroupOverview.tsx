@@ -1,6 +1,6 @@
 import { TrendingUp, TrendingDown, Minus } from "lucide-react";
 import kbobData from "@/data/kbobData.json";
-import { CARD } from "@/lib/ui";
+import { PANEL } from "@/lib/ui";
 import { cn } from "@/lib/utils";
 
 type Point = { period: string; kbob: number };
@@ -28,12 +28,12 @@ export default function GroupOverview() {
   const regionKeys = Object.keys(data.regions);
 
   return (
-    <div className={cn(CARD, "overflow-hidden")}>
-      <div className="border-b border-slate-200 px-5 py-3.5">
-        <h3 className="text-[15px] font-semibold text-slate-900">
+    <div className={cn(PANEL, "overflow-hidden")}>
+      <div className="border-b border-white/[0.08] px-5 py-3.5">
+        <h3 className="text-[15px] font-semibold text-white">
           Alle Warengruppen im Überblick
         </h3>
-        <p className="mt-0.5 text-[12px] text-slate-500">
+        <p className="mt-0.5 text-[12px] text-white/55">
           Referenzpreis und Veränderung zum Vorquartal, Stand {data.meta.updated}.
           Mehr Reihen führt der Index nicht — für alle übrigen Materialien
           zählt der Referenzpreis aus der jeweiligen Anfrage.
@@ -43,7 +43,7 @@ export default function GroupOverview() {
       <div className="overflow-x-auto">
         <table className="w-full text-left text-[13px]">
           <thead>
-            <tr className="border-b border-slate-100 text-[11px] uppercase tracking-wider text-slate-400">
+            <tr className="border-b border-white/[0.06] text-[11px] uppercase tracking-wider text-white/40">
               <th className="px-5 py-2 font-medium">Warengruppe</th>
               {regionKeys.map((r) => (
                 <th key={r} className="px-3 py-2 text-right font-medium">
@@ -52,12 +52,12 @@ export default function GroupOverview() {
               ))}
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100">
+          <tbody className="divide-y divide-white/[0.06]">
             {Object.entries(data.materials).map(([key, m]) => (
               <tr key={key}>
                 <td className="px-5 py-3">
-                  <div className="font-semibold text-slate-800">{m.label}</div>
-                  <div className="text-[11px] text-slate-400">CHF / {m.unit}</div>
+                  <div className="font-semibold text-white/90">{m.label}</div>
+                  <div className="text-[11px] text-white/40">CHF / {m.unit}</div>
                 </td>
                 {regionKeys.map((r) => {
                   const series = m.regions[r];
@@ -67,16 +67,16 @@ export default function GroupOverview() {
                   const Icon = change === 0 ? Minus : change > 0 ? TrendingUp : TrendingDown;
                   return (
                     <td key={r} className="whitespace-nowrap px-3 py-3 text-right">
-                      <div className="font-semibold tabular-nums text-slate-900">
+                      <div className="font-semibold tabular-nums text-white">
                         {chf(last.kbob)}
                       </div>
                       <div
                         className={cn(
                           "mt-0.5 inline-flex items-center gap-0.5 text-[11px] font-semibold",
                           change === 0
-                            ? "text-slate-400"
+                            ? "text-white/40"
                             : change > 0
-                              ? "text-rose-600"
+                              ? "text-rose-300"
                               : "text-brand-700",
                         )}
                       >

@@ -23,8 +23,8 @@ export default async function BeschaffungPage({
           <ShoppingCart className="h-6 w-6" />
         </span>
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900">Materialbedarf melden</h1>
-          <p className="text-sm text-slate-500">
+          <h1 className="text-2xl font-bold tracking-tight text-white">Materialbedarf melden</h1>
+          <p className="text-sm text-white/55">
             Mehrere Materialien auf einmal — optional gebündelt für einen garantierten
             Netto-Mindestvorteil gegenüber KBOB.
           </p>

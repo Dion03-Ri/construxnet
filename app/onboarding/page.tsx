@@ -20,15 +20,15 @@ export default async function OnboardingPage() {
         <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-lg bg-brand/15 text-brand">
           <HardHat className="h-6 w-6" />
         </span>
-        <h1 className="mt-4 text-2xl font-semibold tracking-tight text-slate-900 sm:text-3xl">
+        <h1 className="mt-4 text-2xl font-semibold tracking-tight text-white sm:text-3xl">
           Willkommen bei Obtanet
         </h1>
-        <p className="mt-2 text-slate-500">
+        <p className="mt-2 text-white/55">
           Lege dein Firmenprofil an, um Feed, Netzwerk und Dashboard zu nutzen.
         </p>
       </header>
 
-      <div className="rounded-lg border border-slate-200 bg-white p-6 backdrop-blur sm:p-8">
+      <div className="rounded-lg border border-white/[0.08] bg-[#0B1522] p-6 backdrop-blur sm:p-8">
         <OnboardingForm />
       </div>
     </main>

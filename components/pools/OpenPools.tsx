@@ -24,7 +24,7 @@ import {
 } from "@/lib/bundles";
 import { useSupabaseBrowser } from "@/lib/supabase-browser";
 import { useSavedPools } from "@/lib/useSavedPools";
-import { CARD, badge } from "@/lib/ui";
+import { PANEL, badge } from "@/lib/ui";
 import { cn } from "@/lib/utils";
 
 const REGIONS = [
@@ -88,13 +88,13 @@ function PoolCard({
   const sealed = b.status === "SEALED_BIDDING";
 
   return (
-    <div className={cn(CARD, "flex flex-col p-5 transition-shadow hover:shadow-cardhover")}>
+    <div className={cn(PANEL, "flex flex-col p-5 transition-shadow hover:shadow-cardhover")}>
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0">
-          <h3 className="truncate text-[15px] font-semibold text-slate-900">
+          <h3 className="truncate text-[15px] font-semibold text-white">
             {b.material_label ?? b.title}
           </h3>
-          <p className="mt-0.5 flex items-center gap-1 text-[12px] text-slate-500">
+          <p className="mt-0.5 flex items-center gap-1 text-[12px] text-white/55">
             <MapPin className="h-3.5 w-3.5" /> {b.region}
           </p>
         </div>
@@ -114,7 +114,7 @@ function PoolCard({
               "grid h-7 w-7 place-items-center rounded-md border transition-colors",
               saved
                 ? "border-brand bg-brand/10 text-brand"
-                : "border-slate-200 text-slate-400 hover:border-slate-300 hover:text-slate-600",
+                : "border-white/[0.08] text-white/40 hover:border-white/[0.16] hover:text-white/70",
             )}
           >
             <Bookmark className={cn("h-3.5 w-3.5", saved && "fill-current")} />
@@ -126,38 +126,38 @@ function PoolCard({
           garantierte Untergrenze, nicht der zu erwartende Endpreis. */}
       <div className="mt-4">
         <div className="mb-1 flex items-center justify-between text-[12px]">
-          <span className="text-slate-500">
+          <span className="text-white/55">
             {chf(b.current_volume)} {b.unit}
             {step && (
-              <span className="text-slate-400"> / {chf(step.at)} bis Stufe {step.tier}</span>
+              <span className="text-white/40"> / {chf(step.at)} bis Stufe {step.tier}</span>
             )}
           </span>
           <span className="font-semibold text-brand">
             mind. {b.current_discount_pct} %
-            <span className="ml-1 font-normal text-slate-400">Stufe {b.current_tier}</span>
+            <span className="ml-1 font-normal text-white/40">Stufe {b.current_tier}</span>
           </span>
         </div>
-        <div className="h-2 w-full overflow-hidden rounded-full bg-slate-100">
+        <div className="h-2 w-full overflow-hidden rounded-full bg-white/10">
           <div className="h-full rounded-full bg-brand" style={{ width: `${pct}%` }} />
         </div>
         {step && (
-          <p className="mt-1.5 flex items-center gap-1 text-[11.5px] text-slate-500">
+          <p className="mt-1.5 flex items-center gap-1 text-[11.5px] text-white/55">
             <TrendingUp className="h-3.5 w-3.5 text-brand" />
-            Noch <b className="text-slate-800">{chf(step.at - b.current_volume)} {b.unit}</b> bis
+            Noch <b className="text-white/90">{chf(step.at - b.current_volume)} {b.unit}</b> bis
             mind. {step.discount} %.
           </p>
         )}
       </div>
 
       <div className="mt-3 flex items-center justify-between text-[12px]">
-        <span className="inline-flex items-center gap-1 text-slate-500">
+        <span className="inline-flex items-center gap-1 text-white/55">
           <Users className="h-3.5 w-3.5" />
           {b.participant_count} {b.participant_count === 1 ? "Firma" : "Firmen"} dabei
         </span>
         <span
           className={cn(
             "inline-flex items-center gap-1 font-semibold",
-            cd.urgent ? "text-rose-600" : "text-slate-600",
+            cd.urgent ? "text-rose-300" : "text-white/70",
           )}
         >
           {cd.urgent ? <Flame className="h-3.5 w-3.5" /> : <Clock className="h-3.5 w-3.5" />}
@@ -166,7 +166,7 @@ function PoolCard({
       </div>
 
       {b.participant_count < b.min_participants_for_bidding && (
-        <p className="mt-2.5 flex items-start gap-1.5 text-[11.5px] leading-relaxed text-slate-400">
+        <p className="mt-2.5 flex items-start gap-1.5 text-[11.5px] leading-relaxed text-white/40">
           <Info className="mt-px h-3.5 w-3.5 shrink-0" />
           Ausschreibung startet ab {b.min_participants_for_bidding} Firmen — so
           kann kein Lieferant aus dem Bündel auf einzelne Bauunternehmen
@@ -178,7 +178,7 @@ function PoolCard({
       {myVolume !== null ? (
         <div className="mt-auto pt-4">
           <div className="flex items-center justify-between rounded-md border border-brand/30 bg-brand/[0.05] px-3 py-2">
-            <span className="inline-flex items-center gap-1.5 text-[12.5px] font-semibold text-slate-800">
+            <span className="inline-flex items-center gap-1.5 text-[12.5px] font-semibold text-white/90">
               <Check className="h-3.5 w-3.5 text-brand" />
               Du bist mit {chf(myVolume)} {b.unit} dabei
             </span>
@@ -186,7 +186,7 @@ function PoolCard({
               type="button"
               onClick={onWithdraw}
               disabled={busy}
-              className="text-[11.5px] font-semibold text-slate-400 transition-colors hover:text-rose-600 disabled:opacity-50"
+              className="text-[11.5px] font-semibold text-white/40 transition-colors hover:text-rose-300 disabled:opacity-50"
             >
               {busy ? "…" : "zurückziehen"}
             </button>
@@ -201,7 +201,7 @@ function PoolCard({
       ) : (
         <Link
           href={`/beschaffung?material=${encodeURIComponent(b.material_id ?? "")}`}
-          className="mt-auto inline-flex items-center justify-center gap-1.5 self-stretch rounded-md bg-brand px-4 py-2.5 pt-4 text-sm font-semibold text-navy-900 transition-colors hover:bg-brand-500"
+          className="mt-auto inline-flex items-center justify-center gap-1.5 self-stretch rounded-md bg-brand px-4 py-2.5 pt-4 text-sm font-semibold text-navy-900 transition-colors hover:bg-brand/100"
         >
           Bedarf melden &amp; beitreten <ArrowRight className="h-4 w-4" />
         </Link>
@@ -247,7 +247,7 @@ export default function OpenPools() {
   return (
     <div>
       <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex flex-wrap gap-1 rounded-md border border-slate-200 bg-slate-50 p-1">
+        <div className="flex flex-wrap gap-1 rounded-md border border-white/[0.08] bg-white/[0.03] p-1">
           {(["all", "OPEN", "SEALED_BIDDING"] as const).map((k) => (
             <button
               key={k}
@@ -255,7 +255,7 @@ export default function OpenPools() {
               onClick={() => setPhase(k)}
               className={cn(
                 "rounded-[5px] px-3 py-1.5 text-[13px] font-medium transition-colors",
-                phase === k ? "bg-white text-brand shadow-sm" : "text-slate-500 hover:text-slate-900",
+                phase === k ? "bg-[#0B1522] text-brand shadow-sm" : "text-white/55 hover:text-white",
               )}
             >
               {k === "all" ? "Alle Phasen" : k === "OPEN" ? "Sammelphase" : "Sealed-Bid"}
@@ -266,7 +266,7 @@ export default function OpenPools() {
             onClick={() => setOnlyMine((v) => !v)}
             className={cn(
               "rounded-[5px] px-3 py-1.5 text-[13px] font-medium transition-colors",
-              onlyMine ? "bg-white text-brand shadow-sm" : "text-slate-500 hover:text-slate-900",
+              onlyMine ? "bg-[#0B1522] text-brand shadow-sm" : "text-white/55 hover:text-white",
             )}
           >
             Meine
@@ -275,14 +275,14 @@ export default function OpenPools() {
         <div className="flex items-center gap-2">
           <Link
             href="/pools/saved"
-            className="inline-flex items-center gap-1.5 rounded-md border border-slate-200 bg-white px-3 py-2 text-[13px] font-semibold text-slate-600 transition-colors hover:border-brand/40 hover:text-brand"
+            className="inline-flex items-center gap-1.5 rounded-md border border-white/[0.08] bg-[#0B1522] px-3 py-2 text-[13px] font-semibold text-white/70 transition-colors hover:border-brand/40 hover:text-brand"
           >
             <Bookmark className="h-3.5 w-3.5" /> Merkliste
           </Link>
           <select
             value={region}
             onChange={(e) => setRegion(e.target.value)}
-            className="rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 outline-none focus:border-brand focus:ring-1 focus:ring-brand/30"
+            className="rounded-md border border-white/[0.16] bg-[#0B1522] px-3 py-2 text-sm text-white/75 outline-none focus:border-brand focus:ring-1 focus:ring-brand/30"
           >
             {REGIONS.map((r) => (
               <option key={r} value={r}>{r === "Alle" ? "Alle Regionen" : r}</option>
@@ -292,27 +292,27 @@ export default function OpenPools() {
       </div>
 
       {error && (
-        <p className="mb-3 flex items-start gap-2 rounded-md border border-amber-200 bg-amber-50 px-3 py-2.5 text-[12.5px] leading-relaxed text-amber-800">
+        <p className="mb-3 flex items-start gap-2 rounded-md border border-brand/25 bg-brand/10 px-3 py-2.5 text-[12.5px] leading-relaxed text-brand">
           <Info className="mt-px h-3.5 w-3.5 shrink-0" />
           Bündel konnten nicht geladen werden. Falls die Migration
-          <code className="mx-1 rounded bg-amber-100 px-1">16_real_bundles.sql</code>
+          <code className="mx-1 rounded bg-brand/15 px-1">16_real_bundles.sql</code>
           noch nicht eingespielt ist, hol das im Supabase-SQL-Editor nach.
         </p>
       )}
 
       {loading ? (
-        <div className={cn(CARD, "grid place-items-center py-20 text-slate-400")}>
+        <div className={cn(PANEL, "grid place-items-center py-20 text-white/40")}>
           <Loader2 className="h-5 w-5 animate-spin" />
         </div>
       ) : list.length === 0 ? (
-        <div className={cn(CARD, "px-6 py-14 text-center")}>
-          <Layers className="mx-auto h-8 w-8 text-slate-300" />
-          <p className="mt-3 text-[15px] font-semibold text-slate-800">
+        <div className={cn(PANEL, "px-6 py-14 text-center")}>
+          <Layers className="mx-auto h-8 w-8 text-white/25" />
+          <p className="mt-3 text-[15px] font-semibold text-white/90">
             {bundles.length === 0
               ? "Noch läuft kein Bündel"
               : "Keine Bündel in dieser Auswahl"}
           </p>
-          <p className="mx-auto mt-1 max-w-md text-[13px] leading-relaxed text-slate-500">
+          <p className="mx-auto mt-1 max-w-md text-[13px] leading-relaxed text-white/55">
             {bundles.length === 0
               ? "Bündel entstehen aus gemeldetem Bedarf. Meldest du deinen, ist das erste da — und andere mit demselben Material in derselben Region kommen dazu."
               : "Andere Region oder Phase wählen."}
@@ -320,7 +320,7 @@ export default function OpenPools() {
           {bundles.length === 0 && (
             <Link
               href="/beschaffung"
-              className="mt-4 inline-flex items-center gap-1.5 rounded-md bg-brand px-4 py-2 text-sm font-semibold text-navy-900 transition-colors hover:bg-brand-500"
+              className="mt-4 inline-flex items-center gap-1.5 rounded-md bg-brand px-4 py-2 text-sm font-semibold text-navy-900 transition-colors hover:bg-brand/100"
             >
               Bedarf melden <ArrowRight className="h-4 w-4" />
             </Link>

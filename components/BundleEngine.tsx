@@ -317,7 +317,7 @@ export default function BundleEngine() {
           </div>
 
           <div className="mt-5 flex flex-wrap gap-2">
-            <Link href="/beschaffung" className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-md bg-brand px-4 py-2.5 text-sm font-semibold text-navy-900 transition-colors hover:bg-brand-500">
+            <Link href="/beschaffung" className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-md bg-brand px-4 py-2.5 text-sm font-semibold text-navy-900 transition-colors hover:bg-brand/100">
               <Layers className="h-4 w-4" /> Diesem Pool beitreten
             </Link>
             <Link href={`/kbob?material=${material.material}`} className="inline-flex items-center justify-center gap-1.5 rounded-md border border-white/15 px-3 py-2.5 text-sm font-semibold text-white/75 transition-colors hover:bg-white/5">

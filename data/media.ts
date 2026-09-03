@@ -83,3 +83,22 @@ export const PHOTO_EXCAVATION: PhotoSlot = {
   alt: "Baugrube mit freigelegten Bohrpfählen, Spundwand im Hintergrund",
   search: "excavation bored piles · Baugrube Bohrpfähle · foundation pit",
 };
+
+/* ==================================================================
+   HERO-VIDEO
+   ------------------------------------------------------------------
+   Dieselbe Szene wie /hero-kran.jpg, nur bewegt. Das Standbild bleibt
+   als `poster` liegen: es erscheint sofort, während das Video lädt,
+   und es ist das, was Besucher mit gedrosselter Verbindung oder
+   eingeschalteter Bewegungsreduktion zu sehen bekommen.
+
+   Ein Hintergrundvideo läuft von selbst — anders als das Erklärvideo
+   weiter unten. Das ist hier richtig, weil es tonlos ist, nichts
+   erklärt und nur die Fläche belebt. Bedingungen: `muted`, `loop`,
+   `playsInline`, keine Bedienelemente.
+   ================================================================== */
+export const HERO_VIDEO_URL =
+  "https://6lqwc1k8pyo1qnqz.public.blob.vercel-storage.com/7169070-uhd_3840_2160_25fps.mp4";
+
+/** Standbild hinter dem Video: erscheint sofort und bleibt der Rückfall. */
+export const HERO_VIDEO_POSTER = "/hero-kran.jpg";

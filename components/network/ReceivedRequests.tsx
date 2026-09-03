@@ -6,7 +6,7 @@ import { useAuth } from "@clerk/nextjs";
 import { BadgeCheck, Check, Loader2, Inbox, MapPin } from "lucide-react";
 import { useSupabaseBrowser } from "@/lib/supabase-browser";
 import { fetchMyCompanyId } from "@/lib/myCompany";
-import { CARD } from "@/lib/ui";
+import { PANEL } from "@/lib/ui";
 import { cn } from "@/lib/utils";
 
 type Company = {
@@ -89,7 +89,7 @@ export default function ReceivedRequests() {
 
   if (loading) {
     return (
-      <div className={cn(CARD, "flex items-center justify-center gap-2 py-12 text-sm text-slate-500")}>
+      <div className={cn(PANEL, "flex items-center justify-center gap-2 py-12 text-sm text-white/55")}>
         <Loader2 className="h-4 w-4 animate-spin" /> Anfragen werden geladen …
       </div>
     );
@@ -97,12 +97,12 @@ export default function ReceivedRequests() {
 
   if (reqs.length === 0) {
     return (
-      <div className={cn(CARD, "flex flex-col items-center gap-3 border-dashed py-14 text-center")}>
-        <span className="grid h-12 w-12 place-items-center rounded-full bg-slate-100 text-slate-400">
+      <div className={cn(PANEL, "flex flex-col items-center gap-3 border-dashed py-14 text-center")}>
+        <span className="grid h-12 w-12 place-items-center rounded-full bg-white/10 text-white/40">
           <Inbox className="h-6 w-6" />
         </span>
-        <p className="text-sm font-semibold text-slate-900">Keine offenen Anfragen</p>
-        <p className="max-w-sm text-[13px] text-slate-500">
+        <p className="text-sm font-semibold text-white">Keine offenen Anfragen</p>
+        <p className="max-w-sm text-[13px] text-white/55">
           Wenn dir Firmen eine Vernetzungs-Anfrage senden, erscheinen sie hier zum Annehmen.
         </p>
         <Link href="/network" className="mt-1 inline-flex items-center gap-1.5 rounded-md bg-brand px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-brand-600">
@@ -113,13 +113,13 @@ export default function ReceivedRequests() {
   }
 
   return (
-    <div className={cn(CARD, "overflow-hidden")}>
-      <ul className="divide-y divide-slate-100">
+    <div className={cn(PANEL, "overflow-hidden")}>
+      <ul className="divide-y divide-white/[0.06]">
         {reqs.map(({ connId, company }) => (
           <li key={connId} className="flex items-center gap-3 px-4 py-3.5 sm:px-5">
             <Link
               href={`/company/${company.id}`}
-              className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full bg-slate-100 text-sm font-semibold text-slate-700"
+              className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full bg-white/10 text-sm font-semibold text-white/75"
             >
               {company.logo_url ? (
                 // eslint-disable-next-line @next/next/no-img-element
@@ -129,11 +129,11 @@ export default function ReceivedRequests() {
               )}
             </Link>
             <div className="min-w-0 flex-1">
-              <Link href={`/company/${company.id}`} className="flex items-center gap-1 truncate text-sm font-semibold text-slate-900 hover:text-brand">
+              <Link href={`/company/${company.id}`} className="flex items-center gap-1 truncate text-sm font-semibold text-white hover:text-brand">
                 {company.company_name}
                 {company.verified && <BadgeCheck className="h-4 w-4 shrink-0 text-accent" />}
               </Link>
-              <p className="flex items-center gap-1 truncate text-xs text-slate-400">
+              <p className="flex items-center gap-1 truncate text-xs text-white/40">
                 {ROLE_LABEL[company.role] ?? company.role}
                 {company.city && <><span>·</span><MapPin className="h-3 w-3" /> {company.city}</>}
               </p>
@@ -141,7 +141,7 @@ export default function ReceivedRequests() {
             <button
               type="button"
               onClick={() => ignore(connId)}
-              className="rounded-md border border-slate-200 px-3.5 py-1.5 text-sm font-semibold text-slate-500 transition-colors hover:bg-slate-50"
+              className="rounded-md border border-white/[0.08] px-3.5 py-1.5 text-sm font-semibold text-white/55 transition-colors hover:bg-white/[0.05]"
             >
               Ignorieren
             </button>

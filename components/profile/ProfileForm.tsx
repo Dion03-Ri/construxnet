@@ -10,7 +10,7 @@ import { saveProfile, type ProfileState } from "@/app/profile/edit/actions";
 import { useSupabaseBrowser } from "@/lib/supabase-browser";
 import { PROC_MATERIALS, PROC_CATEGORIES, PROC_REGIONS } from "@/data/procurement";
 import { SWISS_CANTONS } from "@/lib/network";
-import { CARD } from "@/lib/ui";
+import { PANEL } from "@/lib/ui";
 import { cn } from "@/lib/utils";
 
 export type EditableCompany = {
@@ -41,8 +41,8 @@ const IMAGE_EXT: Record<string, string> = {
 };
 
 const input =
-  "w-full rounded-md border border-slate-300 bg-slate-50 px-3 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:border-brand focus:bg-white focus:outline-none focus:ring-1 focus:ring-brand/30";
-const label = "mb-1.5 block text-xs font-semibold uppercase tracking-wider text-slate-500";
+  "w-full rounded-md border border-white/[0.16] bg-white/[0.03] px-3 py-2.5 text-sm text-white placeholder:text-white/40 focus:border-brand focus:bg-[#0B1522] focus:outline-none focus:ring-1 focus:ring-brand/30";
+const label = "mb-1.5 block text-xs font-semibold uppercase tracking-wider text-white/55";
 
 function initials(name: string) {
   return name.split(" ").slice(0, 2).map((w) => w[0]).join("").toUpperCase();
@@ -61,11 +61,11 @@ function Section({
   children: React.ReactNode;
 }) {
   return (
-    <section className={cn(CARD, "p-5 sm:p-6")}>
-      <h2 className="flex items-center gap-2 text-[15px] font-semibold text-slate-900">
+    <section className={cn(PANEL, "p-5 sm:p-6")}>
+      <h2 className="flex items-center gap-2 text-[15px] font-semibold text-white">
         <Icon className="h-4 w-4 text-brand" /> {title}
       </h2>
-      {hint && <p className="mt-0.5 text-[12.5px] text-slate-500">{hint}</p>}
+      {hint && <p className="mt-0.5 text-[12.5px] text-white/55">{hint}</p>}
       <div className="mt-4 space-y-4">{children}</div>
     </section>
   );
@@ -114,7 +114,7 @@ export default function ProfileForm({ company }: { company: EditableCompany }) {
       {/* Firma */}
       <Section title="Firma" icon={Building2} hint="So erscheint dein Betrieb im Netzwerk, im Feed und auf der Karte.">
         <div className="flex flex-wrap items-center gap-4">
-          <span className="grid h-16 w-16 shrink-0 place-items-center overflow-hidden rounded-lg bg-slate-100 text-base font-bold text-slate-700 ring-1 ring-slate-200">
+          <span className="grid h-16 w-16 shrink-0 place-items-center overflow-hidden rounded-lg bg-white/10 text-base font-bold text-white/75 ring-1 ring-white/10">
             {logoUrl ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img src={logoUrl} alt="" className="h-full w-full object-cover" />
@@ -127,7 +127,7 @@ export default function ProfileForm({ company }: { company: EditableCompany }) {
               type="button"
               onClick={() => fileRef.current?.click()}
               disabled={logoBusy}
-              className="inline-flex items-center gap-1.5 rounded-md border border-slate-300 px-3 py-2 text-[13px] font-semibold text-slate-600 transition-colors hover:border-brand/40 hover:text-brand disabled:opacity-60"
+              className="inline-flex items-center gap-1.5 rounded-md border border-white/[0.16] px-3 py-2 text-[13px] font-semibold text-white/70 transition-colors hover:border-brand/40 hover:text-brand disabled:opacity-60"
             >
               {logoBusy ? <Loader2 className="h-4 w-4 animate-spin" /> : <ImagePlus className="h-4 w-4" />}
               {logoUrl ? "Logo ersetzen" : "Logo hochladen"}
@@ -136,12 +136,12 @@ export default function ProfileForm({ company }: { company: EditableCompany }) {
               <button
                 type="button"
                 onClick={() => setLogoUrl("")}
-                className="ml-2 text-[12.5px] font-medium text-slate-400 hover:text-slate-600"
+                className="ml-2 text-[12.5px] font-medium text-white/40 hover:text-white/70"
               >
                 entfernen
               </button>
             )}
-            <p className="mt-1 text-[11.5px] text-slate-400">JPG, PNG oder WebP, bis 2 MB.</p>
+            <p className="mt-1 text-[11.5px] text-white/40">JPG, PNG oder WebP, bis 2 MB.</p>
             {logoError && <p className="mt-1 text-[12px] font-medium text-red-600">{logoError}</p>}
           </div>
           <input
@@ -173,16 +173,16 @@ export default function ProfileForm({ company }: { company: EditableCompany }) {
               placeholder="CHE-123.456.789"
               className={input}
             />
-            <p className="mt-1 text-[11.5px] text-slate-400">Form: CHE-123.456.789</p>
+            <p className="mt-1 text-[11.5px] text-white/40">Form: CHE-123.456.789</p>
           </div>
           <div>
             <span className={label}>Rolle</span>
-            <div className="flex items-center gap-2 rounded-md border border-slate-200 bg-slate-100 px-3 py-2.5 text-sm text-slate-500">
+            <div className="flex items-center gap-2 rounded-md border border-white/[0.08] bg-white/10 px-3 py-2.5 text-sm text-white/55">
               {isSupplier ? <Factory className="h-4 w-4" /> : <Building2 className="h-4 w-4" />}
               {isSupplier ? "Baustoffwerk / Lieferant" : "Bauunternehmen"}
               {company.verified && <ShieldCheck className="ml-auto h-4 w-4 text-brand" />}
             </div>
-            <p className="mt-1 text-[11.5px] text-slate-400">
+            <p className="mt-1 text-[11.5px] text-white/40">
               Die Rolle bestimmt, wer bieten und wer beschaffen darf — sie lässt sich hier nicht ändern.
             </p>
           </div>
@@ -213,7 +213,7 @@ export default function ProfileForm({ company }: { company: EditableCompany }) {
             </select>
           </div>
         </div>
-        <p className="text-[12px] text-slate-400">
+        <p className="text-[12px] text-white/40">
           Steht deine Karten-Zustimmung, wird der Punkt nach dem Speichern automatisch neu ermittelt.{" "}
           <Link href="/map" className="font-medium text-brand hover:underline">Zur Karte</Link>
         </p>
@@ -262,19 +262,19 @@ export default function ProfileForm({ company }: { company: EditableCompany }) {
         <Section title="Liefer-Profil" icon={Truck} hint="Was ihr führt und wie weit ihr liefert — Grundlage für passende Bündel.">
           <div>
             <span className={label}>Materialien im Sortiment</span>
-            <div className="max-h-72 space-y-3 overflow-y-auto rounded-md border border-slate-200 bg-slate-50 p-3">
+            <div className="max-h-72 space-y-3 overflow-y-auto rounded-md border border-white/[0.08] bg-white/[0.03] p-3">
               {PROC_CATEGORIES.map((cat) => (
                 <div key={cat}>
-                  <div className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">{cat}</div>
+                  <div className="text-[11px] font-semibold uppercase tracking-wider text-white/40">{cat}</div>
                   <div className="mt-1 grid grid-cols-1 gap-1 sm:grid-cols-2">
                     {PROC_MATERIALS.filter((m) => m.category === cat).map((m) => (
-                      <label key={m.key} className="flex cursor-pointer items-center gap-2 text-[13px] text-slate-700">
+                      <label key={m.key} className="flex cursor-pointer items-center gap-2 text-[13px] text-white/75">
                         <input
                           type="checkbox"
                           name="supply_materials"
                           value={m.label}
                           defaultChecked={company.supply_materials?.includes(m.label) ?? false}
-                          className="h-4 w-4 rounded border-slate-300 accent-[#D99000]"
+                          className="h-4 w-4 rounded border-white/[0.16] accent-[#D99000]"
                         />
                         <span className="truncate">{m.label}</span>
                       </label>
@@ -291,7 +291,7 @@ export default function ProfileForm({ company }: { company: EditableCompany }) {
               {PROC_REGIONS.map((r) => (
                 <label
                   key={r}
-                  className="cursor-pointer rounded-md border border-slate-200 bg-white px-3 py-1.5 text-[12.5px] font-medium text-slate-600 transition-colors has-[:checked]:border-brand has-[:checked]:bg-brand/10 has-[:checked]:text-brand-700"
+                  className="cursor-pointer rounded-md border border-white/[0.08] bg-[#0B1522] px-3 py-1.5 text-[12.5px] font-medium text-white/70 transition-colors has-[:checked]:border-brand has-[:checked]:bg-brand/10 has-[:checked]:text-brand-700"
                 >
                   <input
                     type="checkbox"
@@ -346,18 +346,18 @@ export default function ProfileForm({ company }: { company: EditableCompany }) {
         </p>
       )}
 
-      <div className="sticky bottom-20 z-10 flex flex-wrap items-center gap-2 rounded-xl border border-slate-200 bg-white/95 px-4 py-3 shadow-card backdrop-blur md:bottom-4">
+      <div className="sticky bottom-20 z-10 flex flex-wrap items-center gap-2 rounded-xl border border-white/[0.08] bg-white/95 px-4 py-3 shadow-card backdrop-blur md:bottom-4">
         <button
           type="submit"
           disabled={pending || logoBusy}
-          className="inline-flex items-center gap-2 rounded-md bg-brand px-5 py-2.5 text-sm font-semibold text-navy-900 transition-colors hover:bg-brand-500 disabled:opacity-60"
+          className="inline-flex items-center gap-2 rounded-md bg-brand px-5 py-2.5 text-sm font-semibold text-navy-900 transition-colors hover:bg-brand/100 disabled:opacity-60"
         >
           {pending && <Loader2 className="h-4 w-4 animate-spin" />}
           Änderungen speichern
         </button>
         <Link
           href={`/company/${company.id}`}
-          className="inline-flex items-center gap-1.5 rounded-md border border-slate-200 px-4 py-2.5 text-sm font-semibold text-slate-600 transition-colors hover:border-brand/40 hover:text-brand"
+          className="inline-flex items-center gap-1.5 rounded-md border border-white/[0.08] px-4 py-2.5 text-sm font-semibold text-white/70 transition-colors hover:border-brand/40 hover:text-brand"
         >
           <ExternalLink className="h-4 w-4" /> Profil ansehen
         </Link>

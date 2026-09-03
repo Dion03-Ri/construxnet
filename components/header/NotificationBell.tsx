@@ -56,10 +56,10 @@ export default function NotificationBell() {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -6, scale: 0.98 }}
               transition={{ duration: 0.15 }}
-              className="absolute right-0 z-50 mt-2 w-[340px] overflow-hidden rounded-lg border border-slate-200 bg-white/90 shadow-cardhover backdrop-blur-xl"
+              className="absolute right-0 z-50 mt-2 w-[340px] overflow-hidden rounded-lg border border-white/[0.08] bg-white/90 shadow-cardhover backdrop-blur-xl"
             >
-              <div className="flex items-center justify-between border-b border-slate-100 px-4 py-3">
-                <span className="text-sm font-semibold text-slate-900">Benachrichtigungen</span>
+              <div className="flex items-center justify-between border-b border-white/[0.06] px-4 py-3">
+                <span className="text-sm font-semibold text-white">Benachrichtigungen</span>
                 {unread > 0 && (
                   <button
                     type="button"
@@ -71,7 +71,7 @@ export default function NotificationBell() {
                 )}
               </div>
 
-              <div className="flex gap-1 border-b border-slate-100 px-2 py-2">
+              <div className="flex gap-1 border-b border-white/[0.06] px-2 py-2">
                 {TABS.map((t) => (
                   <button
                     key={t.key}
@@ -79,7 +79,7 @@ export default function NotificationBell() {
                     onClick={() => setTab(t.key)}
                     className={cn(
                       "rounded-md px-3 py-1 text-xs font-medium transition-colors",
-                      tab === t.key ? "bg-brand text-white" : "text-slate-500 hover:bg-slate-100",
+                      tab === t.key ? "bg-brand text-white" : "text-white/55 hover:bg-white/[0.07]",
                     )}
                   >
                     {t.label}
@@ -89,7 +89,7 @@ export default function NotificationBell() {
 
               <ul className="max-h-[360px] overflow-y-auto">
                 {list.length === 0 ? (
-                  <li className="px-4 py-8 text-center text-sm text-slate-400">Nichts Neues hier.</li>
+                  <li className="px-4 py-8 text-center text-sm text-white/40">Nichts Neues hier.</li>
                 ) : (
                   list.map((n) => {
                     const isRead = !isUnread(n);
@@ -99,7 +99,7 @@ export default function NotificationBell() {
                           href={n.href}
                           onClick={markRead}
                           className={cn(
-                            "flex gap-3 px-4 py-3 transition-colors hover:bg-slate-50",
+                            "flex gap-3 px-4 py-3 transition-colors hover:bg-white/[0.05]",
                             !isRead && "bg-brand/[0.03]",
                           )}
                         >
@@ -107,10 +107,10 @@ export default function NotificationBell() {
                             <n.icon className="h-4 w-4" />
                           </span>
                           <div className="min-w-0">
-                            <p className="text-[13px] leading-snug text-slate-700">
-                              <span className="font-semibold text-slate-900">{n.actor}</span> {n.text}
+                            <p className="text-[13px] leading-snug text-white/75">
+                              <span className="font-semibold text-white">{n.actor}</span> {n.text}
                             </p>
-                            <p className="mt-0.5 text-[11px] text-slate-400">{relTime(n.at)}</p>
+                            <p className="mt-0.5 text-[11px] text-white/40">{relTime(n.at)}</p>
                           </div>
                           {!isRead && <span className="ml-auto mt-1 h-2 w-2 shrink-0 rounded-full bg-brand" />}
                         </Link>
@@ -123,7 +123,7 @@ export default function NotificationBell() {
               <Link
                 href="/notifications"
                 onClick={() => setOpen(false)}
-                className="flex items-center justify-center gap-1 border-t border-slate-100 py-2.5 text-[13px] font-semibold text-brand transition-colors hover:bg-slate-50"
+                className="flex items-center justify-center gap-1 border-t border-white/[0.06] py-2.5 text-[13px] font-semibold text-brand transition-colors hover:bg-white/[0.05]"
               >
                 Alle anzeigen <ArrowRight className="h-3.5 w-3.5" />
               </Link>

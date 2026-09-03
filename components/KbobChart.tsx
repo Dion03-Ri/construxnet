@@ -24,7 +24,7 @@ import {
 } from "lucide-react";
 import kbobData from "@/data/kbobData.json";
 import { useOwnPurchases, averageDelta, type Purchase } from "@/lib/kbobPurchases";
-import { CARD } from "@/lib/ui";
+import { PANEL } from "@/lib/ui";
 import { cn } from "@/lib/utils";
 
 /* -------------------------------------------------------------------------- */
@@ -108,7 +108,7 @@ function Trend({ value, invert }: { value: number; invert?: boolean }) {
     <span
       className={cn(
         "inline-flex items-center gap-1 text-[13px] font-semibold",
-        value === 0 ? "text-slate-400" : good ? "text-brand-700" : "text-rose-600",
+        value === 0 ? "text-white/40" : good ? "text-brand-700" : "text-rose-300",
       )}
     >
       <Icon className="h-3.5 w-3.5" />
@@ -132,7 +132,7 @@ function Segmented({
     <div
       className={cn(
         "inline-flex rounded-md p-0.5",
-        dark ? "bg-white/10" : "border border-slate-200",
+        dark ? "bg-white/10" : "border border-white/[0.08]",
       )}
     >
       {options.map((o) => {
@@ -150,7 +150,7 @@ function Segmented({
                   : "bg-navy-900 text-white"
                 : dark
                   ? "text-white/60 hover:text-white"
-                  : "text-slate-500 hover:bg-slate-100",
+                  : "text-white/55 hover:bg-white/[0.07]",
             )}
           >
             {o.label}
@@ -173,18 +173,18 @@ function ChartTooltip({
   const delta = row.own != null ? ((row.own - row.kbob) / row.kbob) * 100 : null;
 
   return (
-    <div className="rounded-md border border-slate-200 bg-white px-3 py-2 shadow-cardhover">
-      <div className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+    <div className="rounded-md border border-white/[0.08] bg-[#0B1522] px-3 py-2 shadow-cardhover">
+      <div className="text-[11px] font-semibold uppercase tracking-wider text-white/40">
         {shortPeriod(row.period)}
       </div>
-      <div className="mt-1 text-[13px] text-slate-600">
-        Referenz <b className="text-slate-900">CHF {chf(row.kbob)}</b> / {unit}
+      <div className="mt-1 text-[13px] text-white/70">
+        Referenz <b className="text-white">CHF {chf(row.kbob)}</b> / {unit}
       </div>
       {row.own != null && (
-        <div className="mt-0.5 text-[13px] text-slate-600">
+        <div className="mt-0.5 text-[13px] text-white/70">
           Dein Einkauf <b className="text-brand-700">CHF {chf(row.own)}</b> / {unit}
           {delta !== null && (
-            <span className={cn("ml-1.5 font-semibold", delta <= 0 ? "text-brand-700" : "text-rose-600")}>
+            <span className={cn("ml-1.5 font-semibold", delta <= 0 ? "text-brand-700" : "text-rose-300")}>
               ({pct(delta)})
             </span>
           )}
@@ -205,11 +205,11 @@ function Stat({
 }) {
   return (
     <div className="px-4 py-3.5 sm:px-5">
-      <div className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+      <div className="text-[11px] font-semibold uppercase tracking-wider text-white/40">
         {label}
       </div>
       <div className="mt-1">{children}</div>
-      {hint && <div className="mt-0.5 text-[11px] text-slate-400">{hint}</div>}
+      {hint && <div className="mt-0.5 text-[11px] text-white/40">{hint}</div>}
     </div>
   );
 }
@@ -232,10 +232,10 @@ function OwnPurchases({
   const procureKey = PROCURE_LINK[materialKey];
 
   return (
-    <div className={cn(CARD, "overflow-hidden")}>
-      <div className="border-b border-slate-200 px-5 py-3.5">
-        <h3 className="text-[15px] font-semibold text-slate-900">Deine Abschlüsse</h3>
-        <p className="mt-0.5 text-[12px] leading-relaxed text-slate-500">
+    <div className={cn(PANEL, "overflow-hidden")}>
+      <div className="border-b border-white/[0.08] px-5 py-3.5">
+        <h3 className="text-[15px] font-semibold text-white">Deine Abschlüsse</h3>
+        <p className="mt-0.5 text-[12px] leading-relaxed text-white/55">
           Angenommene Angebote in dieser Warengruppe und im gewählten Zeitraum,
           gemessen am Referenzpreis zum Zeitpunkt der Anfrage. Bündel-Teilnahmen
           sind nicht dabei — dort wird noch kein Abschlusspreis erfasst.
@@ -243,15 +243,15 @@ function OwnPurchases({
       </div>
 
       {loading ? (
-        <div className="grid place-items-center py-10 text-slate-400">
+        <div className="grid place-items-center py-10 text-white/40">
           <Loader2 className="h-5 w-5 animate-spin" />
         </div>
       ) : purchases.length === 0 ? (
         <div className="px-5 py-6 text-center">
-          <p className="text-[13px] font-semibold text-slate-800">
+          <p className="text-[13px] font-semibold text-white/90">
             Kein Abschluss in dieser Gruppe
           </p>
-          <p className="mx-auto mt-1 max-w-xs text-[12px] leading-relaxed text-slate-500">
+          <p className="mx-auto mt-1 max-w-xs text-[12px] leading-relaxed text-white/55">
             Sobald du ein Angebot annimmst, erscheint es hier und in der Kurve —
             so siehst du, wie du gegenüber der Referenz gefahren bist.
           </p>
@@ -259,21 +259,21 @@ function OwnPurchases({
             {procureKey && (
               <Link
                 href={`/beschaffung?material=${procureKey}`}
-                className="inline-flex items-center justify-center gap-1.5 rounded-md bg-brand px-3.5 py-2 text-[12.5px] font-semibold text-navy-900 transition-colors hover:bg-brand-500"
+                className="inline-flex items-center justify-center gap-1.5 rounded-md bg-brand px-3.5 py-2 text-[12.5px] font-semibold text-navy-900 transition-colors hover:bg-brand/100"
               >
                 <ShoppingCart className="h-3.5 w-3.5" /> Bedarf einreichen
               </Link>
             )}
             <Link
               href="/network"
-              className="inline-flex items-center justify-center gap-1.5 rounded-md px-3.5 py-2 text-[12.5px] font-semibold text-slate-600 transition-colors hover:bg-slate-100"
+              className="inline-flex items-center justify-center gap-1.5 rounded-md px-3.5 py-2 text-[12.5px] font-semibold text-white/70 transition-colors hover:bg-white/[0.07]"
             >
               <Handshake className="h-3.5 w-3.5" /> Lieferant direkt anfragen
             </Link>
           </div>
         </div>
       ) : (
-        <ul className="divide-y divide-slate-100">
+        <ul className="divide-y divide-white/[0.06]">
           {[...purchases].reverse().map((p) => {
             const delta =
               p.reference && p.reference > 0
@@ -282,14 +282,14 @@ function OwnPurchases({
             return (
               <li key={p.id} className="px-5 py-3">
                 <div className="flex items-baseline justify-between gap-2">
-                  <span className="truncate text-[13px] font-semibold text-slate-800">
+                  <span className="truncate text-[13px] font-semibold text-white/90">
                     {p.materialLabel}
                   </span>
-                  <span className="shrink-0 text-[13px] font-bold text-slate-900">
+                  <span className="shrink-0 text-[13px] font-bold text-white">
                     CHF {chf(p.unitPrice)}
                   </span>
                 </div>
-                <div className="mt-0.5 flex flex-wrap items-center gap-x-2.5 text-[11.5px] text-slate-400">
+                <div className="mt-0.5 flex flex-wrap items-center gap-x-2.5 text-[11.5px] text-white/40">
                   <span>{shortPeriod(p.period)}</span>
                   <span>
                     {chf(p.quantity, 0)} {p.unit}
@@ -299,7 +299,7 @@ function OwnPurchases({
                     <span
                       className={cn(
                         "font-semibold",
-                        delta <= 0 ? "text-brand-700" : "text-rose-600",
+                        delta <= 0 ? "text-brand-700" : "text-rose-300",
                       )}
                     >
                       {pct(delta)} zur Referenz
@@ -332,13 +332,13 @@ function OtherPurchases({ purchases }: { purchases: Purchase[] }) {
   const avg = averageDelta(purchases);
 
   return (
-    <div className={cn(CARD, "overflow-hidden")}>
-      <div className="flex flex-wrap items-baseline justify-between gap-2 border-b border-slate-200 px-5 py-3.5">
+    <div className={cn(PANEL, "overflow-hidden")}>
+      <div className="flex flex-wrap items-baseline justify-between gap-2 border-b border-white/[0.08] px-5 py-3.5">
         <div>
-          <h3 className="text-[15px] font-semibold text-slate-900">
+          <h3 className="text-[15px] font-semibold text-white">
             Abschlüsse ohne Index-Reihe
           </h3>
-          <p className="mt-0.5 max-w-xl text-[12px] leading-relaxed text-slate-500">
+          <p className="mt-0.5 max-w-xl text-[12px] leading-relaxed text-white/55">
             Für Dämmung, Mauerwerk, Holz, Asphalt, Rohre und Bauchemie führt
             der Index keine Kurve. Der Abstand zum Referenzpreis stimmt
             trotzdem — er wird bei jeder Anfrage einzeln festgehalten.
@@ -346,7 +346,7 @@ function OtherPurchases({ purchases }: { purchases: Purchase[] }) {
         </div>
         {avg !== null && (
           <div className="shrink-0 text-right">
-            <div className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+            <div className="text-[11px] font-semibold uppercase tracking-wider text-white/40">
               Ø zur Referenz
             </div>
             <Trend value={avg} />
@@ -354,7 +354,7 @@ function OtherPurchases({ purchases }: { purchases: Purchase[] }) {
         )}
       </div>
 
-      <ul className="divide-y divide-slate-100">
+      <ul className="divide-y divide-white/[0.06]">
         {[...purchases].reverse().map((p) => {
           const delta =
             p.reference && p.reference > 0
@@ -363,14 +363,14 @@ function OtherPurchases({ purchases }: { purchases: Purchase[] }) {
           return (
             <li key={p.id} className="px-5 py-3">
               <div className="flex items-baseline justify-between gap-2">
-                <span className="truncate text-[13px] font-semibold text-slate-800">
+                <span className="truncate text-[13px] font-semibold text-white/90">
                   {p.materialLabel}
                 </span>
-                <span className="shrink-0 text-[13px] font-bold text-slate-900">
+                <span className="shrink-0 text-[13px] font-bold text-white">
                   CHF {chf(p.unitPrice)} / {p.unit}
                 </span>
               </div>
-              <div className="mt-0.5 flex flex-wrap items-center gap-x-2.5 text-[11.5px] text-slate-400">
+              <div className="mt-0.5 flex flex-wrap items-center gap-x-2.5 text-[11.5px] text-white/40">
                 <span>{shortPeriod(p.period)}</span>
                 <span>
                   {chf(p.quantity, 0)} {p.unit}
@@ -380,7 +380,7 @@ function OtherPurchases({ purchases }: { purchases: Purchase[] }) {
                   <span
                     className={cn(
                       "font-semibold",
-                      delta <= 0 ? "text-brand-700" : "text-rose-600",
+                      delta <= 0 ? "text-brand-700" : "text-rose-300",
                     )}
                   >
                     {pct(delta)} zur Referenz
@@ -522,13 +522,13 @@ export default function KbobChart({ initialMaterial }: { initialMaterial?: strin
       </div>
 
       {/* Zahlen */}
-      <div className={cn(CARD, "grid grid-cols-1 divide-y divide-slate-200 sm:grid-cols-3 sm:divide-x sm:divide-y-0")}>
+      <div className={cn(PANEL, "grid grid-cols-1 divide-y divide-white/[0.07] sm:grid-cols-3 sm:divide-x sm:divide-y-0")}>
         <Stat label="Referenzpreis" hint={`${data.regions[region]} · Stand ${data.meta.updated}`}>
           <div className="flex items-baseline gap-1.5">
-            <span className="text-2xl font-bold tracking-tight text-slate-900">
+            <span className="text-2xl font-bold tracking-tight text-white">
               CHF {chf(stats.current)}
             </span>
-            <span className="text-sm text-slate-500">/ {unit}</span>
+            <span className="text-sm text-white/55">/ {unit}</span>
           </div>
         </Stat>
         <Stat label="Gegenüber Vorquartal">
@@ -545,7 +545,7 @@ export default function KbobChart({ initialMaterial }: { initialMaterial?: strin
           }
         >
           {avgDelta === null ? (
-            <span className="text-2xl font-bold tracking-tight text-slate-300">—</span>
+            <span className="text-2xl font-bold tracking-tight text-white/25">—</span>
           ) : (
             <span className="text-2xl font-bold">
               <Trend value={avgDelta} />
@@ -555,12 +555,12 @@ export default function KbobChart({ initialMaterial }: { initialMaterial?: strin
       </div>
 
       {/* Kurve */}
-      <div className={cn(CARD, "p-5 sm:p-6")}>
+      <div className={cn(PANEL, "p-5 sm:p-6")}>
         <div className="flex flex-wrap items-baseline justify-between gap-2">
-          <h2 className="text-[15px] font-semibold text-slate-900">
+          <h2 className="text-[15px] font-semibold text-white">
             {entry.label} · {data.regions[region]}
           </h2>
-          <div className="flex items-center gap-3 text-[11.5px] text-slate-500">
+          <div className="flex items-center gap-3 text-[11.5px] text-white/55">
             <span className="inline-flex items-center gap-1.5">
               <span className="h-0.5 w-4 rounded bg-navy-700" /> Referenzpreis
             </span>
@@ -606,8 +606,8 @@ export default function KbobChart({ initialMaterial }: { initialMaterial?: strin
         </div>
 
         {ownPoints === 0 && !loading && (
-          <p className="mt-3 flex items-start gap-2 rounded-md bg-slate-50 px-3 py-2.5 text-[12px] leading-relaxed text-slate-500">
-            <Info className="mt-px h-3.5 w-3.5 shrink-0 text-slate-400" />
+          <p className="mt-3 flex items-start gap-2 rounded-md bg-white/[0.03] px-3 py-2.5 text-[12px] leading-relaxed text-white/55">
+            <Info className="mt-px h-3.5 w-3.5 shrink-0 text-white/40" />
             In der Kurve steht bisher nur die Referenz. Sobald du ein Angebot
             annimmst, kommt dein tatsächlicher Preis als Punkt dazu — dann
             zeigt die Grafik, ob du über oder unter der Referenz eingekauft

@@ -35,7 +35,7 @@ export default function ProcessVideo() {
           </a>
         </video>
       </div>
-      <figcaption className="mt-2.5 text-center text-[12px] text-slate-400">
+      <figcaption className="mt-2.5 text-center text-[12px] text-white/40">
         {PROCESS_VIDEO_LABEL}
       </figcaption>
     </figure>

@@ -19,13 +19,13 @@ import {
   type Project,
   type ProjectStatus,
 } from "@/lib/projects";
-import { CARD } from "@/lib/ui";
+import { PANEL } from "@/lib/ui";
 import { cn } from "@/lib/utils";
 
 const STATUS_STYLE: Record<ProjectStatus, string> = {
-  PLANNED: "bg-slate-100 text-slate-600",
+  PLANNED: "bg-white/10 text-white/70",
   ACTIVE: "bg-brand/15 text-brand-700",
-  PAUSED: "bg-amber-100 text-amber-700",
+  PAUSED: "bg-brand/15 text-brand",
   DONE: "bg-navy-100 text-navy-700",
 };
 
@@ -87,9 +87,9 @@ function toDraft(p: Project): Draft {
 /* -------------------------------------------------------------------------- */
 
 const FIELD =
-  "w-full rounded-md border border-slate-300 bg-slate-50 px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 outline-none focus:border-brand focus:bg-white";
+  "w-full rounded-md border border-white/[0.16] bg-white/[0.03] px-3 py-2 text-sm text-white placeholder:text-white/40 outline-none focus:border-brand focus:bg-[#0B1522]";
 const LABEL =
-  "mb-1 block text-[11px] font-semibold uppercase tracking-wider text-slate-400";
+  "mb-1 block text-[11px] font-semibold uppercase tracking-wider text-white/40";
 
 function ProjectModal({
   companyId,
@@ -152,22 +152,22 @@ function ProjectModal({
         initial={{ opacity: 0, scale: 0.97, y: 8 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         transition={{ duration: 0.16 }}
-        className="relative max-h-[90vh] w-full max-w-xl overflow-y-auto rounded-xl border border-slate-200 bg-white shadow-2xl"
+        className="relative max-h-[90vh] w-full max-w-xl overflow-y-auto rounded-xl border border-white/[0.08] bg-[#0B1522] shadow-2xl"
       >
-        <div className="sticky top-0 flex items-start justify-between gap-3 border-b border-slate-200 bg-white px-5 py-3.5">
+        <div className="sticky top-0 flex items-start justify-between gap-3 border-b border-white/[0.08] bg-[#0B1522] px-5 py-3.5">
           <div>
-            <h3 className="flex items-center gap-2 text-[15px] font-bold text-slate-900">
+            <h3 className="flex items-center gap-2 text-[15px] font-bold text-white">
               <Building2 className="h-4 w-4 text-brand" />
               {existing ? "Baustelle bearbeiten" : "Neue Baustelle"}
             </h3>
-            <p className="mt-0.5 text-[12.5px] text-slate-500">
+            <p className="mt-0.5 text-[12.5px] text-white/55">
               Nur du siehst dieses Projekt. Lieferanten sehen es nicht.
             </p>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="rounded-md p-1.5 text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-700"
+            className="rounded-md p-1.5 text-white/40 transition-colors hover:bg-white/[0.07] hover:text-white/75"
             aria-label="Schliessen"
           >
             <X className="h-4 w-4" />
@@ -263,14 +263,14 @@ function ProjectModal({
             />
           </div>
 
-          {error && <p className="text-[12.5px] font-medium text-rose-600">{error}</p>}
+          {error && <p className="text-[12.5px] font-medium text-rose-300">{error}</p>}
         </div>
 
-        <div className="sticky bottom-0 flex items-center justify-end gap-2 border-t border-slate-200 bg-slate-50 px-5 py-3">
+        <div className="sticky bottom-0 flex items-center justify-end gap-2 border-t border-white/[0.08] bg-white/[0.03] px-5 py-3">
           <button
             type="button"
             onClick={onClose}
-            className="rounded-md px-3.5 py-2 text-sm font-semibold text-slate-500 transition-colors hover:bg-slate-200"
+            className="rounded-md px-3.5 py-2 text-sm font-semibold text-white/55 transition-colors hover:bg-slate-200"
           >
             Abbrechen
           </button>
@@ -279,7 +279,7 @@ function ProjectModal({
             onClick={save}
             disabled={!valid || saving}
             className={cn(
-              "inline-flex items-center gap-1.5 rounded-md bg-brand px-4 py-2 text-sm font-semibold text-navy-900 transition-colors hover:bg-brand-500",
+              "inline-flex items-center gap-1.5 rounded-md bg-brand px-4 py-2 text-sm font-semibold text-navy-900 transition-colors hover:bg-brand/100",
               (!valid || saving) && "cursor-not-allowed opacity-50",
             )}
           >
@@ -344,8 +344,8 @@ export default function ProjectsPanel({
     <div className="space-y-4">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h2 className="text-lg font-bold text-slate-900">Projekte &amp; Baustellen</h2>
-          <p className="mt-0.5 text-sm text-slate-500">
+          <h2 className="text-lg font-bold text-white">Projekte &amp; Baustellen</h2>
+          <p className="mt-0.5 text-sm text-white/55">
             Jede Bestellung gehört zu einer Baustelle. So siehst du später, wohin
             welches Material und welche Kosten gegangen sind.
           </p>
@@ -353,32 +353,32 @@ export default function ProjectsPanel({
         <button
           type="button"
           onClick={() => setModal({ open: true, existing: null })}
-          className="inline-flex shrink-0 items-center gap-1.5 rounded-md bg-brand px-3.5 py-2 text-sm font-semibold text-navy-900 transition-colors hover:bg-brand-500"
+          className="inline-flex shrink-0 items-center gap-1.5 rounded-md bg-brand px-3.5 py-2 text-sm font-semibold text-navy-900 transition-colors hover:bg-brand/100"
         >
           <Plus className="h-4 w-4" /> Neue Baustelle
         </button>
       </div>
 
       {error && (
-        <p className="flex items-start gap-2 rounded-md border border-amber-200 bg-amber-50 px-3 py-2.5 text-[12.5px] leading-relaxed text-amber-800">
+        <p className="flex items-start gap-2 rounded-md border border-brand/25 bg-brand/10 px-3 py-2.5 text-[12.5px] leading-relaxed text-brand">
           <Info className="mt-px h-3.5 w-3.5 shrink-0" />
           Projekte konnten nicht geladen werden. Falls die Datenbank-Migration
-          <code className="mx-1 rounded bg-amber-100 px-1">10_projects.sql</code>
+          <code className="mx-1 rounded bg-brand/15 px-1">10_projects.sql</code>
           noch nicht eingespielt ist, hol das im Supabase-SQL-Editor nach.
         </p>
       )}
 
       {loading ? (
-        <div className={cn(CARD, "grid place-items-center py-16 text-slate-400")}>
+        <div className={cn(PANEL, "grid place-items-center py-16 text-white/40")}>
           <Loader2 className="h-5 w-5 animate-spin" />
         </div>
       ) : sorted.length === 0 ? (
-        <div className={cn(CARD, "px-6 py-12 text-center")}>
-          <Building2 className="mx-auto h-8 w-8 text-slate-300" />
-          <p className="mt-3 text-[15px] font-semibold text-slate-800">
+        <div className={cn(PANEL, "px-6 py-12 text-center")}>
+          <Building2 className="mx-auto h-8 w-8 text-white/25" />
+          <p className="mt-3 text-[15px] font-semibold text-white/90">
             Noch keine Baustelle angelegt
           </p>
-          <p className="mx-auto mt-1 max-w-md text-[13px] leading-relaxed text-slate-500">
+          <p className="mx-auto mt-1 max-w-md text-[13px] leading-relaxed text-white/55">
             Leg deine erste Baustelle an. Danach kannst du beim Materialbedarf
             direkt auswählen, wofür bestellt wird — und in den Berichten nach
             Projekt auswerten.
@@ -386,7 +386,7 @@ export default function ProjectsPanel({
           <button
             type="button"
             onClick={() => setModal({ open: true, existing: null })}
-            className="mt-4 inline-flex items-center gap-1.5 rounded-md bg-brand px-4 py-2 text-sm font-semibold text-navy-900 transition-colors hover:bg-brand-500"
+            className="mt-4 inline-flex items-center gap-1.5 rounded-md bg-brand px-4 py-2 text-sm font-semibold text-navy-900 transition-colors hover:bg-brand/100"
           >
             <Plus className="h-4 w-4" /> Erste Baustelle anlegen
           </button>
@@ -398,13 +398,13 @@ export default function ProjectsPanel({
             const from = dateCH(p.starts_on);
             const to = dateCH(p.ends_on);
             return (
-              <div key={p.id} className={cn(CARD, "flex flex-col p-4")}>
+              <div key={p.id} className={cn(PANEL, "flex flex-col p-4")}>
                 <div className="flex items-start justify-between gap-2">
                   <div className="min-w-0">
-                    <h3 className="truncate text-[14.5px] font-bold text-slate-900">{p.name}</h3>
+                    <h3 className="truncate text-[14.5px] font-bold text-white">{p.name}</h3>
                     {(p.street || p.city) && (
-                      <p className="mt-0.5 flex items-center gap-1 truncate text-[12.5px] text-slate-500">
-                        <MapPin className="h-3.5 w-3.5 shrink-0 text-slate-400" />
+                      <p className="mt-0.5 flex items-center gap-1 truncate text-[12.5px] text-white/55">
+                        <MapPin className="h-3.5 w-3.5 shrink-0 text-white/40" />
                         {[p.street, [p.zip, p.city].filter(Boolean).join(" ")]
                           .filter(Boolean)
                           .join(", ")}
@@ -422,26 +422,26 @@ export default function ProjectsPanel({
                 </div>
 
                 {(from || to) && (
-                  <p className="mt-2.5 flex items-center gap-1.5 text-[12.5px] text-slate-500">
-                    <CalendarDays className="h-3.5 w-3.5 text-slate-400" />
+                  <p className="mt-2.5 flex items-center gap-1.5 text-[12.5px] text-white/55">
+                    <CalendarDays className="h-3.5 w-3.5 text-white/40" />
                     {from ?? "offen"} – {to ?? "offen"}
                   </p>
                 )}
 
-                <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 border-t border-slate-100 pt-3 text-[12.5px]">
-                  <span className="text-slate-500">
+                <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 border-t border-white/[0.06] pt-3 text-[12.5px]">
+                  <span className="text-white/55">
                     Bestellungen{" "}
-                    <b className="text-slate-800">{count}</b>
+                    <b className="text-white/90">{count}</b>
                   </span>
                   {p.budget != null && (
-                    <span className="text-slate-500">
-                      Budget <b className="text-slate-800">CHF {chf(p.budget)}</b>
+                    <span className="text-white/55">
+                      Budget <b className="text-white/90">CHF {chf(p.budget)}</b>
                     </span>
                   )}
                 </div>
 
                 {p.note && (
-                  <p className="mt-2 line-clamp-2 text-[12px] leading-relaxed text-slate-400">
+                  <p className="mt-2 line-clamp-2 text-[12px] leading-relaxed text-white/40">
                     {p.note}
                   </p>
                 )}
@@ -450,7 +450,7 @@ export default function ProjectsPanel({
                   <button
                     type="button"
                     onClick={() => setModal({ open: true, existing: p })}
-                    className="inline-flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-[12.5px] font-semibold text-slate-600 transition-colors hover:bg-slate-100"
+                    className="inline-flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-[12.5px] font-semibold text-white/70 transition-colors hover:bg-white/[0.07]"
                   >
                     <Pencil className="h-3.5 w-3.5" /> Bearbeiten
                   </button>
@@ -458,7 +458,7 @@ export default function ProjectsPanel({
                     type="button"
                     onClick={() => remove(p)}
                     disabled={busyId === p.id}
-                    className="inline-flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-[12.5px] font-semibold text-slate-400 transition-colors hover:bg-rose-50 hover:text-rose-600 disabled:opacity-50"
+                    className="inline-flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-[12.5px] font-semibold text-white/40 transition-colors hover:bg-rose-500/10 hover:text-rose-300 disabled:opacity-50"
                   >
                     {busyId === p.id ? (
                       <Loader2 className="h-3.5 w-3.5 animate-spin" />

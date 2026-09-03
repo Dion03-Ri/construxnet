@@ -18,7 +18,7 @@ import {
 import { createServerSupabaseClient } from "@/lib/supabase";
 import { requireCompanyOrOnboard } from "@/lib/company";
 import CompanyConnect from "@/components/CompanyConnect";
-import { badge, CARD } from "@/lib/ui";
+import { badge, PANEL } from "@/lib/ui";
 import { cn } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
@@ -123,12 +123,12 @@ export default async function CompanyPage({ params }: { params: Promise<{ id: st
   return (
     <main className="mx-auto max-w-3xl px-4 py-6 sm:px-6">
       {/* Profil-Header */}
-      <section className={cn(CARD, "overflow-hidden")}>
+      <section className={cn(PANEL, "overflow-hidden")}>
         <div className="h-24 bg-gradient-to-r from-navy-900 via-navy-700 to-brand" />
         <div className="px-6 pb-6">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
             <div className="min-w-0">
-              <span className="-mt-10 flex h-20 w-20 items-center justify-center overflow-hidden rounded-2xl border-4 border-white bg-slate-100 text-xl font-bold text-slate-700 shadow-card">
+              <span className="-mt-10 flex h-20 w-20 items-center justify-center overflow-hidden rounded-2xl border-4 border-white bg-white/10 text-xl font-bold text-white/75 shadow-card">
                 {company.logo_url ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img src={company.logo_url} alt={company.company_name} className="h-full w-full object-cover" />
@@ -137,15 +137,15 @@ export default async function CompanyPage({ params }: { params: Promise<{ id: st
                 )}
               </span>
               <div className="mt-3 flex items-center gap-2">
-                <h1 className="text-2xl font-bold tracking-tight text-slate-900">{company.company_name}</h1>
+                <h1 className="text-2xl font-bold tracking-tight text-white">{company.company_name}</h1>
                 {company.verified && <BadgeCheck className="h-5 w-5 text-accent" />}
               </div>
-              <p className="mt-0.5 text-sm text-slate-500">
+              <p className="mt-0.5 text-sm text-white/55">
                 {ROLE_LABEL[company.role] ?? company.role}
                 {company.city ? ` · ${company.city}` : ""}
                 {company.canton ? ` (${company.canton})` : ""}
               </p>
-              <p className="mt-1 flex items-center gap-1 text-xs text-slate-400">
+              <p className="mt-1 flex items-center gap-1 text-xs text-white/40">
                 <MapPin className="h-3.5 w-3.5" /> {company.uid_number}
               </p>
               {company.verified && (
@@ -157,7 +157,7 @@ export default async function CompanyPage({ params }: { params: Promise<{ id: st
             {isMe ? (
               <Link
                 href="/profile/edit"
-                className="inline-flex shrink-0 items-center gap-1.5 rounded-md bg-brand px-4 py-2 text-sm font-semibold text-navy-900 transition-colors hover:bg-brand-500"
+                className="inline-flex shrink-0 items-center gap-1.5 rounded-md bg-brand px-4 py-2 text-sm font-semibold text-navy-900 transition-colors hover:bg-brand/100"
               >
                 <Pencil className="h-4 w-4" /> Profil bearbeiten
               </Link>
@@ -167,7 +167,7 @@ export default async function CompanyPage({ params }: { params: Promise<{ id: st
           </div>
 
           {(company.about || company.bio) && (
-            <p className="mt-5 whitespace-pre-wrap text-sm leading-relaxed text-slate-600">
+            <p className="mt-5 whitespace-pre-wrap text-sm leading-relaxed text-white/70">
               {company.about || company.bio}
             </p>
           )}
@@ -176,27 +176,27 @@ export default async function CompanyPage({ params }: { params: Promise<{ id: st
 
       {/* Liefer-Profil (nur Lieferanten) */}
       {isSupplier && (
-        <section className={cn(CARD, "mt-4 p-6")}>
-          <h2 className="flex items-center gap-2 text-[15px] font-semibold text-slate-900">
+        <section className={cn(PANEL, "mt-4 p-6")}>
+          <h2 className="flex items-center gap-2 text-[15px] font-semibold text-white">
             <Truck className="h-4 w-4 text-brand" /> Liefer-Profil
           </h2>
           <div className="mt-4 grid grid-cols-1 gap-5 sm:grid-cols-2">
             <div>
-              <div className="mb-1.5 flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+              <div className="mb-1.5 flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-white/40">
                 <Boxes className="h-3.5 w-3.5" /> Materialien
               </div>
               {company.supply_materials?.length ? (
                 <div className="flex flex-wrap gap-1.5">
                   {company.supply_materials.map((m) => (
-                    <span key={m} className="rounded-md border border-slate-200 bg-slate-50 px-2.5 py-1 text-[12px] font-medium text-slate-700">{m}</span>
+                    <span key={m} className="rounded-md border border-white/[0.08] bg-white/[0.03] px-2.5 py-1 text-[12px] font-medium text-white/75">{m}</span>
                   ))}
                 </div>
               ) : (
-                <p className="text-[13px] text-slate-400">Noch nicht angegeben</p>
+                <p className="text-[13px] text-white/40">Noch nicht angegeben</p>
               )}
             </div>
             <div>
-              <div className="mb-1.5 flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+              <div className="mb-1.5 flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-white/40">
                 <MapPin className="h-3.5 w-3.5" /> Liefergebiete
               </div>
               {company.supply_regions?.length ? (
@@ -206,21 +206,21 @@ export default async function CompanyPage({ params }: { params: Promise<{ id: st
                   ))}
                 </div>
               ) : (
-                <p className="text-[13px] text-slate-400">Noch nicht angegeben</p>
+                <p className="text-[13px] text-white/40">Noch nicht angegeben</p>
               )}
             </div>
             <div className="flex items-center gap-2.5">
-              <span className="grid h-9 w-9 place-items-center rounded-md bg-slate-100 text-slate-500"><Ruler className="h-4 w-4" /></span>
+              <span className="grid h-9 w-9 place-items-center rounded-md bg-white/10 text-white/55"><Ruler className="h-4 w-4" /></span>
               <div>
-                <div className="text-[11px] uppercase tracking-wider text-slate-400">Lieferradius</div>
-                <div className="text-sm font-semibold text-slate-900">{company.delivery_radius_km ? `${company.delivery_radius_km} km` : "—"}</div>
+                <div className="text-[11px] uppercase tracking-wider text-white/40">Lieferradius</div>
+                <div className="text-sm font-semibold text-white">{company.delivery_radius_km ? `${company.delivery_radius_km} km` : "—"}</div>
               </div>
             </div>
             <div className="flex items-center gap-2.5">
-              <span className="grid h-9 w-9 place-items-center rounded-md bg-slate-100 text-slate-500"><Gauge className="h-4 w-4" /></span>
+              <span className="grid h-9 w-9 place-items-center rounded-md bg-white/10 text-white/55"><Gauge className="h-4 w-4" /></span>
               <div className="min-w-0">
-                <div className="text-[11px] uppercase tracking-wider text-slate-400">Kapazität</div>
-                <div className="truncate text-sm font-semibold text-slate-900">{company.capacity_note || "—"}</div>
+                <div className="text-[11px] uppercase tracking-wider text-white/40">Kapazität</div>
+                <div className="truncate text-sm font-semibold text-white">{company.capacity_note || "—"}</div>
               </div>
             </div>
           </div>
@@ -229,26 +229,26 @@ export default async function CompanyPage({ params }: { params: Promise<{ id: st
 
       {/* Kontakt */}
       {hasContact ? (
-        <section className={cn(CARD, "mt-4 p-6")}>
-          <h2 className="text-[15px] font-semibold text-slate-900">Kontakt</h2>
+        <section className={cn(PANEL, "mt-4 p-6")}>
+          <h2 className="text-[15px] font-semibold text-white">Kontakt</h2>
           <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
-            {contact?.email && <a href={`mailto:${contact.email}`} className="flex items-center gap-2.5 text-sm text-slate-700 hover:text-brand"><Mail className="h-4 w-4 text-slate-400" /> {contact.email}</a>}
-            {contact?.phone && <a href={`tel:${contact.phone.replace(/\s/g, "")}`} className="flex items-center gap-2.5 text-sm text-slate-700 hover:text-brand"><Phone className="h-4 w-4 text-slate-400" /> {contact.phone}</a>}
-            {contact?.address && <div className="flex items-center gap-2.5 text-sm text-slate-700"><MapPin className="h-4 w-4 text-slate-400" /> {contact.address}</div>}
-            {site && <a href={site} className="flex items-center gap-2.5 text-sm text-slate-700 hover:text-brand"><Globe className="h-4 w-4 text-slate-400" /> {contact?.website}</a>}
+            {contact?.email && <a href={`mailto:${contact.email}`} className="flex items-center gap-2.5 text-sm text-white/75 hover:text-brand"><Mail className="h-4 w-4 text-white/40" /> {contact.email}</a>}
+            {contact?.phone && <a href={`tel:${contact.phone.replace(/\s/g, "")}`} className="flex items-center gap-2.5 text-sm text-white/75 hover:text-brand"><Phone className="h-4 w-4 text-white/40" /> {contact.phone}</a>}
+            {contact?.address && <div className="flex items-center gap-2.5 text-sm text-white/75"><MapPin className="h-4 w-4 text-white/40" /> {contact.address}</div>}
+            {site && <a href={site} className="flex items-center gap-2.5 text-sm text-white/75 hover:text-brand"><Globe className="h-4 w-4 text-white/40" /> {contact?.website}</a>}
           </div>
           {isMe && (
-            <p className="mt-3 border-t border-slate-100 pt-3 text-[12px] text-slate-400">
+            <p className="mt-3 border-t border-white/[0.06] pt-3 text-[12px] text-white/40">
               Diese Angaben sehen nur Firmen, mit denen du verbunden bist.
             </p>
           )}
         </section>
       ) : (
         !isMe && (
-          <section className={cn(CARD, "mt-4 flex items-start gap-2.5 p-5")}>
-            <Lock className="mt-0.5 h-4 w-4 shrink-0 text-slate-400" />
-            <p className="text-[13px] leading-relaxed text-slate-500">
-              <span className="font-semibold text-slate-700">Kontaktdaten sind Verbindungen vorbehalten.</span>{" "}
+          <section className={cn(PANEL, "mt-4 flex items-start gap-2.5 p-5")}>
+            <Lock className="mt-0.5 h-4 w-4 shrink-0 text-white/40" />
+            <p className="text-[13px] leading-relaxed text-white/55">
+              <span className="font-semibold text-white/75">Kontaktdaten sind Verbindungen vorbehalten.</span>{" "}
               Vernetze dich mit {company.company_name}, um E-Mail, Telefon und Adresse zu sehen —
               schreiben kannst du danach direkt hier im Netz.
             </p>
@@ -257,24 +257,24 @@ export default async function CompanyPage({ params }: { params: Promise<{ id: st
       )}
 
       {/* Beiträge */}
-      <h2 className="mb-3 mt-8 text-lg font-bold tracking-tight text-slate-900">Beiträge</h2>
+      <h2 className="mb-3 mt-8 text-lg font-bold tracking-tight text-white">Beiträge</h2>
       {posts.length === 0 ? (
-        <div className="rounded-lg border border-dashed border-slate-200 bg-slate-50 py-10 text-center text-sm text-slate-400">
+        <div className="rounded-lg border border-dashed border-white/[0.08] bg-white/[0.03] py-10 text-center text-sm text-white/40">
           Noch keine Beiträge.
         </div>
       ) : (
         <div className="space-y-4">
           {posts.map((p) => (
-            <article key={p.id} className={cn(CARD, "p-5")}>
+            <article key={p.id} className={cn(PANEL, "p-5")}>
               <div className="flex items-center justify-between">
                 <span className={badge("gold", true)}>{POST_TYPE_LABEL[p.post_type] ?? p.post_type}</span>
-                <span className="text-xs text-slate-400">
+                <span className="text-xs text-white/40">
                   {new Date(p.created_at).toLocaleDateString("de-CH", { day: "2-digit", month: "2-digit", year: "numeric" })}
                 </span>
               </div>
-              {p.title && <h3 className="mt-2 font-semibold text-slate-900">{p.title}</h3>}
-              <p className="mt-1.5 whitespace-pre-wrap text-sm text-slate-600">{p.content}</p>
-              <div className="mt-3 flex items-center gap-4 text-xs text-slate-400">
+              {p.title && <h3 className="mt-2 font-semibold text-white">{p.title}</h3>}
+              <p className="mt-1.5 whitespace-pre-wrap text-sm text-white/70">{p.content}</p>
+              <div className="mt-3 flex items-center gap-4 text-xs text-white/40">
                 <span className="inline-flex items-center gap-1.5"><Heart className="h-4 w-4" /> {p.likes_count}</span>
                 {p.region && <span className="inline-flex items-center gap-1.5"><MapPin className="h-3.5 w-3.5" /> {p.region}</span>}
               </div>

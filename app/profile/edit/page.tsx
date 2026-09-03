@@ -53,7 +53,7 @@ export default async function EditProfilePage() {
     <main className="mx-auto max-w-3xl px-4 py-6 sm:px-6">
       <Link
         href={`/company/${me.id}`}
-        className="mb-4 inline-flex items-center gap-1.5 text-[13px] font-medium text-slate-500 transition-colors hover:text-brand"
+        className="mb-4 inline-flex items-center gap-1.5 text-[13px] font-medium text-white/55 transition-colors hover:text-brand"
       >
         <ArrowLeft className="h-4 w-4" /> Zurück zum Profil
       </Link>
@@ -63,8 +63,8 @@ export default async function EditProfilePage() {
           <UserCog className="h-6 w-6" />
         </span>
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900">Profil bearbeiten</h1>
-          <p className="text-sm text-slate-500">
+          <h1 className="text-2xl font-bold tracking-tight text-white">Profil bearbeiten</h1>
+          <p className="text-sm text-white/55">
             Firmendaten, Standort, Kontakt{company.role === "SUPPLIER" ? " und Liefer-Profil" : ""}.
           </p>
         </div>

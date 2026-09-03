@@ -82,7 +82,7 @@ export default function CompanyConnect({ targetId }: { targetId: string }) {
   if (!ready) return null;
   if (myId === targetId) {
     return (
-      <span className="inline-flex items-center rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm text-slate-500">
+      <span className="inline-flex items-center rounded-lg border border-white/[0.08] bg-[#0B1522] px-4 py-2 text-sm text-white/55">
         Das ist dein Profil
       </span>
     );
@@ -92,7 +92,7 @@ export default function CompanyConnect({ targetId }: { targetId: string }) {
   const messageBtn = (
     <Link
       href={`/messages?to=${targetId}`}
-      className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-900 transition-colors hover:bg-slate-100"
+      className="inline-flex items-center gap-1.5 rounded-lg border border-white/[0.08] bg-[#0B1522] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-white/[0.07]"
     >
       <MessageSquare className="h-4 w-4" />
       Nachricht
@@ -112,7 +112,7 @@ export default function CompanyConnect({ targetId }: { targetId: string }) {
   }
   if (conn?.status === "PENDING" && conn.direction === "outgoing") {
     return (
-      <span className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-500">
+      <span className="inline-flex items-center gap-1.5 rounded-lg border border-white/[0.08] bg-[#0B1522] px-4 py-2 text-sm font-medium text-white/55">
         <Clock className="h-4 w-4" />
         Anfrage gesendet
       </span>

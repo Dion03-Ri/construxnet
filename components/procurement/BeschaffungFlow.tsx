@@ -40,7 +40,7 @@ import {
   type ProcMaterial,
   type ProcCategory,
 } from "@/data/procurement";
-import { CARD, badge } from "@/lib/ui";
+import { PANEL, badge } from "@/lib/ui";
 import { cn } from "@/lib/utils";
 
 function chf(v: number, d = 0) {
@@ -308,28 +308,28 @@ export default function BeschaffungFlow({
   /* ------------------------------ Abschluss ------------------------------ */
   if (done) {
     return (
-      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className={cn(CARD, "p-8 text-center")}>
+      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className={cn(PANEL, "p-8 text-center")}>
         <div className="mx-auto grid h-14 w-14 place-items-center rounded-lg bg-brand/15 text-brand">
           <Check className="h-7 w-7" />
         </div>
-        <h2 className="mt-4 text-xl font-bold text-slate-900">Bedarf eingereicht</h2>
-        <p className="mx-auto mt-1.5 max-w-lg text-sm leading-relaxed text-slate-500">
+        <h2 className="mt-4 text-xl font-bold text-white">Bedarf eingereicht</h2>
+        <p className="mx-auto mt-1.5 max-w-lg text-sm leading-relaxed text-white/55">
           {bundleIds.length === 1
             ? "Deine Position liegt jetzt in einem Bündel"
             : `${bundleIds.length} Positionen liegen jetzt in Bündeln`}
-          . Referenz <span className="font-semibold text-slate-900">{reference}</span>.
+          . Referenz <span className="font-semibold text-white">{reference}</span>.
           Wo für Material und Region schon ein offenes Bündel lief, ist deine
           Menge dazugekommen — sonst ist ein neues entstanden. Unter Smart Pools
           siehst du, wie viel bis zur nächsten Rabattstufe fehlt.
         </p>
         <div className="mt-6 flex flex-wrap justify-center gap-2">
-          <Link href="/pools" className="inline-flex items-center gap-1.5 rounded-md bg-brand px-4 py-2 text-sm font-semibold text-navy-900 transition-colors hover:bg-brand-500">
+          <Link href="/pools" className="inline-flex items-center gap-1.5 rounded-md bg-brand px-4 py-2 text-sm font-semibold text-navy-900 transition-colors hover:bg-brand/100">
             <Layers className="h-4 w-4" /> Zu meinen Smart Pools
           </Link>
-          <Link href="/dashboard" className="inline-flex items-center gap-1.5 rounded-md border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-600 transition-colors hover:bg-slate-50">
+          <Link href="/dashboard" className="inline-flex items-center gap-1.5 rounded-md border border-white/[0.16] px-4 py-2 text-sm font-semibold text-white/70 transition-colors hover:bg-white/[0.05]">
             Zum Dashboard
           </Link>
-          <button type="button" onClick={reset} className="inline-flex items-center gap-1.5 rounded-md border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-600 transition-colors hover:bg-slate-50">
+          <button type="button" onClick={reset} className="inline-flex items-center gap-1.5 rounded-md border border-white/[0.16] px-4 py-2 text-sm font-semibold text-white/70 transition-colors hover:bg-white/[0.05]">
             Weiteren Bedarf melden
           </button>
         </div>
@@ -341,7 +341,7 @@ export default function BeschaffungFlow({
     <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_300px]">
       <div className="min-w-0">
         {/* Stepper */}
-        <div className={cn(CARD, "mb-4 p-4")}>
+        <div className={cn(PANEL, "mb-4 p-4")}>
           <ol className="flex items-center">
             {STEPS.map((label, i) => {
               const state = i < step ? "done" : i === step ? "active" : "todo";
@@ -353,12 +353,12 @@ export default function BeschaffungFlow({
                         "grid h-7 w-7 shrink-0 place-items-center rounded-md text-[13px] font-bold",
                         state === "done" && "bg-navy-900 text-brand",
                         state === "active" && "bg-brand text-navy-900",
-                        state === "todo" && "border border-slate-300 bg-white text-slate-400",
+                        state === "todo" && "border border-white/[0.16] bg-[#0B1522] text-white/40",
                       )}
                     >
                       {state === "done" ? <Check className="h-4 w-4" /> : i + 1}
                     </span>
-                    <span className={cn("hidden text-[13px] font-medium sm:block", state === "todo" ? "text-slate-400" : "text-slate-900")}>
+                    <span className={cn("hidden text-[13px] font-medium sm:block", state === "todo" ? "text-white/40" : "text-white")}>
                       {label}
                     </span>
                   </div>
@@ -397,24 +397,24 @@ export default function BeschaffungFlow({
           </div>
         )}
 
-        <div className={cn(CARD, "p-5 sm:p-6")}>
+        <div className={cn(PANEL, "p-5 sm:p-6")}>
           <AnimatePresence mode="wait">
             <motion.div key={step} initial={{ opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -12 }} transition={{ duration: 0.18 }}>
               {/* ---------------------- Step 1: Materialien ---------------------- */}
               {step === 0 && (
                 <div>
-                  <h2 className="text-lg font-bold text-slate-900">Welche Materialien brauchst du?</h2>
-                  <p className="mt-0.5 text-sm text-slate-500">
+                  <h2 className="text-lg font-bold text-white">Welche Materialien brauchst du?</h2>
+                  <p className="mt-0.5 text-sm text-white/55">
                     Mehrfachauswahl möglich — jede Position wird später ihrem eigenen Pool zugeordnet.
                   </p>
 
                   <div className="relative mt-4">
-                    <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                    <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-white/40" />
                     <input
                       value={matQuery}
                       onChange={(e) => setMatQuery(e.target.value)}
                       placeholder="Material oder Nummer suchen (z. B. Beton, OB-BET-001 …)"
-                      className="h-10 w-full rounded-md border border-slate-300 bg-slate-50 pl-9 pr-3 text-sm text-slate-900 placeholder:text-slate-400 outline-none focus:border-brand focus:bg-white focus:ring-1 focus:ring-brand/30"
+                      className="h-10 w-full rounded-md border border-white/[0.16] bg-white/[0.03] pl-9 pr-3 text-sm text-white placeholder:text-white/40 outline-none focus:border-brand focus:bg-[#0B1522] focus:ring-1 focus:ring-brand/30"
                     />
                   </div>
 
@@ -422,7 +422,7 @@ export default function BeschaffungFlow({
                     <button
                       type="button"
                       onClick={() => setMatCat("ALL")}
-                      className={cn("rounded-md px-2.5 py-1 text-[12px] font-medium transition-colors", matCat === "ALL" ? "bg-navy-900 text-white" : "border border-slate-200 bg-white text-slate-500 hover:text-slate-900")}
+                      className={cn("rounded-md px-2.5 py-1 text-[12px] font-medium transition-colors", matCat === "ALL" ? "bg-navy-900 text-white" : "border border-white/[0.08] bg-[#0B1522] text-white/55 hover:text-white")}
                     >
                       Alle
                     </button>
@@ -431,7 +431,7 @@ export default function BeschaffungFlow({
                         key={c}
                         type="button"
                         onClick={() => setMatCat(c)}
-                        className={cn("rounded-md px-2.5 py-1 text-[12px] font-medium transition-colors", matCat === c ? "bg-navy-900 text-white" : "border border-slate-200 bg-white text-slate-500 hover:text-slate-900")}
+                        className={cn("rounded-md px-2.5 py-1 text-[12px] font-medium transition-colors", matCat === c ? "bg-navy-900 text-white" : "border border-white/[0.08] bg-[#0B1522] text-white/55 hover:text-white")}
                       >
                         {c}
                       </button>
@@ -448,16 +448,16 @@ export default function BeschaffungFlow({
                           onClick={() => toggleMaterial(m)}
                           className={cn(
                             "flex items-start gap-3 rounded-lg border p-3 text-left transition-colors",
-                            active ? "border-brand bg-brand/[0.05] ring-1 ring-brand/30" : "border-slate-200 hover:border-slate-300",
+                            active ? "border-brand bg-brand/[0.05] ring-1 ring-brand/30" : "border-white/[0.08] hover:border-white/[0.16]",
                           )}
                         >
-                          <span className={cn("mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded border", active ? "border-brand bg-brand text-navy-900" : "border-slate-300 bg-white")}>
+                          <span className={cn("mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded border", active ? "border-brand bg-brand text-navy-900" : "border-white/[0.16] bg-[#0B1522]")}>
                             {active && <Check className="h-3.5 w-3.5" />}
                           </span>
                           <span className="min-w-0">
-                            <span className="block text-[14px] font-semibold text-slate-900">{m.label}</span>
-                            <span className="mt-0.5 block truncate text-[11px] text-slate-400">{m.sia}</span>
-                            <span className="mt-1 inline-block text-[11px] text-slate-500">
+                            <span className="block text-[14px] font-semibold text-white">{m.label}</span>
+                            <span className="mt-0.5 block truncate text-[11px] text-white/40">{m.sia}</span>
+                            <span className="mt-1 inline-block text-[11px] text-white/55">
                               KBOB-Ref CHF {chf(m.kbobPrice)}/{m.unit}
                             </span>
                           </span>
@@ -468,7 +468,7 @@ export default function BeschaffungFlow({
                       <div className="col-span-full py-6 text-center">
                         {searchSuggestions.length > 0 ? (
                           <>
-                            <p className="text-[13px] text-slate-500">
+                            <p className="text-[13px] text-white/55">
                               Kein wörtlicher Treffer. Meinst du eines davon?
                             </p>
                             <div className="mt-2.5 flex flex-wrap justify-center gap-1.5">
@@ -477,18 +477,18 @@ export default function BeschaffungFlow({
                                   key={c.material.key}
                                   type="button"
                                   onClick={() => acceptSuggestion(c.material)}
-                                  className="rounded-md border border-brand/30 bg-brand/[0.05] px-3 py-1.5 text-[12.5px] font-semibold text-slate-800 transition-colors hover:border-brand hover:bg-brand/10"
+                                  className="rounded-md border border-brand/30 bg-brand/[0.05] px-3 py-1.5 text-[12.5px] font-semibold text-white/90 transition-colors hover:border-brand hover:bg-brand/10"
                                 >
                                   {c.material.label}
                                 </button>
                               ))}
                             </div>
-                            <p className="mt-2 text-[11.5px] text-slate-400">
+                            <p className="mt-2 text-[11.5px] text-white/40">
                               Sonst unten als „Weiteres Material" erfassen.
                             </p>
                           </>
                         ) : (
-                          <p className="text-[13px] text-slate-400">
+                          <p className="text-[13px] text-white/40">
                             Kein Katalog-Treffer — erfasse es unten als „Weiteres Material".
                           </p>
                         )}
@@ -499,30 +499,30 @@ export default function BeschaffungFlow({
                   <button
                     type="button"
                     onClick={() => setModalOpen(true)}
-                    className="mt-2 flex w-full items-center gap-3 rounded-lg border border-dashed border-slate-300 p-3 text-left transition-colors hover:border-brand hover:bg-brand/[0.03]"
+                    className="mt-2 flex w-full items-center gap-3 rounded-lg border border-dashed border-white/[0.16] p-3 text-left transition-colors hover:border-brand hover:bg-brand/[0.03]"
                   >
-                    <span className="grid h-8 w-8 shrink-0 place-items-center rounded-md bg-slate-100 text-slate-500">
+                    <span className="grid h-8 w-8 shrink-0 place-items-center rounded-md bg-white/10 text-white/55">
                       <PenLine className="h-4 w-4" />
                     </span>
-                    <span className="text-[14px] font-semibold text-slate-900">
+                    <span className="text-[14px] font-semibold text-white">
                       Weiteres Material erfassen
-                      <span className="ml-1 text-[12px] font-normal text-slate-400">— nicht im Katalog? Hier hinzufügen.</span>
+                      <span className="ml-1 text-[12px] font-normal text-white/40">— nicht im Katalog? Hier hinzufügen.</span>
                     </span>
-                    <Plus className="ml-auto h-4 w-4 shrink-0 text-slate-400" />
+                    <Plus className="ml-auto h-4 w-4 shrink-0 text-white/40" />
                   </button>
 
                   {/* Belege */}
                   <div className="mt-5">
-                    <label className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+                    <label className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-white/40">
                       Pläne, Lieferscheine oder Fotos (optional)
                     </label>
                     {files.length > 0 && (
                       <ul className="mb-2 space-y-1.5">
                         {files.map((f, i) => (
-                          <li key={`${f}-${i}`} className="flex items-center gap-2 rounded-md border border-slate-200 bg-slate-50 px-3 py-2 text-sm">
+                          <li key={`${f}-${i}`} className="flex items-center gap-2 rounded-md border border-white/[0.08] bg-white/[0.03] px-3 py-2 text-sm">
                             <FileText className="h-4 w-4 shrink-0 text-brand" />
-                            <span className="min-w-0 flex-1 truncate text-slate-700">{f}</span>
-                            <button type="button" onClick={() => setFiles((prev) => prev.filter((_, j) => j !== i))} className="rounded p-1 text-slate-400 hover:bg-slate-200">
+                            <span className="min-w-0 flex-1 truncate text-white/75">{f}</span>
+                            <button type="button" onClick={() => setFiles((prev) => prev.filter((_, j) => j !== i))} className="rounded p-1 text-white/40 hover:bg-slate-200">
                               <X className="h-4 w-4" />
                             </button>
                           </li>
@@ -532,12 +532,12 @@ export default function BeschaffungFlow({
                     <button
                       type="button"
                       onClick={() => fileRef.current?.click()}
-                      className="flex w-full items-center justify-center gap-2 rounded-lg border border-dashed border-slate-300 bg-slate-50 px-3 py-3.5 text-sm text-slate-500 transition-colors hover:border-brand hover:text-brand"
+                      className="flex w-full items-center justify-center gap-2 rounded-lg border border-dashed border-white/[0.16] bg-white/[0.03] px-3 py-3.5 text-sm text-white/55 transition-colors hover:border-brand hover:text-brand"
                     >
                       <Upload className="h-4 w-4" /> Datei hinzufügen
                     </button>
                     <input ref={fileRef} type="file" multiple accept="image/*,application/pdf" className="hidden" onChange={onFile} />
-                    <p className="mt-1.5 text-[11.5px] text-slate-400">
+                    <p className="mt-1.5 text-[11.5px] text-white/40">
                       Die Dateien werden dem Bedarf angehängt. Automatisches Auslesen von Material und Menge ist in Arbeit.
                     </p>
                   </div>
@@ -547,36 +547,36 @@ export default function BeschaffungFlow({
               {/* ------------------ Step 2: Mengen & Lieferung ------------------ */}
               {step === 1 && (
                 <div>
-                  <h2 className="text-lg font-bold text-slate-900">Mengen, Lieferung & Standort</h2>
-                  <p className="mt-0.5 text-sm text-slate-500">Gib je Material die benötigte Menge an.</p>
+                  <h2 className="text-lg font-bold text-white">Mengen, Lieferung & Standort</h2>
+                  <p className="mt-0.5 text-sm text-white/55">Gib je Material die benötigte Menge an.</p>
 
                   <div className="mt-4 space-y-2">
                     {positions.map((p) => (
-                      <div key={p.key} className="rounded-lg border border-slate-200 p-3">
+                      <div key={p.key} className="rounded-lg border border-white/[0.08] p-3">
                         <div className="flex items-start justify-between gap-3">
                           <div className="min-w-0">
-                            <div className="text-[14px] font-semibold text-slate-900">{p.label}</div>
-                            <div className="truncate text-[11px] text-slate-400">{p.sia}</div>
+                            <div className="text-[14px] font-semibold text-white">{p.label}</div>
+                            <div className="truncate text-[11px] text-white/40">{p.sia}</div>
                           </div>
-                          <div className="flex w-[170px] shrink-0 items-center rounded-md border border-slate-300 bg-slate-50 focus-within:border-brand focus-within:bg-white focus-within:ring-1 focus-within:ring-brand/30">
+                          <div className="flex w-[170px] shrink-0 items-center rounded-md border border-white/[0.16] bg-white/[0.03] focus-within:border-brand focus-within:bg-[#0B1522] focus-within:ring-1 focus-within:ring-brand/30">
                             <input
                               value={p.qty}
                               onChange={(e) => updatePosition(p.key, { qty: e.target.value.replace(/[^0-9.]/g, "") })}
                               inputMode="decimal"
                               placeholder="Menge"
-                              className="min-w-0 flex-1 bg-transparent px-3 py-2 text-sm text-slate-900 outline-none"
+                              className="min-w-0 flex-1 bg-transparent px-3 py-2 text-sm text-white outline-none"
                             />
-                            <span className="px-2.5 text-sm font-medium text-slate-400">{p.unit}</span>
+                            <span className="px-2.5 text-sm font-medium text-white/40">{p.unit}</span>
                           </div>
                         </div>
                         <div className="mt-2 flex items-center gap-2">
-                          <label className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">SIA</label>
+                          <label className="text-[11px] font-semibold uppercase tracking-wider text-white/40">SIA</label>
                           <input
                             value={p.sia}
                             onChange={(e) => updatePosition(p.key, { sia: e.target.value })}
-                            className="min-w-0 flex-1 rounded-md border border-slate-200 bg-slate-50 px-2.5 py-1.5 text-[12.5px] text-slate-700 outline-none focus:border-brand focus:bg-white"
+                            className="min-w-0 flex-1 rounded-md border border-white/[0.08] bg-white/[0.03] px-2.5 py-1.5 text-[12.5px] text-white/75 outline-none focus:border-brand focus:bg-[#0B1522]"
                           />
-                          <button type="button" onClick={() => removePosition(p.key)} className="rounded-md p-1.5 text-slate-300 transition-colors hover:bg-rose-50 hover:text-rose-500">
+                          <button type="button" onClick={() => removePosition(p.key)} className="rounded-md p-1.5 text-white/25 transition-colors hover:bg-rose-500/10 hover:text-rose-500">
                             <Trash2 className="h-4 w-4" />
                           </button>
                         </div>
@@ -584,37 +584,37 @@ export default function BeschaffungFlow({
                     ))}
                   </div>
 
-                  <div className="mt-5 grid grid-cols-1 gap-4 border-t border-slate-100 pt-5 sm:grid-cols-3">
+                  <div className="mt-5 grid grid-cols-1 gap-4 border-t border-white/[0.06] pt-5 sm:grid-cols-3">
                     <div>
-                      <label className="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+                      <label className="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-white/40">
                         <CalendarClock className="mr-1 inline h-3.5 w-3.5" /> Lieferzeitraum
                       </label>
-                      <select value={deliveryWindow} onChange={(e) => setDeliveryWindow(e.target.value)} className="w-full rounded-md border border-slate-300 bg-slate-50 px-3 py-2 text-sm text-slate-900 outline-none focus:border-brand focus:bg-white">
+                      <select value={deliveryWindow} onChange={(e) => setDeliveryWindow(e.target.value)} className="w-full rounded-md border border-white/[0.16] bg-white/[0.03] px-3 py-2 text-sm text-white outline-none focus:border-brand focus:bg-[#0B1522]">
                         {DELIVERY_WINDOWS.map((w) => <option key={w} value={w}>{w}</option>)}
                       </select>
                     </div>
                     <div>
-                      <label className="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+                      <label className="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-white/40">
                         <MapPin className="mr-1 inline h-3.5 w-3.5" /> Region
                       </label>
-                      <select value={region} onChange={(e) => setRegion(e.target.value)} className="w-full rounded-md border border-slate-300 bg-slate-50 px-3 py-2 text-sm text-slate-900 outline-none focus:border-brand focus:bg-white">
+                      <select value={region} onChange={(e) => setRegion(e.target.value)} className="w-full rounded-md border border-white/[0.16] bg-white/[0.03] px-3 py-2 text-sm text-white outline-none focus:border-brand focus:bg-[#0B1522]">
                         {PROC_REGIONS.map((r) => <option key={r} value={r}>{r}</option>)}
                       </select>
                     </div>
                     <div>
-                      <label className="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-slate-400">Baustelle (optional)</label>
+                      <label className="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-white/40">Baustelle (optional)</label>
                       {projects.length > 0 ? (
-                        <select value={projectId} onChange={(e) => setProjectId(e.target.value)} className="w-full rounded-md border border-slate-300 bg-slate-50 px-3 py-2 text-sm text-slate-900 outline-none focus:border-brand focus:bg-white">
+                        <select value={projectId} onChange={(e) => setProjectId(e.target.value)} className="w-full rounded-md border border-white/[0.16] bg-white/[0.03] px-3 py-2 text-sm text-white outline-none focus:border-brand focus:bg-[#0B1522]">
                           <option value="">Keiner Baustelle zuordnen</option>
                           {projects.map((p) => (
                             <option key={p.id} value={p.id}>{projectLabel(p)}</option>
                           ))}
                         </select>
                       ) : (
-                        <input value={site} onChange={(e) => setSite(e.target.value)} placeholder={projectsLoading ? "Wird geladen …" : "z. B. Überbauung Bern-West"} className="w-full rounded-md border border-slate-300 bg-slate-50 px-3 py-2 text-sm text-slate-900 outline-none focus:border-brand focus:bg-white" />
+                        <input value={site} onChange={(e) => setSite(e.target.value)} placeholder={projectsLoading ? "Wird geladen …" : "z. B. Überbauung Bern-West"} className="w-full rounded-md border border-white/[0.16] bg-white/[0.03] px-3 py-2 text-sm text-white outline-none focus:border-brand focus:bg-[#0B1522]" />
                       )}
                       {projects.length === 0 && !projectsLoading && (
-                        <p className="mt-1 text-[11.5px] text-slate-400">
+                        <p className="mt-1 text-[11.5px] text-white/40">
                           Baustellen legst du im{" "}
                           <Link href="/dashboard" className="font-semibold text-brand hover:underline">Dashboard unter „Projekte"</Link>{" "}
                           an — dann kannst du hier direkt auswählen.
@@ -628,25 +628,25 @@ export default function BeschaffungFlow({
               {/* ---------------------- Step 3: Smart Pool ---------------------- */}
               {step === 2 && (
                 <div>
-                  <h2 className="text-lg font-bold text-slate-900">Smart Pool aktivieren?</h2>
-                  <p className="mt-0.5 text-sm text-slate-500">Bündeln ist ein Zusatz — kein Pflichtschritt.</p>
+                  <h2 className="text-lg font-bold text-white">Smart Pool aktivieren?</h2>
+                  <p className="mt-0.5 text-sm text-white/55">Bündeln ist ein Zusatz — kein Pflichtschritt.</p>
 
                   <button
                     type="button"
                     onClick={() => setPool((v) => !v)}
                     className={cn(
                       "mt-4 flex w-full items-start gap-3 rounded-lg border p-4 text-left transition-colors",
-                      pool ? "border-brand bg-brand/[0.05] ring-1 ring-brand/30" : "border-slate-200 hover:border-slate-300",
+                      pool ? "border-brand bg-brand/[0.05] ring-1 ring-brand/30" : "border-white/[0.08] hover:border-white/[0.16]",
                     )}
                   >
-                    <span className={cn("mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-md border", pool ? "border-brand bg-brand text-navy-900" : "border-slate-300 bg-white")}>
+                    <span className={cn("mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-md border", pool ? "border-brand bg-brand text-navy-900" : "border-white/[0.16] bg-[#0B1522]")}>
                       {pool && <Check className="h-4 w-4" />}
                     </span>
                     <span>
-                      <span className="flex items-center gap-2 text-[15px] font-semibold text-slate-900">
+                      <span className="flex items-center gap-2 text-[15px] font-semibold text-white">
                         <Layers className="h-4 w-4 text-brand" /> Bedarf bündeln
                       </span>
-                      <span className="mt-1 block text-[13px] leading-relaxed text-slate-500">
+                      <span className="mt-1 block text-[13px] leading-relaxed text-white/55">
                         Jede Position wird mit gleichen Bedarfen deiner Region zu einem grösseren Volumen
                         zusammengelegt. Die Baustoffwerke geben darauf verdeckte Angebote (Sealed-Bid) ab —
                         das beste Angebot gegenüber dem KBOB-Referenzpreis erhält den Zuschlag. Je grösser
@@ -658,22 +658,22 @@ export default function BeschaffungFlow({
                   {/* Erwarteter Vorteil je Position */}
                   {pool && (
                     <div className="mt-4 space-y-2">
-                      <div className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+                      <div className="text-[11px] font-semibold uppercase tracking-wider text-white/40">
                         Erwarteter Mindestvorteil je Position
                       </div>
                       {lines.map((l) => (
-                        <div key={l.pos.key} className="flex items-center justify-between gap-3 rounded-lg border border-slate-200 px-3.5 py-2.5">
+                        <div key={l.pos.key} className="flex items-center justify-between gap-3 rounded-lg border border-white/[0.08] px-3.5 py-2.5">
                           <div className="min-w-0">
-                            <div className="truncate text-[13.5px] font-semibold text-slate-900">{l.pos.label}</div>
-                            <div className="text-[11px] text-slate-400">{chf(l.qty)} {l.pos.unit} · Stufe {l.tier.tier}</div>
+                            <div className="truncate text-[13.5px] font-semibold text-white">{l.pos.label}</div>
+                            <div className="text-[11px] text-white/40">{chf(l.qty)} {l.pos.unit} · Stufe {l.tier.tier}</div>
                           </div>
                           <div className="text-right">
                             <div className="text-[15px] font-bold text-brand">{l.discount} %</div>
-                            <div className="text-[11px] text-slate-400">mind. CHF {chf(l.savings)}</div>
+                            <div className="text-[11px] text-white/40">mind. CHF {chf(l.savings)}</div>
                           </div>
                         </div>
                       ))}
-                      <p className="flex items-start gap-2 pt-1 text-[11.5px] leading-relaxed text-slate-400">
+                      <p className="flex items-start gap-2 pt-1 text-[11.5px] leading-relaxed text-white/40">
                         <Gavel className="mt-0.5 h-3.5 w-3.5 shrink-0 text-brand" />
                         Garantierter Mindestwert — das beste Sealed-Bid-Angebot kann darüber liegen. Die
                         Rabattstufen werden aktuell überarbeitet.
@@ -686,33 +686,33 @@ export default function BeschaffungFlow({
               {/* ----------------------- Step 4: Übersicht ---------------------- */}
               {step === 3 && (
                 <div>
-                  <h2 className="text-lg font-bold text-slate-900">Übersicht & Absenden</h2>
-                  <p className="mt-0.5 text-sm text-slate-500">Prüfe deine Angaben und melde den Bedarf.</p>
+                  <h2 className="text-lg font-bold text-white">Übersicht & Absenden</h2>
+                  <p className="mt-0.5 text-sm text-white/55">Prüfe deine Angaben und melde den Bedarf.</p>
 
-                  <div className="mt-4 overflow-x-auto rounded-lg border border-slate-200">
+                  <div className="mt-4 overflow-x-auto rounded-lg border border-white/[0.08]">
                     <table className="w-full min-w-[340px] text-left text-[13px]">
-                      <thead className="bg-slate-50">
-                        <tr className="text-[11px] uppercase tracking-wider text-slate-400">
+                      <thead className="bg-white/[0.03]">
+                        <tr className="text-[11px] uppercase tracking-wider text-white/40">
                           <th className="px-3.5 py-2 font-medium">Material</th>
                           <th className="px-2 py-2 font-medium">Menge</th>
                           <th className="px-2 py-2 text-right font-medium">KBOB</th>
                           {pool && <th className="px-3.5 py-2 text-right font-medium">Mindestvorteil</th>}
                         </tr>
                       </thead>
-                      <tbody className="divide-y divide-slate-100">
+                      <tbody className="divide-y divide-white/[0.06]">
                         {lines.map((l) => (
                           <tr key={l.pos.key}>
                             <td className="px-3.5 py-2.5">
-                              <div className="font-semibold text-slate-900">{l.pos.label}</div>
+                              <div className="font-semibold text-white">{l.pos.label}</div>
                               <div className="font-mono text-[10.5px] tracking-tight text-brand-700">{l.pos.id}</div>
-                              <div className="truncate text-[11px] text-slate-400">{l.pos.sia}</div>
+                              <div className="truncate text-[11px] text-white/40">{l.pos.sia}</div>
                             </td>
-                            <td className="px-2 py-2.5 tabular-nums text-slate-600">{chf(l.qty)} {l.pos.unit}</td>
-                            <td className="px-2 py-2.5 text-right tabular-nums text-slate-500">CHF {chf(l.pos.kbobPrice)}</td>
+                            <td className="px-2 py-2.5 tabular-nums text-white/70">{chf(l.qty)} {l.pos.unit}</td>
+                            <td className="px-2 py-2.5 text-right tabular-nums text-white/55">CHF {chf(l.pos.kbobPrice)}</td>
                             {pool && (
                               <td className="px-3.5 py-2.5 text-right">
                                 <span className="font-semibold text-brand">{l.discount} %</span>
-                                <div className="text-[11px] text-slate-400">CHF {chf(l.savings)}</div>
+                                <div className="text-[11px] text-white/40">CHF {chf(l.savings)}</div>
                               </td>
                             )}
                           </tr>
@@ -721,7 +721,7 @@ export default function BeschaffungFlow({
                     </table>
                   </div>
 
-                  <dl className="mt-3 divide-y divide-slate-100 rounded-lg border border-slate-200">
+                  <dl className="mt-3 divide-y divide-white/[0.06] rounded-lg border border-white/[0.08]">
                     {[
                       ["Lieferzeitraum", deliveryWindow],
                       ["Region", region],
@@ -729,12 +729,12 @@ export default function BeschaffungFlow({
                       ["Belege", files.length ? files.join(", ") : "—"],
                     ].map(([k, v]) => (
                       <div key={k} className="flex items-start justify-between gap-4 px-4 py-2.5 text-sm">
-                        <dt className="text-slate-500">{k}</dt>
-                        <dd className="text-right font-medium text-slate-900">{v}</dd>
+                        <dt className="text-white/55">{k}</dt>
+                        <dd className="text-right font-medium text-white">{v}</dd>
                       </div>
                     ))}
                     <div className="flex items-center justify-between gap-4 px-4 py-2.5 text-sm">
-                      <dt className="text-slate-500">Bündelung</dt>
+                      <dt className="text-white/55">Bündelung</dt>
                       <dd>
                         {pool
                           ? <span className={badge("gold", true)}><Layers className="h-3 w-3" /> aktiviert</span>
@@ -762,20 +762,20 @@ export default function BeschaffungFlow({
           </AnimatePresence>
 
           {/* Nav */}
-          <div className="mt-6 flex items-center justify-between border-t border-slate-100 pt-4">
-            <button type="button" onClick={back} disabled={step === 0} className="inline-flex items-center gap-1.5 rounded-md px-3 py-2 text-sm font-semibold text-slate-500 transition-colors hover:bg-slate-100 disabled:opacity-40">
+          <div className="mt-6 flex items-center justify-between border-t border-white/[0.06] pt-4">
+            <button type="button" onClick={back} disabled={step === 0} className="inline-flex items-center gap-1.5 rounded-md px-3 py-2 text-sm font-semibold text-white/55 transition-colors hover:bg-white/[0.07] disabled:opacity-40">
               <ChevronLeft className="h-4 w-4" /> Zurück
             </button>
             <div className="flex items-center gap-3">
               {step === 1 && totals.filled < positions.length && (
-                <span className="text-[12px] text-slate-400">Menge bei allen Positionen nötig</span>
+                <span className="text-[12px] text-white/40">Menge bei allen Positionen nötig</span>
               )}
               {submitError && (
-                <span className="max-w-xs text-right text-[12px] font-medium text-rose-600">
+                <span className="max-w-xs text-right text-[12px] font-medium text-rose-300">
                   {submitError}
                 </span>
               )}
-              <button type="button" onClick={next} disabled={!canNext || submitting} className="inline-flex items-center gap-1.5 rounded-md bg-brand px-5 py-2 text-sm font-semibold text-navy-900 transition-colors hover:bg-brand-500 disabled:cursor-not-allowed disabled:opacity-50">
+              <button type="button" onClick={next} disabled={!canNext || submitting} className="inline-flex items-center gap-1.5 rounded-md bg-brand px-5 py-2 text-sm font-semibold text-navy-900 transition-colors hover:bg-brand/100 disabled:cursor-not-allowed disabled:opacity-50">
                 {step === STEPS.length - 1 ? (
                   submitting ? (
                     <><Loader2 className="h-4 w-4 animate-spin" /> Wird eingereicht …</>
@@ -794,8 +794,8 @@ export default function BeschaffungFlow({
       {/* Rechte Info-Rail */}
       <aside className="hidden lg:block">
         <div className="sticky top-[72px] space-y-4">
-          <div className={cn(CARD, "p-4")}>
-            <h3 className="flex items-center gap-1.5 text-[13px] font-semibold text-slate-900">
+          <div className={cn(PANEL, "p-4")}>
+            <h3 className="flex items-center gap-1.5 text-[13px] font-semibold text-white">
               <ShieldCheck className="h-4 w-4 text-brand" /> So läuft&apos;s ab
             </h3>
             <ol className="mt-3 space-y-3">
@@ -805,8 +805,8 @@ export default function BeschaffungFlow({
                 "Optional bündeln — je Material ein eigener Pool",
                 "Sealed-Bid der Werke, Zuschlag, SIA-118-Vertrag",
               ].map((t, i) => (
-                <li key={t} className="flex gap-2.5 text-[13px] text-slate-600">
-                  <span className="grid h-5 w-5 shrink-0 place-items-center rounded bg-slate-100 text-[11px] font-bold text-slate-500">{i + 1}</span>
+                <li key={t} className="flex gap-2.5 text-[13px] text-white/70">
+                  <span className="grid h-5 w-5 shrink-0 place-items-center rounded bg-white/10 text-[11px] font-bold text-white/55">{i + 1}</span>
                   {t}
                 </li>
               ))}
@@ -814,20 +814,20 @@ export default function BeschaffungFlow({
           </div>
 
           {totals.filled > 0 && (
-            <div className={cn(CARD, "p-4")}>
-              <div className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">Live-Kalkulation</div>
+            <div className={cn(PANEL, "p-4")}>
+              <div className="text-[11px] font-semibold uppercase tracking-wider text-white/40">Live-Kalkulation</div>
               <div className="mt-2 space-y-1.5 text-sm">
                 <Row k="Positionen" v={String(positions.length)} />
                 <Row k="Bündelung" v={pool ? "aktiv" : "—"} />
-                <div className="my-1 border-t border-slate-100" />
+                <div className="my-1 border-t border-white/[0.06]" />
                 <Row k="Bestellwert" v={`CHF ${chf(totals.cost)}`} bold />
                 <Row k="Mindestvorteil" v={`CHF ${chf(totals.savings)}`} accent />
               </div>
             </div>
           )}
 
-          <div className={cn(CARD, "p-4")}>
-            <p className="text-[13px] leading-relaxed text-slate-600">
+          <div className={cn(PANEL, "p-4")}>
+            <p className="text-[13px] leading-relaxed text-white/70">
               Schon Mitglieder in deiner Region?{" "}
               <Link href="/network" className="font-semibold text-brand hover:underline">Netzwerk ansehen</Link> und direkt verhandeln.
             </p>
@@ -916,36 +916,36 @@ function CustomMaterialModal({
         initial={{ opacity: 0, scale: 0.97, y: 8 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         transition={{ duration: 0.16 }}
-        className="relative w-full max-w-lg overflow-hidden rounded-xl border border-slate-200 bg-white shadow-2xl"
+        className="relative w-full max-w-lg overflow-hidden rounded-xl border border-white/[0.08] bg-[#0B1522] shadow-2xl"
       >
-        <div className="flex items-center justify-between border-b border-slate-200 px-5 py-3.5">
-          <h3 className="flex items-center gap-2 text-[15px] font-bold text-slate-900">
+        <div className="flex items-center justify-between border-b border-white/[0.08] px-5 py-3.5">
+          <h3 className="flex items-center gap-2 text-[15px] font-bold text-white">
             <PenLine className="h-4 w-4 text-brand" /> Weiteres Material erfassen
           </h3>
-          <button type="button" onClick={onClose} className="rounded-md p-1.5 text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-700">
+          <button type="button" onClick={onClose} className="rounded-md p-1.5 text-white/40 transition-colors hover:bg-white/[0.07] hover:text-white/75">
             <X className="h-4 w-4" />
           </button>
         </div>
 
         <div className="space-y-3.5 px-5 py-4">
           <div>
-            <label className="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-slate-400">Bezeichnung *</label>
+            <label className="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-white/40">Bezeichnung *</label>
             <input
               value={label}
               onChange={(e) => setLabel(e.target.value)}
               autoFocus
               placeholder="z. B. Faserbeton, Naturstein, Spezialmörtel …"
-              className="w-full rounded-md border border-slate-300 bg-slate-50 px-3 py-2 text-sm text-slate-900 outline-none focus:border-brand focus:bg-white focus:ring-1 focus:ring-brand/30"
+              className="w-full rounded-md border border-white/[0.16] bg-white/[0.03] px-3 py-2 text-sm text-white outline-none focus:border-brand focus:bg-[#0B1522] focus:ring-1 focus:ring-brand/30"
             />
             {resolving && label.trim().length >= 3 && (
-              <p className="mt-2 flex items-center gap-1.5 text-[11.5px] text-slate-400">
+              <p className="mt-2 flex items-center gap-1.5 text-[11.5px] text-white/40">
                 <Loader2 className="h-3 w-3 animate-spin" /> Katalog wird abgeglichen …
               </p>
             )}
 
             {!resolving && candidates.length > 0 && (
               <div className="mt-2 rounded-md border border-brand/25 bg-brand/[0.05] p-3">
-                <div className="text-[11.5px] font-semibold text-slate-700">
+                <div className="text-[11.5px] font-semibold text-white/75">
                   {fromAlias
                     ? "Das wurde schon einmal so zugeordnet:"
                     : certain
@@ -958,13 +958,13 @@ function CustomMaterialModal({
                       <button
                         type="button"
                         onClick={() => useExisting(c.material)}
-                        className="flex w-full items-center gap-2 rounded-md border border-transparent bg-white/70 px-2.5 py-1.5 text-left transition-colors hover:border-brand/40 hover:bg-white"
+                        className="flex w-full items-center gap-2 rounded-md border border-transparent bg-white/[0.04] px-2.5 py-1.5 text-left transition-colors hover:border-brand/40 hover:bg-[#0B1522]"
                       >
                         <span className="min-w-0 flex-1">
-                          <span className="block truncate text-[13px] font-semibold text-slate-900">
+                          <span className="block truncate text-[13px] font-semibold text-white">
                             {c.material.label}
                           </span>
-                          <span className="block truncate text-[11px] text-slate-400">
+                          <span className="block truncate text-[11px] text-white/40">
                             {c.reason}
                           </span>
                         </span>
@@ -975,7 +975,7 @@ function CustomMaterialModal({
                     </li>
                   ))}
                 </ul>
-                <p className="mt-2 text-[11px] leading-relaxed text-slate-500">
+                <p className="mt-2 text-[11px] leading-relaxed text-white/55">
                   Dasselbe Material unter zwei Namen landet in zwei getrennten
                   Bündeln — dann erreicht keines die Rabattstufe. Nur wirklich
                   Neues neu erfassen.
@@ -986,25 +986,25 @@ function CustomMaterialModal({
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-slate-400">Einheit *</label>
-              <input value={unit} onChange={(e) => setUnit(e.target.value)} placeholder="m³, t, m², Stk" className="w-full rounded-md border border-slate-300 bg-slate-50 px-3 py-2 text-sm text-slate-900 outline-none focus:border-brand focus:bg-white" />
+              <label className="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-white/40">Einheit *</label>
+              <input value={unit} onChange={(e) => setUnit(e.target.value)} placeholder="m³, t, m², Stk" className="w-full rounded-md border border-white/[0.16] bg-white/[0.03] px-3 py-2 text-sm text-white outline-none focus:border-brand focus:bg-[#0B1522]" />
             </div>
             <div>
-              <label className="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-slate-400">Richtpreis (optional)</label>
-              <input value={price} onChange={(e) => setPrice(e.target.value.replace(/[^0-9.]/g, ""))} inputMode="decimal" placeholder="CHF pro Einheit" className="w-full rounded-md border border-slate-300 bg-slate-50 px-3 py-2 text-sm text-slate-900 outline-none focus:border-brand focus:bg-white" />
+              <label className="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-white/40">Richtpreis (optional)</label>
+              <input value={price} onChange={(e) => setPrice(e.target.value.replace(/[^0-9.]/g, ""))} inputMode="decimal" placeholder="CHF pro Einheit" className="w-full rounded-md border border-white/[0.16] bg-white/[0.03] px-3 py-2 text-sm text-white outline-none focus:border-brand focus:bg-[#0B1522]" />
             </div>
           </div>
 
           <div>
-            <label className="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-slate-400">Kategorie</label>
-            <select value={category} onChange={(e) => setCategory(e.target.value as ProcCategory)} className="w-full rounded-md border border-slate-300 bg-slate-50 px-3 py-2 text-sm text-slate-900 outline-none focus:border-brand focus:bg-white">
+            <label className="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-white/40">Kategorie</label>
+            <select value={category} onChange={(e) => setCategory(e.target.value as ProcCategory)} className="w-full rounded-md border border-white/[0.16] bg-white/[0.03] px-3 py-2 text-sm text-white outline-none focus:border-brand focus:bg-[#0B1522]">
               {PROC_CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
             </select>
           </div>
 
           <div>
-            <label className="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-slate-400">SIA-/Normspezifikation (optional)</label>
-            <input value={sia} onChange={(e) => setSia(e.target.value)} placeholder="z. B. SN EN 206 · C30/37" className="w-full rounded-md border border-slate-300 bg-slate-50 px-3 py-2 text-sm text-slate-900 outline-none focus:border-brand focus:bg-white" />
+            <label className="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-white/40">SIA-/Normspezifikation (optional)</label>
+            <input value={sia} onChange={(e) => setSia(e.target.value)} placeholder="z. B. SN EN 206 · C30/37" className="w-full rounded-md border border-white/[0.16] bg-white/[0.03] px-3 py-2 text-sm text-white outline-none focus:border-brand focus:bg-[#0B1522]" />
           </div>
 
           <button
@@ -1012,17 +1012,17 @@ function CustomMaterialModal({
             onClick={() => setShare((v) => !v)}
             className={cn(
               "flex w-full items-start gap-3 rounded-lg border p-3 text-left transition-colors",
-              share ? "border-brand bg-brand/[0.05] ring-1 ring-brand/30" : "border-slate-200 hover:border-slate-300",
+              share ? "border-brand bg-brand/[0.05] ring-1 ring-brand/30" : "border-white/[0.08] hover:border-white/[0.16]",
             )}
           >
-            <span className={cn("mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded border", share ? "border-brand bg-brand text-navy-900" : "border-slate-300 bg-white")}>
+            <span className={cn("mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded border", share ? "border-brand bg-brand text-navy-900" : "border-white/[0.16] bg-[#0B1522]")}>
               {share && <Check className="h-3.5 w-3.5" />}
             </span>
             <span>
-              <span className="block text-[13.5px] font-semibold text-slate-900">
+              <span className="block text-[13.5px] font-semibold text-white">
                 Für andere Firmen freigeben
               </span>
-              <span className="mt-0.5 block text-[11.5px] leading-relaxed text-slate-500">
+              <span className="mt-0.5 block text-[11.5px] leading-relaxed text-white/55">
                 Nur freigegebene Materialien lassen sich bündeln — sonst kann
                 niemand demselben Bedarf beitreten. Sichtbar wird die Position
                 mit Bezeichnung und Norm, nicht deine Menge oder dein Preis.
@@ -1031,14 +1031,14 @@ function CustomMaterialModal({
             </span>
           </button>
 
-          {error && <p className="text-[12.5px] font-medium text-rose-600">{error}</p>}
+          {error && <p className="text-[12.5px] font-medium text-rose-300">{error}</p>}
         </div>
 
-        <div className="flex items-center justify-end gap-2 border-t border-slate-200 bg-slate-50 px-5 py-3">
-          <button type="button" onClick={onClose} className="rounded-md px-3.5 py-2 text-sm font-semibold text-slate-500 transition-colors hover:bg-slate-200">
+        <div className="flex items-center justify-end gap-2 border-t border-white/[0.08] bg-white/[0.03] px-5 py-3">
+          <button type="button" onClick={onClose} className="rounded-md px-3.5 py-2 text-sm font-semibold text-white/55 transition-colors hover:bg-slate-200">
             Abbrechen
           </button>
-          <button type="button" onClick={submit} disabled={!valid || saving} className="inline-flex items-center gap-1.5 rounded-md bg-brand px-4 py-2 text-sm font-semibold text-navy-900 transition-colors hover:bg-brand-500 disabled:cursor-not-allowed disabled:opacity-50">
+          <button type="button" onClick={submit} disabled={!valid || saving} className="inline-flex items-center gap-1.5 rounded-md bg-brand px-4 py-2 text-sm font-semibold text-navy-900 transition-colors hover:bg-brand/100 disabled:cursor-not-allowed disabled:opacity-50">
             {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />}
             Anlegen &amp; auswählen
           </button>
@@ -1051,8 +1051,8 @@ function CustomMaterialModal({
 function Row({ k, v, bold, accent }: { k: string; v: string; bold?: boolean; accent?: boolean }) {
   return (
     <div className="flex items-center justify-between">
-      <span className="text-slate-500">{k}</span>
-      <span className={cn("tabular-nums", accent ? "font-semibold text-brand" : bold ? "font-bold text-slate-900" : "text-slate-700")}>{v}</span>
+      <span className="text-white/55">{k}</span>
+      <span className={cn("tabular-nums", accent ? "font-semibold text-brand" : bold ? "font-bold text-white" : "text-white/75")}>{v}</span>
     </div>
   );
 }

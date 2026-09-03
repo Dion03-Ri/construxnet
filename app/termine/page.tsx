@@ -18,8 +18,8 @@ export default async function TerminePage() {
           <CalendarDays className="h-6 w-6" />
         </span>
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900">Fristen</h1>
-          <p className="text-sm text-slate-500">
+          <h1 className="text-2xl font-bold tracking-tight text-white">Fristen</h1>
+          <p className="text-sm text-white/55">
             Sammel- und Angebotsfristen der Bündel, an denen du beteiligt bist —
             mit einem Klick in deinen Kalender.
           </p>

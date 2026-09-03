@@ -15,7 +15,7 @@ import {
 } from "lucide-react";
 import type { Company } from "@/lib/company";
 import { GEWERKE } from "@/data/feedMock";
-import { CARD } from "@/lib/ui";
+import { PANEL, ROW_HOVER } from "@/lib/ui";
 import { cn } from "@/lib/utils";
 
 /**
@@ -77,7 +77,7 @@ export default function ProfileRail({
   return (
     <div className="space-y-4">
       {/* ---------- Firmenkarte ---------- */}
-      <div className={cn(CARD, "overflow-hidden")}>
+      <div className={cn(PANEL, "overflow-hidden")}>
         {/* Statt des lauten Goldverlaufs eine einzelne Goldkante. Sie
             markiert die Karte als „deine", ohne die Seite zu beherrschen. */}
         <div className="h-1 bg-brand" />
@@ -102,7 +102,7 @@ export default function ProfileRail({
           <div className="mt-4 flex items-start gap-1.5">
             <Link
               href={`/company/${company.id}`}
-              className="text-[17px] font-bold leading-tight tracking-tight text-slate-900 hover:text-brand"
+              className="text-[17px] font-bold leading-tight tracking-tight text-white hover:text-brand"
             >
               {company.company_name}
             </Link>
@@ -111,11 +111,11 @@ export default function ProfileRail({
             )}
           </div>
 
-          <p className="mt-1.5 flex items-center gap-1 text-[12.5px] text-slate-400">
+          <p className="mt-1.5 flex items-center gap-1 text-[12.5px] text-white/40">
             {ROLE_LABEL[company.role] ?? company.role}
             {company.city && (
               <>
-                <span className="text-slate-300">·</span>
+                <span className="text-white/25">·</span>
                 <MapPin className="h-3 w-3" /> {company.city}
               </>
             )}
@@ -129,7 +129,7 @@ export default function ProfileRail({
                 "mt-5 inline-flex w-full items-center justify-center gap-2 rounded-full px-4 py-2.5 text-[13px] font-semibold transition-colors",
                 open
                   ? "bg-navy-900 text-white hover:bg-navy-800"
-                  : "border border-slate-300 text-slate-600 hover:bg-slate-50",
+                  : "border border-white/[0.16] text-white/70 hover:bg-white/[0.05]",
               )}
             >
               <span
@@ -156,11 +156,11 @@ export default function ProfileRail({
               { href: "/network", n: connections, l: "Verbindungen" },
               { href: "/pools", n: pools, l: "Aktive Pools" },
             ].map((s) => (
-              <Link key={s.l} href={s.href} className="group border-t border-slate-200 pt-3">
-                <div className="font-display text-[26px] font-bold leading-none tabular-nums text-slate-900 group-hover:text-brand">
+              <Link key={s.l} href={s.href} className="group border-t border-white/[0.08] pt-3">
+                <div className="font-display text-[26px] font-bold leading-none tabular-nums text-white group-hover:text-brand">
                   {s.n}
                 </div>
-                <div className="mt-1.5 text-[11.5px] text-slate-400">{s.l}</div>
+                <div className="mt-1.5 text-[11.5px] text-white/40">{s.l}</div>
               </Link>
             ))}
           </div>
@@ -168,10 +168,10 @@ export default function ProfileRail({
       </div>
 
       {/* ---------- Navigation, eine Karte statt drei ---------- */}
-      <div className={cn(CARD, "overflow-hidden")}>
+      <div className={cn(PANEL, "overflow-hidden")}>
         {NAV_GROUPS.map((g, gi) => (
-          <div key={g.head} className={gi > 0 ? "border-t border-slate-200" : undefined}>
-            <div className="px-5 pb-2 pt-4 text-[10.5px] font-semibold uppercase tracking-[0.14em] text-slate-400">
+          <div key={g.head} className={gi > 0 ? "border-t border-white/[0.08]" : undefined}>
+            <div className="px-5 pb-2 pt-4 text-[10.5px] font-semibold uppercase tracking-[0.14em] text-white/40">
               {g.head}
             </div>
             <div className="pb-2">
@@ -179,16 +179,16 @@ export default function ProfileRail({
                 <Link
                   key={l.label}
                   href={l.href}
-                  className="flex items-center gap-3 px-5 py-2.5 text-[13.5px] font-medium text-slate-600 transition-colors hover:bg-slate-50 hover:text-slate-900"
+                  className="flex items-center gap-3 px-5 py-2.5 text-[13.5px] font-medium text-white/70 transition-colors hover:bg-white/[0.05] hover:text-white"
                 >
-                  <l.icon className="h-4 w-4 shrink-0 text-slate-400" />
+                  <l.icon className="h-4 w-4 shrink-0 text-white/40" />
                   <span className="flex-1 truncate">{l.label}</span>
                   {l.badge ? (
                     <span className="grid h-5 min-w-5 place-items-center rounded-full bg-brand px-1.5 text-[10.5px] font-bold tabular-nums text-navy-950">
                       {l.badge}
                     </span>
                   ) : (
-                    <ChevronRight className="h-3.5 w-3.5 text-slate-300" />
+                    <ChevronRight className="h-3.5 w-3.5 text-white/25" />
                   )}
                 </Link>
               ))}
@@ -198,15 +198,15 @@ export default function ProfileRail({
       </div>
 
       {/* ---------- Gewerke ---------- */}
-      <div className={cn(CARD, "p-5")}>
-        <h3 className="text-[10.5px] font-semibold uppercase tracking-[0.14em] text-slate-400">
+      <div className={cn(PANEL, "p-5")}>
+        <h3 className="text-[10.5px] font-semibold uppercase tracking-[0.14em] text-white/40">
           Deine Gewerke
         </h3>
         <div className="mt-3 flex flex-wrap gap-1.5">
           {GEWERKE.map((g) => (
             <span
               key={g}
-              className="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-[11.5px] font-medium text-slate-600"
+              className="rounded-full border border-white/[0.08] bg-white/[0.03] px-2.5 py-1 text-[11.5px] font-medium text-white/70"
             >
               {g}
             </span>

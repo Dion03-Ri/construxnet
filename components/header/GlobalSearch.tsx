@@ -98,16 +98,16 @@ export default function GlobalSearch() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -6 }}
             transition={{ duration: 0.15 }}
-            className="absolute left-0 right-0 z-50 mt-2 overflow-hidden rounded-lg border border-slate-200 bg-white/95 shadow-cardhover backdrop-blur-xl"
+            className="absolute left-0 right-0 z-50 mt-2 overflow-hidden rounded-lg border border-white/[0.08] bg-white/95 shadow-cardhover backdrop-blur-xl"
           >
             {empty ? (
-              <div className="px-4 py-6 text-center text-sm text-slate-400">
+              <div className="px-4 py-6 text-center text-sm text-white/40">
                 Keine Treffer für „{q}“.
               </div>
             ) : (
               groups.map((g) => (
-                <div key={g.key} className="border-b border-slate-100 last:border-0">
-                  <div className="px-4 pt-2.5 text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+                <div key={g.key} className="border-b border-white/[0.06] last:border-0">
+                  <div className="px-4 pt-2.5 text-[11px] font-semibold uppercase tracking-wider text-white/40">
                     {g.key}
                   </div>
                   <ul className="pb-1.5">
@@ -117,14 +117,14 @@ export default function GlobalSearch() {
                           type="button"
                           onMouseDown={(e) => e.preventDefault()}
                           onClick={() => go(i.href)}
-                          className="flex w-full items-center gap-3 px-4 py-2 text-left transition-colors hover:bg-slate-50"
+                          className="flex w-full items-center gap-3 px-4 py-2 text-left transition-colors hover:bg-white/[0.05]"
                         >
-                          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-slate-500">
+                          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white/10 text-white/55">
                             <i.icon className="h-4 w-4" />
                           </span>
                           <span className="min-w-0">
-                            <span className="block truncate text-[13px] font-medium text-slate-800">{i.label}</span>
-                            <span className="block truncate text-[11px] text-slate-400">{i.sub}</span>
+                            <span className="block truncate text-[13px] font-medium text-white/90">{i.label}</span>
+                            <span className="block truncate text-[11px] text-white/40">{i.sub}</span>
                           </span>
                         </button>
                       </li>

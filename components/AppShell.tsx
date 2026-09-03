@@ -38,7 +38,7 @@ function Logo({ href = "/", dark = false }: { href?: string; dark?: boolean }) {
       <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-brand to-brand-600 text-white shadow-sm shadow-brand/30">
         <HardHat className="h-5 w-5" />
       </span>
-      <span className={cn("hidden text-[15px] sm:block", dark ? "text-white" : "text-slate-900")}>
+      <span className={cn("hidden text-[15px] sm:block", dark ? "text-white" : "text-white")}>
         Obta<span className="text-brand">net</span>
       </span>
     </Link>
@@ -92,8 +92,8 @@ function TopBar() {
 /** Schmale Rechtszeile unter dem Inhalt — auf dem Handy ueber der Navigation. */
 function LegalBar() {
   return (
-    <div className="border-t border-slate-200 bg-white">
-      <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-center gap-x-3 gap-y-1 px-4 py-4 text-[12px] text-slate-400 sm:px-6">
+    <div className="border-t border-white/[0.08] bg-[#0B1522]">
+      <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-center gap-x-3 gap-y-1 px-4 py-4 text-[12px] text-white/40 sm:px-6">
         <span>© {new Date().getFullYear()} Obtanet</span>
         <span aria-hidden>·</span>
         <Link href="/impressum" className="transition-colors hover:text-brand">Impressum</Link>
@@ -107,7 +107,7 @@ function LegalBar() {
 function MobileNav() {
   const isActive = useActive();
   return (
-    <nav className="fixed inset-x-0 bottom-0 z-50 grid grid-cols-5 border-t border-slate-200 glass pb-[env(safe-area-inset-bottom)] md:hidden">
+    <nav className="fixed inset-x-0 bottom-0 z-50 grid grid-cols-5 border-t border-white/[0.08] glass pb-[env(safe-area-inset-bottom)] md:hidden">
       {NAV.map((item) => {
         const active = isActive(item.href);
         return (
@@ -116,7 +116,7 @@ function MobileNav() {
             href={item.href}
             className={cn(
               "flex min-w-0 flex-col items-center gap-1 px-1 py-2.5 text-[10px] font-medium leading-tight transition-colors",
-              active ? "text-brand" : "text-slate-500 hover:text-slate-900",
+              active ? "text-brand" : "text-white/55 hover:text-white",
             )}
           >
             <item.icon className="h-5 w-5 shrink-0" />
@@ -142,7 +142,7 @@ function MarketingHeader() {
           </Link>
           <Link
             href="/sign-up"
-            className="rounded-md bg-brand px-4 py-2 text-sm font-semibold text-navy-950 transition-colors hover:bg-brand-500"
+            className="rounded-md bg-brand px-4 py-2 text-sm font-semibold text-navy-950 transition-colors hover:bg-brand/100"
           >
             Registrieren
           </Link>

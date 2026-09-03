@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { Loader2, Package, Map as MapIcon, Truck, Info } from "lucide-react";
 import { useSupabaseBrowser } from "@/lib/supabase-browser";
 import { CANTON_CENTROID } from "@/data/chMap";
-import { CARD } from "@/lib/ui";
+import { PANEL } from "@/lib/ui";
 import { cn } from "@/lib/utils";
 
 type Row = {
@@ -26,11 +26,11 @@ function Panel({
   children: React.ReactNode;
 }) {
   return (
-    <div className={cn(CARD, "p-5")}>
-      <h3 className="flex items-center gap-2 text-[15px] font-semibold text-slate-900">
+    <div className={cn(PANEL, "p-5")}>
+      <h3 className="flex items-center gap-2 text-[15px] font-semibold text-white">
         <Icon className="h-4 w-4 text-brand" /> {title}
       </h3>
-      {hint && <p className="mt-0.5 text-[12px] text-slate-500">{hint}</p>}
+      {hint && <p className="mt-0.5 text-[12px] text-white/55">{hint}</p>}
       <div className="mt-3">{children}</div>
     </div>
   );
@@ -45,7 +45,7 @@ function BarList({
   emptyText: string;
 }) {
   if (items.length === 0) {
-    return <p className="py-3 text-[12.5px] leading-relaxed text-slate-400">{emptyText}</p>;
+    return <p className="py-3 text-[12.5px] leading-relaxed text-white/40">{emptyText}</p>;
   }
   const max = Math.max(...items.map((i) => i.count));
   return (
@@ -53,10 +53,10 @@ function BarList({
       {items.map((i) => (
         <li key={i.label}>
           <div className="mb-1 flex items-center justify-between gap-2 text-[13px]">
-            <span className="truncate text-slate-600">{i.label}</span>
-            <span className="shrink-0 font-semibold text-slate-900">{i.count}</span>
+            <span className="truncate text-white/70">{i.label}</span>
+            <span className="shrink-0 font-semibold text-white">{i.count}</span>
           </div>
-          <div className="h-1.5 overflow-hidden rounded-full bg-slate-100">
+          <div className="h-1.5 overflow-hidden rounded-full bg-white/10">
             <div
               className="h-full rounded-full bg-brand"
               style={{ width: `${(i.count / max) * 100}%` }}
@@ -129,7 +129,7 @@ export default function MapWidgets() {
 
   if (!loaded) {
     return (
-      <div className={cn(CARD, "grid place-items-center py-16 text-slate-400")}>
+      <div className={cn(PANEL, "grid place-items-center py-16 text-white/40")}>
         <Loader2 className="h-5 w-5 animate-spin" />
       </div>
     );
@@ -137,22 +137,22 @@ export default function MapWidgets() {
 
   return (
     <div className="space-y-4">
-      <div className={cn(CARD, "px-5 py-4")}>
-        <div className="grid grid-cols-2 divide-x divide-slate-200">
+      <div className={cn(PANEL, "px-5 py-4")}>
+        <div className="grid grid-cols-2 divide-x divide-white/[0.07]">
           <div className="pr-4">
-            <div className="text-[11px] font-medium uppercase tracking-wider text-slate-400">
+            <div className="text-[11px] font-medium uppercase tracking-wider text-white/40">
               Baustoffwerke
             </div>
-            <div className="mt-0.5 text-2xl font-bold text-slate-900">{rows.length}</div>
+            <div className="mt-0.5 text-2xl font-bold text-white">{rows.length}</div>
           </div>
           <div className="pl-4">
-            <div className="text-[11px] font-medium uppercase tracking-wider text-slate-400">
+            <div className="text-[11px] font-medium uppercase tracking-wider text-white/40">
               davon auf der Karte
             </div>
-            <div className="mt-0.5 text-2xl font-bold text-slate-900">{onMap}</div>
+            <div className="mt-0.5 text-2xl font-bold text-white">{onMap}</div>
           </div>
         </div>
-        <p className="mt-2.5 flex items-start gap-1.5 text-[11.5px] leading-relaxed text-slate-400">
+        <p className="mt-2.5 flex items-start gap-1.5 text-[11.5px] leading-relaxed text-white/40">
           <Info className="mt-px h-3.5 w-3.5 shrink-0" />
           Die Auswertungen unten zählen alle registrierten Baustoffwerke — auch
           die, die ihren Standort nicht auf der Karte zeigen.
@@ -179,18 +179,18 @@ export default function MapWidgets() {
 
       <Panel title="Liefergebiet" icon={Truck}>
         {radius ? (
-          <div className="text-[13px] text-slate-600">
+          <div className="text-[13px] text-white/70">
             <div className="flex items-baseline gap-2">
-              <span className="text-2xl font-bold text-slate-900">{radius.median}</span>
-              <span className="text-slate-500">km im Median</span>
+              <span className="text-2xl font-bold text-white">{radius.median}</span>
+              <span className="text-white/55">km im Median</span>
             </div>
-            <p className="mt-1.5 text-[12.5px] text-slate-500">
+            <p className="mt-1.5 text-[12.5px] text-white/55">
               Spannweite {radius.min}–{radius.max} km, aus {radius.n} Profil
               {radius.n === 1 ? "" : "en"} mit Angabe.
             </p>
           </div>
         ) : (
-          <p className="py-1 text-[12.5px] leading-relaxed text-slate-400">
+          <p className="py-1 text-[12.5px] leading-relaxed text-white/40">
             Noch hat kein Werk einen Lieferradius angegeben.
           </p>
         )}
