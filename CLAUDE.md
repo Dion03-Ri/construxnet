@@ -175,6 +175,20 @@ Supabase (server + browser client, `supabaseAdmin` service-role), Leaflet/OSM
   - **E-Mail** („neue Nachricht") — braucht einen Versanddienst (z. B.
     Resend). Später, ausdrücklich nach Web-Push.
 
+## Rechtsseiten
+- `data/legal.ts` hält alle rechtlichen Eckdaten an einer Stelle. Werte mit
+  `[[…]]` sind noch offen und werden auf der Seite golden markiert statt
+  stillschweigend ausgegeben.
+- Grundlagen: Impressum nach **Art. 3 Abs. 1 lit. s UWG** (E-Mail ist Pflicht,
+  ein Formular genügt nicht); Datenschutz nach **Art. 19 DSG** (revidiertes
+  DSG seit 1.9.2023) samt Bekanntgabe ins Ausland nach **Art. 16 DSG**
+  (USA seit 15.9.2024 in Anhang 1 DSV, aber nur für nach dem
+  Swiss-U.S. Data Privacy Framework zertifizierte Firmen); AGB als
+  **B2B**-Vertrag — die Inhaltskontrolle nach Art. 8 UWG greift nur gegenüber
+  Konsumenten, die Gerichtsstandsabrede ist nach **Art. 17 ZPO** zulässig.
+- Die drei Seiten sind in `middleware.ts` öffentlich UND von der
+  Vorstart-Sperre ausgenommen. Beim Anpassen der Sperre daran denken.
+
 ## Kontaktdaten — nur für Verbindungen
 - E-Mail, Telefon, Adresse und Website sind **nicht** Teil der allgemeinen
   Firmen-Freigabe. Sie kommen über `company_contact(p_company)` — eine
@@ -285,9 +299,13 @@ Diese Punkte müssen erledigt sein, bevor echte Firmen darauf arbeiten:
 4. **Web-Push** für Nachrichten (siehe Chat).
 5. **Ratenbegrenzung über einen gemeinsamen Speicher** statt im
    Arbeitsspeicher (Upstash, Vercel KV oder Supabase-Tabelle).
-6. **Impressum, AGB, Datenschutz** — existieren im Next-Projekt gar nicht,
-   weder als Seite noch als Verweis im Fussbereich. Texte müssen vom Nutzer
-   kommen, das Einbauen ist danach eine Viertelstunde.
+6. **Impressum, AGB, Datenschutz** — Seiten stehen (`/impressum`, `/agb`,
+   `/datenschutz`), verlinkt im Fussbereich und in der Anwendung, öffentlich
+   auch hinter der Vorstart-Sperre. **Offen:** die Werte in `data/legal.ts`
+   (alles mit `[[…]]`) und eine anwaltliche Durchsicht. Offene Stellen werden
+   auf der Seite golden hervorgehoben, damit sie nicht unbemerkt live gehen.
+   Der Abschnitt zum Mindestvorteil in den AGB darf erst scharf gehen, wenn
+   Punkt 1 und 2 dieser Liste geklärt sind.
 7. **Lieferschein-Abgleich** (#22). Schliesst den Kreis: die Preisgarantie
    ist nur eine Zusage, solange niemand prüft, ob das Werk sie auf der
    Rechnung angewendet hat. `delivery_notes` steht im Schema
