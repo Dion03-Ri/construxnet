@@ -87,7 +87,7 @@ export default function Pricing() {
         <div className="max-w-2xl">
           <span className={EYEBROW}>Preise</span>
           <h2 className={cn(D_MD, "mt-5 text-white")}>
-            Ein Abo, das zum Betrieb passt.
+            Was Obtanet kostet.
           </h2>
           <p className={cn(LEAD, "mt-6 text-white/55")}>
             Das Netzwerk ist gratis. Bezahlt wird für das Bündeln.
