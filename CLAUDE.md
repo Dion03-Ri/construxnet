@@ -232,7 +232,16 @@ Alle in `lib/ui.ts`. Wer eine vierte braucht, hat zu tief verschachtelt.
 - **Pastellkästen** (`bg-amber-50` und Verwandte). Ein Hinweis ist auf
   dunklem Grund ein leuchtender Rand auf durchscheinender Fläche, kein
   hellgelbes Rechteck.
-- **Icons in abgerundeten Kacheln** und **Rahmen um alles** — siehe unten.
+- **Icons in abgerundeten Kacheln.**
+- **Umrandete Karten nebeneinander.** Wo zwei oder drei gleichartige Blöcke
+  nebeneinander stehen — Preisstufen, zwei Listen, mehrere Kennzahlen —
+  gehören sie auf **dieselbe Fläche**, getrennt allein durch eine senkrechte
+  Haarlinie (`lg:border-l lg:border-white/[0.08]`). So macht es Linear auf
+  der Preisseite. Jede Gruppe in ein eigenes gerundetes Rechteck zu setzen,
+  ist das Erkennungszeichen generierter Entwürfe.
+  Ein Rahmen bleibt richtig, wo etwas wirklich ein eigenes Objekt ist: die
+  zwei grossen Produktkarten in „Zwei Wege" und die Aufnahme aus der
+  Anwendung. Alles andere trägt die Linie.
 
 ### Trennung ohne Farbe
 Auf einer durchweg dunklen Seite trennt nicht mehr Hell gegen Dunkel,
@@ -242,10 +251,19 @@ sondern **Raum und Haarlinie**. Ein Abschnitt setzt sich ab durch
 weisse Fläche.
 
 ### Bilder auf schwarzem Grund
-`art-buendel.jpg` und `art-direkt.jpg` liegen auf reinem `rgb(0,0,0)`.
+`art-buendel.jpg` und `art-direkt.jpg` liegen auf **echtem** `rgb(0,0,0)`.
 Die Karten in „Zwei Wege" sind deshalb `bg-black` — so ist die Bildkante
-unsichtbar. **Kein Schimmer hinter so ein Bild legen:** das deckend
-schwarze Bild stanzt ihn aus, und der Rest bleibt als heller Rahmen stehen.
+unsichtbar.
+
+**Vor dem Ablegen den Schwarzpunkt prüfen.** Der Hintergrund von
+art-direkt lag ursprünglich bei `rgb(27,19,7)`; auf der schwarzen Karte
+stand das Bild dadurch als heller Kasten. Kein Rand-, sondern ein
+Schwarzpunkt-Problem — nachgemessen an den Rohdaten der Randstreifen, dann
+pro Kanal gestreckt, bis der Grund auf 0 fällt. Weder eine Maske noch ein
+Verlauf hilft dagegen; beide verdecken nur.
+
+**Kein Schimmer hinter so ein Bild legen:** das deckend schwarze Bild
+stanzt ihn aus, und der Rest bleibt als heller Rahmen stehen.
 
 ## Formensprache — weiche Ecken, dünne Ränder
 - Vorbild ist der Aufbau grosser Produktkarten: sehr weiche Ecken
@@ -382,10 +400,11 @@ schwarze Bild stanzt ihn aus, und der Rest bleibt als heller Rahmen stehen.
 
 ## Vor dem Launch — Pflicht
 Diese Punkte müssen erledigt sein, bevor echte Firmen darauf arbeiten:
-0. **Preismodell festlegen und auf die Startseite bringen.** Geplant ist
-   ein Abschnitt mit den Stufen (Gratis gegen Pro) direkt auf `/`. Der Bau
-   steht, es fehlen einzig die Angaben — und die dürfen **nicht erfunden**
-   werden:
+0. **Preismodell bestätigen.** Der Abschnitt steht auf `/` und ist gebaut
+   (`components/home/Pricing.tsx`), aber **die Zahlen 0 / 79 / 189 sind
+   Platzhalter** — ausdrücklich als Testwerte vereinbart, um den Aufbau zu
+   sehen. Sie dürfen NICHT in Werbung, AGB oder Verträge übernommen werden,
+   bevor Folgendes entschieden ist:
    · Was kostet Pro pro Monat (und pro Jahr, falls es das gibt)?
    · Was ist in der Gratisstufe enthalten, was nur in Pro?
    · Gibt es eine Stufe für Lieferanten/Baustoffwerke, und wenn ja welche?
