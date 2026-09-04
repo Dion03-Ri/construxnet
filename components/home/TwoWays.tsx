@@ -43,27 +43,37 @@ function Card({
         </Link>
       </div>
 
-      {/* Bildfläche. Beide Aufnahmen liegen auf reinem Schwarz und die Karte
-          ist ebenfalls schwarz — deshalb ist die Bildkante unsichtbar. Der
-          Verlauf unten faengt trotzdem ab, falls eine kuenftige Aufnahme
-          nicht ganz sauber freigestellt ist. */}
-      <div className="relative mt-6 h-[196px] overflow-hidden sm:mt-8 sm:h-[216px]">
-        <div className="relative flex h-full items-end justify-center">{children}</div>
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-x-0 bottom-0 h-14 bg-gradient-to-t from-black to-transparent"
-        />
+      {/* Bildbühne.
+          Drei Dinge waren hier falsch und liessen jedes Motiv billig und
+          angeschnitten wirken, egal wie gut es war:
+          1. Das Bild sass mit `items-end` bündig auf der Unterkante einer
+             Fläche mit `overflow-hidden` — es sah aus, als sei es dort
+             abgesäbelt worden.
+          2. Ein schwarzer Verlauf lag ÜBER dem unteren Drittel und liess es
+             wegblassen. Auf schwarzem Grund über schwarzem Bild hatte er
+             ohnehin nichts zu verbergen.
+          3. Beide Aufnahmen hatten unterschiedliche Seitenverhältnisse, aber
+             eine feste Höhe — dadurch war die eine schmal und die andere
+             breit, und die zwei Karten wirkten unabgestimmt.
+
+          Jetzt: eine gleich grosse Bühne je Karte, das Motiv mittig und
+          vollständig darin, mit Luft nach unten. `object-contain` sorgt
+          dafür, dass jedes künftige Bild — hoch, quer oder quadratisch —
+          dieselbe Fläche einnimmt, ohne beschnitten zu werden. */}
+      <div className="mt-8 flex h-[230px] items-center justify-center px-6 pb-9 sm:mt-10 sm:h-[260px] sm:px-10 sm:pb-11">
+        {children}
       </div>
     </div>
   );
 }
 
 /**
- * Die beiden Bildmotive.
+ * Ein Bildmotiv auf der Bühne.
  *
- * Bewusst klein und mittig statt formatfuellend: sie begleiten die Aussage,
- * sie ueberschreien sie nicht. Beide liegen auf reinem Schwarz und gehen
- * deshalb randlos in die schwarze Karte ueber.
+ * Nie beschneiden, nie verlaufen lassen, nie an eine Kante drücken — das
+ * Motiv steht vollständig und mittig da. Alles, was es braucht, ist ein
+ * freigestelltes Objekt auf reinem Schwarz; die Karte ist ebenfalls
+ * schwarz, deshalb bleibt die Bildkante unsichtbar.
  */
 function Art({ src, alt }: { src: string; alt: string }) {
   return (
@@ -72,7 +82,19 @@ function Art({ src, alt }: { src: string; alt: string }) {
       src={src}
       alt={alt}
       loading="lazy"
-      className="h-[172px] w-auto max-w-[76%] object-contain sm:h-[192px]"
+      className={cn(
+        "max-h-full w-auto max-w-full object-contain",
+        // Die Renders bringen einen warmen Lichtschein mit, der bis an den
+        // Bildrand reicht (gemessen rgb(70,53,31), nicht schwarz). Auf der
+        // schwarzen Karte endete der in einem sichtbaren Rechteck — das war
+        // der Grund, warum die Motive billig wirkten.
+        //
+        // Statt die Tiefen wegzurechnen und das Objekt flach zu machen,
+        // laeuft der Rand weich aus. Das wirkt auch bei jedem kuenftigen
+        // Bild, ganz gleich wie sauber es freigestellt ist.
+        "[-webkit-mask-image:radial-gradient(ellipse_at_center,black_52%,transparent_88%)]",
+        "[mask-image:radial-gradient(ellipse_at_center,black_52%,transparent_88%)]",
+      )}
     />
   );
 }
