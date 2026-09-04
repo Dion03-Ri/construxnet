@@ -1,8 +1,8 @@
 import Link from "next/link";
 import TwoWays from "@/components/home/TwoWays";
 import ProcessVideo from "@/components/home/ProcessVideo";
-import BundleChances from "@/components/pools/BundleChances";
 import Pricing from "@/components/home/Pricing";
+import OfferSheet from "@/components/home/OfferSheet";
 import { HERO_IMAGE } from "@/data/media";
 import TrustBar from "@/components/home/TrustBar";
 import {
@@ -179,20 +179,18 @@ export default function Home() {
             </Link>
           </div>
 
-          {/* Der echte Ausschnitt aus der Anwendung, als Produktaufnahme
-              gesetzt: leicht angehoben, mit weichem Schlagschatten und einem
-              Lichtschein dahinter. So zeigen Linear und Stripe ihr Produkt —
-              es schwebt, statt in einem Kasten zu sitzen. */}
-          <div className="relative lg:-mr-20 xl:-mr-32">
+          {/* Der Zuschlag als Blatt: hell auf dunklem Grund, mit weichem
+              Schlagschatten und einem Lichtschein dahinter. Ein weisses
+              Dokument hat auf schwarzem Grund mehr Gewicht als noch eine
+              dunkle Liste — und es zeigt das Konkrete: den Moment, in dem
+              aus einem Buendel ein Preis wird. */}
+          <div className="relative mx-auto w-full max-w-[440px] lg:mx-0 lg:max-w-none">
             <div
               aria-hidden
-              className="pointer-events-none absolute -inset-10 rounded-[48px] bg-[radial-gradient(ellipse_at_center,rgba(217,144,0,0.10),transparent_70%)] blur-2xl"
+              className="pointer-events-none absolute -inset-12 rounded-[56px] bg-[radial-gradient(ellipse_at_center,rgba(217,144,0,0.13),transparent_68%)] blur-2xl"
             />
-            <div className="relative drop-shadow-[0_40px_80px_rgba(0,0,0,0.6)]">
-              <div className="mb-4 flex items-center gap-2.5 text-[10.5px] font-semibold uppercase tracking-[0.16em] text-white/30">
-                <span className="h-px w-8 bg-white/20" /> Ausschnitt aus der Anwendung
-              </div>
-              <BundleChances />
+            <div className="relative lg:rotate-[-0.6deg]">
+              <OfferSheet />
             </div>
           </div>
         </div>

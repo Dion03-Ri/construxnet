@@ -15,7 +15,7 @@ import {
 } from "lucide-react";
 import type { Company } from "@/lib/company";
 import { GEWERKE } from "@/data/feedMock";
-import { PANEL, ROW_HOVER } from "@/lib/ui";
+
 import { cn } from "@/lib/utils";
 
 /**
@@ -77,12 +77,12 @@ export default function ProfileRail({
   return (
     <div className="space-y-4">
       {/* ---------- Firmenkarte ---------- */}
-      <div className={cn(PANEL, "overflow-hidden")}>
+      <div className="border-t border-white/[0.08]">
         {/* Statt des lauten Goldverlaufs eine einzelne Goldkante. Sie
             markiert die Karte als „deine", ohne die Seite zu beherrschen. */}
         <div className="h-1 bg-brand" />
 
-        <div className="p-5">
+        <div className="pt-5">
           <Link
             href={`/company/${company.id}`}
             className="flex h-14 w-14 items-center justify-center overflow-hidden rounded-2xl bg-navy-900 text-[17px] font-bold text-white"
@@ -168,10 +168,10 @@ export default function ProfileRail({
       </div>
 
       {/* ---------- Navigation, eine Karte statt drei ---------- */}
-      <div className={cn(PANEL, "overflow-hidden")}>
+      <div className="border-t border-white/[0.08]">
         {NAV_GROUPS.map((g, gi) => (
           <div key={g.head} className={gi > 0 ? "border-t border-white/[0.08]" : undefined}>
-            <div className="px-5 pb-2 pt-4 text-[10.5px] font-semibold uppercase tracking-[0.14em] text-white/40">
+            <div className="pb-2 pt-5 text-[10.5px] font-semibold uppercase tracking-[0.14em] text-white/40">
               {g.head}
             </div>
             <div className="pb-2">
@@ -179,7 +179,7 @@ export default function ProfileRail({
                 <Link
                   key={l.label}
                   href={l.href}
-                  className="flex items-center gap-3 px-5 py-2.5 text-[13.5px] font-medium text-white/70 transition-colors hover:bg-white/[0.05] hover:text-white"
+                  className="-mx-2 flex items-center gap-3 rounded-lg px-2 py-2.5 text-[13.5px] font-medium text-white/70 transition-colors hover:bg-white/[0.05] hover:text-white"
                 >
                   <l.icon className="h-4 w-4 shrink-0 text-white/40" />
                   <span className="flex-1 truncate">{l.label}</span>
@@ -198,7 +198,7 @@ export default function ProfileRail({
       </div>
 
       {/* ---------- Gewerke ---------- */}
-      <div className={cn(PANEL, "p-5")}>
+      <div className="border-t border-white/[0.08] pt-5">
         <h3 className="text-[10.5px] font-semibold uppercase tracking-[0.14em] text-white/40">
           Deine Gewerke
         </h3>

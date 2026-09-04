@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { Megaphone, ArrowRight, MapPin, Users } from "lucide-react";
 import { useBundles, nextStep } from "@/lib/bundles";
-import { PANEL, ROW_HOVER } from "@/lib/ui";
+
 import { cn } from "@/lib/utils";
 
 /**
@@ -24,8 +24,8 @@ export default function FeedBundleHero() {
     .slice(0, 3);
 
   return (
-    <section className={cn(PANEL, "overflow-hidden")}>
-      <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-4 px-5 py-4">
+    <section className="border-t border-white/[0.08]">
+      <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-4 py-5">
         <div className="min-w-0">
           <h2 className="text-[15px] font-bold tracking-tight text-white">
             Was brauchst du auf der Baustelle?
@@ -52,7 +52,7 @@ export default function FeedBundleHero() {
 
       {/* Laufende Bündel — echte, oder gar keine */}
       {top.length > 0 && (
-        <div className="border-t border-white/[0.08] bg-white/[0.02] px-5 py-4">
+        <div className="border-t border-white/[0.08] py-5">
           <div className="text-[10.5px] font-semibold uppercase tracking-[0.14em] text-white/40">
             Laufende Bündel
           </div>

@@ -1,10 +1,12 @@
 import Link from "next/link";
 import { Check } from "lucide-react";
-import { D_MD, LEAD, EYEBROW, SECTION, BTN_GOLD, BTN_OUTLINE_DARK } from "@/lib/ui";
+import { D_MD, LEAD, EYEBROW, SECTION, BTN_OUTLINE_DARK } from "@/lib/ui";
 import { cn } from "@/lib/utils";
 
 /**
  * Preisübersicht — nach dem Vorbild von Linear.
+ *
+ * Alle drei Stufen stehen gleichwertig da — keine ist hervorgehoben.
  *
  * Kein Kästchen um die Stufen. Sie stehen nebeneinander auf derselben
  * Fläche und werden nur durch eine senkrechte Haarlinie getrennt. Das ist
@@ -28,8 +30,6 @@ type Tier = {
   note: string;
   cta: string;
   href: string;
-  /** Nur EINE Stufe wird hervorgehoben — sonst hebt sich keine ab. */
-  featured?: boolean;
   features: string[];
 };
 
@@ -54,7 +54,6 @@ const TIERS: Tier[] = [
     note: "Für Baufirmen, die regelmässig einkaufen.",
     cta: "Pro wählen",
     href: "/sign-up",
-    featured: true,
     features: [
       "Alles aus Gratis",
       "Unbegrenzt Smart Pools",
@@ -88,11 +87,10 @@ export default function Pricing() {
         <div className="max-w-2xl">
           <span className={EYEBROW}>Preise</span>
           <h2 className={cn(D_MD, "mt-5 text-white")}>
-            Erst zahlen, wenn du sparst.
+            Ein Abo, das zum Betrieb passt.
           </h2>
           <p className={cn(LEAD, "mt-6 text-white/55")}>
-            Das Netzwerk ist gratis. Bezahlt wird für das Bündeln — und der
-            Mindestvorteil steht vorher fest.
+            Das Netzwerk ist gratis. Bezahlt wird für das Bündeln.
           </p>
         </div>
 
@@ -109,23 +107,11 @@ export default function Pricing() {
                 i === 0 && "pt-0",
               )}
             >
-              <div className="flex items-baseline gap-2.5">
-                <h3 className="text-[22px] font-bold tracking-tight text-white">{t.name}</h3>
-                {t.featured && (
-                  <span className="rounded-full bg-brand px-2.5 py-0.5 text-[10.5px] font-bold uppercase tracking-wider text-navy-950">
-                    Empfohlen
-                  </span>
-                )}
-              </div>
+              <h3 className="text-[22px] font-bold tracking-tight text-white">{t.name}</h3>
 
               <div className="mt-5 flex items-baseline gap-2">
                 <span className="text-[15px] font-semibold text-white/45">CHF</span>
-                <span
-                  className={cn(
-                    "font-display text-[52px] font-bold leading-none tabular-nums",
-                    t.featured ? "text-brand" : "text-white",
-                  )}
-                >
+                <span className="font-display text-[52px] font-bold leading-none tabular-nums text-white">
                   {t.price}
                 </span>
                 {t.unit && <span className="text-[13.5px] text-white/40">{t.unit}</span>}
@@ -135,7 +121,7 @@ export default function Pricing() {
 
               <Link
                 href={t.href}
-                className={cn(t.featured ? BTN_GOLD : BTN_OUTLINE_DARK, "mt-7 w-full lg:w-auto")}
+                className={cn(BTN_OUTLINE_DARK, "mt-7 w-full lg:w-auto")}
               >
                 {t.cta}
               </Link>

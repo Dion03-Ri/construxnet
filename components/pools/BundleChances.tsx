@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
-import { PANEL } from "@/lib/ui";
+
 import { cn } from "@/lib/utils";
 
 /**
@@ -40,15 +40,15 @@ export default function BundleChances({
   className?: string;
 }) {
   return (
-    <div className={cn(PANEL, "overflow-hidden", className)}>
-      <div className="flex items-baseline justify-between px-5 pb-3 pt-4">
+    <div className={cn("border-t border-white/[0.08]", className)}>
+      <div className="flex items-baseline justify-between pb-3 pt-5">
         <h3 className="text-[14px] font-bold tracking-tight text-white">Bündel-Chancen</h3>
         <span className="text-[11px] text-white/40">deine Region</span>
       </div>
       <ul className="divide-y divide-white/[0.07] border-t border-white/[0.08]">
         {pools.map((p) => (
           <li key={p.material}>
-            <Link href="/pools" className="block px-5 py-3.5 transition-colors hover:bg-white/[0.05]">
+            <Link href="/pools" className="-mx-2 block rounded-lg px-2 py-3.5 transition-colors hover:bg-white/[0.05]">
               <div className="flex items-center justify-between gap-2">
                 <span className="truncate text-[13px] font-semibold text-white">{p.material}</span>
                 <span className="shrink-0 rounded-full border border-brand/30 bg-brand/10 px-2 py-0.5 text-[10.5px] font-bold tabular-nums text-brand">
@@ -67,7 +67,7 @@ export default function BundleChances({
       </ul>
       <Link
         href="/pools"
-        className="flex items-center justify-center gap-1 border-t border-white/[0.08] py-3 text-[12.5px] font-semibold text-white/55 transition-colors hover:text-brand"
+        className="flex items-center justify-center gap-1 border-t border-white/[0.08] py-3.5 text-[12.5px] font-semibold text-white/55 transition-colors hover:text-brand"
       >
         Alle Smart Pools <ChevronRight className="h-3.5 w-3.5" />
       </Link>

@@ -27,7 +27,7 @@ import { fetchMyCompanyId } from "@/lib/myCompany";
 import RecommendedPartners from "@/components/feed/RecommendedPartners";
 import FeedBundleHero from "@/components/feed/FeedBundleHero";
 import { SAMPLE_POSTS, type MockPost } from "@/data/feedMock";
-import { PANEL, badge } from "@/lib/ui";
+import { badge } from "@/lib/ui";
 import { cn } from "@/lib/utils";
 
 const REGIONS = ["Zürich", "Bern", "Nordwestschweiz", "Innerschweiz"] as const;
@@ -238,7 +238,7 @@ function Composer({ onCreated }: { onCreated: () => void }) {
   );
 
   return (
-    <div className={cn(PANEL, "overflow-hidden")}>
+    <div className="border-t border-white/[0.08] pt-5">
       {!open ? (
         <div className="p-4">
           <div className="flex items-center gap-3">
@@ -443,7 +443,7 @@ function PostCard({ post, index }: { post: Post; index: number }) {
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.25, delay: Math.min(index * 0.04, 0.24), ease: "easeOut" }}
-      className={cn(PANEL, "p-4 sm:p-5")}
+      className="border-t border-white/[0.08] py-6"
     >
       <div className="flex items-center gap-3">
         <Link
@@ -571,7 +571,7 @@ function ChipRow({
 
 function SkeletonCard() {
   return (
-    <div className={cn(PANEL, "animate-pulse p-5")}>
+    <div className="animate-pulse border-t border-white/[0.08] py-6">
       <div className="flex items-center gap-3">
         <div className="h-11 w-11 rounded-full bg-white/10" />
         <div className="space-y-2">
@@ -738,7 +738,7 @@ export default function NetworkFeed() {
           </div>
         </div>
       ) : posts.length === 0 ? (
-        <div className={cn(PANEL, "border-dashed py-12 text-center text-sm text-white/40")}>
+        <div className="border-t border-white/[0.08] py-14 text-center text-sm text-white/40">
           Keine Beiträge in dieser Auswahl.
         </div>
       ) : (
