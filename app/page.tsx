@@ -2,9 +2,8 @@ import Link from "next/link";
 import TwoWays from "@/components/home/TwoWays";
 import ProcessVideo from "@/components/home/ProcessVideo";
 import PhotoSlot from "@/components/home/PhotoSlot";
-import HeroMedia from "@/components/home/HeroMedia";
 import PriceProof from "@/components/home/PriceProof";
-import { PHOTO_POOLS, PHOTO_NETWORK } from "@/data/media";
+import { PHOTO_POOLS, PHOTO_NETWORK, HERO_IMAGE } from "@/data/media";
 import TrustBar from "@/components/home/TrustBar";
 import {
   ArrowRight,
@@ -85,14 +84,29 @@ export default function Home() {
           Schrift steht, einer von unten, damit der Uebergang zum naechsten
           Abschnitt nicht abreisst. */}
       <section className="relative isolate overflow-hidden bg-navy-950 text-white">
-        <HeroMedia />
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={HERO_IMAGE}
+          alt=""
+          aria-hidden
+          className="absolute inset-0 h-full w-full object-cover object-[64%_38%]"
+        />
+        {/* Zwei getrennte Abdunklungen statt einer fuer alles.
+            Am Bildschirm steht der Text links neben dem Bild, also faellt
+            der Verlauf von links. Auf dem Handy steht er MITTEN darauf —
+            dort braucht es eine Abdunklung von unten und oben, sonst laeuft
+            die Schrift ueber das Kranlicht und wird unlesbar. */}
         <div
           aria-hidden
-          className="absolute inset-0 bg-gradient-to-r from-navy-950 via-navy-950/82 to-navy-950/5"
+          className="absolute inset-0 bg-gradient-to-t from-navy-950 via-navy-950/60 to-navy-950/70 lg:hidden"
         />
         <div
           aria-hidden
-          className="absolute inset-0 bg-gradient-to-t from-navy-950 via-transparent to-navy-950/45"
+          className="absolute inset-0 hidden bg-gradient-to-r from-navy-950 via-navy-950/82 to-navy-950/5 lg:block"
+        />
+        <div
+          aria-hidden
+          className="absolute inset-0 hidden bg-gradient-to-t from-navy-950 via-transparent to-navy-950/45 lg:block"
         />
 
         <div className="relative mx-auto max-w-6xl px-4 sm:px-6">
