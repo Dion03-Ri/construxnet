@@ -85,20 +85,19 @@ export const PHOTO_EXCAVATION: PhotoSlot = {
 };
 
 /* ==================================================================
-   HERO-VIDEO
+   HERO-BILD
    ------------------------------------------------------------------
-   Dieselbe Szene wie /hero-kran.jpg, nur bewegt. Das Standbild bleibt
-   als `poster` liegen: es erscheint sofort, während das Video lädt,
-   und es ist das, was Besucher mit gedrosselter Verbindung oder
-   eingeschalteter Bewegungsreduktion zu sehen bekommen.
+   Der Kopf der Startseite ist bewusst ein STANDBILD, kein Video.
 
-   Ein Hintergrundvideo läuft von selbst — anders als das Erklärvideo
-   weiter unten. Das ist hier richtig, weil es tonlos ist, nichts
-   erklärt und nur die Fläche belebt. Bedingungen: `muted`, `loop`,
-   `playsInline`, keine Bedienelemente.
+   Es gab einen Versuch mit bewegtem Hintergrund; die Bewegung wirkte
+   unruhig und lenkte von der Ueberschrift ab. Die Adresse des Videos
+   steht unten, falls das je wieder gefragt ist — ein Standbild an
+   dieser Stelle ist aber die ruhigere und schnellere Loesung, und es
+   gibt nichts, was erst geladen werden muss.
    ================================================================== */
-export const HERO_VIDEO_URL =
-  "https://6lqwc1k8pyo1qnqz.public.blob.vercel-storage.com/7169070-uhd_3840_2160_25fps.mp4";
+export const HERO_IMAGE = "/hero.jpg";
 
-/** Standbild hinter dem Video: erscheint sofort und bleibt der Rückfall. */
-export const HERO_VIDEO_POSTER = "/hero-kran.jpg";
+/** Nicht in Gebrauch. Aufbewahrt, damit die Adresse nicht verlorengeht,
+ *  falls der Kopf doch einmal wieder bewegt sein soll. */
+export const HERO_VIDEO_URL_UNUSED =
+  "https://6lqwc1k8pyo1qnqz.public.blob.vercel-storage.com/7169070-uhd_3840_2160_25fps.mp4";
