@@ -165,114 +165,21 @@ export default function NetworkHub() {
   };
 
   return (
-    <div className="grid grid-cols-1 gap-5 lg:grid-cols-[260px_minmax(0,1fr)_300px]">
-      {/* ============================ LEFT RAIL ============================ */}
-      <aside className="space-y-4">
-        <DarkPanel>
-          <div className="border-b border-white/10 px-5 pb-3 pt-4">
-            <Eyebrow dark>Dein Netzwerk</Eyebrow>
-            <h2 className="mt-0.5 text-[15px] font-bold">Überblick</h2>
-          </div>
-
-          {networkEmpty ? (
-            // Erster Eindruck: keine Nullen-Wand, sondern ein Weg nach vorne.
-            <div className="px-5 py-4">
-              <p className="text-[13px] leading-relaxed text-white/55">
-                Dein Netzwerk ist noch leer. Finde Bauunternehmen und Baustoffwerke
-                {region ? ` in ${region}` : " in deiner Region"} — mehr Verbindungen heisst
-                mehr Bündel-Möglichkeiten.
-              </p>
-              <Link
-                href="/network/entdecken"
-                className="mt-3.5 inline-flex items-center gap-1.5 rounded-md bg-brand px-3.5 py-2 text-[13px] font-semibold text-navy-900 transition-colors hover:bg-brand/100"
-              >
-                Firmen finden <ArrowRight className="h-3.5 w-3.5" />
-              </Link>
-            </div>
-          ) : (
-            <>
-              <div className="divide-y divide-white/[0.06] px-5">
-                {[...overview, ...(moreStats ? overviewMore : [])].map((s) => (
-                  <div key={s.label} className="flex items-center justify-between py-2.5">
-                    <span className="text-[13px] text-white/55">{s.label}</span>
-                    <span className="text-lg font-bold tabular-nums">{s.value}</span>
-                  </div>
-                ))}
-              </div>
-              <button
-                type="button"
-                onClick={() => setMoreStats((v) => !v)}
-                className="flex w-full items-center justify-center gap-1 border-t border-white/10 py-2.5 text-[12px] font-semibold text-brand transition-colors hover:bg-white/5"
-              >
-                {moreStats ? "Weniger anzeigen" : "Mehr anzeigen"}
-                <ChevronDown className={cn("h-4 w-4 transition-transform", moreStats && "rotate-180")} />
-              </button>
-            </>
-          )}
-        </DarkPanel>
-
-        {/* Neu im Netzwerk — echte, zuletzt beigetretene Firmen */}
-        {newest.length > 0 && (
-          <DarkPanel>
-            <div className="border-b border-white/10 px-5 pb-3 pt-4">
-              <Eyebrow dark>Zuletzt dazugekommen</Eyebrow>
-              <h3 className="mt-0.5 flex items-center gap-1.5 text-[15px] font-bold">
-                <Sparkle className="h-4 w-4 text-brand" /> Neu im Netzwerk
-              </h3>
-            </div>
-            <ul className="px-3 py-2">
-              {newest.map((c) => (
-                <li key={c.id} className="flex items-center gap-2.5 rounded-lg px-2 py-2 transition-colors hover:bg-white/5">
-                  <Link
-                    href={`/company/${c.id}`}
-                    className="grid h-9 w-9 shrink-0 place-items-center overflow-hidden rounded-full bg-white/10 text-[11px] font-bold"
-                  >
-                    {c.logo_url ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img src={c.logo_url} alt={c.company_name} className="h-full w-full object-cover" />
-                    ) : (
-                      initials(c.company_name)
-                    )}
-                  </Link>
-                  <div className="min-w-0 flex-1">
-                    <Link href={`/company/${c.id}`} className="flex items-center gap-1 truncate text-[13px] font-semibold hover:text-brand">
-                      <span className="truncate">{c.company_name}</span>
-                      {c.verified && <BadgeCheck className="h-3.5 w-3.5 shrink-0 text-brand" />}
-                    </Link>
-                    <div className="truncate text-[11px] text-white/40">
-                      {ROLE_LABEL[c.role] ?? c.role}
-                      {c.city ? ` · ${c.city}` : ""}
-                    </div>
-                  </div>
-                  {!conns[c.id] && myCompanyId && (
-                    <button
-                      type="button"
-                      onClick={() => connect(c.id)}
-                      aria-label={`${c.company_name} vernetzen`}
-                      className="grid h-7 w-7 shrink-0 place-items-center rounded-md border border-white/15 text-white/70 transition-colors hover:border-brand/50 hover:text-brand"
-                    >
-                      <UserPlus className="h-3.5 w-3.5" />
-                    </button>
-                  )}
-                </li>
-              ))}
-            </ul>
-          </DarkPanel>
-        )}
-      </aside>
-
-      {/* ============================== MITTE ============================== */}
-      {/* Auf dem Handy zuerst: Verbindungen und Anfragen stehen oben. */}
-      <div className="order-first min-w-0 space-y-4 lg:order-none">
-        {/* Kopf: wofür diese Seite da ist, plus der Weg zu neuen Firmen */}
-        <DarkPanel>
+    <div>
+      {/* ====================== KOPF, VOLLE BREITE ======================
+          Vorher stand die grosse Ueberschrift in der schmalen Mittelspalte
+          eines Dreispalters. Dort brach sie um, und die ganze Seite wirkte
+          gequetscht. Ein Seitenkopf gehoert ueber die volle Breite, mit Luft
+          darum — so machen es Linear und Stripe. Erst darunter beginnt die
+          Arbeitsflaeche. */}
+      <header className="border-b border-white/[0.08]">
           <div className="flex flex-col gap-8 py-8 lg:flex-row lg:items-center lg:justify-between">
-            <div className="max-w-lg">
+            <div className="max-w-2xl">
               <span className={EYEBROW}>Dein Netzwerk</span>
               <h1 className={cn(D_MD, "mt-4 text-white")}>
                 Mit wem du baust{region ? ` — und wer in ${region} dazupasst` : ""}
               </h1>
-              <p className="mt-5 text-[15px] leading-relaxed text-white/55">
+              <p className="mt-6 max-w-xl text-[16px] leading-relaxed text-white/55">
                 Verbindungen verwalten, Anfragen beantworten und neue Partner finden.
                 <span className="hidden sm:inline">
                   {" "}Jede Verbindung ist ein möglicher Bündel-Partner, Lieferant oder Abnehmer.
@@ -319,8 +226,13 @@ export default function NetworkHub() {
               </Link>
             )}
           </div>
-        </DarkPanel>
+      </header>
 
+      {/* Arbeitsflaeche: eine breite Spalte fuer die Listen, eine schmale
+          Schiene fuer alles Weiterfuehrende. Zwei Spalten statt drei — die
+          dritte war der Grund fuer die Enge. */}
+      <div className="grid grid-cols-1 gap-x-16 gap-y-14 pt-12 lg:grid-cols-[minmax(0,1fr)_270px]">
+        <div className="min-w-0 space-y-12">
         {/* Verbindungen verwalten */}
         <div className="border-t border-white/[0.08]">
           <div className="no-scrollbar flex gap-7 overflow-x-auto border-b border-white/[0.08]">
@@ -510,10 +422,102 @@ export default function NetworkHub() {
             Lege ein Firmenprofil an, um dich mit anderen Firmen zu vernetzen.
           </p>
         )}
-      </div>
 
-      {/* ============================ RIGHT RAIL ============================ */}
-      <aside className="order-last space-y-4 lg:order-none">
+        </div>
+
+        <aside className="space-y-10">
+        <DarkPanel>
+          <div className="border-b border-white/10 px-5 pb-3 pt-4">
+            <Eyebrow dark>Dein Netzwerk</Eyebrow>
+            <h2 className="mt-0.5 text-[15px] font-bold">Überblick</h2>
+          </div>
+
+          {networkEmpty ? (
+            // Erster Eindruck: keine Nullen-Wand, sondern ein Weg nach vorne.
+            <div className="px-5 py-4">
+              <p className="text-[13px] leading-relaxed text-white/55">
+                Dein Netzwerk ist noch leer. Finde Bauunternehmen und Baustoffwerke
+                {region ? ` in ${region}` : " in deiner Region"} — mehr Verbindungen heisst
+                mehr Bündel-Möglichkeiten.
+              </p>
+              <Link
+                href="/network/entdecken"
+                className="mt-4 inline-flex items-center gap-1.5 text-[13px] font-semibold text-brand transition-colors hover:text-brand-500"
+              >
+                Firmen finden <ArrowRight className="h-3.5 w-3.5" />
+              </Link>
+            </div>
+          ) : (
+            <>
+              <div className="divide-y divide-white/[0.06] px-5">
+                {[...overview, ...(moreStats ? overviewMore : [])].map((s) => (
+                  <div key={s.label} className="flex items-center justify-between py-2.5">
+                    <span className="text-[13px] text-white/55">{s.label}</span>
+                    <span className="text-lg font-bold tabular-nums">{s.value}</span>
+                  </div>
+                ))}
+              </div>
+              <button
+                type="button"
+                onClick={() => setMoreStats((v) => !v)}
+                className="flex w-full items-center justify-center gap-1 border-t border-white/10 py-2.5 text-[12px] font-semibold text-brand transition-colors hover:bg-white/5"
+              >
+                {moreStats ? "Weniger anzeigen" : "Mehr anzeigen"}
+                <ChevronDown className={cn("h-4 w-4 transition-transform", moreStats && "rotate-180")} />
+              </button>
+            </>
+          )}
+        </DarkPanel>
+
+        {/* Neu im Netzwerk — echte, zuletzt beigetretene Firmen */}
+        {newest.length > 0 && (
+          <DarkPanel>
+            <div className="border-b border-white/10 px-5 pb-3 pt-4">
+              <Eyebrow dark>Zuletzt dazugekommen</Eyebrow>
+              <h3 className="mt-0.5 flex items-center gap-1.5 text-[15px] font-bold">
+                <Sparkle className="h-4 w-4 text-brand" /> Neu im Netzwerk
+              </h3>
+            </div>
+            <ul className="px-3 py-2">
+              {newest.map((c) => (
+                <li key={c.id} className="flex items-center gap-2.5 rounded-lg px-2 py-2 transition-colors hover:bg-white/5">
+                  <Link
+                    href={`/company/${c.id}`}
+                    className="grid h-9 w-9 shrink-0 place-items-center overflow-hidden rounded-full bg-white/10 text-[11px] font-bold"
+                  >
+                    {c.logo_url ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={c.logo_url} alt={c.company_name} className="h-full w-full object-cover" />
+                    ) : (
+                      initials(c.company_name)
+                    )}
+                  </Link>
+                  <div className="min-w-0 flex-1">
+                    <Link href={`/company/${c.id}`} className="flex items-center gap-1 truncate text-[13px] font-semibold hover:text-brand">
+                      <span className="truncate">{c.company_name}</span>
+                      {c.verified && <BadgeCheck className="h-3.5 w-3.5 shrink-0 text-brand" />}
+                    </Link>
+                    <div className="truncate text-[11px] text-white/40">
+                      {ROLE_LABEL[c.role] ?? c.role}
+                      {c.city ? ` · ${c.city}` : ""}
+                    </div>
+                  </div>
+                  {!conns[c.id] && myCompanyId && (
+                    <button
+                      type="button"
+                      onClick={() => connect(c.id)}
+                      aria-label={`${c.company_name} vernetzen`}
+                      className="grid h-7 w-7 shrink-0 place-items-center rounded-md border border-white/15 text-white/70 transition-colors hover:border-brand/50 hover:text-brand"
+                    >
+                      <UserPlus className="h-3.5 w-3.5" />
+                    </button>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </DarkPanel>
+        )}
+
         {/* Zwei Verweise als Zeilen statt als Karten mit Symbolflaeche.
             Ein Kompass in einem Kasten sagt nichts, was der Titel nicht
             schon sagt — er fuellt nur Platz. */}
@@ -553,13 +557,14 @@ export default function NetworkHub() {
             </p>
             <Link
               href="/pools"
-              className="mt-3.5 inline-flex items-center gap-1.5 rounded-md bg-brand px-3.5 py-2 text-[13px] font-semibold text-navy-900 transition-colors hover:bg-brand/100"
+              className="mt-4 inline-flex items-center gap-1.5 text-[13px] font-semibold text-brand transition-colors hover:text-brand-500"
             >
               Zu den Bündeln <ArrowRight className="h-3.5 w-3.5" />
             </Link>
           </div>
         </DarkPanel>
-      </aside>
+        </aside>
+      </div>
 
       {requestTarget && myCompanyId && (
         <DirectRequestModal
