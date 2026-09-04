@@ -154,3 +154,23 @@ export const GRID_TEXTURE = {
     "linear-gradient(rgba(255,255,255,.7) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.7) 1px,transparent 1px)",
   backgroundSize: "26px 26px",
 };
+
+/* ==================================================================
+   BLOCK — der Ersatz für die Karte
+   ------------------------------------------------------------------
+   Ein dünn umrandetes Rechteck um eine Gruppe ist das Erkennungszeichen
+   generierter Entwürfe. Wo eine Karte nur GRUPPIERT hat, statt selbst
+   etwas zu sein, steht jetzt ein Block: eine Haarlinie oben, Abstand,
+   fertig. So arbeiten Linear, Stripe und TradingView.
+
+   PANEL bleibt für das, was wirklich ein eigenes Objekt ist — eine
+   Produktaufnahme, ein Blatt, eine grosse Produktkarte.
+   ================================================================== */
+export const BLOCK = "border-t border-white/[0.08] pt-5";
+
+/** Überschrift eines Blocks — ersetzt die Kopfzeile einer Karte. */
+export const BLOCK_HEAD =
+  "text-[10.5px] font-semibold uppercase tracking-[0.14em] text-white/40";
+
+/** Zeile in einer Liste: Trennung durch Haarlinie statt durch Rahmen. */
+export const LIST_ROW = "border-t border-white/[0.08]";

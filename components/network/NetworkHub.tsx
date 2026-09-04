@@ -25,11 +25,10 @@ import CompanyCard from "@/components/network/CompanyCard";
 import {
   useNetwork,
   ROLE_LABEL,
-  GRID_BG,
   initials,
   type NetCompany,
 } from "@/lib/network";
-import { PANEL } from "@/lib/ui";
+import { D_MD, EYEBROW, BTN_GOLD, BTN_OUTLINE_DARK } from "@/lib/ui";
 import { cn } from "@/lib/utils";
 
 /** Kleine Überschrift über einem Panel-Titel. */
@@ -41,14 +40,16 @@ function Eyebrow({ children, dark }: { children: React.ReactNode; dark?: boolean
   );
 }
 
-/** Dunkles Panel in der Sprache von Feed und Startseite. */
+/**
+ * Ein Block statt einer Karte.
+ *
+ * Vorher: gerundetes Rechteck, Rand, dunkle Fuellung, Rastertextur — sechs
+ * davon nebeneinander ergaben eine Wand aus Kaesten, in der nichts wichtiger
+ * war als anderes. Jetzt traegt eine Haarlinie oben die Trennung, sonst
+ * nichts. Der Inhalt steht direkt auf der Seite.
+ */
 function DarkPanel({ children, className }: { children: React.ReactNode; className?: string }) {
-  return (
-    <div className={cn("relative overflow-hidden rounded-xl border border-white/10 bg-navy-900 text-white", className)}>
-      <div aria-hidden className="pointer-events-none absolute inset-0 opacity-[0.06]" style={GRID_BG} />
-      <div className="relative">{children}</div>
-    </div>
-  );
+  return <div className={cn("border-t border-white/[0.08] text-white", className)}>{children}</div>;
 }
 
 /** Zeile einer Firma in den Listen des Netzwerks. */
@@ -265,30 +266,28 @@ export default function NetworkHub() {
       <div className="order-first min-w-0 space-y-4 lg:order-none">
         {/* Kopf: wofür diese Seite da ist, plus der Weg zu neuen Firmen */}
         <DarkPanel>
-          <div className="flex flex-col gap-5 p-5 sm:p-6 lg:flex-row lg:items-center lg:justify-between">
+          <div className="flex flex-col gap-8 py-8 lg:flex-row lg:items-center lg:justify-between">
             <div className="max-w-lg">
-              <span className="inline-flex items-center gap-1.5 rounded-md border border-brand/30 bg-brand/10 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-brand">
-                Dein Netzwerk
-              </span>
-              <h1 className="mt-3 text-xl font-bold leading-snug sm:text-2xl">
+              <span className={EYEBROW}>Dein Netzwerk</span>
+              <h1 className={cn(D_MD, "mt-4 text-white")}>
                 Mit wem du baust{region ? ` — und wer in ${region} dazupasst` : ""}
               </h1>
-              <p className="mt-1.5 text-[13px] leading-relaxed text-white/55">
+              <p className="mt-5 text-[15px] leading-relaxed text-white/55">
                 Verbindungen verwalten, Anfragen beantworten und neue Partner finden.
                 <span className="hidden sm:inline">
                   {" "}Jede Verbindung ist ein möglicher Bündel-Partner, Lieferant oder Abnehmer.
                 </span>
               </p>
-              <div className="mt-4 flex flex-wrap gap-2">
+              <div className="mt-8 flex flex-wrap gap-3">
                 <Link
                   href="/network/entdecken"
-                  className="inline-flex items-center gap-1.5 rounded-md bg-brand px-4 py-2.5 text-sm font-semibold text-navy-900 transition-colors hover:bg-brand/100"
+                  className={BTN_GOLD}
                 >
                   <Compass className="h-4 w-4" /> Passende Firmen finden
                 </Link>
                 <Link
                   href="/map"
-                  className="inline-flex items-center gap-1.5 rounded-md border border-white/15 px-4 py-2.5 text-sm font-semibold text-white/85 transition-colors hover:bg-white/5"
+                  className={BTN_OUTLINE_DARK}
                 >
                   <MapIcon className="h-4 w-4" /> Auf der Karte
                 </Link>
@@ -323,18 +322,21 @@ export default function NetworkHub() {
         </DarkPanel>
 
         {/* Verbindungen verwalten */}
-        <div className={cn(PANEL, "overflow-hidden")}>
-          <div className="no-scrollbar flex gap-1.5 overflow-x-auto border-b border-white/[0.06] px-4 py-3">
+        <div className="border-t border-white/[0.08]">
+          <div className="no-scrollbar flex gap-7 overflow-x-auto border-b border-white/[0.08]">
             {TABS.map((t) => (
               <button
                 key={t.key}
                 type="button"
                 onClick={() => setTab(t.key)}
                 className={cn(
-                  "flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-md px-3.5 py-1.5 text-[13px] font-semibold transition-colors",
+                  // Der aktive Reiter traegt eine Goldkante unten, kein
+                  // gefuelltes Kaestchen. Das ist der Unterschied zwischen
+                  // einer Navigation und einer Knopfleiste.
+                  "-mb-px flex shrink-0 items-center gap-2 whitespace-nowrap border-b-2 pb-3 pt-1 text-[13.5px] font-semibold transition-colors",
                   tab === t.key
-                    ? "bg-navy-900 text-white"
-                    : "border border-white/[0.08] bg-[#0B1522] text-white/55 hover:border-white/[0.16] hover:text-white",
+                    ? "border-brand text-white"
+                    : "border-transparent text-white/45 hover:text-white",
                 )}
               >
                 <t.icon className="h-3.5 w-3.5" />
@@ -468,7 +470,7 @@ export default function NetworkHub() {
 
         {/* Vorschläge — die Vollansicht liegt auf /network/entdecken */}
         {suggestions.length > 0 && (
-          <div className={cn(PANEL, "overflow-hidden")}>
+          <div className="border-t border-white/[0.08]">
             <div className="flex flex-wrap items-center justify-between gap-2 border-b border-white/[0.06] px-5 py-3.5">
               <div>
                 <Eyebrow>Empfohlen für dich</Eyebrow>
@@ -512,46 +514,32 @@ export default function NetworkHub() {
 
       {/* ============================ RIGHT RAIL ============================ */}
       <aside className="order-last space-y-4 lg:order-none">
-        {/* Entdecken — der Einstieg in die grosse Liste */}
-        <Link
-          href="/network/entdecken"
-          className={cn(PANEL, "group block overflow-hidden transition-colors hover:border-brand/40")}
-        >
-          <div className="relative h-24 overflow-hidden bg-navy-900">
-            <div aria-hidden className="pointer-events-none absolute inset-0 opacity-[0.07]" style={GRID_BG} />
-            <div className="absolute inset-0 grid place-items-center">
-              <Compass className="h-8 w-8 text-brand/70" />
-            </div>
-          </div>
-          <div className="flex items-center gap-2 px-4 py-3">
+        {/* Zwei Verweise als Zeilen statt als Karten mit Symbolflaeche.
+            Ein Kompass in einem Kasten sagt nichts, was der Titel nicht
+            schon sagt — er fuellt nur Platz. */}
+        {[
+          {
+            href: "/network/entdecken",
+            t: "Firmen entdecken",
+            d:
+              suggestions.length > 0
+                ? `${suggestions.length} Firmen, mit denen du noch nicht verbunden bist`
+                : "Nach Kanton, Rolle und Namen filtern",
+          },
+          { href: "/map", t: "Firmen-Karte", d: "Standorte in der ganzen Schweiz" },
+        ].map((l) => (
+          <Link
+            key={l.href}
+            href={l.href}
+            className="group flex items-center gap-3 border-t border-white/[0.08] py-4 transition-colors hover:bg-white/[0.03]"
+          >
             <div className="min-w-0 flex-1">
-              <div className="text-[13px] font-bold text-white">Firmen entdecken</div>
-              <div className="text-[11px] text-white/55">
-                {suggestions.length > 0
-                  ? `${suggestions.length} Firmen, mit denen du noch nicht verbunden bist`
-                  : "Nach Kanton, Rolle und Namen filtern"}
-              </div>
+              <div className="text-[14px] font-bold text-white group-hover:text-brand">{l.t}</div>
+              <div className="mt-0.5 text-[12px] text-white/40">{l.d}</div>
             </div>
             <ArrowRight className="h-4 w-4 shrink-0 text-white/25 transition-transform group-hover:translate-x-0.5" />
-          </div>
-        </Link>
-
-        {/* Lieferanten-Karte */}
-        <Link href="/map" className={cn(PANEL, "group block overflow-hidden transition-colors hover:border-brand/40")}>
-          <div className="relative h-24 overflow-hidden bg-navy-900">
-            <div aria-hidden className="pointer-events-none absolute inset-0 opacity-[0.07]" style={GRID_BG} />
-            <div className="absolute inset-0 grid place-items-center">
-              <MapIcon className="h-8 w-8 text-brand/70" />
-            </div>
-          </div>
-          <div className="flex items-center gap-2 px-4 py-3">
-            <div className="min-w-0 flex-1">
-              <div className="text-[13px] font-bold text-white">Firmen-Karte</div>
-              <div className="text-[11px] text-white/55">Standorte in der ganzen Schweiz</div>
-            </div>
-            <ArrowRight className="h-4 w-4 shrink-0 text-white/25 transition-transform group-hover:translate-x-0.5" />
-          </div>
-        </Link>
+          </Link>
+        ))}
 
         {/* Smart Pools */}
         <DarkPanel>
