@@ -43,24 +43,16 @@ function Card({
         </Link>
       </div>
 
-      {/* Bildbühne.
-          Drei Dinge waren hier falsch und liessen jedes Motiv billig und
-          angeschnitten wirken, egal wie gut es war:
-          1. Das Bild sass mit `items-end` bündig auf der Unterkante einer
-             Fläche mit `overflow-hidden` — es sah aus, als sei es dort
-             abgesäbelt worden.
-          2. Ein schwarzer Verlauf lag ÜBER dem unteren Drittel und liess es
-             wegblassen. Auf schwarzem Grund über schwarzem Bild hatte er
-             ohnehin nichts zu verbergen.
-          3. Beide Aufnahmen hatten unterschiedliche Seitenverhältnisse, aber
-             eine feste Höhe — dadurch war die eine schmal und die andere
-             breit, und die zwei Karten wirkten unabgestimmt.
+      {/* Bildfläche nach dem Vorbild der grossen Produktkarten: das Motiv
+          fuellt die Karte bis an ihre Kanten und wird von der Kartenform
+          beschnitten, statt als kleines Objekt mit Luft ringsum zu stehen.
+          Das ist der Unterschied zwischen „Bild in einer Kachel" und einer
+          Karte, die aus einem Stueck ist.
 
-          Jetzt: eine gleich grosse Bühne je Karte, das Motiv mittig und
-          vollständig darin, mit Luft nach unten. `object-contain` sorgt
-          dafür, dass jedes künftige Bild — hoch, quer oder quadratisch —
-          dieselbe Fläche einnimmt, ohne beschnitten zu werden. */}
-      <div className="mt-8 flex h-[230px] items-center justify-center px-6 pb-9 sm:mt-10 sm:h-[260px] sm:px-10 sm:pb-11">
+          `object-cover` statt `contain`: das Motiv wird dadurch gross und
+          fuellt die Flaeche. Beschnitten wird nur der schwarze Rand der
+          Aufnahmen — die schwarze Karte setzt ihn nahtlos fort. */}
+      <div className="relative mt-8 h-[300px] overflow-hidden sm:mt-10 sm:h-[350px]">
         {children}
       </div>
     </div>
@@ -82,19 +74,7 @@ function Art({ src, alt }: { src: string; alt: string }) {
       src={src}
       alt={alt}
       loading="lazy"
-      className={cn(
-        "max-h-full w-auto max-w-full object-contain",
-        // Die Renders bringen einen warmen Lichtschein mit, der bis an den
-        // Bildrand reicht (gemessen rgb(70,53,31), nicht schwarz). Auf der
-        // schwarzen Karte endete der in einem sichtbaren Rechteck — das war
-        // der Grund, warum die Motive billig wirkten.
-        //
-        // Statt die Tiefen wegzurechnen und das Objekt flach zu machen,
-        // laeuft der Rand weich aus. Das wirkt auch bei jedem kuenftigen
-        // Bild, ganz gleich wie sauber es freigestellt ist.
-        "[-webkit-mask-image:radial-gradient(ellipse_at_center,black_52%,transparent_88%)]",
-        "[mask-image:radial-gradient(ellipse_at_center,black_52%,transparent_88%)]",
-      )}
+      className="h-full w-full object-cover object-center"
     />
   );
 }

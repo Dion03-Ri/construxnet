@@ -2,7 +2,7 @@ import Link from "next/link";
 import TwoWays from "@/components/home/TwoWays";
 import ProcessVideo from "@/components/home/ProcessVideo";
 import PhotoSlot from "@/components/home/PhotoSlot";
-import PriceProof from "@/components/home/PriceProof";
+import BundleChances from "@/components/pools/BundleChances";
 import { PHOTO_POOLS, PHOTO_NETWORK, HERO_IMAGE } from "@/data/media";
 import TrustBar from "@/components/home/TrustBar";
 import {
@@ -153,81 +153,30 @@ export default function Home() {
               Wer alleine einkauft, zahlt Einzelpreise. Obtanet bündelt den Bedarf mehrerer
               Baufirmen zu einem gemeinsamen Auftrag und verhandelt mit dem gesamten Volumen
               bei den Werken. <b className="text-white">Je grösser das Bündel, desto höher
-              der Rabatt</b> — auch für kleine Einzelbestellungen.
+              der Rabatt</b> — auch für kleine Einzelbestellungen. Jedes Angebot misst sich
+              dabei am KBOB-Referenzpreis: kein Prospektversprechen, sondern die Grösse,
+              gegen die auf Obtanet jeder Preis antritt.
             </p>
             <Link href="/pools" className={cn(BTN_LIGHT, "mt-9")}>
               So funktioniert ein Pool <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
 
-          {/* Bündelungs-Grafik */}
-          <div className="relative overflow-hidden rounded-[26px] border border-white/[0.09] bg-navy-900 p-6 text-white shadow-[0_24px_60px_-24px_rgba(8,17,30,0.6)] sm:rounded-[30px] sm:p-7">
-            <div aria-hidden className="pointer-events-none absolute inset-0 opacity-[0.06]" style={GRID_BG} />
+          {/* Ausschnitt aus der Anwendung.
+              Hier stand eine gezeichnete Erklaergrafik. Ein echter
+              Ausschnitt ueberzeugt mehr: er zeigt, was jemand nach der
+              Anmeldung wirklich sieht, statt eine Illustration davon.
+              Es ist buchstaeblich dasselbe Bauteil wie im Feed. */}
+          <div className="relative">
             <div
               aria-hidden
-              className="pointer-events-none absolute -bottom-24 -right-16 h-64 w-64 rounded-full bg-brand/15 blur-3xl"
+              className="pointer-events-none absolute -inset-6 rounded-[36px] bg-gradient-to-br from-brand/[0.07] to-accent-500/[0.07] blur-2xl"
             />
-
             <div className="relative">
-              <div className="flex items-center justify-between">
-                <div>
-                  <div className="text-[13px] font-bold">Beton C25/30 · Raum Zürich</div>
-                  <div className="text-[11px] text-white/40">Sammelphase läuft</div>
-                </div>
-                <span className="rounded-full border border-brand/30 bg-brand/10 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-brand">
-                  Beispiel
-                </span>
+              <div className="mb-3 flex items-center gap-2 text-[10.5px] font-semibold uppercase tracking-[0.16em] text-white/35">
+                <span className="h-px w-6 bg-white/20" /> Ausschnitt aus der Anwendung
               </div>
-
-              {/* Beitragende Firmen */}
-              <div className="mt-5 grid grid-cols-3 gap-2">
-                {[
-                  { n: "Firma A", v: "120 m³" },
-                  { n: "Firma B", v: "90 m³" },
-                  { n: "Firma C", v: "90 m³" },
-                ].map((f) => (
-                  <div key={f.n} className="rounded-2xl border border-white/[0.09] bg-white/[0.04] px-3 py-2.5 text-center">
-                    <Building2 className="mx-auto h-4 w-4 text-white/35" />
-                    <div className="mt-1.5 text-[11px] text-white/50">{f.n}</div>
-                    <div className="text-[13px] font-bold">{f.v}</div>
-                  </div>
-                ))}
-              </div>
-
-              {/* Zusammenführung */}
-              <div className="relative mt-3 flex justify-center">
-                <div className="h-5 w-px bg-gradient-to-b from-white/10 to-brand/60" />
-              </div>
-
-              {/* Gebündeltes Volumen */}
-              <div className="rounded-2xl border border-brand/30 bg-brand/10 px-4 py-3.5">
-                <div className="flex items-center justify-between">
-                  <span className="text-[12.5px] font-semibold text-white/85">Gebündeltes Volumen</span>
-                  <span className="text-[15px] font-bold text-brand">300 m³</span>
-                </div>
-                <div className="mt-2.5 h-1.5 w-full overflow-hidden rounded-full bg-white/10">
-                  <div className="h-full w-[86%] rounded-full bg-brand" />
-                </div>
-              </div>
-
-              {/* Ergebnis */}
-              <div className="mt-4 grid grid-cols-2 gap-2 border-t border-white/10 pt-4">
-                <div className="rounded-2xl bg-white/[0.04] px-3 py-2.5">
-                  <div className="text-[10px] uppercase tracking-wider text-white/40">Mengenrabatt</div>
-                  <div className="mt-0.5 text-[19px] font-bold text-brand">16 %</div>
-                  <div className="text-[10.5px] text-white/40">garantiert, ggü. KBOB</div>
-                </div>
-                <div className="rounded-2xl bg-white/[0.04] px-3 py-2.5">
-                  <div className="text-[10px] uppercase tracking-wider text-white/40">Ersparnis</div>
-                  <div className="mt-0.5 text-[19px] font-bold text-white">CHF 19'200</div>
-                  <div className="text-[10.5px] text-white/40">für alle Teilnehmer</div>
-                </div>
-              </div>
-
-              <p className="relative mt-4 flex items-start gap-2 text-[11.5px] leading-relaxed text-white/45">
-                <ShieldCheck className="mt-0.5 h-3.5 w-3.5 shrink-0 text-brand" />
-                Das beste Sealed-Bid-Angebot kann die Garantie sogar übertreffen.
-              </p>
+              <BundleChances />
             </div>
           </div>
         </div>
@@ -261,29 +210,6 @@ export default function Home() {
 
           {/* Ablauf als Video — erscheint, sobald die Adresse in data/media.ts steht */}
           <ProcessVideo />
-        </div>
-      </section>
-
-      {/* ================= Der Beweis in Zahlen ================= */}
-      {/* Deutlich vom Ablauf darueber abgesetzt: eigener Grundton, Haarlinie
-          oben, und der weiteste Abstand der ganzen Seite. Auf einer durchweg
-          dunklen Seite trennt nicht mehr die Farbe, sondern der Raum. */}
-      <section className="border-t border-white/[0.08] bg-[#040810]">
-        <div className={cn("mx-auto max-w-6xl px-4 sm:px-6", SECTION_WIDE)}>
-          <div className="mx-auto max-w-2xl text-center">
-            <span className={EYEBROW}>Der Unterschied in Zahlen</span>
-            <h2 className={cn(D_MD, "mt-5 text-white")}>
-              Was du heute zahlst — und was gebündelt möglich ist.
-            </h2>
-            <p className={cn(LEAD, "mt-6 text-white/55")}>
-              Jede Zeile misst sich am KBOB-Referenzpreis. Kein Prospektversprechen,
-              sondern die Grösse, gegen die auf Obtanet jedes Angebot antritt.
-            </p>
-          </div>
-
-          <div className="mx-auto mt-14 max-w-3xl sm:mt-16">
-            <PriceProof />
-          </div>
         </div>
       </section>
 
