@@ -43,16 +43,15 @@ function Card({
         </Link>
       </div>
 
-      {/* Bildfläche nach dem Vorbild der grossen Produktkarten: das Motiv
-          fuellt die Karte bis an ihre Kanten und wird von der Kartenform
-          beschnitten, statt als kleines Objekt mit Luft ringsum zu stehen.
-          Das ist der Unterschied zwischen „Bild in einer Kachel" und einer
-          Karte, die aus einem Stueck ist.
+      {/* Bildbühne: das Motiv steht klein und mittig, mit Luft nach unten.
+          Kein Verlauf darueber, kein Schimmer dahinter — beides hat frueher
+          einen hellen Kasten um das Bild erzeugt.
 
-          `object-cover` statt `contain`: das Motiv wird dadurch gross und
-          fuellt die Flaeche. Beschnitten wird nur der schwarze Rand der
-          Aufnahmen — die schwarze Karte setzt ihn nahtlos fort. */}
-      <div className="relative mt-8 h-[300px] overflow-hidden sm:mt-10 sm:h-[350px]">
+          Der eigentliche Grund fuer den hellen Rand lag aber in der Datei
+          selbst: der Hintergrund von art-direkt lag bei rgb(27,19,7) statt
+          auf Schwarz. Behoben per Schwarzpunkt-Korrektur — beide Aufnahmen
+          haben jetzt 0/0/0 und gehen randlos in die schwarze Karte ueber. */}
+      <div className="mt-8 flex h-[230px] items-center justify-center px-8 pb-10 sm:mt-10 sm:h-[255px] sm:px-12 sm:pb-12">
         {children}
       </div>
     </div>
@@ -74,7 +73,7 @@ function Art({ src, alt }: { src: string; alt: string }) {
       src={src}
       alt={alt}
       loading="lazy"
-      className="h-full w-full object-cover object-center"
+      className="max-h-full w-auto max-w-full object-contain"
     />
   );
 }
