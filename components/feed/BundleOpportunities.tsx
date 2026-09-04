@@ -1,7 +1,7 @@
 import Link from "next/link";
-import { TrendingDown, ChevronRight } from "lucide-react";
-import { PANEL, ROW_HOVER } from "@/lib/ui";
-import { cn } from "@/lib/utils";
+import { TrendingDown } from "lucide-react";
+import BundleChances from "@/components/pools/BundleChances";
+
 
 /**
  * Rechte Schiene des Feeds.
@@ -10,14 +10,6 @@ import { cn } from "@/lib/utils";
  * bleibt allein die KBOB-Karte: EIN dunkler Anker je Seite lenkt den Blick
  * auf die Zahl, die zählt — zehn dunkle Kästen lenken ihn nirgendwohin.
  */
-
-type Pool = { material: string; region: string; vol: string; pct: number; disc: number };
-
-const POOLS: Pool[] = [
-  { material: "Beton C25/30", region: "Zürich", vol: "230 m³", pct: 77, disc: 12 },
-  { material: "Armierungsstahl B500B", region: "Bern", vol: "48 t", pct: 80, disc: 12 },
-  { material: "Koffer-/Wandkies 0/45", region: "Nordwestschweiz", vol: "320 t", pct: 96, disc: 20 },
-];
 
 // Ruhige KBOB-Sparkline (12 Monate, normiert 0..1)
 const SPARK = [0.42, 0.5, 0.46, 0.58, 0.54, 0.62, 0.59, 0.66, 0.63, 0.71, 0.68, 0.74];
@@ -46,37 +38,7 @@ function Sparkline() {
 export default function BundleOpportunities() {
   return (
     <div className="space-y-4">
-      {/* Bündel-Chancen */}
-      <div className={cn(PANEL, "overflow-hidden")}>
-        <div className="flex items-baseline justify-between px-5 pb-3 pt-4">
-          <h3 className="text-[14px] font-bold tracking-tight text-white">Bündel-Chancen</h3>
-          <span className="text-[11px] text-white/40">deine Region</span>
-        </div>
-        <ul className="divide-y divide-white/[0.07] border-t border-white/[0.08]">
-          {POOLS.map((p) => (
-            <li key={p.material}>
-              <Link href="/pools" className="block px-5 py-3.5 transition-colors hover:bg-white/[0.05]">
-                <div className="flex items-center justify-between gap-2">
-                  <span className="truncate text-[13px] font-semibold text-white">{p.material}</span>
-                  <span className="shrink-0 rounded-full border border-brand/30 bg-brand/10 px-2 py-0.5 text-[10.5px] font-bold tabular-nums text-brand">
-                    −{p.disc}%
-                  </span>
-                </div>
-                <div className="mt-1 text-[11.5px] text-white/40">{p.region} · {p.vol}</div>
-                <div className="mt-2.5 h-1 w-full overflow-hidden rounded-full bg-white/10">
-                  <div className="h-full rounded-full bg-brand" style={{ width: `${p.pct}%` }} />
-                </div>
-              </Link>
-            </li>
-          ))}
-        </ul>
-        <Link
-          href="/pools"
-          className="flex items-center justify-center gap-1 border-t border-white/[0.08] py-3 text-[12.5px] font-semibold text-white/55 transition-colors hover:text-brand"
-        >
-          Alle Smart Pools <ChevronRight className="h-3.5 w-3.5" />
-        </Link>
-      </div>
+      <BundleChances />
 
       {/* Markt / KBOB — der eine dunkle Anker der Seite */}
       <div className="rounded-2xl border border-white/[0.08] bg-navy-950 p-5 text-white shadow-card">

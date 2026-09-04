@@ -95,7 +95,7 @@ export const PHOTO_EXCAVATION: PhotoSlot = {
    dieser Stelle ist aber die ruhigere und schnellere Loesung, und es
    gibt nichts, was erst geladen werden muss.
    ================================================================== */
-export const HERO_IMAGE = "/hero.jpg";
+export const HERO_IMAGE = "/hero-kran.jpg";
 
 /** Nicht in Gebrauch. Aufbewahrt, damit die Adresse nicht verlorengeht,
  *  falls der Kopf doch einmal wieder bewegt sein soll. */
