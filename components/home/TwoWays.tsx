@@ -28,7 +28,7 @@ function Card({
   children: React.ReactNode;
 }) {
   return (
-    <div className="group relative flex flex-col overflow-hidden rounded-[28px] border border-white/[0.09] bg-black pt-9 sm:rounded-[32px] sm:pt-12">
+    <div className="group relative flex flex-col overflow-hidden rounded-[28px] border border-white/[0.22] bg-black pt-9 sm:rounded-[32px] sm:pt-12">
 
       <div className="relative px-6 text-center sm:px-10">
         <h3 className={cn(D_MD, "text-white")}>{title}</h3>

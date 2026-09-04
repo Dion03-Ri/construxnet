@@ -3,7 +3,7 @@ import TwoWays from "@/components/home/TwoWays";
 import ProcessVideo from "@/components/home/ProcessVideo";
 import Pricing from "@/components/home/Pricing";
 import OfferSheet from "@/components/home/OfferSheet";
-import { HERO_IMAGE } from "@/data/media";
+import { HERO_IMAGE, PHOTO_POOLS, PHOTO_NETWORK } from "@/data/media";
 import TrustBar from "@/components/home/TrustBar";
 import {
   ArrowRight,
@@ -237,6 +237,13 @@ export default function Home() {
         <div className="grid grid-cols-1 gap-y-14 lg:grid-cols-2 lg:gap-y-0">
           {/* Pools */}
           <div className="lg:border-r lg:border-white/[0.08] lg:pr-12">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={PHOTO_POOLS.src}
+              alt={PHOTO_POOLS.alt}
+              loading="lazy"
+              className="mb-8 h-44 w-full rounded-xl object-cover sm:h-52"
+            />
             <div className="flex items-baseline justify-between">
               <h2 className="text-[19px] font-bold tracking-tight text-white">Aktive Smart Pools</h2>
               <Link href="/pools" className="inline-flex items-center gap-1 text-[13px] font-semibold text-brand hover:text-brand-500">
@@ -270,6 +277,13 @@ export default function Home() {
 
           {/* Netzwerk */}
           <div className="border-t border-white/[0.08] pt-14 lg:border-t-0 lg:pl-12 lg:pt-0">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={PHOTO_NETWORK.src}
+              alt={PHOTO_NETWORK.alt}
+              loading="lazy"
+              className="mb-8 h-44 w-full rounded-xl object-cover sm:h-52"
+            />
             <div className="flex items-baseline justify-between">
               <h2 className="text-[19px] font-bold tracking-tight text-white">Firmen im Netzwerk</h2>
               <Link href="/network" className="inline-flex items-center gap-1 text-[13px] font-semibold text-brand hover:text-brand-500">
