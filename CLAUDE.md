@@ -560,7 +560,18 @@ Das schlägt im Zweifel jede andere Gestaltungsregel. Woran man es
 festmacht, steht unter „Was nicht mehr vorkommt" und in der
 SHELL-Erklärung: gleiche Breiten überall, keine Rahmen um Gruppen,
 keine erzeugten Motive, keine Dreiwort-Überschriften mit Punkten, kein
-Sparkle-Symbol, keine Emoji in Beispieltexten.
+Sparkle-Symbol, keine Emoji in Beispieltexten, keine Hashtags.
+
+**Überschriften.** Die Hero-Zeile hiess einmal „Vernetzen. Bündeln.
+Sparen." — drei abstrakte Verben, jedes auf einer Zeile, das letzte in
+Gold. Das ist das meistkopierte Überschriftenmuster überhaupt. Eine
+Überschrift sagt einen Satz, der etwas behauptet, und die Farbe steckt
+in der Zeile darüber und im Knopf darunter, nicht im letzten Wort.
+
+**Schriftgrössen-Hierarchie der Startseite:** `D_LG` nur für die
+Hero-Zeile, `D_MD` für alle Abschnittsüberschriften. Zwei Stufen, mehr
+nicht — wenn drei Überschriften gleich gross sind, gibt es keine
+Rangfolge mehr.
 
 ## Was ich davon nicht ohne Zuruf anfasse
 - Die CI-Farben. Sie stehen als „STRIKT" in dieser Datei.
