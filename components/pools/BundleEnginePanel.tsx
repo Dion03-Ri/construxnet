@@ -29,30 +29,35 @@ export default function BundleEnginePanel() {
 
   return (
     <>
-      {/* Kompakte Teaser-Karte */}
+      {/* Kompakte Teaser-Zeile.
+
+          Vorher war das eine dunkle Karte mit Rand und Schatten unter der
+          Bündelliste — ein zweites Kästchen für ein Werkzeug, das niemand
+          sucht, bevor er die Bündel gesehen hat. Jetzt ist es eine Zeile
+          unter einer Haarlinie: da, aber nicht im Weg. */}
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="group flex w-full items-center gap-4 overflow-hidden rounded-lg border border-white/10 bg-navy-900 px-5 py-4 text-left text-white shadow-card transition-colors hover:border-brand/40"
+        className="group flex w-full items-center gap-4 border-t border-white/[0.08] py-5 text-left transition-colors hover:bg-white/[0.02]"
       >
-        <span className="grid h-11 w-11 shrink-0 place-items-center rounded-lg bg-brand/15 text-brand">
-          <Calculator className="h-5 w-5" />
+        <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl border border-white/[0.10] text-brand transition-colors group-hover:border-brand/40">
+          <Calculator className="h-4 w-4" />
         </span>
         <div className="min-w-0 flex-1">
-          <div className="flex items-center gap-2 text-[13px] font-semibold text-white">
+          <div className="flex items-center gap-2.5 text-[14px] font-bold tracking-tight text-white">
             Rabatt-Rechner
-            <span className="rounded border border-white/15 px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-wider text-white/50">
+            <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-white/30">
               Zusatztool
             </span>
           </div>
-          <p className="mt-0.5 truncate text-[12px] text-white/55">
+          <p className="mt-1 truncate text-[12.5px] text-white/40">
             Simuliere, wie dein Materialbedarf das Poolvolumen und deinen Rabatt bewegt.
           </p>
         </div>
-        <span className="hidden shrink-0 items-center gap-1 text-[12px] font-semibold text-brand sm:inline-flex">
-          <TrendingDown className="h-3.5 w-3.5" /> Mindestvorteil
+        <span className="hidden shrink-0 items-center gap-1.5 text-[12.5px] font-semibold text-white/55 transition-colors group-hover:text-brand sm:inline-flex">
+          <TrendingDown className="h-3.5 w-3.5" /> Mindestvorteil rechnen
         </span>
-        <span className="grid h-9 w-9 shrink-0 place-items-center rounded-md border border-white/15 text-white/70 transition-colors group-hover:border-brand/50 group-hover:text-brand">
+        <span className="shrink-0 text-white/30 transition-colors group-hover:text-brand">
           <Maximize2 className="h-4 w-4" />
         </span>
       </button>
