@@ -1,4 +1,6 @@
 import { Gauge, Construction } from "lucide-react";
+import { SHELL_NARROW } from "@/lib/ui";
+import { cn } from "@/lib/utils";
 
 export const metadata = {
   title: "Control Center",
@@ -27,7 +29,7 @@ const MODULES = [
 
 export default function AdminControlPage() {
   return (
-    <main className="mx-auto max-w-5xl px-4 py-6 sm:px-6 sm:py-8">
+    <main className={cn(SHELL_NARROW, "py-6 sm:py-8")}>
       <header className="mb-6 flex items-start gap-3">
         <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-brand/15 text-brand">
           <Gauge className="h-6 w-6" />

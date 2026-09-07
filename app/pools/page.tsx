@@ -2,7 +2,7 @@ import Link from "next/link";
 import { ArrowRight, Bookmark } from "lucide-react";
 import OpenPools from "@/components/pools/OpenPools";
 import BundleEnginePanel from "@/components/pools/BundleEnginePanel";
-import { D_MD, EYEBROW, BTN_GOLD, BTN_OUTLINE_DARK } from "@/lib/ui";
+import { BTN_GOLD, BTN_OUTLINE_DARK, D_MD, EYEBROW, SHELL } from "@/lib/ui";
 import { cn } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
@@ -41,7 +41,7 @@ const ABLAUF = [
 
 export default function PoolsPage() {
   return (
-    <main className="mx-auto max-w-6xl px-4 py-6 sm:px-6">
+    <main className={cn(SHELL, "py-6")}>
       {/* ===================== KOPF, VOLLE BREITE =====================
           Kein Panel, kein Raster, kein Goldkästchen — Zeile, Überschrift,
           Handlung, Haarlinie. Dieselbe Machart wie auf der Netzwerkseite. */}

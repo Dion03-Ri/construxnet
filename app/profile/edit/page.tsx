@@ -3,6 +3,8 @@ import { ArrowLeft, UserCog } from "lucide-react";
 import ProfileForm, { type EditableCompany } from "@/components/profile/ProfileForm";
 import { requireCompanyOrOnboard } from "@/lib/company";
 import { supabaseAdmin } from "@/lib/supabase";
+import { SHELL_NARROW } from "@/lib/ui";
+import { cn } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
 
@@ -50,7 +52,7 @@ export default async function EditProfilePage() {
   };
 
   return (
-    <main className="mx-auto max-w-3xl px-4 py-6 sm:px-6">
+    <main className={cn(SHELL_NARROW, "py-6")}>
       <Link
         href={`/company/${me.id}`}
         className="mb-4 inline-flex items-center gap-1.5 text-[13px] font-medium text-white/55 transition-colors hover:text-brand"

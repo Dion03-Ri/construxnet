@@ -174,3 +174,29 @@ export const BLOCK_HEAD =
 
 /** Zeile in einer Liste: Trennung durch Haarlinie statt durch Rahmen. */
 export const LIST_ROW = "border-t border-white/[0.08]";
+
+/* ==================================================================
+   SHELL — die Breite der Seite, an EINER Stelle
+   ------------------------------------------------------------------
+   Vorher hatte fast jede Seite ihre eigene Breite: die Kopfzeile
+   `max-w-7xl`, die Startseite `max-w-6xl`, Referenzpreise `max-w-5xl`,
+   Termine `max-w-3xl`. Man sieht das: das Logo sitzt links neben dem
+   Seiteninhalt, und beim Wechsel von einer Seite zur nächsten springt
+   der Text. Genau solche Unstimmigkeiten lassen einen Entwurf
+   zusammengesetzt statt entworfen aussehen.
+
+   Deshalb zwei Breiten, mehr nicht:
+   - `SHELL` für alles, was Listen, Tabellen oder Spalten zeigt.
+   - `SHELL_NARROW` für Seiten, die überwiegend Fliesstext oder ein
+     Formular sind — dort ist eine breite Zeile schlechter lesbar,
+     nicht besser.
+
+   1280 px statt der bisherigen 1152: etwas mehr Luft für die Tabellen,
+   aber ausdrücklich nicht über die volle Bildschirmbreite. Der
+   seitliche Abstand ist grosszügiger als die üblichen 16 px — Luft am
+   Rand ist das Billigste, was eine Seite teuer aussehen lässt.
+   ================================================================== */
+export const SHELL = "mx-auto w-full max-w-[1280px] px-5 sm:px-8";
+
+/** Fliesstext und Formulare — eine breite Zeile liest sich schlechter. */
+export const SHELL_NARROW = "mx-auto w-full max-w-[880px] px-5 sm:px-8";

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-import { D_LG, D_MD, EYEBROW, BTN_LIGHT, SECTION } from "@/lib/ui";
+import { BTN_LIGHT, D_LG, D_MD, EYEBROW, SECTION, SHELL } from "@/lib/ui";
 
 /**
  * Zwei Wege zum besseren Preis — im Aufbau der grossen Produktkarten:
@@ -81,7 +81,7 @@ function Art({ src, alt }: { src: string; alt: string }) {
 export default function TwoWays() {
   return (
     <section className="bg-[#060B12]">
-      <div className={cn("mx-auto max-w-6xl px-4 sm:px-6", SECTION)}>
+      <div className={cn(SHELL, SECTION)}>
         <div className="mb-12 max-w-2xl sm:mb-16">
           <span className={EYEBROW}>
             Zwei Wege

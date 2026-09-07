@@ -1,5 +1,7 @@
 import { ScanLine, Construction } from "lucide-react";
 import { requireCompanyOrOnboard } from "@/lib/company";
+import { SHELL_NARROW } from "@/lib/ui";
+import { cn } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
 
@@ -11,7 +13,7 @@ export const metadata = {
 export default async function DeliveryNotesPage() {
   await requireCompanyOrOnboard();
   return (
-    <main className="mx-auto max-w-3xl px-4 py-6 sm:px-6 sm:py-8">
+    <main className={cn(SHELL_NARROW, "py-6 sm:py-8")}>
       <header className="mb-6 flex items-start gap-3">
         <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-accent/15 text-accent">
           <ScanLine className="h-6 w-6" />

@@ -1,5 +1,7 @@
 import NetworkHub from "@/components/network/NetworkHub";
 import { requireCompanyOrOnboard } from "@/lib/company";
+import { SHELL } from "@/lib/ui";
+import { cn } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
 
@@ -11,7 +13,7 @@ export const metadata = {
 export default async function NetworkPage() {
   await requireCompanyOrOnboard();
   return (
-    <main className="mx-auto max-w-6xl px-4 py-6 sm:px-6">
+    <main className={cn(SHELL, "py-6")}>
       <NetworkHub />
     </main>
   );

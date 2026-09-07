@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Check } from "lucide-react";
-import { D_MD, LEAD, EYEBROW, SECTION, BTN_OUTLINE_DARK } from "@/lib/ui";
+import { BTN_OUTLINE_DARK, D_MD, EYEBROW, LEAD, SECTION, SHELL } from "@/lib/ui";
 import { cn } from "@/lib/utils";
 
 /**
@@ -83,7 +83,7 @@ const TIERS: Tier[] = [
 export default function Pricing() {
   return (
     <section id="preise" className="border-t border-white/[0.08] bg-[#040810]">
-      <div className={cn("mx-auto max-w-6xl px-4 sm:px-6", SECTION)}>
+      <div className={cn(SHELL, SECTION)}>
         <div className="max-w-2xl">
           <span className={EYEBROW}>Preise</span>
           <h2 className={cn(D_MD, "mt-5 text-white")}>

@@ -2,6 +2,8 @@ import SupplierMap from "@/components/map/SupplierMap";
 import MapWidgets from "@/components/map/MapWidgets";
 import { requireCompanyOrOnboard } from "@/lib/company";
 import { supabaseAdmin } from "@/lib/supabase";
+import { SHELL } from "@/lib/ui";
+import { cn } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
 
@@ -35,7 +37,7 @@ export default async function MapPage() {
   }
 
   return (
-    <main className="mx-auto max-w-6xl px-4 py-6 sm:px-6">
+    <main className={cn(SHELL, "py-6")}>
       <header className="mb-5">
         <h1 className="text-2xl font-bold tracking-tight text-white sm:text-3xl">
           Firmen-Karte

@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import KbobChart from "@/components/KbobChart";
 import GroupOverview from "@/components/kbob/GroupOverview";
-import { D_MD, EYEBROW } from "@/lib/ui";
+import { D_MD, EYEBROW, SHELL } from "@/lib/ui";
 import { cn } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
@@ -19,7 +19,7 @@ export default async function KbobPage({
   const { material } = await searchParams;
 
   return (
-    <main className="mx-auto max-w-5xl px-4 py-6 sm:px-6">
+    <main className={cn(SHELL, "py-6")}>
       {/* Kopf über die volle Breite, ohne Kasten — wie auf Netzwerk und
           Smart Pools. Darunter eine Haarlinie, dann der Verlauf. */}
       <header className="border-b border-white/[0.08]">
