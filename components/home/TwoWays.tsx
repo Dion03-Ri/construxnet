@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-import { BTN_LIGHT, D_LG, D_MD, EYEBROW, SECTION, SHELL } from "@/lib/ui";
+import { BTN_LIGHT, D_MD, EYEBROW, SECTION, SHELL } from "@/lib/ui";
 
 /**
  * Zwei Wege zum besseren Preis — im Aufbau der grossen Produktkarten:
@@ -31,7 +31,7 @@ function Card({
     <div className="group relative flex flex-col overflow-hidden rounded-[28px] border border-white/[0.22] bg-black pt-9 sm:rounded-[32px] sm:pt-12">
 
       <div className="relative px-6 text-center sm:px-10">
-        <h3 className={cn(D_MD, "text-white")}>{title}</h3>
+        <h3 className="font-display text-[26px] font-bold leading-[1.15] tracking-[-0.02em] text-white">{title}</h3>
         <p className="mx-auto mt-4 max-w-[24rem] text-[14.5px] font-medium leading-relaxed text-white/60 sm:text-[15.5px]">
           {lead}
         </p>
@@ -86,7 +86,7 @@ export default function TwoWays() {
           <span className={EYEBROW}>
             Zwei Wege
           </span>
-          <h2 className={cn(D_LG, "mt-5 text-white")}>
+          <h2 className={cn(D_MD, "mt-5 text-white")}>
             Zum besseren Preis — gebündelt oder direkt.
           </h2>
         </div>

@@ -21,7 +21,7 @@ import {
   Truck,
   Users,
 } from "lucide-react";
-import { BTN_GOLD, BTN_LIGHT, BTN_OUTLINE_DARK, D_LG, D_MD, D_XL, EYEBROW, GROUND, LEAD, PANEL, ROW_HOVER, SECTION, SECTION_TIGHT, SECTION_WIDE, SHELL } from "@/lib/ui";
+import { BTN_GOLD, BTN_LIGHT, BTN_OUTLINE_DARK, D_LG, D_MD, EYEBROW, GROUND, LEAD, PANEL, ROW_HOVER, SECTION, SECTION_TIGHT, SECTION_WIDE, SHELL } from "@/lib/ui";
 import { cn } from "@/lib/utils";
 
 /* ------------------------------------------------------------------ */
@@ -95,17 +95,27 @@ export default function Home() {
         />
 
         <div className={cn(SHELL, "relative")}>
-          <div className="py-24 sm:py-32 lg:w-[56%] lg:py-44">
-            <span className={EYEBROW}>Smart Bündeln</span>
+          <div className="py-24 sm:py-32 lg:w-[60%] lg:py-44">
+            <span className={EYEBROW}>Die Zukunft der Beschaffung</span>
 
-            <h1 className={cn(D_XL, "mt-5 text-white")}>
-              Vernetzen.<br />Bündeln.<br />
-              <span className="text-brand">Sparen.</span>
+            {/* Vorher stand hier „Vernetzen. Bündeln. Sparen." — drei
+                abstrakte Verben, jedes auf einer Zeile, das letzte in Gold.
+                Das ist das meistkopierte Überschriftenmuster überhaupt und
+                sagt nichts, was nicht auf hundert anderen Seiten steht.
+
+                Jetzt ein Satz, der die zwei Seiten des Modells nennt:
+                gemeinsam mit anderen Baufirmen einkaufen, und direkt mit
+                dem verhandeln, der auf der anderen Seite des Geschäfts
+                sitzt. Kein Gold in der Überschrift — die Zeile darüber und
+                der Knopf darunter tragen die Farbe, das reicht. */}
+            <h1 className={cn(D_LG, "mt-5 text-white")}>
+              Gemeinsam einkaufen,<br className="hidden sm:block" /> direkt verhandeln.
             </h1>
 
-            <p className={cn(LEAD, "mt-7 max-w-lg text-white/70")}>
-              Obtanet bündelt deinen Materialbedarf mit anderen Schweizer Baufirmen und
-              holt Mengenrabatte heraus — auch kleine Bestellungen profitieren.
+            <p className={cn(LEAD, "mt-7 max-w-xl text-white/70")}>
+              Obtanet legt den Bedarf mehrerer Schweizer Baufirmen zu einem Volumen
+              zusammen und setzt dich an denselben Tisch wie die Werke, die darauf
+              bieten. Statt Katalogpreis ein Preis, der ausgehandelt wurde.
             </p>
 
             <div className="mt-9 flex flex-wrap gap-3">
@@ -135,7 +145,7 @@ export default function Home() {
         <div className={cn(SHELL, SECTION, "grid grid-cols-1 items-center gap-16 lg:grid-cols-[0.9fr_1.1fr]")}>
           <div>
             <span className={EYEBROW}>Smart Pools</span>
-            <h2 className={cn(D_LG, "mt-5 text-white")}>
+            <h2 className={cn(D_MD, "mt-5 text-white")}>
               Mengenrabatte,<br />die alleine niemand bekommt.
             </h2>
             <p className={cn(LEAD, "mt-7 max-w-md text-white/60")}>
