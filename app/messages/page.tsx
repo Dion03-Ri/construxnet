@@ -1,5 +1,7 @@
 import ChatWindow from "@/components/ChatWindow";
 import { requireCompanyOrOnboard } from "@/lib/company";
+import { SHELL } from "@/lib/ui";
+import { cn } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
 
@@ -17,7 +19,7 @@ export default async function MessagesPage({
   const { to } = await searchParams;
 
   return (
-    <main className="mx-auto max-w-6xl px-4 py-6 sm:px-6">
+    <main className={cn(SHELL, "py-6")}>
       <ChatWindow initialTo={to} />
     </main>
   );

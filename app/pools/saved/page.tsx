@@ -2,6 +2,8 @@ import Link from "next/link";
 import { Bookmark, ArrowLeft } from "lucide-react";
 import SavedPools from "@/components/pools/SavedPools";
 import { requireCompanyOrOnboard } from "@/lib/company";
+import { SHELL } from "@/lib/ui";
+import { cn } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
 
@@ -13,7 +15,7 @@ export const metadata = {
 export default async function SavedPoolsPage() {
   await requireCompanyOrOnboard();
   return (
-    <main className="mx-auto max-w-6xl px-4 py-6 sm:px-6 sm:py-8">
+    <main className={cn(SHELL, "py-6 sm:py-8")}>
       <Link href="/pools" className="mb-4 inline-flex items-center gap-1.5 text-[13px] font-medium text-white/55 transition-colors hover:text-brand">
         <ArrowLeft className="h-4 w-4" /> Zurück zu Smart Pools
       </Link>

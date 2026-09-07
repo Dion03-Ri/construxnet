@@ -16,6 +16,7 @@ import { cn } from "@/lib/utils";
 import NotificationBell from "@/components/header/NotificationBell";
 import GlobalSearch from "@/components/header/GlobalSearch";
 import ProfileMenu from "@/components/header/ProfileMenu";
+import { SHELL } from "@/lib/ui";
 
 type NavItem = { href: string; label: string; icon: LucideIcon };
 
@@ -49,7 +50,7 @@ function TopBar() {
   const isActive = useActive();
   return (
     <header className="sticky top-0 z-50 border-b border-white/10 bg-navy-900">
-      <div className="mx-auto flex h-14 max-w-7xl items-center gap-3 px-4 sm:px-6">
+      <div className={cn(SHELL, "flex h-14 items-center gap-3")}>
         <Logo dark />
 
         <GlobalSearch />
@@ -93,7 +94,7 @@ function TopBar() {
 function LegalBar() {
   return (
     <div className="border-t border-white/[0.08] bg-[#0B1522]">
-      <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-center gap-x-3 gap-y-1 px-4 py-4 text-[12px] text-white/40 sm:px-6">
+      <div className={cn(SHELL, "flex flex-wrap items-center justify-center gap-x-3 gap-y-1 py-4 text-[12px] text-white/40")}>
         <span>© {new Date().getFullYear()} Obtanet</span>
         <span aria-hidden>·</span>
         <Link href="/impressum" className="transition-colors hover:text-brand">Impressum</Link>
@@ -131,7 +132,7 @@ function MobileNav() {
 function MarketingHeader() {
   return (
     <header className="sticky top-0 z-50 border-b border-white/10 bg-navy-900/95 backdrop-blur">
-      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
+      <div className={cn(SHELL, "flex h-16 items-center justify-between")}>
         <Logo href="/" dark />
         <div className="flex items-center gap-2">
           <Link

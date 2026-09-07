@@ -21,22 +21,7 @@ import {
   Truck,
   Users,
 } from "lucide-react";
-import {
-  GROUND,
-  PANEL,
-  ROW_HOVER,
-  SECTION_WIDE,
-  D_XL,
-  D_LG,
-  D_MD,
-  LEAD,
-  EYEBROW,
-  SECTION,
-  SECTION_TIGHT,
-  BTN_GOLD,
-  BTN_OUTLINE_DARK,
-  BTN_LIGHT,
-} from "@/lib/ui";
+import { BTN_GOLD, BTN_LIGHT, BTN_OUTLINE_DARK, D_LG, D_MD, D_XL, EYEBROW, GROUND, LEAD, PANEL, ROW_HOVER, SECTION, SECTION_TIGHT, SECTION_WIDE, SHELL } from "@/lib/ui";
 import { cn } from "@/lib/utils";
 
 /* ------------------------------------------------------------------ */
@@ -109,7 +94,7 @@ export default function Home() {
           className="absolute inset-0 hidden bg-gradient-to-t from-navy-950 via-transparent to-navy-950/45 lg:block"
         />
 
-        <div className="relative mx-auto max-w-6xl px-4 sm:px-6">
+        <div className={cn(SHELL, "relative")}>
           <div className="py-24 sm:py-32 lg:w-[56%] lg:py-44">
             <span className={EYEBROW}>Smart Bündeln</span>
 
@@ -147,7 +132,7 @@ export default function Home() {
           ueber den Spaltenrand hinaus. Der Text ist bewusst kurz; wer drei
           Saetze braucht, um einen Vorteil zu erklaeren, hat keinen. */}
       <section className="overflow-hidden border-y border-white/[0.07] bg-[#080F19]">
-        <div className={cn("mx-auto grid max-w-6xl grid-cols-1 items-center gap-16 px-4 sm:px-6 lg:grid-cols-[0.9fr_1.1fr]", SECTION)}>
+        <div className={cn(SHELL, SECTION, "grid grid-cols-1 items-center gap-16 lg:grid-cols-[0.9fr_1.1fr]")}>
           <div>
             <span className={EYEBROW}>Smart Pools</span>
             <h2 className={cn(D_LG, "mt-5 text-white")}>
@@ -200,7 +185,7 @@ export default function Home() {
       {/* Bewusst ohne Karten und ohne Symbole. Vier Nummern, vier Titel,
           vier Zeilen — der Ablauf braucht keinen Rahmen, um Ablauf zu sein. */}
       <section className="bg-navy-950 text-white">
-        <div className={cn("mx-auto max-w-6xl px-4 sm:px-6", SECTION)}>
+        <div className={cn(SHELL, SECTION)}>
           <div className="max-w-2xl">
             <span className={EYEBROW}>Ablauf</span>
             <h2 className={cn(D_MD, "mt-5 text-white")}>Von der Anfrage zum Vertrag</h2>
@@ -233,7 +218,7 @@ export default function Home() {
           Haarlinie — wie die Preisstufen darunter. Die Fotobaender sind
           weg: sie schmueckten, ohne etwas zu sagen, und machten aus zwei
           Listen zwei Kaesten. */}
-      <section className={cn("mx-auto max-w-6xl px-4 sm:px-6", SECTION)}>
+      <section className={cn(SHELL, SECTION)}>
         <div className="grid grid-cols-1 gap-y-14 lg:grid-cols-2 lg:gap-y-0">
           {/* Pools */}
           <div className="lg:border-r lg:border-white/[0.08] lg:pr-12">
@@ -316,7 +301,7 @@ export default function Home() {
       <Pricing />
 
       {/* ================= Abschluss-CTA ================= */}
-      <section className="mx-auto max-w-6xl px-4 pb-24 sm:px-6 lg:pb-32">
+      <section className={cn(SHELL, "pb-24 lg:pb-32")}>
         <div className="relative overflow-hidden rounded-[28px] border border-white/10 bg-navy-900 px-6 py-14 text-white sm:rounded-[32px] sm:px-14 sm:py-20">
           <div aria-hidden className="pointer-events-none absolute inset-0 opacity-[0.06]" style={GRID_BG} />
           <div
@@ -363,7 +348,7 @@ export default function Home() {
 
       {/* ================= Footer ================= */}
       <footer className="border-t border-white/[0.08] bg-[#0B1522]">
-        <div className="mx-auto grid max-w-6xl grid-cols-2 gap-8 px-4 py-12 sm:px-6 md:grid-cols-5">
+        <div className={cn(SHELL, "grid grid-cols-2 gap-8 py-12 md:grid-cols-5")}>
           <div className="col-span-2 md:col-span-1">
             <div className="flex items-center gap-2 font-bold tracking-tight text-white">
               <span className="grid h-8 w-8 place-items-center rounded-lg bg-navy-900 text-brand">

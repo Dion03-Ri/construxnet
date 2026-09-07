@@ -1,6 +1,8 @@
 import { ShoppingCart } from "lucide-react";
 import BeschaffungFlow from "@/components/procurement/BeschaffungFlow";
 import { requireCompanyOrOnboard } from "@/lib/company";
+import { SHELL_NARROW } from "@/lib/ui";
+import { cn } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
 
@@ -17,7 +19,7 @@ export default async function BeschaffungPage({
   const company = await requireCompanyOrOnboard();
   const { material, menge, projekt } = await searchParams;
   return (
-    <main className="mx-auto max-w-5xl px-4 py-6 sm:px-6 sm:py-8">
+    <main className={cn(SHELL_NARROW, "py-6 sm:py-8")}>
       <header className="mb-6 flex items-center gap-3">
         <span className="grid h-11 w-11 shrink-0 place-items-center rounded-lg bg-brand/15 text-brand">
           <ShoppingCart className="h-6 w-6" />

@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import { EYEBROW } from "@/lib/ui";
+import { EYEBROW, SHELL } from "@/lib/ui";
 
 /**
  * Vertrauensanker unter dem Hero.
@@ -38,7 +38,7 @@ const ANCHORS = [
 export default function TrustBar() {
   return (
     <section className="border-y border-white/[0.07] bg-navy-950 text-white">
-      <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-16">
+      <div className={cn(SHELL, "py-14 sm:py-16")}>
         <span className={cn(EYEBROW, "block")}>Worauf du dich stützen kannst</span>
 
         <dl className="mt-9 grid grid-cols-1 gap-x-10 gap-y-9 sm:grid-cols-2 lg:grid-cols-4">

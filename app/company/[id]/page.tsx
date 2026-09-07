@@ -18,7 +18,7 @@ import {
 import { createServerSupabaseClient } from "@/lib/supabase";
 import { requireCompanyOrOnboard } from "@/lib/company";
 import CompanyConnect from "@/components/CompanyConnect";
-import { badge, PANEL } from "@/lib/ui";
+import { PANEL, SHELL_NARROW, badge } from "@/lib/ui";
 import { cn } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
@@ -121,7 +121,7 @@ export default async function CompanyPage({ params }: { params: Promise<{ id: st
     : null;
 
   return (
-    <main className="mx-auto max-w-3xl px-4 py-6 sm:px-6">
+    <main className={cn(SHELL_NARROW, "py-6")}>
       {/* Profil-Header */}
       <section className={cn(PANEL, "overflow-hidden")}>
         <div className="h-24 bg-gradient-to-r from-navy-900 via-navy-700 to-brand" />

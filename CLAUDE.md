@@ -477,7 +477,10 @@ Kanten.
 
 **Drei Konflikte mit dem, was heute gilt — der Nutzer entscheidet:**
 
-1. **Palette.** Das Briefing nennt `#070C18` (Grund), `#0B132B` (Panel) und
+1. **Palette — ENTSCHIEDEN, es bleibt bei der CI.** Der Nutzer hat die
+   bestehenden Farben bestätigt: `#060B12` / `#0B1522` / `#D99000`. Das
+   Champagner-Gold `#E5C158` aus dem Briefing wird NICHT übernommen.
+   (Ursprüngliche Fassung zur Nachvollziehbarkeit:) Das Briefing nennt `#070C18` (Grund), `#0B132B` (Panel) und
    `#E5C158` (Champagner-Gold). Gebaut und als CI festgeschrieben ist
    `#060B12` / `#0B1522` / `#D99000`. Die Gründe sind unterschiedlich viel
    wert: die beiden Dunkeltöne unterscheiden sich um wenige Prozent
@@ -485,8 +488,7 @@ Kanten.
    nichts. Das Gold ist der eigentliche Punkt: `#E5C158` ist heller und
    blasser als `#D99000` und würde das Logo, die Knöpfe und jede
    Prozentangabe der Seite mitverändern. Solange die CI „nur Gold `#D99000`"
-   sagt, gilt `#D99000`. **Zu entscheiden: wird die CI geändert oder das
-   Briefing an ihr gemessen?**
+   sagt, gilt `#D99000`.
 2. **Scharfe Kanten.** Das Briefing will sie, die Formensprache dieser Datei
    hat sie ausdrücklich abgeschafft („die alten scharfen 8px-Kanten wirkten
    wie von der Stange"). Beides zugleich geht nicht. Mein Vorschlag: der
@@ -495,11 +497,12 @@ Kanten.
    Tabelle mit Haarlinien hat weder scharfe noch weiche Ecken, weil sie
    keine Ecken hat. Wo doch eine Fläche nötig ist (Knöpfe, Eingabefelder),
    würde ich bei den weichen Kanten bleiben.
-3. **Edge-to-edge.** Heute liegt alles in `max-w-6xl` (1152 px). Volle
-   Breite ist für Tabellen und Listen richtig und für Fliesstext falsch —
-   eine Zeile über 1920 px liest niemand. Umsetzbar als: Werkzeugleisten,
-   Tabellen und Diagramme über die volle Breite, Text weiter begrenzt.
-   Betrifft `app/layout.tsx` und jede Seite mit `mx-auto max-w-*`.
+3. **Edge-to-edge — ENTSCHIEDEN, nicht volle Breite.** Der Nutzer will
+   „etwas mehr als jetzt", nicht randlos. Umgesetzt über `SHELL`
+   (1280 px) und `SHELL_NARROW` (880 px) in `lib/ui.ts`. Diese beiden
+   Werte sind die einzigen erlaubten Seitenbreiten — wer eine neue Seite
+   baut, nimmt eines der beiden Token und schreibt kein eigenes
+   `max-w-*` mehr.
 
 ## Technik — was das Briefing verlangt
 - **Supabase Realtime für 1:1-Chat.** Migration `21_realtime_chat.sql` liegt
@@ -543,6 +546,16 @@ Reihenfolge vom Nutzer vorgegeben; meine Einschätzung jeweils dahinter.
    *Der Kontextwechsel gehört technisch nach vorn, siehe oben. Sonst wird
    Phase 3 zum Umbau von allem, was in Phase 1 und 2 entstanden ist.*
 4. **Ausbau** — offen.
+
+## Oberstes Ziel des Nutzers
+> „das es nicht so stark nach ki generiert aussieht — das ist mir am
+> wichtigsten."
+
+Das schlägt im Zweifel jede andere Gestaltungsregel. Woran man es
+festmacht, steht unter „Was nicht mehr vorkommt" und in der
+SHELL-Erklärung: gleiche Breiten überall, keine Rahmen um Gruppen,
+keine erzeugten Motive, keine Dreiwort-Überschriften mit Punkten, kein
+Sparkle-Symbol, keine Emoji in Beispieltexten.
 
 ## Was ich davon nicht ohne Zuruf anfasse
 - Die CI-Farben. Sie stehen als „STRIKT" in dieser Datei.

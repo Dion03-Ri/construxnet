@@ -3,7 +3,7 @@ import ProfileRail from "@/components/feed/ProfileRail";
 import BundleOpportunities from "@/components/feed/BundleOpportunities";
 import { requireCompanyOrOnboard } from "@/lib/company";
 import { createServerSupabaseClient } from "@/lib/supabase";
-import { GROUND } from "@/lib/ui";
+import { GROUND, SHELL } from "@/lib/ui";
 import { cn } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
@@ -32,7 +32,7 @@ export default async function FeedPage() {
   const pools = poolCount ?? 0;
 
   return (
-    <main className={cn(GROUND, "relative mx-auto max-w-6xl px-4 py-6 sm:px-6")}>
+    <main className={cn(GROUND, SHELL, "relative py-6")}>
       <div className="grid grid-cols-1 gap-5 lg:grid-cols-[260px_minmax(0,1fr)_300px]">
         {/* Left · dunkle Profil-Rail */}
         <aside className="hidden lg:block">
