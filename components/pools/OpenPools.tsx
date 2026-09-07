@@ -14,7 +14,6 @@ import {
   Info,
   Loader2,
   Check,
-  TrendingUp,
 } from "lucide-react";
 import {
   useBundles,
@@ -24,8 +23,24 @@ import {
 } from "@/lib/bundles";
 import { useSupabaseBrowser } from "@/lib/supabase-browser";
 import { useSavedPools } from "@/lib/useSavedPools";
-import { PANEL, badge } from "@/lib/ui";
+import { INPUT_DARK } from "@/lib/ui";
 import { cn } from "@/lib/utils";
+
+/**
+ * Die offenen Bündel — als Liste, nicht als Kachelwand.
+ *
+ * Vorher stand jedes Bündel in einer eigenen Karte mit Rand und Schatten,
+ * drei nebeneinander. Bei fünfzehn offenen Bündeln ergibt das eine Wand aus
+ * Kästchen, in der sich nichts vergleichen lässt — und genau vergleichen
+ * will man hier: welches Bündel ist wie voll, welches schliesst zuerst, wo
+ * ist der Vorteil am grössten.
+ *
+ * Deshalb eine Tabelle: jede Zeile ein Bündel, getrennt nur durch eine
+ * Haarlinie, die Zahlen rechts in Tabellenziffern untereinander. So liest
+ * man eine Spalte von oben nach unten, statt fünfzehn Kästchen einzeln
+ * abzugehen. Das ist die Sprache von Handelsoberflächen — und ein
+ * Materialbündel mit Frist und Preisvorteil ist genau das.
+ */
 
 const REGIONS = [
   "Alle",
@@ -36,6 +51,17 @@ const REGIONS = [
   "Westschweiz",
   "Ostschweiz",
 ];
+
+/**
+ * Ein Raster für alle Zeilen und den Spaltenkopf.
+ *
+ * Feste Breiten statt `1fr`: nur so stehen Balken, Prozentwert und Handlung
+ * in jeder Zeile an derselben Stelle. Genau das unterscheidet eine Tabelle,
+ * die man von oben nach unten liest, von einer Liste, die man Zeile für
+ * Zeile abgeht.
+ */
+const ROW_GRID =
+  "grid grid-cols-1 gap-x-8 lg:grid-cols-[minmax(0,1fr)_300px_84px_148px_16px] lg:items-center";
 
 function chf(v: number) {
   return v.toLocaleString("de-CH", { maximumFractionDigits: 0 });
@@ -63,7 +89,7 @@ function useCountdown(deadline: string) {
   return { text, urgent: diff < 24 * 3_600_000 };
 }
 
-function PoolCard({
+function PoolRow({
   b,
   myVolume,
   saved,
@@ -88,125 +114,153 @@ function PoolCard({
   const sealed = b.status === "SEALED_BIDDING";
 
   return (
-    <div className={cn(PANEL, "flex flex-col p-5 transition-shadow hover:shadow-cardhover")}>
-      <div className="flex items-start justify-between gap-2">
+    <li className="border-t border-white/[0.08] transition-colors hover:bg-white/[0.02]">
+      <div className={cn(ROW_GRID, "gap-y-5 py-6")}>
+        {/* ---------- Was und wo ---------- */}
         <div className="min-w-0">
-          <h3 className="truncate text-[15px] font-semibold text-white">
-            {b.material_label ?? b.title}
-          </h3>
-          <p className="mt-0.5 flex items-center gap-1 text-[12px] text-white/55">
-            <MapPin className="h-3.5 w-3.5" /> {b.region}
-          </p>
-        </div>
-        <div className="flex shrink-0 items-center gap-1.5">
-          <span className={badge(sealed ? "navy" : "gold", true)}>
-            {sealed ? (
-              <><Gavel className="h-3 w-3" /> Sealed-Bid</>
-            ) : (
-              <><Layers className="h-3 w-3" /> Sammelphase</>
-            )}
-          </span>
-          <button
-            type="button"
-            onClick={onToggleSave}
-            aria-label={saved ? "Aus Merkliste entfernen" : "Bündel speichern"}
-            className={cn(
-              "grid h-7 w-7 place-items-center rounded-md border transition-colors",
-              saved
-                ? "border-brand bg-brand/10 text-brand"
-                : "border-white/[0.08] text-white/40 hover:border-white/[0.16] hover:text-white/70",
-            )}
-          >
-            <Bookmark className={cn("h-3.5 w-3.5", saved && "fill-current")} />
-          </button>
-        </div>
-      </div>
-
-      {/* Menge und aktuell erreichte Stufe. Der Prozentwert ist die
-          garantierte Untergrenze, nicht der zu erwartende Endpreis. */}
-      <div className="mt-4">
-        <div className="mb-1 flex items-center justify-between text-[12px]">
-          <span className="text-white/55">
-            {chf(b.current_volume)} {b.unit}
-            {step && (
-              <span className="text-white/40"> / {chf(step.at)} bis Stufe {step.tier}</span>
-            )}
-          </span>
-          <span className="font-semibold text-brand">
-            mind. {b.current_discount_pct} %
-            <span className="ml-1 font-normal text-white/40">Stufe {b.current_tier}</span>
-          </span>
-        </div>
-        <div className="h-2 w-full overflow-hidden rounded-full bg-white/10">
-          <div className="h-full rounded-full bg-brand" style={{ width: `${pct}%` }} />
-        </div>
-        {step && (
-          <p className="mt-1.5 flex items-center gap-1 text-[11.5px] text-white/55">
-            <TrendingUp className="h-3.5 w-3.5 text-brand" />
-            Noch <b className="text-white/90">{chf(step.at - b.current_volume)} {b.unit}</b> bis
-            mind. {step.discount} %.
-          </p>
-        )}
-      </div>
-
-      <div className="mt-3 flex items-center justify-between text-[12px]">
-        <span className="inline-flex items-center gap-1 text-white/55">
-          <Users className="h-3.5 w-3.5" />
-          {b.participant_count} {b.participant_count === 1 ? "Firma" : "Firmen"} dabei
-        </span>
-        <span
-          className={cn(
-            "inline-flex items-center gap-1 font-semibold",
-            cd.urgent ? "text-rose-300" : "text-white/70",
-          )}
-        >
-          {cd.urgent ? <Flame className="h-3.5 w-3.5" /> : <Clock className="h-3.5 w-3.5" />}
-          schliesst in {cd.text}
-        </span>
-      </div>
-
-      {b.participant_count < b.min_participants_for_bidding && (
-        <p className="mt-2.5 flex items-start gap-1.5 text-[11.5px] leading-relaxed text-white/40">
-          <Info className="mt-px h-3.5 w-3.5 shrink-0" />
-          Ausschreibung startet ab {b.min_participants_for_bidding} Firmen — so
-          kann kein Lieferant aus dem Bündel auf einzelne Bauunternehmen
-          zurückrechnen. Kommt es nicht zustande, wird es ohne Verpflichtung
-          aufgelöst.
-        </p>
-      )}
-
-      {myVolume !== null ? (
-        <div className="mt-auto pt-4">
-          <div className="flex items-center justify-between rounded-md border border-brand/30 bg-brand/[0.05] px-3 py-2">
-            <span className="inline-flex items-center gap-1.5 text-[12.5px] font-semibold text-white/90">
-              <Check className="h-3.5 w-3.5 text-brand" />
-              Du bist mit {chf(myVolume)} {b.unit} dabei
-            </span>
+          <div className="flex items-start gap-3">
+            <h3 className="min-w-0 flex-1 truncate text-[16px] font-bold tracking-tight text-white">
+              {b.material_label ?? b.title}
+            </h3>
             <button
               type="button"
-              onClick={onWithdraw}
-              disabled={busy}
-              className="text-[11.5px] font-semibold text-white/40 transition-colors hover:text-rose-300 disabled:opacity-50"
+              onClick={onToggleSave}
+              aria-label={saved ? "Aus Merkliste entfernen" : "Bündel speichern"}
+              className={cn(
+                "mt-0.5 shrink-0 transition-colors lg:hidden",
+                saved ? "text-brand" : "text-white/30 hover:text-white/70",
+              )}
             >
-              {busy ? "…" : "zurückziehen"}
+              <Bookmark className={cn("h-4 w-4", saved && "fill-current")} />
             </button>
           </div>
-          <Link
-            href={`/beschaffung?material=${encodeURIComponent(b.material_id ?? "")}`}
-            className="mt-1.5 block text-center text-[12px] font-semibold text-brand hover:underline"
-          >
-            Menge erhöhen
-          </Link>
+
+          {/* Phase, Ort, Firmen, Frist in einer Zeile. Die Phase steht als
+              Wort da, nicht als gefülltes Etikett — ein Kästchen pro Zeile
+              ergäbe wieder eine Kästchenwand. */}
+          <p className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-[12.5px] text-white/40">
+            <span
+              className={cn(
+                "inline-flex items-center gap-1.5 text-[10.5px] font-semibold uppercase tracking-[0.12em]",
+                sealed ? "text-white/45" : "text-brand",
+              )}
+            >
+              {sealed ? <Gavel className="h-3 w-3" /> : <Layers className="h-3 w-3" />}
+              {sealed ? "Sealed-Bid" : "Sammelphase"}
+            </span>
+            <span className="inline-flex items-center gap-1">
+              <MapPin className="h-3.5 w-3.5" /> {b.region}
+            </span>
+            <span className="inline-flex items-center gap-1">
+              <Users className="h-3.5 w-3.5" />
+              {b.participant_count} {b.participant_count === 1 ? "Firma" : "Firmen"}
+            </span>
+            <span
+              className={cn(
+                "inline-flex items-center gap-1 font-medium",
+                cd.urgent ? "text-rose-300" : "text-white/40",
+              )}
+            >
+              {cd.urgent ? <Flame className="h-3.5 w-3.5" /> : <Clock className="h-3.5 w-3.5" />}
+              schliesst in {cd.text}
+            </span>
+          </p>
+
+          {b.participant_count < b.min_participants_for_bidding && (
+            <p className="mt-2.5 flex items-start gap-1.5 text-[11.5px] leading-relaxed text-white/35">
+              <Info className="mt-px h-3.5 w-3.5 shrink-0" />
+              Ausschreibung startet ab {b.min_participants_for_bidding} Firmen — so kann kein
+              Lieferant aus dem Bündel auf einzelne Bauunternehmen zurückrechnen.
+            </p>
+          )}
         </div>
-      ) : (
-        <Link
-          href={`/beschaffung?material=${encodeURIComponent(b.material_id ?? "")}`}
-          className="mt-auto inline-flex items-center justify-center gap-1.5 self-stretch rounded-md bg-brand px-4 py-2.5 pt-4 text-sm font-semibold text-navy-900 transition-colors hover:bg-brand/100"
+
+        {/* ---------- Wie voll ---------- */}
+        <div>
+          <div className="flex items-baseline justify-between gap-3 text-[12.5px]">
+            <span className="tabular-nums text-white/70">
+              {chf(b.current_volume)} {b.unit}
+            </span>
+            {step && (
+              <span className="tabular-nums text-white/30">
+                Stufe {step.tier} bei {chf(step.at)} {b.unit}
+              </span>
+            )}
+          </div>
+          <div className="mt-2 h-[3px] w-full overflow-hidden rounded-full bg-white/[0.10]">
+            <div className="h-full rounded-full bg-brand" style={{ width: `${pct}%` }} />
+          </div>
+          {step && (
+            <p className="mt-2 text-[11.5px] text-white/40">
+              Noch{" "}
+              <b className="font-semibold tabular-nums text-white/75">
+                {chf(step.at - b.current_volume)} {b.unit}
+              </b>{" "}
+              bis mind. {step.discount} %.
+            </p>
+          )}
+        </div>
+
+        {/* ---------- Garantierter Vorteil ---------- */}
+        <div className="lg:text-right">
+          <div className="font-display text-[30px] font-bold leading-none tabular-nums text-brand">
+            {b.current_discount_pct}
+            <span className="text-[17px]"> %</span>
+          </div>
+          <div className="mt-1.5 whitespace-nowrap text-[10.5px] font-semibold uppercase tracking-[0.1em] text-white/30">
+            Stufe {b.current_tier}
+          </div>
+        </div>
+
+        {/* ---------- Handlung ---------- */}
+        <div className="flex items-center justify-between gap-4 lg:justify-end">
+          {myVolume !== null ? (
+            <div className="lg:text-right">
+              <span className="inline-flex items-center gap-1.5 whitespace-nowrap text-[12.5px] font-semibold text-white/85">
+                <Check className="h-3.5 w-3.5 shrink-0 text-brand" />
+                {chf(myVolume)} {b.unit} dabei
+              </span>
+              <div className="mt-1 flex items-center gap-3 text-[11.5px] lg:justify-end">
+                <Link
+                  href={`/beschaffung?material=${encodeURIComponent(b.material_id ?? "")}`}
+                  className="font-semibold text-brand hover:underline"
+                >
+                  erhöhen
+                </Link>
+                <button
+                  type="button"
+                  onClick={onWithdraw}
+                  disabled={busy}
+                  className="font-semibold text-white/35 transition-colors hover:text-rose-300 disabled:opacity-50"
+                >
+                  {busy ? "…" : "zurückziehen"}
+                </button>
+              </div>
+            </div>
+          ) : (
+            <Link
+              href={`/beschaffung?material=${encodeURIComponent(b.material_id ?? "")}`}
+              className="inline-flex items-center gap-1.5 whitespace-nowrap text-[13px] font-semibold text-white transition-colors hover:text-brand"
+            >
+              Beitreten <ArrowRight className="h-3.5 w-3.5" />
+            </Link>
+          )}
+        </div>
+
+        {/* ---------- Merken ---------- */}
+        <button
+          type="button"
+          onClick={onToggleSave}
+          aria-label={saved ? "Aus Merkliste entfernen" : "Bündel speichern"}
+          className={cn(
+            "hidden self-start justify-self-end pt-1 transition-colors lg:block",
+            saved ? "text-brand" : "text-white/25 hover:text-white/70",
+          )}
         >
-          Bedarf melden &amp; beitreten <ArrowRight className="h-4 w-4" />
-        </Link>
-      )}
-    </div>
+          <Bookmark className={cn("h-4 w-4", saved && "fill-current")} />
+        </button>
+      </div>
+    </li>
   );
 }
 
@@ -244,75 +298,84 @@ export default function OpenPools() {
     reload();
   }
 
+  const FILTERS = [
+    { key: "all" as const, label: "Alle Phasen" },
+    { key: "OPEN" as const, label: "Sammelphase" },
+    { key: "SEALED_BIDDING" as const, label: "Sealed-Bid" },
+  ];
+
   return (
     <div>
-      <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex flex-wrap gap-1 rounded-md border border-white/[0.08] bg-white/[0.03] p-1">
-          {(["all", "OPEN", "SEALED_BIDDING"] as const).map((k) => (
+      {/* ---------- Filter als Reiterzeile, nicht als Knopfleiste ----------
+          Der aktive Filter trägt eine Goldkante unten. Ein gefülltes
+          Kästchen in einem umrandeten Kästchen wären zwei Ränder für eine
+          Auswahl aus vier Möglichkeiten. */}
+      <div className="flex flex-col gap-4 border-b border-white/[0.08] sm:flex-row sm:items-end sm:justify-between">
+        <div className="-mb-px flex gap-6 overflow-x-auto">
+          {FILTERS.map((f) => (
             <button
-              key={k}
+              key={f.key}
               type="button"
-              onClick={() => setPhase(k)}
+              onClick={() => {
+                setPhase(f.key);
+                setOnlyMine(false);
+              }}
               className={cn(
-                "rounded-[5px] px-3 py-1.5 text-[13px] font-medium transition-colors",
-                phase === k ? "bg-[#0B1522] text-brand shadow-sm" : "text-white/55 hover:text-white",
+                "shrink-0 whitespace-nowrap border-b-2 pb-3 text-[13.5px] font-semibold transition-colors",
+                phase === f.key && !onlyMine
+                  ? "border-brand text-white"
+                  : "border-transparent text-white/45 hover:text-white",
               )}
             >
-              {k === "all" ? "Alle Phasen" : k === "OPEN" ? "Sammelphase" : "Sealed-Bid"}
+              {f.label}
             </button>
           ))}
           <button
             type="button"
             onClick={() => setOnlyMine((v) => !v)}
             className={cn(
-              "rounded-[5px] px-3 py-1.5 text-[13px] font-medium transition-colors",
-              onlyMine ? "bg-[#0B1522] text-brand shadow-sm" : "text-white/55 hover:text-white",
+              "shrink-0 whitespace-nowrap border-b-2 pb-3 text-[13.5px] font-semibold transition-colors",
+              onlyMine ? "border-brand text-white" : "border-transparent text-white/45 hover:text-white",
             )}
           >
             Meine
           </button>
         </div>
-        <div className="flex items-center gap-2">
-          <Link
-            href="/pools/saved"
-            className="inline-flex items-center gap-1.5 rounded-md border border-white/[0.08] bg-[#0B1522] px-3 py-2 text-[13px] font-semibold text-white/70 transition-colors hover:border-brand/40 hover:text-brand"
-          >
-            <Bookmark className="h-3.5 w-3.5" /> Merkliste
-          </Link>
-          <select
-            value={region}
-            onChange={(e) => setRegion(e.target.value)}
-            className="rounded-md border border-white/[0.16] bg-[#0B1522] px-3 py-2 text-sm text-white/75 outline-none focus:border-brand focus:ring-1 focus:ring-brand/30"
-          >
-            {REGIONS.map((r) => (
-              <option key={r} value={r}>{r === "Alle" ? "Alle Regionen" : r}</option>
-            ))}
-          </select>
-        </div>
+
+        <select
+          value={region}
+          onChange={(e) => setRegion(e.target.value)}
+          className={cn(INPUT_DARK, "mb-3 w-full py-2 text-[13px] sm:w-auto")}
+        >
+          {REGIONS.map((r) => (
+            <option key={r} value={r}>{r === "Alle" ? "Alle Regionen" : r}</option>
+          ))}
+        </select>
       </div>
 
       {error && (
-        <p className="mb-3 flex items-start gap-2 rounded-md border border-brand/25 bg-brand/10 px-3 py-2.5 text-[12.5px] leading-relaxed text-brand">
+        <p className="mt-5 flex items-start gap-2 border-l-2 border-brand pl-3 text-[12.5px] leading-relaxed text-brand">
           <Info className="mt-px h-3.5 w-3.5 shrink-0" />
-          Bündel konnten nicht geladen werden. Falls die Migration
-          <code className="mx-1 rounded bg-brand/15 px-1">16_real_bundles.sql</code>
-          noch nicht eingespielt ist, hol das im Supabase-SQL-Editor nach.
+          <span>
+            Bündel konnten nicht geladen werden. Falls die Migration
+            <code className="mx-1">16_real_bundles.sql</code>
+            noch nicht eingespielt ist, hol das im Supabase-SQL-Editor nach.
+          </span>
         </p>
       )}
 
       {loading ? (
-        <div className={cn(PANEL, "grid place-items-center py-20 text-white/40")}>
+        <div className="grid place-items-center py-24 text-white/40">
           <Loader2 className="h-5 w-5 animate-spin" />
         </div>
       ) : list.length === 0 ? (
-        <div className={cn(PANEL, "px-6 py-14 text-center")}>
-          <Layers className="mx-auto h-8 w-8 text-white/25" />
-          <p className="mt-3 text-[15px] font-semibold text-white/90">
+        <div className="border-t border-white/[0.08] py-20 text-center">
+          <p className="text-[17px] font-bold tracking-tight text-white">
             {bundles.length === 0
               ? "Noch läuft kein Bündel"
               : "Keine Bündel in dieser Auswahl"}
           </p>
-          <p className="mx-auto mt-1 max-w-md text-[13px] leading-relaxed text-white/55">
+          <p className="mx-auto mt-2 max-w-md text-[13.5px] leading-relaxed text-white/45">
             {bundles.length === 0
               ? "Bündel entstehen aus gemeldetem Bedarf. Meldest du deinen, ist das erste da — und andere mit demselben Material in derselben Region kommen dazu."
               : "Andere Region oder Phase wählen."}
@@ -320,26 +383,43 @@ export default function OpenPools() {
           {bundles.length === 0 && (
             <Link
               href="/beschaffung"
-              className="mt-4 inline-flex items-center gap-1.5 rounded-md bg-brand px-4 py-2 text-sm font-semibold text-navy-900 transition-colors hover:bg-brand/100"
+              className="mt-6 inline-flex items-center gap-1.5 text-[13.5px] font-semibold text-brand hover:underline"
             >
               Bedarf melden <ArrowRight className="h-4 w-4" />
             </Link>
           )}
         </div>
       ) : (
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
-          {list.map((b) => (
-            <PoolCard
-              key={b.id}
-              b={b}
-              myVolume={myVolumes.get(b.id) ?? null}
-              saved={has(b.id)}
-              onToggleSave={() => toggle(b.id)}
-              onWithdraw={() => withdraw(b)}
-              busy={busy === b.id}
-            />
-          ))}
-        </div>
+        <>
+          {/* Spaltenkopf — nur auf breiten Schirmen, sonst nimmt er Platz
+              weg, den die Zeilen selbst schon beschriften. */}
+          <div
+            className={cn(
+              ROW_GRID,
+              "hidden pb-2.5 pt-7 text-[10.5px] font-semibold uppercase tracking-[0.12em] text-white/25 lg:grid",
+            )}
+          >
+            <span>Bündel</span>
+            <span>Volumen bis zur nächsten Stufe</span>
+            <span className="text-right">Vorteil</span>
+            <span />
+            <span />
+          </div>
+
+          <ul className="border-b border-white/[0.08]">
+            {list.map((b) => (
+              <PoolRow
+                key={b.id}
+                b={b}
+                myVolume={myVolumes.get(b.id) ?? null}
+                saved={has(b.id)}
+                onToggleSave={() => toggle(b.id)}
+                onWithdraw={() => withdraw(b)}
+                busy={busy === b.id}
+              />
+            ))}
+          </ul>
+        </>
       )}
     </div>
   );
