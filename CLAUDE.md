@@ -579,3 +579,106 @@ Rangfolge mehr.
 - Alles mit Geld: Preise, Gebühren, Escrow.
 Diese drei brauchen eine ausdrückliche Ansage, sonst bleibt es beim
 heutigen Stand.
+
+---
+
+# OFFENE AUFTRÄGE DES NUTZERS (Stand: siehe letzten Commit)
+
+Vom Nutzer ausdrücklich auf die Todo-Liste gegeben. Nichts davon ist
+gebaut. Reihenfolge ist keine Rangfolge — sie ist die, in der er sie
+genannt hat.
+
+## 1. Abos aktivieren, damit man sie lösen kann
+Der Preisabschnitt auf `/` ist heute reine Darstellung: die Knöpfe
+zeigen auf `/sign-up`, es gibt kein Abo-Objekt, keinen Zustand
+„gebucht", keine Rechnung.
+
+Was dazugehört: Stufen im Schema (Firma → Abo, Gültigkeit,
+Zahlungsstatus), das Freischalten von Funktionen je Stufe (heute ist
+alles für alle offen), ein Wechsel- und Kündigungsweg, und die
+Rechnungsstellung.
+
+**Hängt an Punkt 0 der Launch-Liste** — die Zahlen 0 / 79 / 189 sind
+Platzhalter. Ein Abo zu bauen, das man buchen kann, bevor der Preis
+steht, heisst den Preis stillschweigend zu bestätigen. Erst der Preis,
+dann die Mechanik.
+
+## 2. Zahlungsmethoden und Zahlungssysteme einbauen
+Bisher ist gar keine Zahlung angebunden. Aus dem Master-Briefing:
+Stripe Connect mit Treuhandkonto. Zwei getrennte Dinge, die nicht
+verwechselt werden dürfen:
+- **Abo-Zahlung** (Punkt 1) — einfach, monatlich, an Obtanet.
+- **Vermittlungsgebühr / Escrow auf abgeschlossene Bündel** — fremde
+  Gelder halten ist in der Schweiz aufsichtsrechtlich reguliert. Das
+  ist vor dem Bau juristisch zu klären, nicht danach.
+
+## 3. E-Mails kommen noch von „construxnet"
+Im Verzeichnis liegt kein Mailversand — die Mails (Anmeldung,
+Bestätigung, Passwort) verschickt **Clerk**. Zu ändern also nicht im
+Code, sondern im Clerk-Dashboard: Anwendungsname, Absenderadresse und
+-name, die E-Mail-Vorlagen und die Anmeldeseiten-Beschriftung. Wenn
+eine eigene Absenderdomain gewünscht ist, braucht es dort zusätzlich
+die DNS-Einträge. Ebenfalls prüfen: Projektname in Supabase und in
+Vercel, die tauchen in Systemmails auf.
+
+## 4. Das KI-Oval um Aktivitäts- und Statuszeichen
+Gemeint ist `badge()` in `lib/ui.ts`: `rounded-full` + Rand + gefüllte
+Fläche — ein Oval um zwei Wörter. Noch an 12 Stellen in fünf Dateien:
+`app/company/[id]/page.tsx`, `components/termine/TermineList.tsx`,
+`components/procurement/BeschaffungFlow.tsx`,
+`components/dashboard/DashboardShell.tsx`,
+`components/pools/SavedPools.tsx`.
+
+Im Feed und in der Bündelliste ist es bereits ersetzt: der Status steht
+dort als Wort in Grossbuchstaben in der Kennzeile, ohne Fläche und ohne
+Rand. Dasselbe Muster auf die fünf Dateien anwenden und `badge()`
+danach entfernen.
+
+## 5. Farben: mehr Weiss und Schwarz, dazu Gold und Navy
+**Hier ist eine Rückfrage offen** (gestellt, noch nicht beantwortet).
+Zwei mögliche Lesarten, und sie führen zu völlig verschiedenen Seiten:
+
+- **(a) Mehr Kontrast im dunklen Register.** Echtes Schwarz statt
+  `#060B12`, echtes Weiss statt `white/70` im Fliesstext, Navy als
+  Fläche statt nur als Linie. Das schärft, ohne die Entscheidung „EIN
+  dunkles Register" zu kippen — ein Tag Arbeit, zentral in `lib/ui.ts`.
+- **(b) Helle Flächen kommen zurück.** Ganze Abschnitte oder Seiten auf
+  Weiss, Schwarz als Gegenstück. Das ist die Rückkehr zum
+  Zwei-Register-Modell, das schon einmal verworfen wurde, weil es sich
+  wie zwei Websites in einer las — und betrifft jede Datei.
+
+Ohne Antwort wird hier nichts angefasst.
+
+## 6. „Profil bearbeiten" — typische KI-Kästchen
+`/profile/edit`. Steht ohnehin auf der Liste der Seiten, auf denen der
+Kästchen-Abbau noch aussteht.
+
+## 7. Logo ersetzen
+Der Nutzer hat selbst eines entworfen. Kommt später von ihm — bis dahin
+bleibt das jetzige (Bauhelm-Symbol in Gold, `components/AppShell.tsx`
+und Fussbereich). Beim Austausch mitziehen: Favicon, das „O" im
+Beispiel-Zuschlag (`components/home/OfferSheet.tsx`) und alle Stellen
+mit dem Wortbild „Obta**net**".
+
+## 8. Grafik bei Smart Pools ändern
+Der Abschnitt „Mengenrabatte, die alleine niemand bekommt" auf `/`
+zeigt rechts `components/home/OfferSheet.tsx` — den Zuschlag als
+weisses Blatt. Was stattdessen dort stehen soll, ist noch offen.
+**Keine selbst erzeugte Grafik.** Kommt ein Bild, dann Stockfoto, und
+das ist vorher zu sagen.
+
+## Was schon vorher offen war (nicht vergessen)
+Steht ausführlich weiter oben in dieser Datei:
+- **Preismodell bestätigen** (Launch-Liste Punkt 0) — blockiert Punkt 1.
+- **Rabattstufen festlegen** und **KBOB-Referenz aus belegbarer Quelle**
+  — ohne beides darf keine Garantie raus.
+- `data/legal.ts`: alle `[[…]]` füllen, anwaltliche Durchsicht.
+- Vorstart-Sperre entfernen, Web-Push, Ratenbegrenzung über einen
+  gemeinsamen Speicher, Lieferschein-Abgleich.
+- KI-Materialabgleich Stufe 3 — wartet auf `ANTHROPIC_API_KEY`.
+- Kästchen-Abbau auf `/beschaffung`, `/messages`, `/termine`,
+  `/profile/edit`, `/map`, `/company/[id]`, `/network/entdecken`,
+  `/notifications`.
+- Aus dem Master-Briefing: KYB-Prüfung (UID/DUNS), Geofencing,
+  dynamischer Kontextwechsel (Währung/Einheit/Normwerk) — letzterer
+  gehört technisch früh, sonst wird er später zum Umbau von allem.
