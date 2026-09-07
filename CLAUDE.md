@@ -377,10 +377,12 @@ stanzt ihn aus, und der Rest bleibt als heller Rahmen stehen.
 - Jede Tabelle steckt in einem `overflow-x-auto`-Behälter.
 
 ## OFFEN / als Nächstes
-- Startseite + Dashboard (`/dashboard`) sind auf Light Mode umgestellt. Andere
-  Seiten (z.B. Coming-Soon, Netzwerk) sind noch dunkel — bei Bedarf einzeln
-  nachziehen, nicht automatisch annehmen, dass alles schon hell ist.
 - Branding einheitlich auf Obtanet umgestellt.
+- **Kästchen-Abbau:** Startseite, Feed, Netzwerk, Smart Pools und
+  Referenzpreise sind auf Haarlinien statt Rahmen umgestellt. Noch offen:
+  `/beschaffung`, `/messages`, `/termine`, `/profile/edit`, `/map`,
+  `/company/[id]`, `/network/entdecken`. Wer eine davon anfasst, zieht sie
+  gleich mit nach.
 - **Materialabgleich Stufe 3 — KI (OFFEN, braucht API-Schlüssel).**
   Stufe 1 (Alias-Nachschlag) und Stufe 2 (deterministisch, `lib/materialMatch.ts`)
   sind gebaut und decken den Grossteil ab. Für den Rest fehlt ein Sprachmodell:
@@ -449,3 +451,102 @@ Diese Punkte müssen erledigt sein, bevor echte Firmen darauf arbeiten:
      widersprechen, was gilt bei Patt.
    - Sinnvoll erst, wenn echte Bündel zu echten Verträgen geführt haben —
      sonst rät man, wie die Lieferscheine der echten Werke aussehen.
+
+
+---
+
+# Master-Kontext & Entwicklungs-Fahrplan (Briefing des Nutzers)
+
+Vom Nutzer als Gesamtbild übergeben. **Noch nichts davon ist gebaut** — das
+hier ist die Absichtserklärung, gegen die künftige Arbeit läuft, kein
+Zustandsbericht. Wo das Briefing dem widerspricht, was heute in dieser Datei
+steht, ist der Widerspruch unten ausdrücklich benannt statt still aufgelöst.
+
+## Identität
+- **Obtanet ist zweierlei in einem:** Beschaffungsmarkt *und* Netzwerk.
+  Weder ein reines Ausschreibungsportal noch ein Branchen-LinkedIn.
+- Leitsatz für die Ausbreitung: **„Global Umbrella, Local Trust"** — ein
+  Dach über allem, aber Vertrauen entsteht regional. Praktisch heisst das:
+  ein Konto, ein Regelwerk, aber Bündel, Preise und Normen richten sich nach
+  dem Ort.
+
+## Gestaltung — Terminal-Stil
+Bloomberg-Terminal und Robinhood als Vorbild: Dichte, Tabellenziffern,
+Zahlen als Hauptdarsteller, edge-to-edge über die volle Breite, scharfe
+Kanten.
+
+**Drei Konflikte mit dem, was heute gilt — der Nutzer entscheidet:**
+
+1. **Palette.** Das Briefing nennt `#070C18` (Grund), `#0B132B` (Panel) und
+   `#E5C158` (Champagner-Gold). Gebaut und als CI festgeschrieben ist
+   `#060B12` / `#0B1522` / `#D99000`. Die Gründe sind unterschiedlich viel
+   wert: die beiden Dunkeltöne unterscheiden sich um wenige Prozent
+   Helligkeit — dort ist der Wechsel eine Zeile in `lib/ui.ts` und kostet
+   nichts. Das Gold ist der eigentliche Punkt: `#E5C158` ist heller und
+   blasser als `#D99000` und würde das Logo, die Knöpfe und jede
+   Prozentangabe der Seite mitverändern. Solange die CI „nur Gold `#D99000`"
+   sagt, gilt `#D99000`. **Zu entscheiden: wird die CI geändert oder das
+   Briefing an ihr gemessen?**
+2. **Scharfe Kanten.** Das Briefing will sie, die Formensprache dieser Datei
+   hat sie ausdrücklich abgeschafft („die alten scharfen 8px-Kanten wirkten
+   wie von der Stange"). Beides zugleich geht nicht. Mein Vorschlag: der
+   Kompromiss steckt schon in der Arbeit der letzten Runden — es geht nicht
+   um den Radius, sondern darum, dass Flächen überhaupt verschwinden. Eine
+   Tabelle mit Haarlinien hat weder scharfe noch weiche Ecken, weil sie
+   keine Ecken hat. Wo doch eine Fläche nötig ist (Knöpfe, Eingabefelder),
+   würde ich bei den weichen Kanten bleiben.
+3. **Edge-to-edge.** Heute liegt alles in `max-w-6xl` (1152 px). Volle
+   Breite ist für Tabellen und Listen richtig und für Fliesstext falsch —
+   eine Zeile über 1920 px liest niemand. Umsetzbar als: Werkzeugleisten,
+   Tabellen und Diagramme über die volle Breite, Text weiter begrenzt.
+   Betrifft `app/layout.tsx` und jede Seite mit `mx-auto max-w-*`.
+
+## Technik — was das Briefing verlangt
+- **Supabase Realtime für 1:1-Chat.** Migration `21_realtime_chat.sql` liegt
+  bereits, der Chat ist gebaut — hier ist eher zu prüfen, was noch fehlt,
+  als neu zu bauen.
+- **Anonymisiertes Bündeln.** Ist im Kern da (Sealed-Bid, Mindestzahl
+  Teilnehmer, damit kein Werk zurückrechnen kann). Offen bleibt, ob die
+  Anonymität auch nach dem Zuschlag hält.
+- **Geofencing** — Bündel und Vorschläge nach Umkreis statt nach Kantonsname.
+  Die Grundlage steht (`lat`/`lng`/`delivery_radius_km` in `companies`,
+  Karte unter `/map`), die Bündel selbst filtern aber noch nach
+  Regionsnamen. Das ist der erste ehrliche Schritt Richtung Ausland.
+- **Dynamischer Kontextwechsel** — CHF/USD, metrisch/imperial, SIA/EN gegen
+  ASTM. **Der grösste ungebaute Brocken.** Preise, Einheiten und
+  Normbezüge stecken heute an hunderten Stellen fest im Text (`m³`, `CHF`,
+  `SIA 118`, KBOB). Das lässt sich nicht nachträglich überall ersetzen — es
+  braucht früh eine Schicht (Einheit, Währung, Normwerk am Nutzer bzw. an
+  der Firma), sonst wird es später zur Neuentwicklung. **Empfehlung: diese
+  Schicht anlegen, bevor weitere Seiten gebaut werden, auch wenn sie
+  vorerst überall „CH" zurückgibt.**
+- **KYB-Prüfung** — UID (Schweiz) und DUNS (international). Heute wird die
+  CHE-Nummer nur auf Form geprüft, nicht gegen ein Register. Für echtes
+  Vertrauen braucht es einen Abgleich gegen das UID-Register des Bundes.
+- **Stripe Connect mit Treuhandkonto (Escrow).** Bisher ist gar keine
+  Zahlung angebunden. Achtung: Escrow ist in der Schweiz aufsichtsrechtlich
+  heikel — fremde Gelder halten ist reguliert. Vor dem Bau juristisch
+  klären, nicht danach. Hängt mit Punkt 0 der Launch-Liste zusammen
+  (Vermittlungsgebühr im Abo oder daneben).
+
+## Fahrplan in vier Phasen
+Reihenfolge vom Nutzer vorgegeben; meine Einschätzung jeweils dahinter.
+
+1. **Fundament** — Terminal-Stil durchziehen, Chat, anonymes Bündeln.
+   *Grösstenteils da. Was fehlt, ist der Kästchen-Abbau auf den restlichen
+   Seiten (Liste oben unter „OFFEN") und die Entscheidung zu den drei
+   Design-Konflikten.*
+2. **Vertrauen** — KYB, Stripe Connect, Escrow.
+   *Reihenfolge innerhalb der Phase: KYB zuerst. Es ist billiger, klar
+   abgrenzbar und der Escrow braucht ohnehin geprüfte Firmen.*
+3. **Skalierung** — Geofencing, Kontextwechsel, zweiter Markt.
+   *Der Kontextwechsel gehört technisch nach vorn, siehe oben. Sonst wird
+   Phase 3 zum Umbau von allem, was in Phase 1 und 2 entstanden ist.*
+4. **Ausbau** — offen.
+
+## Was ich davon nicht ohne Zuruf anfasse
+- Die CI-Farben. Sie stehen als „STRIKT" in dieser Datei.
+- Die Formensprache (weiche Ecken).
+- Alles mit Geld: Preise, Gebühren, Escrow.
+Diese drei brauchen eine ausdrückliche Ansage, sonst bleibt es beim
+heutigen Stand.
