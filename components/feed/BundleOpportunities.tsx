@@ -1,67 +1,100 @@
 import Link from "next/link";
-import { TrendingDown } from "lucide-react";
 import BundleChances from "@/components/pools/BundleChances";
-
+import kbobData from "@/data/kbobData.json";
 
 /**
- * Rechte Schiene des Feeds.
+ * Rechte Schiene des Feeds: offene Bündel, darunter der Marktstand.
  *
- * Die Bündel-Chancen sind hell wie der übrige eingeloggte Bereich. Dunkel
- * bleibt allein die KBOB-Karte: EIN dunkler Anker je Seite lenkt den Blick
- * auf die Zahl, die zählt — zehn dunkle Kästen lenken ihn nirgendwohin.
+ * Die Marktzahl stand vorher fest im Code — „156.–" und ein „Ø Pool-Preis
+ * −13.8 %", dazu eine von Hand erfundene Kurve aus zwölf gewürfelten
+ * Werten. Das ist genau die Sorte Zahl, die man auf einer Seite nicht
+ * stehen lassen darf: Sie sieht aus wie eine Messung und war keine.
+ *
+ * Jetzt kommt beides aus `data/kbobData.json` — derselben Reihe, die auch
+ * unter /kbob liegt. Ändert sich die Reihe, ändert sich diese Zahl mit,
+ * und der Vergleich zum Vorquartal ist gerechnet statt behauptet.
+ *
+ * Kein Kasten mehr um das Ganze. Die Haarlinie oben trennt es von den
+ * Bündel-Chancen darüber, mehr braucht es nicht.
  */
 
-// Ruhige KBOB-Sparkline (12 Monate, normiert 0..1)
-const SPARK = [0.42, 0.5, 0.46, 0.58, 0.54, 0.62, 0.59, 0.66, 0.63, 0.71, 0.68, 0.74];
+const REGION = "zuerich";
+const MATERIAL = "beton";
+
+const entry = kbobData.materials[MATERIAL];
+const series = entry.regions[REGION];
+/** Die letzten zwei Jahre — genug für den Verlauf, ohne die Kurve zu quetschen. */
+const recent = series.slice(-8);
+const last = recent[recent.length - 1];
+const prev = recent[recent.length - 2] ?? last;
+const change = ((last.kbob - prev.kbob) / prev.kbob) * 100;
 
 function Sparkline() {
   const w = 240;
-  const h = 44;
-  const step = w / (SPARK.length - 1);
-  const pts = SPARK.map((v, i) => `${i * step},${h - v * (h - 6) - 3}`).join(" ");
-  const area = `0,${h} ${pts} ${w},${h}`;
+  const h = 40;
+  const vals = recent.map((r) => r.kbob);
+  const min = Math.min(...vals);
+  const max = Math.max(...vals);
+  const span = max - min || 1;
+  const step = w / (vals.length - 1);
+  const pts = vals.map((v, i) => `${i * step},${h - ((v - min) / span) * (h - 8) - 4}`).join(" ");
   return (
-    <svg viewBox={`0 0 ${w} ${h}`} className="mt-2 h-11 w-full" preserveAspectRatio="none">
-      <defs>
-        <linearGradient id="spk" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#D99000" stopOpacity="0.35" />
-          <stop offset="100%" stopColor="#D99000" stopOpacity="0" />
-        </linearGradient>
-      </defs>
-      <polygon points={area} fill="url(#spk)" />
-      <polyline points={pts} fill="none" stroke="#D99000" strokeWidth="2" strokeLinejoin="round" strokeLinecap="round" />
-      <circle cx={w} cy={h - SPARK[SPARK.length - 1] * (h - 6) - 3} r="2.5" fill="#D99000" />
+    <svg viewBox={`0 0 ${w} ${h}`} className="mt-3 h-10 w-full" preserveAspectRatio="none">
+      <polyline
+        points={pts}
+        fill="none"
+        stroke="#D99000"
+        strokeWidth="1.5"
+        strokeLinejoin="round"
+        strokeLinecap="round"
+        vectorEffect="non-scaling-stroke"
+      />
     </svg>
   );
 }
 
 export default function BundleOpportunities() {
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       <BundleChances />
 
-      {/* Markt / KBOB — der eine dunkle Anker der Seite */}
-      <div className="rounded-2xl border border-white/[0.08] bg-navy-950 p-5 text-white shadow-card">
+      <div className="border-t border-white/[0.08] pt-5">
         <div className="flex items-baseline justify-between">
-          <h3 className="text-[14px] font-bold tracking-tight text-white">KBOB-Markt</h3>
+          <h3 className="text-[14px] font-bold tracking-tight text-white">Referenzpreis</h3>
           <Link href="/kbob" className="text-[11.5px] font-semibold text-brand hover:underline">
-            Index
+            Verlauf
           </Link>
         </div>
-        <div className="mt-1 text-[11.5px] text-white/40">Beton C25/30 · Referenzpreis</div>
-        <div className="mt-3 flex items-baseline gap-2">
-          <span className="font-display text-[34px] font-bold leading-none tabular-nums text-white">
-            156.–
-          </span>
-          <span className="text-[12px] text-white/40">CHF / m³</span>
+        <div className="mt-1 text-[11.5px] text-white/40">
+          {entry.label} · {kbobData.regions[REGION]}
         </div>
+
+        <div className="mt-4 flex items-baseline gap-2">
+          <span className="font-display text-[32px] font-bold leading-none tabular-nums text-white">
+            {last.kbob.toLocaleString("de-CH", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+          </span>
+          <span className="text-[12px] text-white/40">CHF / {entry.unit}</span>
+        </div>
+
         <Sparkline />
-        <div className="mt-3 flex items-center justify-between border-t border-white/10 pt-3 text-[12.5px]">
-          <span className="inline-flex items-center gap-1.5 text-white/55">
-            <TrendingDown className="h-3.5 w-3.5 text-brand" /> Ø Pool-Preis
+
+        <div className="mt-3 flex items-center justify-between border-t border-white/[0.08] pt-3 text-[12.5px]">
+          <span className="text-white/45">gegenüber Vorquartal</span>
+          <span
+            className={
+              change <= 0
+                ? "font-bold tabular-nums text-brand"
+                : "font-bold tabular-nums text-rose-300"
+            }
+          >
+            {change > 0 ? "+" : ""}
+            {change.toFixed(1)} %
           </span>
-          <span className="font-bold tabular-nums text-brand">−13.8 %</span>
         </div>
+        <p className="mt-2.5 text-[11px] leading-relaxed text-white/30">
+          Stand {kbobData.meta.updated}. Nachgebildete Reihe am KBOB-Preisindex,
+          keine amtliche Publikation.
+        </p>
       </div>
     </div>
   );

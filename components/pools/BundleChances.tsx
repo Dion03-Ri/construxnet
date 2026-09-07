@@ -51,14 +51,14 @@ export default function BundleChances({
             <Link href="/pools" className="-mx-2 block rounded-lg px-2 py-3.5 transition-colors hover:bg-white/[0.05]">
               <div className="flex items-center justify-between gap-2">
                 <span className="truncate text-[13px] font-semibold text-white">{p.material}</span>
-                <span className="shrink-0 rounded-full border border-brand/30 bg-brand/10 px-2 py-0.5 text-[10.5px] font-bold tabular-nums text-brand">
-                  −{p.disc}%
+                <span className="shrink-0 text-[13px] font-bold tabular-nums text-brand">
+                  −{p.disc} %
                 </span>
               </div>
               <div className="mt-1 text-[11.5px] text-white/40">
                 {p.region} · {p.vol}
               </div>
-              <div className="mt-2.5 h-1 w-full overflow-hidden rounded-full bg-white/10">
+              <div className="mt-2.5 h-[3px] w-full overflow-hidden rounded-full bg-white/10">
                 <div className="h-full rounded-full bg-brand" style={{ width: `${p.pct}%` }} />
               </div>
             </Link>

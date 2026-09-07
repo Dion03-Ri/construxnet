@@ -180,7 +180,7 @@ function KpiCard({ k }: { k: Kpi }) {
       <div className="text-[13px] font-medium text-white/55">{k.label}</div>
       <div className="mt-1.5 flex items-end justify-between gap-2">
         <div className="text-2xl font-bold tracking-tight text-white">{k.value}</div>
-        <span className={cn("inline-flex items-center gap-0.5 text-[11px] font-semibold", up ? "text-accent" : "text-rose-500")}>
+        <span className={cn("inline-flex items-center gap-0.5 text-[11px] font-semibold", up ? "text-brand" : "text-rose-500")}>
           {up ? <ArrowUpRight className="h-3 w-3" /> : <ArrowDownRight className="h-3 w-3" />}
           {Math.abs(k.delta)}%
         </span>
@@ -927,7 +927,7 @@ function CartPanel({
           <span>Zwischensumme (KBOB)</span>
           <span className="font-medium text-white/90">CHF {chf(subtotal)}</span>
         </div>
-        <div className="flex items-center justify-between text-[13px] text-accent">
+        <div className="flex items-center justify-between text-[13px] text-brand">
           <span>Geschätzter Mindestvorteil</span>
           <span className="font-semibold">− CHF {chf(savings)}</span>
         </div>
@@ -1022,7 +1022,7 @@ function QuickToolsPanel() {
               <div className="text-[11px] text-white/40">{beton.label} · Zürich</div>
               <div className="text-xl font-bold tabular-nums text-white">CHF {chf(last.kbob, 2)}</div>
             </div>
-            <span className={cn("inline-flex items-center gap-0.5 text-[12px] font-semibold", delta >= 0 ? "text-accent" : "text-rose-500")}>
+            <span className={cn("inline-flex items-center gap-0.5 text-[12px] font-semibold", delta >= 0 ? "text-brand" : "text-rose-500")}>
               {delta >= 0 ? <ArrowUpRight className="h-3.5 w-3.5" /> : <ArrowDownRight className="h-3.5 w-3.5" />}
               {Math.abs(delta).toFixed(1)}%
             </span>

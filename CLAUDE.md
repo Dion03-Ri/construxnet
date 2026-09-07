@@ -381,8 +381,13 @@ stanzt ihn aus, und der Rest bleibt als heller Rahmen stehen.
 - **Kästchen-Abbau:** Startseite, Feed, Netzwerk, Smart Pools und
   Referenzpreise sind auf Haarlinien statt Rahmen umgestellt. Noch offen:
   `/beschaffung`, `/messages`, `/termine`, `/profile/edit`, `/map`,
-  `/company/[id]`, `/network/entdecken`. Wer eine davon anfasst, zieht sie
-  gleich mit nach.
+  `/company/[id]`, `/network/entdecken`, `/notifications`. Wer eine davon
+  anfasst, zieht sie gleich mit nach.
+- **`text-accent` nie auf dunklem Grund.** `accent` ist `#1B3A5C` — ein
+  Navy für helle Flächen. Auf `#060B12` ist es praktisch unsichtbar; die
+  Verifizierungshaken im Feed waren so lange schlicht nicht zu sehen.
+  Überall durch `text-brand` ersetzt. Dasselbe gilt für `text-brand-700`
+  (`#9A6A00`).
 - **Materialabgleich Stufe 3 — KI (OFFEN, braucht API-Schlüssel).**
   Stufe 1 (Alias-Nachschlag) und Stufe 2 (deterministisch, `lib/materialMatch.ts`)
   sind gebaut und decken den Grossteil ab. Für den Rest fehlt ein Sprachmodell:

@@ -131,7 +131,7 @@ export default function ReceivedRequests() {
             <div className="min-w-0 flex-1">
               <Link href={`/company/${company.id}`} className="flex items-center gap-1 truncate text-sm font-semibold text-white hover:text-brand">
                 {company.company_name}
-                {company.verified && <BadgeCheck className="h-4 w-4 shrink-0 text-accent" />}
+                {company.verified && <BadgeCheck className="h-4 w-4 shrink-0 text-brand" />}
               </Link>
               <p className="flex items-center gap-1 truncate text-xs text-white/40">
                 {ROLE_LABEL[company.role] ?? company.role}

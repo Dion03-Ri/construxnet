@@ -608,7 +608,7 @@ export default function ChatWindow({ initialTo }: { initialTo?: string }) {
                       <span className="flex items-center justify-between gap-2">
                         <span className="flex min-w-0 items-center gap-1 text-[13px] font-semibold text-white">
                           <span className="truncate">{c.company_name}</span>
-                          {c.verified && <BadgeCheck className="h-3.5 w-3.5 shrink-0 text-accent" />}
+                          {c.verified && <BadgeCheck className="h-3.5 w-3.5 shrink-0 text-brand" />}
                         </span>
                         {last && <span className="shrink-0 text-[10px] font-medium text-white/40">{ago(last.created_at)}</span>}
                       </span>
@@ -661,7 +661,7 @@ export default function ChatWindow({ initialTo }: { initialTo?: string }) {
               <div className="min-w-0">
                 <div className="flex items-center gap-1 text-sm font-semibold text-white">
                   <span className="truncate">{activeCompany.company_name}</span>
-                  {activeCompany.verified && <BadgeCheck className="h-4 w-4 shrink-0 text-accent" />}
+                  {activeCompany.verified && <BadgeCheck className="h-4 w-4 shrink-0 text-brand" />}
                 </div>
                 <div className="text-[11px] text-white/40">
                   {partnerTyping ? (
@@ -883,7 +883,7 @@ function ContactPanel({ company, deal, isDemo, onOffer }: { company: Company; de
           <div className="min-w-0">
             <div className="flex items-center gap-1 text-sm font-bold text-white">
               <span className="truncate">{company.company_name}</span>
-              {company.verified && <BadgeCheck className="h-4 w-4 shrink-0 text-accent" />}
+              {company.verified && <BadgeCheck className="h-4 w-4 shrink-0 text-brand" />}
             </div>
             <p className="truncate text-[11px] text-white/40">
               {company.role ? ROLE_LABEL[company.role] ?? company.role : "Firma"}
@@ -892,7 +892,7 @@ function ContactPanel({ company, deal, isDemo, onOffer }: { company: Company; de
           </div>
         </div>
         {company.verified && (
-          <div className="mt-3 inline-flex items-center gap-1.5 rounded-md bg-accent/10 px-2.5 py-1 text-[11px] font-semibold text-accent">
+          <div className="mt-3 inline-flex items-center gap-1.5 rounded-md bg-accent/10 px-2.5 py-1 text-[11px] font-semibold text-brand">
             <ShieldCheck className="h-3.5 w-3.5" /> Verifizierter Baupartner
           </div>
         )}

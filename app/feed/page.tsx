@@ -33,7 +33,10 @@ export default async function FeedPage() {
 
   return (
     <main className={cn(GROUND, SHELL, "relative py-6")}>
-      <div className="grid grid-cols-1 gap-5 lg:grid-cols-[260px_minmax(0,1fr)_300px]">
+      {/* Die drei Spalten standen 20 px auseinander. Bei drei Spalten ohne
+          Rahmen ist der Abstand die einzige Trennung — zu wenig davon, und
+          die Seite wirkt gequetscht. */}
+      <div className="grid grid-cols-1 gap-x-12 gap-y-8 lg:grid-cols-[248px_minmax(0,1fr)_288px]">
         {/* Left · dunkle Profil-Rail */}
         <aside className="hidden lg:block">
           <div className="sticky top-[72px]">

@@ -102,7 +102,7 @@ export default function CompanyConnect({ targetId }: { targetId: string }) {
   if (conn?.status === "CONNECTED") {
     return (
       <div className="flex flex-wrap gap-2">
-        <span className="inline-flex items-center gap-1.5 rounded-lg bg-accent/15 px-4 py-2 text-sm font-medium text-accent">
+        <span className="inline-flex items-center gap-1.5 rounded-lg bg-accent/15 px-4 py-2 text-sm font-medium text-brand">
           <Check className="h-4 w-4" />
           Verbunden
         </span>
