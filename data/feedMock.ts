@@ -19,7 +19,6 @@ export type MockPost = {
   created_at: string;
   company_id: string;
   companies: MockCompany;
-  gradient?: string;
   media_url?: string | null;
   demo?: boolean;
 };
@@ -39,7 +38,6 @@ export const SAMPLE_POSTS: MockPost[] = [
     created_at: new Date(Date.now() - 2 * H).toISOString(),
     company_id: "seed-1",
     companies: { company_name: "Muster Baustoffe AG", city: "Zürich", verified: true, logo_url: null },
-    gradient: "from-navy-800 via-navy-700 to-brand/40",
   },
   {
     id: "demo-2",
@@ -66,14 +64,13 @@ export const SAMPLE_POSTS: MockPost[] = [
     created_at: new Date(Date.now() - 20 * H).toISOString(),
     company_id: "seed-togg",
     companies: { company_name: "Beispiel Kies AG", city: "Wil", verified: false, logo_url: null },
-    gradient: "from-brand/30 via-brand/10 to-navy-800",
   },
   {
     id: "demo-4",
     post_type: "UPDATE",
     title: null,
     content:
-      "Rückblick auf ein starkes Quartal: über 1'200 m³ Beton gebündelt, Ø 13.8 % Ersparnis für unsere Poolteilnehmer. Danke an alle Partner in der Innerschweiz! 🚧",
+      "Rückblick auf ein starkes Quartal: über 1'200 m³ Beton gebündelt, Ø 13.8 % Ersparnis für unsere Poolteilnehmer. Danke an alle Partner in der Innerschweiz!",
     region: "Innerschweiz",
     likes_count: 63,
     comments_count: 9,
@@ -96,10 +93,13 @@ export const SAMPLE_PARTNERS: {
   { id: "seed-4", company_name: "Musterbau Innerschweiz AG", role: "BUYER", city: "Luzern", verified: true },
 ];
 
+// Gewerke heissen auf dem Bau wie sie heissen. Das Rautezeichen und der
+// Unterstrich in „#Hochbau_Zürich" sind eine Konvention aus sozialen
+// Netzwerken — auf einer Beschaffungsplattform lesen sie sich maschinell.
 export const GEWERKE = [
-  "#Betonbau",
-  "#Hochbau_Zürich",
-  "#Aushub",
-  "#Armierung",
-  "#Tiefbau",
+  "Betonbau",
+  "Hochbau",
+  "Aushub",
+  "Armierung",
+  "Tiefbau",
 ];

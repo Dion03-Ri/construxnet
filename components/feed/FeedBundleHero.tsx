@@ -56,8 +56,8 @@ export default function FeedBundleHero() {
           <div className="text-[10.5px] font-semibold uppercase tracking-[0.14em] text-white/40">
             Laufende Bündel
           </div>
-          <div className="mt-3 grid grid-cols-1 gap-2.5 sm:grid-cols-3">
-            {top.map((b) => {
+          <div className="mt-4 grid grid-cols-1 gap-y-5 sm:grid-cols-3 sm:gap-y-0">
+            {top.map((b, i) => {
               const step = nextStep(b.current_volume);
               const goal = step?.at ?? b.current_volume;
               const pct = Math.min(100, Math.round((b.current_volume / (goal || 1)) * 100));
@@ -65,13 +65,17 @@ export default function FeedBundleHero() {
                 <Link
                   key={b.id}
                   href={`/beschaffung?material=${encodeURIComponent(b.material_id ?? "")}`}
-                  className="group rounded-2xl border border-white/[0.08] bg-[#0B1522] p-3.5 transition-colors hover:border-brand/40"
+                  className={cn(
+                    "group",
+                    i > 0 && "border-t border-white/[0.08] pt-5 sm:border-l sm:border-t-0 sm:pl-6 sm:pt-0",
+                    i < top.length - 1 && "sm:pr-6",
+                  )}
                 >
                   <div className="flex items-start justify-between gap-2">
                     <span className="truncate text-[13px] font-semibold text-white">
                       {b.material_label ?? b.title}
                     </span>
-                    <span className="shrink-0 rounded-full border border-brand/30 bg-brand/10 px-2 py-0.5 text-[10.5px] font-bold tabular-nums text-brand">
+                    <span className="shrink-0 text-[13px] font-bold tabular-nums text-brand">
                       −{b.current_discount_pct} %
                     </span>
                   </div>
@@ -83,7 +87,7 @@ export default function FeedBundleHero() {
                       <Users className="h-3 w-3" /> {b.participant_count}
                     </span>
                   </div>
-                  <div className="mt-2.5 h-1 w-full overflow-hidden rounded-full bg-white/10">
+                  <div className="mt-3 h-[3px] w-full overflow-hidden rounded-full bg-white/10">
                     <div className="h-full rounded-full bg-brand" style={{ width: `${pct}%` }} />
                   </div>
                 </Link>

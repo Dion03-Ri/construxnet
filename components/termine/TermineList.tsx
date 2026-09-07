@@ -160,7 +160,7 @@ function TerminCard({ t }: { t: Termin }) {
             onClick={() => { downloadIcs(t); setAdded(true); }}
             className={cn(
               "inline-flex items-center gap-1.5 rounded-md px-3.5 py-2 text-[13px] font-semibold transition-colors",
-              added ? "bg-accent/10 text-accent" : "bg-brand text-navy-900 hover:bg-brand/100",
+              added ? "bg-accent/10 text-brand" : "bg-brand text-navy-900 hover:bg-brand/100",
             )}
           >
             {added ? (

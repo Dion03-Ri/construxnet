@@ -138,7 +138,7 @@ export default async function CompanyPage({ params }: { params: Promise<{ id: st
               </span>
               <div className="mt-3 flex items-center gap-2">
                 <h1 className="text-2xl font-bold tracking-tight text-white">{company.company_name}</h1>
-                {company.verified && <BadgeCheck className="h-5 w-5 text-accent" />}
+                {company.verified && <BadgeCheck className="h-5 w-5 text-brand" />}
               </div>
               <p className="mt-0.5 text-sm text-white/55">
                 {ROLE_LABEL[company.role] ?? company.role}
@@ -202,7 +202,7 @@ export default async function CompanyPage({ params }: { params: Promise<{ id: st
               {company.supply_regions?.length ? (
                 <div className="flex flex-wrap gap-1.5">
                   {company.supply_regions.map((r) => (
-                    <span key={r} className="rounded-md border border-accent/25 bg-accent/5 px-2.5 py-1 text-[12px] font-medium text-accent">{r}</span>
+                    <span key={r} className="rounded-md border border-accent/25 bg-accent/5 px-2.5 py-1 text-[12px] font-medium text-brand">{r}</span>
                   ))}
                 </div>
               ) : (

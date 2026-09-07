@@ -43,7 +43,7 @@ export default function FeedProfileCard({
               <h2 className="font-semibold leading-tight text-white group-hover:text-brand">
                 {company.company_name}
               </h2>
-              {company.verified && <BadgeCheck className="h-4 w-4 shrink-0 text-accent" />}
+              {company.verified && <BadgeCheck className="h-4 w-4 shrink-0 text-brand" />}
             </div>
           </Link>
           <p className="mt-0.5 text-[13px] text-white/55">

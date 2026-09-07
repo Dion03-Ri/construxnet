@@ -13,7 +13,6 @@ import {
   MapPin,
   Loader2,
   AlertTriangle,
-  Package,
   Newspaper,
   ImageIcon,
   Send,
@@ -27,7 +26,7 @@ import { fetchMyCompanyId } from "@/lib/myCompany";
 import RecommendedPartners from "@/components/feed/RecommendedPartners";
 import FeedBundleHero from "@/components/feed/FeedBundleHero";
 import { SAMPLE_POSTS, type MockPost } from "@/data/feedMock";
-import { badge } from "@/lib/ui";
+
 import { cn } from "@/lib/utils";
 
 const REGIONS = ["Zürich", "Bern", "Nordwestschweiz", "Innerschweiz"] as const;
@@ -240,27 +239,27 @@ function Composer({ onCreated }: { onCreated: () => void }) {
   return (
     <div className="border-t border-white/[0.08] pt-5">
       {!open ? (
-        <div className="p-4">
+        <div>
           <div className="flex items-center gap-3">
             {avatar}
             <button
               type="button"
               onClick={() => setOpen(true)}
               disabled={!company}
-              className="h-11 flex-1 rounded-lg border border-white/[0.08] bg-white/[0.03] px-4 text-left text-sm text-white/55 transition-colors hover:border-brand/40 hover:bg-[#0B1522] disabled:opacity-60"
+              className="h-11 flex-1 rounded-full border border-white/[0.10] px-5 text-left text-sm text-white/50 transition-colors hover:border-brand/40 hover:text-white/75 disabled:opacity-60"
             >
               {company ? "Beitrag hinzufügen …" : "Firmenprofil nötig, um zu posten"}
             </button>
           </div>
 
-          <div className="mt-3 grid grid-cols-3 gap-1.5 border-t border-white/[0.06] pt-3">
+          <div className="mt-4 flex flex-wrap items-center gap-x-7 gap-y-2">
             {COMPOSER_TYPES.map((t) => (
               <button
                 key={t.key}
                 type="button"
                 onClick={() => start(t.key)}
                 disabled={!company}
-                className="inline-flex items-center justify-center gap-2 rounded-md px-2 py-2 text-[13px] font-semibold text-white/70 transition-colors hover:bg-white/[0.07] disabled:opacity-50"
+                className="inline-flex items-center gap-2 text-[13px] font-semibold text-white/60 transition-colors hover:text-white disabled:opacity-50"
               >
                 <t.icon className="h-4 w-4 text-brand" />
                 {t.label}
@@ -288,15 +287,17 @@ function Composer({ onCreated }: { onCreated: () => void }) {
           </div>
 
           <div className="px-4 pt-3">
-            <div className="inline-flex rounded-md border border-white/[0.08] bg-white/[0.03] p-0.5">
+            <div className="inline-flex items-center gap-x-5">
               {COMPOSER_TYPES.map((t) => (
                 <button
                   key={t.key}
                   type="button"
                   onClick={() => setPostType(t.key)}
                   className={cn(
-                    "inline-flex items-center gap-1.5 rounded-[5px] px-3 py-1.5 text-[13px] font-semibold transition-colors",
-                    postType === t.key ? "bg-navy-900 text-white" : "text-white/55 hover:text-white",
+                    "inline-flex items-center gap-1.5 border-b-2 pb-1 text-[13px] font-semibold transition-colors",
+                    postType === t.key
+                      ? "border-brand text-white"
+                      : "border-transparent text-white/45 hover:text-white",
                   )}
                 >
                   <t.icon className="h-3.5 w-3.5" />
@@ -445,7 +446,14 @@ function PostCard({ post, index }: { post: Post; index: number }) {
       transition={{ duration: 0.25, delay: Math.min(index * 0.04, 0.24), ease: "easeOut" }}
       className="border-t border-white/[0.08] py-6"
     >
-      <div className="flex items-center gap-3">
+      {/* Kopfzeile eines Beitrags.
+
+          Die Art des Beitrags stand rechts als gefuellte Goldpille — auf
+          jedem Beitrag, in der lautesten Farbe der Seite. Auf dem Handy
+          drueckte sie ausserdem Ort und Zeit in drei Zeilen. Jetzt steht
+          sie als erstes Wort der Kennzeile, genau wie die Phase in der
+          Bündelliste. */}
+      <div className="flex items-start gap-3">
         <Link
           href={`/company/${post.company_id}`}
           className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full bg-white/10 text-sm font-semibold text-white/75"
@@ -457,27 +465,28 @@ function PostCard({ post, index }: { post: Post; index: number }) {
             initials(name)
           )}
         </Link>
-        <div className="min-w-0">
+        <div className="min-w-0 flex-1">
           <div className="flex items-center gap-1.5">
             <Link href={`/company/${post.company_id}`} className="truncate font-semibold text-white hover:text-brand">
               {name}
             </Link>
-            {c?.verified && <BadgeCheck className="h-4 w-4 shrink-0 text-accent" />}
+            {c?.verified && <BadgeCheck className="h-4 w-4 shrink-0 text-brand" />}
           </div>
-          <div className="flex items-center gap-2 text-xs text-white/40">
+          <div className="mt-0.5 flex flex-wrap items-center gap-x-2.5 gap-y-0.5 text-xs text-white/40">
+            <span className="text-[10.5px] font-semibold uppercase tracking-[0.12em] text-white/30">
+              {POST_TYPES[post.post_type]?.label ?? post.post_type}
+            </span>
             {c?.city && (
               <span className="inline-flex items-center gap-1">
                 <MapPin className="h-3 w-3" />
                 {c.city}
               </span>
             )}
-            <span>· {timeAgo(post.created_at)}</span>
+            <span>{timeAgo(post.created_at)}</span>
+            {post.region && post.region !== c?.city && <span>{post.region}</span>}
           </div>
         </div>
-        <span className={cn("ml-auto shrink-0", badge("gold", true))}>
-          {POST_TYPES[post.post_type]?.label ?? post.post_type}
-        </span>
-        <button type="button" className="rounded-lg p-1 text-white/40 hover:bg-white/[0.07]" aria-label="Optionen">
+        <button type="button" className="shrink-0 rounded-lg p-1 text-white/30 hover:text-white/70" aria-label="Optionen">
           <MoreHorizontal className="h-4 w-4" />
         </button>
       </div>
@@ -496,21 +505,14 @@ function PostCard({ post, index }: { post: Post; index: number }) {
         )}
       </p>
 
-      {post.media_url ? (
-        <div className="mt-3 overflow-hidden rounded-lg border border-white/[0.08]">
+      {/* Nur ein echtes, hochgeladenes Bild. Vorher stand hier bei
+          Beitraegen ohne Bild eine Flaeche mit Farbverlauf und einem
+          Paket-Symbol in der Mitte — ein erzeugtes Motiv, das nichts
+          zeigt. Ein Beitrag ohne Bild hat jetzt kein Bild. */}
+      {post.media_url && (
+        <div className="mt-4 overflow-hidden rounded-lg">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={post.media_url} alt={post.title ?? name} className="max-h-96 w-full object-cover" />
-        </div>
-      ) : post.gradient ? (
-        <div className={cn("mt-3 flex h-44 items-center justify-center rounded-lg bg-gradient-to-br", post.gradient)}>
-          <Package className="h-10 w-10 text-white/70" />
-        </div>
-      ) : null}
-
-      {post.region && (
-        <div className={cn("mt-3", badge("slate"))}>
-          <MapPin className="h-3 w-3" />
-          {post.region}
         </div>
       )}
 
@@ -528,7 +530,7 @@ function PostCard({ post, index }: { post: Post; index: number }) {
           onClick={() => setLiked((v) => !v)}
         />
         <EngagementButton icon={MessageCircle} label="Kommentieren" />
-        <EngagementButton icon={Rocket} label="Pool beitreten" accent="text-accent" href="/pools" />
+        <EngagementButton icon={Rocket} label="Pool beitreten" accent="text-brand" href="/pools" />
         <EngagementButton icon={Share2} label="Teilen" />
       </div>
     </motion.article>
@@ -549,17 +551,17 @@ function ChipRow({
   onChange: (v: string) => void;
 }) {
   return (
-    <div className="flex flex-wrap gap-1 rounded-md border border-white/[0.08] bg-white/[0.03] p-1">
+    <div className="flex flex-wrap items-center gap-x-5 gap-y-1">
       {options.map((o) => (
         <button
           key={o.key}
           type="button"
           onClick={() => onChange(o.key)}
           className={cn(
-            "rounded-[5px] px-3 py-1.5 text-xs font-medium transition-colors",
+            "border-b-2 pb-0.5 text-[12.5px] font-semibold transition-colors",
             value === o.key
-              ? "bg-[#0B1522] text-brand shadow-sm"
-              : "text-white/55 hover:text-white",
+              ? "border-brand text-white"
+              : "border-transparent text-white/40 hover:text-white",
           )}
         >
           {o.label}
@@ -713,7 +715,7 @@ export default function NetworkFeed() {
       {/* Empfohlene Partner für die Beschaffung */}
       <RecommendedPartners />
 
-      <div className="space-y-2">
+      <div className="space-y-2.5 border-t border-white/[0.08] pt-5">
         <ChipRow options={typeOptions} value={type} onChange={setType} />
         <ChipRow options={regionOptions} value={region} onChange={setRegion} />
       </div>
@@ -730,7 +732,7 @@ export default function NetworkFeed() {
           <SkeletonCard />
         </>
       ) : error ? (
-        <div className="flex items-start gap-2 rounded-lg border border-rose-400/30 bg-rose-500/10 p-4 text-sm text-rose-300">
+        <div className="flex items-start gap-2 border-l-2 border-rose-400/60 py-2 pl-4 text-sm text-rose-300">
           <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />
           <div>
             <p className="font-medium">Feed konnte nicht geladen werden.</p>

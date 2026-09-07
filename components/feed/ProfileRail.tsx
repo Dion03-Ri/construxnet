@@ -206,7 +206,7 @@ export default function ProfileRail({
           {GEWERKE.map((g) => (
             <span
               key={g}
-              className="rounded-full border border-white/[0.08] bg-white/[0.03] px-2.5 py-1 text-[11.5px] font-medium text-white/70"
+              className="rounded-full bg-white/[0.06] px-2.5 py-1 text-[11.5px] font-medium text-white/70"
             >
               {g}
             </span>
