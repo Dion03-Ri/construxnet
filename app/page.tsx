@@ -2,7 +2,6 @@ import Link from "next/link";
 import TwoWays from "@/components/home/TwoWays";
 import ProcessVideo from "@/components/home/ProcessVideo";
 import Pricing from "@/components/home/Pricing";
-import OfferSheet from "@/components/home/OfferSheet";
 import { HERO_IMAGE, PHOTO_POOLS, PHOTO_NETWORK } from "@/data/media";
 import TrustBar from "@/components/home/TrustBar";
 import {
@@ -136,49 +135,51 @@ export default function Home() {
           mit drei Punkten, rechts die Sache selbst — gross, schwebend und
           ueber den Spaltenrand hinaus. Der Text ist bewusst kurz; wer drei
           Saetze braucht, um einen Vorteil zu erklaeren, hat keinen. */}
-      <section className="overflow-hidden border-y border-white/[0.07] bg-[#080F19]">
-        <div className={cn(SHELL, SECTION, "grid grid-cols-1 items-center gap-16 lg:grid-cols-[0.9fr_1.1fr]")}>
-          <div>
+      <section className="border-y border-white/[0.07] bg-[#080F19]">
+        <div className={cn(SHELL, SECTION)}>
+          <div className="max-w-2xl">
             <span className={EYEBROW}>Smart Pools</span>
             <h2 className={cn(D_MD, "mt-5 text-white")}>
               Mengenrabatte,<br />die alleine niemand bekommt.
             </h2>
-            <p className={cn(LEAD, "mt-7 max-w-md text-white/60")}>
+            <p className={cn(LEAD, "mt-7 max-w-xl text-white/60")}>
               Wer alleine einkauft, zahlt Einzelpreise. Obtanet legt den Bedarf
               mehrerer Baufirmen zusammen und verhandelt mit dem ganzen Volumen.
             </p>
-
-            <ul className="mt-9 space-y-4">
-              {[
-                ["Je grösser das Bündel, desto höher der Rabatt", "Auch kleine Einzelbestellungen profitieren."],
-                ["Gemessen am KBOB-Referenzpreis", "Kein Prospektversprechen, sondern eine nachprüfbare Grösse."],
-                ["Der Mindestvorteil steht vorher fest", "Wird er nicht erreicht, löst sich das Bündel auf."],
-              ].map(([t, d]) => (
-                <li key={t} className="flex gap-3.5">
-                  <span aria-hidden className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-brand" />
-                  <span>
-                    <span className="text-[15px] font-semibold text-white">{t}</span>
-                    <span className="mt-0.5 block text-[13.5px] leading-relaxed text-white/45">{d}</span>
-                  </span>
-                </li>
-              ))}
-            </ul>
-
-            <Link href="/pools" className={cn(BTN_LIGHT, "mt-10")}>
-              So funktioniert ein Pool
-            </Link>
           </div>
 
-          {/* Der Zuschlag als Blatt: hell auf dunklem Grund, mit weichem
-              Schlagschatten und einem Lichtschein dahinter. Ein weisses
-              Dokument hat auf schwarzem Grund mehr Gewicht als noch eine
-              dunkle Liste — und es zeigt das Konkrete: den Moment, in dem
-              aus einem Buendel ein Preis wird. */}
-          <div className="relative mx-auto w-full max-w-[440px] lg:mx-0 lg:max-w-none">
-            <div className="relative lg:rotate-[-0.6deg]">
-              <OfferSheet />
-            </div>
+          {/* Drei Aussagen nebeneinander, getrennt durch senkrechte
+              Haarlinien — dieselbe Machart wie der Ablauf auf /pools und
+              die Preisstufen weiter unten.
+
+              Hier stand ein gezeichneter Zuschlag als weisses Blatt.
+              Es war eine Nachbildung eines Dokuments, das es so nicht gibt,
+              und genau das hat man ihm angesehen. Vorerst gar kein Bild:
+              wenn ein Abschnitt ohne Bild trägt, braucht er keins. */}
+          <div className="mt-14 grid grid-cols-1 gap-y-10 sm:mt-16 sm:grid-cols-3 sm:gap-y-0">
+            {[
+              ["Je grösser das Bündel,\ndesto höher der Rabatt", "Auch kleine Einzelbestellungen profitieren — der Vorteil hängt am Volumen des Bündels, nicht am eigenen."],
+              ["Gemessen am\nKBOB-Referenzpreis", "Kein Prospektversprechen, sondern eine Grösse, die sich nachrechnen lässt."],
+              ["Der Mindestvorteil\nsteht vorher fest", "Wird er bis zur Frist nicht erreicht, löst sich das Bündel auf. Es entsteht keine Verpflichtung."],
+            ].map(([t, d], i, arr) => (
+              <div
+                key={t}
+                className={cn(
+                  i > 0 && "border-t border-white/[0.10] pt-10 sm:border-l sm:border-t-0 sm:pl-8 sm:pt-0",
+                  i < arr.length - 1 && "sm:pr-8",
+                )}
+              >
+                <h3 className="whitespace-pre-line text-[17px] font-bold leading-[1.35] tracking-tight text-white">
+                  {t}
+                </h3>
+                <p className="mt-3 text-[13.5px] leading-relaxed text-white/45">{d}</p>
+              </div>
+            ))}
           </div>
+
+          <Link href="/pools" className={cn(BTN_LIGHT, "mt-14 sm:mt-16")}>
+            So funktioniert ein Pool
+          </Link>
         </div>
       </section>
 

@@ -2,7 +2,6 @@ import Link from "next/link";
 import { BadgeCheck, Users, Package, Bookmark, FileText, LineChart, Hash } from "lucide-react";
 import type { Company } from "@/lib/company";
 import { GEWERKE } from "@/data/feedMock";
-import { PANEL } from "@/lib/ui";
 import { cn } from "@/lib/utils";
 
 const ROLE_LABEL: Record<string, string> = {
@@ -27,7 +26,7 @@ export default function FeedProfileCard({
   return (
     <div className="space-y-3">
       {/* Profilkarte */}
-      <div className={cn(PANEL, "overflow-hidden")}>
+      <div className="border-t border-white/[0.08]">
         <div className="h-16 bg-accent-600" />
         <div className="px-4 pb-4">
           <Link href={`/company/${company.id}`} className="group block">
@@ -69,7 +68,7 @@ export default function FeedProfileCard({
       </div>
 
       {/* Meine Gewerke */}
-      <div className={cn(PANEL, "p-4")}>
+      <div className="border-t border-white/[0.08] pt-5">
         <h3 className="mb-2 flex items-center gap-1.5 text-[13px] font-semibold text-white">
           <Hash className="h-3.5 w-3.5 text-brand" /> Meine Gewerke
         </h3>
@@ -86,7 +85,7 @@ export default function FeedProfileCard({
       </div>
 
       {/* Quick-Links */}
-      <div className={cn(PANEL, "p-2")}>
+      <div className="border-t border-white/[0.08] pt-3">
         {[
           { href: "/dashboard", icon: FileText, label: "SIA-Verträge & Dashboard" },
           { href: "/pools", icon: Bookmark, label: "Gespeicherte Smart Pools" },

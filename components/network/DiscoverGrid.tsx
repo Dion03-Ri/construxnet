@@ -2,12 +2,12 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { Search, Loader2, Users, ArrowLeft, MapPin, SlidersHorizontal } from "lucide-react";
+import { Search, Loader2, ArrowLeft, MapPin, SlidersHorizontal } from "lucide-react";
 import { useNetwork, ROLE_FILTERS, SWISS_CANTONS, type NetCompany } from "@/lib/network";
 import CompanyCard from "@/components/network/CompanyCard";
 import DirectRequestModal from "@/components/network/DirectRequestModal";
-import { PANEL } from "@/lib/ui";
 import { cn } from "@/lib/utils";
+import { D_MD, EYEBROW } from "@/lib/ui";
 
 const PAGE = 24;
 
@@ -94,58 +94,54 @@ export default function DiscoverGrid() {
 
   return (
     <div className="space-y-5">
-      {/* Kopf */}
-      <header className="relative overflow-hidden rounded-xl border border-white/10 bg-navy-900 p-5 text-white sm:p-6">
-        <div className="relative">
-          <Link
-            href="/network"
-            className="inline-flex items-center gap-1.5 text-[13px] font-medium text-white/50 transition-colors hover:text-white"
-          >
-            <ArrowLeft className="h-4 w-4" /> Zurück zum Netzwerk
-          </Link>
-          <h1 className="mt-3 flex items-center gap-2 text-xl font-bold tracking-tight sm:text-2xl">
-            <Users className="h-5 w-5 text-brand" /> Firmen entdecken
-          </h1>
-          {/* Handy: kurze Fassung, damit die Firmen nicht unter dem Kopf verschwinden. */}
-          <p className="mt-1.5 text-[13.5px] leading-relaxed text-white/55 sm:hidden">
-            Alle Firmen auf Obtanet — nach Kanton und Rolle filtern.
-          </p>
-          <p className="mt-1.5 hidden max-w-2xl text-[13.5px] leading-relaxed text-white/55 sm:block">
-            Alle Bauunternehmen und Baustoffwerke auf Obtanet. Filtere nach Kanton und Rolle —
-            jede Verbindung ist ein möglicher Bündel-Partner oder Lieferant.
-          </p>
+      {/* Seitenkopf über die volle Breite — kein Panel, wie auf Netzwerk,
+          Smart Pools und Referenzpreise. */}
+      <header className="border-b border-white/[0.08] pb-8">
+        <Link
+          href="/network"
+          className="inline-flex items-center gap-1.5 text-[13px] font-medium text-white/45 transition-colors hover:text-brand"
+        >
+          <ArrowLeft className="h-4 w-4" /> Zurück zum Netzwerk
+        </Link>
+        <span className={cn(EYEBROW, "mt-6 block")}>Netzwerk</span>
+        <h1 className={cn(D_MD, "mt-4 text-white")}>Firmen entdecken</h1>
+        <p className="mt-6 max-w-xl text-[16px] leading-relaxed text-white/55">
+          Alle Bauunternehmen und Baustoffwerke auf Obtanet.
+          <span className="hidden sm:inline">
+            {" "}Filtere nach Kanton und Rolle — jede Verbindung ist ein möglicher
+            Bündel-Partner oder Lieferant.
+          </span>
+        </p>
 
-          {/* Suche */}
-          <div className="relative mt-4 max-w-xl">
-            <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-white/40" />
-            <input
-              type="search"
-              value={query}
-              onChange={(e) => { setQuery(e.target.value); setLimit(PAGE); }}
-              placeholder="Firma, Ort, Kanton oder UID suchen …"
-              className="w-full rounded-md border border-white/15 bg-white/10 py-2.5 pl-10 pr-3 text-sm text-white placeholder:text-white/40 outline-none transition-colors focus:border-brand focus:bg-white/15"
-            />
-          </div>
+        <div className="relative mt-8 max-w-xl">
+          <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-white/40" />
+          <input
+            type="search"
+            value={query}
+            onChange={(e) => { setQuery(e.target.value); setLimit(PAGE); }}
+            placeholder="Firma, Ort, Kanton oder UID suchen …"
+            className="w-full rounded-xl border border-white/[0.10] bg-white/[0.04] py-3 pl-11 pr-3 text-sm text-white placeholder:text-white/40 outline-none transition-colors focus:border-brand"
+          />
         </div>
       </header>
 
       {/* Filterleiste */}
-      <div className={cn(PANEL, "p-3.5 sm:p-4")}>
+      <div className="border-t border-white/[0.08] pt-5">
         <div className="hidden items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.12em] text-white/40 sm:flex">
           <SlidersHorizontal className="h-3.5 w-3.5" /> Filter
         </div>
 
-        <div className="no-scrollbar flex gap-1.5 overflow-x-auto sm:mt-2.5">
+        <div className="no-scrollbar -mb-px flex gap-6 overflow-x-auto border-b border-white/[0.08] sm:mt-3">
           {ROLE_FILTERS.map((r) => (
             <button
               key={r.key}
               type="button"
               onClick={() => { setRole(r.key); setLimit(PAGE); }}
               className={cn(
-                "shrink-0 whitespace-nowrap rounded-md px-3.5 py-1.5 text-xs font-semibold transition-colors",
+                "shrink-0 whitespace-nowrap border-b-2 pb-2 text-[13px] font-semibold transition-colors",
                 role === r.key
-                  ? "bg-navy-900 text-white"
-                  : "border border-white/[0.08] bg-[#0B1522] text-white/55 hover:border-white/[0.16] hover:text-white",
+                  ? "border-brand text-white"
+                  : "border-transparent text-white/40 hover:text-white",
               )}
             >
               {r.label}
@@ -155,24 +151,24 @@ export default function DiscoverGrid() {
             type="button"
             onClick={() => { setOnlyVerified((v) => !v); setLimit(PAGE); }}
             className={cn(
-              "shrink-0 whitespace-nowrap rounded-md px-3.5 py-1.5 text-xs font-semibold transition-colors",
+              "shrink-0 whitespace-nowrap border-b-2 pb-2 text-[13px] font-semibold transition-colors",
               onlyVerified
-                ? "bg-brand text-navy-900"
-                : "border border-white/[0.08] bg-[#0B1522] text-white/55 hover:border-white/[0.16] hover:text-white",
+                ? "border-brand text-white"
+                : "border-transparent text-white/40 hover:text-white",
             )}
           >
             Nur verifizierte
           </button>
         </div>
 
-        <div className="mt-2.5 grid grid-cols-2 gap-2">
+        <div className="mt-4 grid grid-cols-2 gap-2">
           <label className="relative block">
             <MapPin className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-white/40" />
             <select
               value={canton}
               onChange={(e) => { setCanton(e.target.value); setLimit(PAGE); }}
               aria-label="Kanton"
-              className="w-full appearance-none rounded-md border border-white/[0.08] bg-[#0B1522] py-2 pl-9 pr-3 text-[13px] text-white/90 outline-none focus:border-brand"
+              className="w-full appearance-none rounded-xl border border-white/[0.10] bg-white/[0.04] py-2.5 pl-9 pr-3 text-[13px] text-white/90 outline-none focus:border-brand"
             >
               <option value="ALL">Alle Kantone</option>
               {SWISS_CANTONS.map((k) => (
@@ -186,7 +182,7 @@ export default function DiscoverGrid() {
             value={sort}
             onChange={(e) => setSort(e.target.value)}
             aria-label="Sortierung"
-            className="w-full appearance-none rounded-md border border-white/[0.08] bg-[#0B1522] px-3 py-2 text-[13px] text-white/90 outline-none focus:border-brand"
+            className="w-full appearance-none rounded-xl border border-white/[0.10] bg-white/[0.04] px-3 py-2.5 text-[13px] text-white/90 outline-none focus:border-brand"
           >
             {SORTS.map((s) => (
               <option key={s.key} value={s.key}>{s.label}</option>
@@ -202,7 +198,7 @@ export default function DiscoverGrid() {
           <Loader2 className="h-4 w-4 animate-spin" /> Firmen werden geladen …
         </div>
       ) : results.length === 0 ? (
-        <div className={cn(PANEL, "px-6 py-14 text-center")}>
+        <div className="border-t border-white/[0.08] py-20 text-center">
           <p className="text-sm text-white/55">
             {filtersOn
               ? "Keine Firma passt zu diesen Filtern."
@@ -232,7 +228,7 @@ export default function DiscoverGrid() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
+          <div className="border-b border-white/[0.08]">
             {shown.map((c) => (
               <CompanyCard
                 key={c.id}
@@ -252,7 +248,7 @@ export default function DiscoverGrid() {
               <button
                 type="button"
                 onClick={() => setLimit((l) => l + PAGE)}
-                className="rounded-md border border-white/[0.08] bg-[#0B1522] px-5 py-2.5 text-sm font-semibold text-white/75 transition-colors hover:border-brand/40 hover:text-brand"
+                className="rounded-xl border border-white/[0.10] px-5 py-2.5 text-sm font-semibold text-white/75 transition-colors hover:border-brand/40 hover:text-brand"
               >
                 Weitere {Math.min(PAGE, results.length - limit)} anzeigen
               </button>
