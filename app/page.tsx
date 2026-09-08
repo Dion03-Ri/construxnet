@@ -20,7 +20,7 @@ import {
   Truck,
   Users,
 } from "lucide-react";
-import { BTN_GOLD, BTN_LIGHT, BTN_OUTLINE_DARK, D_LG, D_MD, EYEBROW, GROUND, LEAD, ROW_HOVER, SECTION, SECTION_TIGHT, SECTION_WIDE, SHELL } from "@/lib/ui";
+import { BTN_GOLD, BTN_LIGHT, BTN_OUTLINE_DARK, D_LG, D_MD, EYEBROW, GROUND, LEAD, ROW_HOVER, SECTION_TIGHT, SECTION_WIDE, SHELL } from "@/lib/ui";
 import { cn } from "@/lib/utils";
 
 /* ------------------------------------------------------------------ */
@@ -135,59 +135,61 @@ export default function Home() {
           mit drei Punkten, rechts die Sache selbst — gross, schwebend und
           ueber den Spaltenrand hinaus. Der Text ist bewusst kurz; wer drei
           Saetze braucht, um einen Vorteil zu erklaeren, hat keinen. */}
+      {/* Smart Pools — asymmetrisch, links die Aussage, rechts die Belege.
+
+          Vorher ein Dreispalter mit senkrechten Haarlinien. Genau dieselbe
+          Form hatten auch Vertrauensanker, Ablauf und Preisstufen: vier
+          Abschnitte, ein Raster. Hier steht die Überschnitt jetzt gross auf
+          fünf Spalten, die drei Belege stehen daneben untereinander. Zwei
+          ungleiche Hälften statt drei gleicher Drittel. */}
       <section className="border-y border-white/[0.07] bg-[#080F19]">
-        <div className={cn(SHELL, SECTION)}>
-          <div className="max-w-2xl">
+        <div className={cn(SHELL, SECTION_WIDE, "grid grid-cols-1 gap-x-20 gap-y-14 lg:grid-cols-[1.15fr_1fr]")}>
+          <div>
             <span className={EYEBROW}>Smart Pools</span>
-            <h2 className={cn(D_MD, "mt-5 text-white")}>
-              Mengenrabatte,<br />die alleine niemand bekommt.
+            <h2 className={cn(D_LG, "mt-6 text-white")}>
+              Mengenrabatte,<br />die alleine<br />niemand bekommt.
             </h2>
-            <p className={cn(LEAD, "mt-7 max-w-xl text-white/60")}>
+            <p className={cn(LEAD, "mt-8 max-w-md text-white/55")}>
               Wer alleine einkauft, zahlt Einzelpreise. Obtanet legt den Bedarf
               mehrerer Baufirmen zusammen und verhandelt mit dem ganzen Volumen.
             </p>
+            <Link href="/pools" className={cn(BTN_LIGHT, "mt-10")}>
+              So funktioniert ein Pool
+            </Link>
           </div>
 
-          {/* Drei Aussagen nebeneinander, getrennt durch senkrechte
-              Haarlinien — dieselbe Machart wie der Ablauf auf /pools und
-              die Preisstufen weiter unten.
-
-              Hier stand ein gezeichneter Zuschlag als weisses Blatt.
-              Es war eine Nachbildung eines Dokuments, das es so nicht gibt,
-              und genau das hat man ihm angesehen. Vorerst gar kein Bild:
-              wenn ein Abschnitt ohne Bild trägt, braucht er keins. */}
-          <div className="mt-14 grid grid-cols-1 gap-y-10 sm:mt-16 sm:grid-cols-3 sm:gap-y-0">
+          {/* Die drei Belege untereinander, jeder mit einer laufenden
+              Nummer — kein Raster, eine Aufzählung. */}
+          <dl className="lg:pt-4">
             {[
-              ["Je grösser das Bündel,\ndesto höher der Rabatt", "Auch kleine Einzelbestellungen profitieren — der Vorteil hängt am Volumen des Bündels, nicht am eigenen."],
-              ["Gemessen am\nKBOB-Referenzpreis", "Kein Prospektversprechen, sondern eine Grösse, die sich nachrechnen lässt."],
-              ["Der Mindestvorteil\nsteht vorher fest", "Wird er bis zur Frist nicht erreicht, löst sich das Bündel auf. Es entsteht keine Verpflichtung."],
-            ].map(([t, d], i, arr) => (
-              <div
-                key={t}
-                className={cn(
-                  i > 0 && "border-t border-white/[0.10] pt-10 sm:border-l sm:border-t-0 sm:pl-8 sm:pt-0",
-                  i < arr.length - 1 && "sm:pr-8",
-                )}
-              >
-                <h3 className="whitespace-pre-line text-[17px] font-bold leading-[1.35] tracking-tight text-white">
-                  {t}
-                </h3>
-                <p className="mt-3 text-[13.5px] leading-relaxed text-white/45">{d}</p>
+              ["Je grösser das Bündel, desto höher der Rabatt", "Auch kleine Einzelbestellungen profitieren — der Vorteil hängt am Volumen des Bündels, nicht am eigenen."],
+              ["Gemessen am KBOB-Referenzpreis", "Kein Prospektversprechen, sondern eine Grösse, die sich nachrechnen lässt."],
+              ["Der Mindestvorteil steht vorher fest", "Wird er bis zur Frist nicht erreicht, löst sich das Bündel auf. Es entsteht keine Verpflichtung."],
+            ].map(([t, d], i) => (
+              <div key={t} className="border-t border-white/[0.12] py-7 first:pt-0 last:pb-0">
+                <dt className="flex items-baseline gap-4">
+                  <span className="font-display text-[13px] font-bold tabular-nums text-brand">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <span className="text-[17px] font-bold leading-snug tracking-tight text-white">{t}</span>
+                </dt>
+                <dd className="mt-2.5 pl-[2.1rem] text-[13.5px] leading-relaxed text-white/45">{d}</dd>
               </div>
             ))}
-          </div>
-
-          <Link href="/pools" className={cn(BTN_LIGHT, "mt-14 sm:mt-16")}>
-            So funktioniert ein Pool
-          </Link>
+          </dl>
         </div>
       </section>
 
-      {/* ================= Von der Anfrage zum Vertrag ================= */}
-      {/* Bewusst ohne Karten und ohne Symbole. Vier Nummern, vier Titel,
-          vier Zeilen — der Ablauf braucht keinen Rahmen, um Ablauf zu sein. */}
+      {/* ================= Von der Anfrage zum Vertrag =================
+          Ein Ablauf ist eine Reihenfolge, kein Raster. Vorher standen die
+          vier Schritte als Vierspalter nebeneinander — man las sie von
+          links nach rechts wie eine Aufzählung, nicht wie eine Abfolge.
+
+          Jetzt untereinander, jeder Schritt eine volle Zeile mit der Nummer
+          links und dem Text rechts, und jeder rückt etwas weiter ein. Man
+          sieht die Treppe. */}
       <section className="bg-navy-950 text-white">
-        <div className={cn(SHELL, SECTION)}>
+        <div className={cn(SHELL, SECTION_TIGHT)}>
           <div className="max-w-2xl">
             <span className={EYEBROW}>Ablauf</span>
             <h2 className={cn(D_MD, "mt-5 text-white")}>Von der Anfrage zum Vertrag</h2>
@@ -197,14 +199,22 @@ export default function Home() {
             </p>
           </div>
 
-          <ol className="mt-16 grid grid-cols-1 gap-x-10 gap-y-12 sm:grid-cols-2 lg:mt-20 lg:grid-cols-4">
+          <ol className="mt-14 lg:mt-16">
             {STEPS.map((step, i) => (
-              <li key={step.t} className="border-t border-white/15 pt-5">
-                <div className="font-display text-[26px] font-bold tabular-nums leading-none text-brand">
+              <li
+                key={step.t}
+                className="grid grid-cols-[3.5rem_minmax(0,1fr)] items-baseline gap-x-4 border-t border-white/[0.12] py-8 sm:grid-cols-[5rem_minmax(0,1fr)] sm:gap-x-8 lg:py-10"
+                style={{ marginLeft: `${i * 2.5}%` }}
+              >
+                <span className="font-display text-[30px] font-bold tabular-nums leading-none text-brand sm:text-[38px]">
                   {String(i + 1).padStart(2, "0")}
+                </span>
+                <div className="grid max-w-3xl grid-cols-1 gap-x-10 gap-y-2 sm:grid-cols-[minmax(0,13rem)_minmax(0,1fr)]">
+                  <h3 className="text-[19px] font-bold leading-snug tracking-tight text-white sm:text-[21px]">
+                    {step.t}
+                  </h3>
+                  <p className="text-[14px] leading-relaxed text-white/50">{step.d}</p>
                 </div>
-                <h3 className="mt-5 text-[19px] font-bold tracking-tight text-white">{step.t}</h3>
-                <p className="mt-3 text-[14px] leading-relaxed text-white/50">{step.d}</p>
               </li>
             ))}
           </ol>
@@ -226,7 +236,7 @@ export default function Home() {
 
           Danach geht es wieder ins Schwarze und zum Schluss ins Navy. */}
       <section className="bg-white text-slate-900">
-      <div className={cn(SHELL, SECTION)}>
+      <div className={cn(SHELL, SECTION_WIDE)}>
         <div className="grid grid-cols-1 gap-y-14 lg:grid-cols-2 lg:gap-y-0">
           {/* Pools */}
           <div className="lg:border-r lg:border-slate-200 lg:pr-12">
