@@ -378,10 +378,12 @@ stanzt ihn aus, und der Rest bleibt als heller Rahmen stehen.
 
 ## OFFEN / als Nächstes
 - Branding einheitlich auf Obtanet umgestellt.
-- **Kästchen-Abbau: abgeschlossen.** Alle Seiten sind auf Haarlinien
-  statt Rahmen umgestellt. Wer eine neue Seite baut, fängt gar nicht
-  erst mit `PANEL` an — `PANEL` bleibt nur für das, was wirklich ein
-  eigenes Objekt ist.
+- **Kästchen-Abbau: abgeschlossen.** Alle Seiten und alle Bausteine sind
+  auf Haarlinien statt Rahmen umgestellt. `PANEL` steht nur noch an
+  EINER Stelle: um die Karte in `components/map/SupplierMap.tsx`. Die
+  ist ein eigenes Objekt und braucht einen Rahmen, damit die Kacheln an
+  den weichen Ecken beschnitten werden. Wer eine neue Seite baut, fängt
+  gar nicht erst mit `PANEL` an.
 - **Gold ist die knappste Ressource.** Höchstens EIN gefüllter
   Gold-Knopf pro Bildschirm. In Listen und Tabellen trägt der Knopf
   Goldschrift auf einem Goldrand und füllt sich erst beim Zeigen —
