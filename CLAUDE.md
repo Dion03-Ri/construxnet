@@ -364,14 +364,25 @@ Wortmarke „obtanet" — „obta" in Navy `#1B3A5C` bzw. Weiss, „net" in Gold
 
 **Das „o" steht nirgends allein.** Es gab kurz ein Zeichen aus dem
 einzelnen Buchstaben — im Kopf des Handys, auf der Onboarding-Seite und
-als Favicon. Der Nutzer hat es abgelehnt, und er hat recht: ein heller
-Ring bei 28 px sieht aus wie ein Ladekreis. Überall steht die ganze
-Wortmarke, auch im Favicon.
+als Favicon. Ein heller Ring bei 28 px sieht aus wie ein Ladekreis.
+Überall auf der Seite steht die ganze Wortmarke.
+
+**Das Favicon trägt „on".** Der ganze Schriftzug war dort bei 32 px nur
+noch ein Schimmer — ein Favicon ist 16 bis 32 px gross, ein Wort aus
+sieben Buchstaben passt da nicht hinein. „on" sind die Anfangsbuchstaben
+der zwei Hälften (**o**bta / **n**et), in denselben Farben: „o" weiss,
+„n" gold.
+
+Die zwei Buchstaben sind **aus der Wortmarke geschnitten, nicht
+nachgezeichnet** — „o" liegt in `logo-hell.png` auf den Spalten 0–217,
+„n" auf 771–940. Der Zwischenraum von 34 px ist ebenfalls abgeleitet:
+o→b sind dort 41 px, n→e 26 px; rund gefolgt von gerade liegt dazwischen.
+Ändert sich die Wortmarke, müssen diese Spalten neu bestimmt werden.
 
 Es gibt genau zwei Dateien:
 - `public/logo-hell.png` — Weiss + Gold, für dunklen Grund
 - `public/logo-dunkel.png` — Navy + Gold, für hellen Grund
-- `app/icon.png`, `app/apple-icon.png` — Navy-Kachel mit der Wortmarke
+- `app/icon.png`, `app/apple-icon.png` — Navy-Kachel mit „on"
 
 **Nirgends den Namen als Text setzen.** `Obta<span>net</span>` stand im
 Fuss, auf der Zugangsseite und in Coming-Soon. Im Fuss lief dabei das
