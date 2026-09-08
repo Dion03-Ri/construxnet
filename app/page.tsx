@@ -20,7 +20,7 @@ import {
   Truck,
   Users,
 } from "lucide-react";
-import { BTN_GOLD, BTN_LIGHT, BTN_OUTLINE_DARK, D_LG, D_MD, EYEBROW, GROUND, LEAD, PANEL, ROW_HOVER, SECTION, SECTION_TIGHT, SECTION_WIDE, SHELL } from "@/lib/ui";
+import { BTN_GOLD, BTN_LIGHT, BTN_OUTLINE_DARK, D_LG, D_MD, EYEBROW, GROUND, LEAD, ROW_HOVER, SECTION, SECTION_TIGHT, SECTION_WIDE, SHELL } from "@/lib/ui";
 import { cn } from "@/lib/utils";
 
 /* ------------------------------------------------------------------ */
