@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { LEGAL, isOpen } from "@/data/legal";
-import { SHELL_NARROW } from "@/lib/ui";
+import { COLUMN, SHELL_NARROW } from "@/lib/ui";
 import { cn } from "@/lib/utils";
 
 /** Ein noch nicht gesetzter Wert — sichtbar, nicht versteckt. */
@@ -66,6 +66,7 @@ export default function LegalPage({
 }) {
   return (
     <main className={cn(SHELL_NARROW, "py-6 sm:py-8")}>
+      <div className={COLUMN}>
       <Link
         href="/"
         className="mb-5 inline-flex items-center gap-1.5 text-[13px] font-medium text-white/[0.56] transition-colors hover:text-brand"
@@ -116,6 +117,7 @@ export default function LegalPage({
         </header>
 
         <article className="px-6 py-8 sm:px-9 sm:py-10 [&>*:first-child]:mt-0">{children}</article>
+      </div>
       </div>
     </main>
   );

@@ -1,7 +1,7 @@
-import FeedProfileCard from "@/components/feed/FeedProfileCard";
 import NotificationList from "@/components/notifications/NotificationList";
 import { requireCompanyOrOnboard } from "@/lib/company";
-import { createServerSupabaseClient } from "@/lib/supabase";
+import { COLUMN, SHELL } from "@/lib/ui";
+import { cn } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
 
@@ -10,26 +10,24 @@ export const metadata = {
   description: "Pool-Updates, Angebote und Netzwerk-Aktivität",
 };
 
+/**
+ * Links stand eine Profilkarte mit Logo, Firmenname und zwei Zahlen — auf
+ * einer Seite, die nur Benachrichtigungen zeigt. Dieselbe Karte ist schon
+ * aus dem Feed geflogen: die eigene Firma gehört ins Dashboard.
+ *
+ * Ohne sie braucht die Seite keine zwei Spalten mehr. Rand wie überall,
+ * Inhalt in einer lesbaren Spalte.
+ */
 export default async function NotificationsPage() {
-  const company = await requireCompanyOrOnboard();
-  const supabase = createServerSupabaseClient();
-
-  const [{ count: connCount }, { count: poolCount }] = await Promise.all([
-    supabase.from("connections").select("id", { count: "exact", head: true }).eq("status", "CONNECTED"),
-    supabase.from("bundle_participations").select("id", { count: "exact", head: true }).eq("buyer_company_id", company.id),
-  ]);
+  await requireCompanyOrOnboard();
 
   return (
-    <main className="mx-auto max-w-4xl px-4 py-6 sm:px-6">
-      <div className="grid grid-cols-1 gap-5 lg:grid-cols-[260px_minmax(0,1fr)]">
-        <aside className="hidden lg:block">
-          <div className="sticky top-[72px]">
-            <FeedProfileCard company={company} connections={connCount ?? 0} pools={poolCount ?? 0} />
-          </div>
-        </aside>
-        <div className="min-w-0">
-          <NotificationList />
-        </div>
+    <main className={cn(SHELL, "py-6 sm:py-8")}>
+      <h1 className="mb-6 text-2xl font-bold tracking-tight text-white">
+        Benachrichtigungen
+      </h1>
+      <div className={COLUMN}>
+        <NotificationList />
       </div>
     </main>
   );

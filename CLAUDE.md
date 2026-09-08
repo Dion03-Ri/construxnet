@@ -358,6 +358,21 @@ stanzt ihn aus, und der Rest bleibt als heller Rahmen stehen.
   erhaltene Anfragen beantworten, gesendete Einladungen zurückziehen. Drei
   Reiter, echte Listen — kein zweiter Feed.
 
+### Der Rand ist überall 72 px
+`SHELL`, `SHELL_NARROW` und `SHELL_WORK` haben dieselbe Geometrie:
+`max-w-[1760px]`, `lg:px-[72px]`. Es gibt keine schmalere Hülle mehr.
+`SHELL_NARROW` war einmal 980 px — dadurch begann der Text auf
+Rechtsseiten, Formularen und Listen rund dreihundert Pixel von der
+Fensterkante, auf allen anderen zweiundsiebzig.
+
+Begrenzt wird stattdessen die **Inhaltsspalte**: `COLUMN`
+(`max-w-[860px]`, links am Rand, nicht zentriert). Kopf über die volle
+Breite, Inhalt in einer lesbaren Spalte darunter. Angewandt auf
+`/termine`, `/network/requests`, `/delivery-notes`, `/profile/edit`,
+`/admin-control`, `/notifications`, `/company/[id]` und die Rechtsseiten.
+
+Nachgemessen (Playwright, 1440 px): jede Seite beginnt bei 72 px.
+
 ### Aufbau der Feed-Seite (ENTSCHIEDEN)
 **Der Rand ist überall derselbe: 72 px** (`SHELL_WORK` ist `SHELL`). Eine
 zentrierte, schmalere Hülle war der erste Versuch und war falsch — dann

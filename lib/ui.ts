@@ -200,8 +200,27 @@ export const LIST_ROW = "border-t border-white/[0.08]";
    ================================================================== */
 export const SHELL = "mx-auto w-full max-w-[1760px] px-5 sm:px-10 lg:px-[72px]";
 
-/** Fliesstext und Formulare — eine breite Zeile liest sich schlechter. */
-export const SHELL_NARROW = "mx-auto w-full max-w-[980px] px-5 sm:px-10 lg:px-[72px]";
+/**
+ * Fliesstext und Formulare.
+ *
+ * Früher war das eine schmalere Hülle (980 px). Das war falsch: dadurch
+ * begann der Text auf diesen Seiten dreihundert Pixel von der Fensterkante,
+ * auf allen anderen zweiundsiebzig. Der Rand ist überall derselbe.
+ *
+ * Begrenzt wird stattdessen die Inhaltsspalte — siehe `COLUMN`. Kopf über
+ * die volle Breite, Inhalt in einer lesbaren Spalte darunter.
+ */
+export const SHELL_NARROW = SHELL;
+
+/**
+ * Eine Inhaltsspalte auf einer Seite mit vollem Rand.
+ *
+ * 860 px ist die Breite, bei der eine Zeile Fliesstext rund 90 Zeichen hat
+ * und ein Formularfeld nicht quer über den Bildschirm läuft. Nicht
+ * zentriert: die Spalte hängt links am Seitenrand, damit sie unter dem
+ * Seitenkopf beginnt und nicht daneben.
+ */
+export const COLUMN = "w-full max-w-[860px]";
 
 /**
  * Arbeitsflächen — Feed, später auch andere Seiten, auf denen man liest und

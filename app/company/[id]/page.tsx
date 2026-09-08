@@ -18,7 +18,7 @@ import {
 import { createServerSupabaseClient } from "@/lib/supabase";
 import { requireCompanyOrOnboard } from "@/lib/company";
 import CompanyConnect from "@/components/CompanyConnect";
-import { SHELL_NARROW } from "@/lib/ui";
+import { COLUMN, SHELL_NARROW } from "@/lib/ui";
 import { cn } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
@@ -122,6 +122,7 @@ export default async function CompanyPage({ params }: { params: Promise<{ id: st
 
   return (
     <main className={cn(SHELL_NARROW, "py-6")}>
+      <div className={COLUMN}>
       {/* Profil-Kopf.
 
           Vorher ein Panel mit einem Farbverlauf von Navy nach Gold als
@@ -292,6 +293,7 @@ export default async function CompanyPage({ params }: { params: Promise<{ id: st
             )}
           </section>
         </div>
+      </div>
       </div>
     </main>
   );
