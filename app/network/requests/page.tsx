@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Inbox, ArrowLeft } from "lucide-react";
 import ReceivedRequests from "@/components/network/ReceivedRequests";
 import { requireCompanyOrOnboard } from "@/lib/company";
-import { SHELL_NARROW } from "@/lib/ui";
+import { COLUMN, SHELL_NARROW } from "@/lib/ui";
 import { cn } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
@@ -19,7 +19,7 @@ export default async function RequestsPage() {
       <Link href="/network" className="mb-4 inline-flex items-center gap-1.5 text-[13px] font-medium text-white/[0.72] transition-colors hover:text-brand">
         <ArrowLeft className="h-4 w-4" /> Zurück zum Netzwerk
       </Link>
-      <header className="mb-6 flex items-center gap-3">
+      <header className="mb-6 flex max-w-[860px] items-center gap-3">
         <span className="grid h-11 w-11 shrink-0 place-items-center rounded-lg bg-brand/15 text-brand">
           <Inbox className="h-6 w-6" />
         </span>
@@ -28,7 +28,9 @@ export default async function RequestsPage() {
           <p className="text-sm text-white/[0.72]">Vernetzungs-Anfragen anderer Firmen — annehmen oder ignorieren.</p>
         </div>
       </header>
-      <ReceivedRequests />
+      <div className={COLUMN}>
+        <ReceivedRequests />
+      </div>
     </main>
   );
 }

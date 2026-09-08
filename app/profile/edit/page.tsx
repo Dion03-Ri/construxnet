@@ -3,7 +3,7 @@ import { ArrowLeft } from "lucide-react";
 import ProfileForm, { type EditableCompany } from "@/components/profile/ProfileForm";
 import { requireCompanyOrOnboard } from "@/lib/company";
 import { supabaseAdmin } from "@/lib/supabase";
-import { SHELL_NARROW } from "@/lib/ui";
+import { COLUMN, SHELL_NARROW } from "@/lib/ui";
 import { cn } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
@@ -53,6 +53,7 @@ export default async function EditProfilePage() {
 
   return (
     <main className={cn(SHELL_NARROW, "py-6 sm:py-8")}>
+      <div className={COLUMN}>
       <Link
         href={`/company/${me.id}`}
         className="mb-5 inline-flex items-center gap-1.5 text-[13px] font-medium text-white/[0.56] transition-colors hover:text-brand"
@@ -85,6 +86,7 @@ export default async function EditProfilePage() {
         <div className="px-6 py-7 sm:px-9 sm:py-9">
           <ProfileForm company={company} />
         </div>
+      </div>
       </div>
     </main>
   );

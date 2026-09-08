@@ -1,7 +1,7 @@
 import { CalendarDays } from "lucide-react";
 import TermineList from "@/components/termine/TermineList";
 import { requireCompanyOrOnboard } from "@/lib/company";
-import { SHELL_NARROW } from "@/lib/ui";
+import { COLUMN, SHELL_NARROW } from "@/lib/ui";
 import { cn } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
@@ -15,7 +15,7 @@ export default async function TerminePage() {
   await requireCompanyOrOnboard();
   return (
     <main className={cn(SHELL_NARROW, "py-6 sm:py-8")}>
-      <header className="mb-6 flex items-center gap-3">
+      <header className="mb-6 flex max-w-[860px] items-center gap-3">
         <span className="grid h-11 w-11 shrink-0 place-items-center rounded-lg bg-brand/15 text-brand">
           <CalendarDays className="h-6 w-6" />
         </span>
@@ -27,7 +27,9 @@ export default async function TerminePage() {
           </p>
         </div>
       </header>
-      <TermineList />
+      <div className={COLUMN}>
+        <TermineList />
+      </div>
     </main>
   );
 }

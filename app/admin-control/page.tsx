@@ -1,5 +1,5 @@
 import { Gauge, Construction } from "lucide-react";
-import { SHELL_NARROW } from "@/lib/ui";
+import { COLUMN, SHELL_NARROW } from "@/lib/ui";
 import { cn } from "@/lib/utils";
 
 export const metadata = {
@@ -30,6 +30,7 @@ const MODULES = [
 export default function AdminControlPage() {
   return (
     <main className={cn(SHELL_NARROW, "py-6 sm:py-8")}>
+      <div className={COLUMN}>
       <header className="mb-6 flex items-start gap-3">
         <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-brand/15 text-brand">
           <Gauge className="h-6 w-6" />
@@ -60,6 +61,7 @@ export default function AdminControlPage() {
             <p className="mt-1.5 text-sm text-white/[0.72]">{m.text}</p>
           </div>
         ))}
+      </div>
       </div>
     </main>
   );
