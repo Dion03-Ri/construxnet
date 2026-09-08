@@ -186,15 +186,22 @@ export const LIST_ROW = "border-t border-white/[0.08]";
      Formular sind — dort ist eine breite Zeile schlechter lesbar,
      nicht besser.
 
-   1280 px statt der bisherigen 1152: etwas mehr Luft für die Tabellen,
-   aber ausdrücklich nicht über die volle Bildschirmbreite. Der
-   seitliche Abstand ist grosszügiger als die üblichen 16 px — Luft am
-   Rand ist das Billigste, was eine Seite teuer aussehen lässt.
+   Der Rand ist bewusst schmal: 72 px, also knapp zwei Zentimeter von der
+   Fensterkante bis zum ersten Buchstaben. Eine zentrierte Spalte mit
+   breiten Leerrändern links und rechts ist das Layout jeder erzeugten
+   Seite — Robinhood läuft fast bis an die Kante.
+
+   Damit der Fliesstext trotzdem lesbar bleibt, wird er NICHT hier
+   begrenzt, sondern am Absatz selbst (`max-w-xl` und Verwandte). Breite
+   Hülle, schmale Textspalten — so machen es die Vorbilder.
+
+   `max-w-[1760px]` fängt nur sehr grosse Schirme ab; darunter ist die
+   Seite praktisch randlos.
    ================================================================== */
-export const SHELL = "mx-auto w-full max-w-[1200px] px-6 sm:px-8";
+export const SHELL = "mx-auto w-full max-w-[1760px] px-5 sm:px-10 lg:px-[72px]";
 
 /** Fliesstext und Formulare — eine breite Zeile liest sich schlechter. */
-export const SHELL_NARROW = "mx-auto w-full max-w-[880px] px-5 sm:px-8";
+export const SHELL_NARROW = "mx-auto w-full max-w-[980px] px-5 sm:px-10 lg:px-[72px]";
 
 /* ==================================================================
    REGISTER B — DAS BLATT
