@@ -58,7 +58,9 @@ export default function BundleOpportunities() {
     <div className="space-y-6">
       <BundleChances />
 
-      <div className="border-t border-white/[0.08] pt-5">
+      {/* Der eine schwarze Anker der Seite: die Zahl, die zählt,
+          steht auf echtem Schwarz statt auf dem Seitengrund. */}
+      <div className="rounded-2xl bg-black p-5">
         <div className="flex items-baseline justify-between">
           <h3 className="text-[14px] font-bold tracking-tight text-white">Referenzpreis</h3>
           <Link href="/kbob" className="text-[11.5px] font-semibold text-brand hover:underline">
@@ -78,7 +80,7 @@ export default function BundleOpportunities() {
 
         <Sparkline />
 
-        <div className="mt-3 flex items-center justify-between border-t border-white/[0.08] pt-3 text-[12.5px]">
+        <div className="mt-3 flex items-center justify-between border-t border-white/[0.10] pt-3 text-[12.5px]">
           <span className="text-white/45">gegenüber Vorquartal</span>
           <span
             className={

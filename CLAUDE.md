@@ -384,6 +384,12 @@ stanzt ihn aus, und der Rest bleibt als heller Rahmen stehen.
   ist ein eigenes Objekt und braucht einen Rahmen, damit die Kacheln an
   den weichen Ecken beschnitten werden. Wer eine neue Seite baut, fängt
   gar nicht erst mit `PANEL` an.
+- **`TILE` — der schwarze Anker.** Der Seitengrund ist `#060B12`, also
+  fast, aber nicht ganz schwarz. Eine Fläche in echtem Schwarz tritt
+  darauf hervor, ohne dass ein Rahmen nötig wäre. Für die eine Zahl, die
+  auf einer Seite zählt: Marktstand im Feed, Kennzahlen auf
+  Referenzpreise, Überblick im Netzwerk. **Höchstens einer je
+  Bildschirm** — zwei heben sich gegenseitig auf.
 - **Gold ist die knappste Ressource.** Höchstens EIN gefüllter
   Gold-Knopf pro Bildschirm. In Listen und Tabellen trägt der Knopf
   Goldschrift auf einem Goldrand und füllt sich erst beim Zeigen —

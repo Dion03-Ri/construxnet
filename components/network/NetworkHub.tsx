@@ -426,8 +426,8 @@ export default function NetworkHub() {
         </div>
 
         <aside className="space-y-10">
-        <DarkPanel>
-          <div className="border-b border-white/10 px-5 pb-3 pt-4">
+        <div className="rounded-2xl bg-black text-white">
+          <div className="border-b border-white/[0.10] px-5 pb-3.5 pt-5">
             <Eyebrow dark>Dein Netzwerk</Eyebrow>
             <h2 className="mt-0.5 text-[15px] font-bold">Überblick</h2>
           </div>
@@ -449,7 +449,7 @@ export default function NetworkHub() {
             </div>
           ) : (
             <>
-              <div className="divide-y divide-white/[0.06] px-5">
+              <div className="divide-y divide-white/[0.07] px-5 pb-1">
                 {[...overview, ...(moreStats ? overviewMore : [])].map((s) => (
                   <div key={s.label} className="flex items-center justify-between py-2.5">
                     <span className="text-[13px] text-white/55">{s.label}</span>
@@ -460,14 +460,14 @@ export default function NetworkHub() {
               <button
                 type="button"
                 onClick={() => setMoreStats((v) => !v)}
-                className="flex w-full items-center justify-center gap-1 border-t border-white/10 py-2.5 text-[12px] font-semibold text-brand transition-colors hover:bg-white/5"
+                className="flex w-full items-center justify-center gap-1 border-t border-white/[0.10] py-3 text-[12px] font-semibold text-brand transition-colors hover:bg-white/5"
               >
                 {moreStats ? "Weniger anzeigen" : "Mehr anzeigen"}
                 <ChevronDown className={cn("h-4 w-4 transition-transform", moreStats && "rotate-180")} />
               </button>
             </>
           )}
-        </DarkPanel>
+        </div>
 
         {/* Neu im Netzwerk — echte, zuletzt beigetretene Firmen */}
         {newest.length > 0 && (

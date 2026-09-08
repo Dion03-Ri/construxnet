@@ -61,7 +61,7 @@ export default function ProfileMenu() {
       </button>
 
       {open && (
-        <div className="absolute right-0 z-50 mt-2 w-64 overflow-hidden rounded-lg border border-white/[0.08] bg-[#0B1522]hover">
+        <div className="absolute right-0 z-50 mt-2 w-64 overflow-hidden rounded-2xl border border-white/[0.10] bg-[#0B1522] shadow-[0_24px_60px_-20px_rgba(0,0,0,0.8)]">
           {/* Kopf */}
           <div className="flex items-center gap-3 border-b border-white/[0.06] p-4">
             {avatar("h-11 w-11")}

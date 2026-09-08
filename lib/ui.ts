@@ -236,3 +236,20 @@ export const S_LOW = "text-slate-400";
 /** Eingabefeld im Blatt. */
 export const INPUT_SHEET =
   "rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-[14px] text-slate-900 outline-none transition-colors placeholder:text-slate-400 focus:border-brand";
+
+/* ==================================================================
+   TILE — der schwarze Anker
+   ------------------------------------------------------------------
+   Der Seitengrund ist `#060B12`, also fast, aber nicht ganz schwarz.
+   Genau dieser Unterschied lässt sich nutzen: eine Fläche in echtem
+   Schwarz tritt darauf hervor, ohne dass ein Rahmen nötig wäre.
+
+   Gedacht für die eine Zahl, die auf einer Seite zählt — den
+   Referenzpreis, die Kennzahlen, den Marktstand. So arbeitet Robinhood:
+   der Kurs steht auf einer eigenen, dunkleren Fläche, alles andere
+   liegt auf dem Grund.
+
+   Sparsam einsetzen. Zwei schwarze Anker auf einem Bildschirm heben
+   sich gegenseitig auf.
+   ================================================================== */
+export const TILE = "rounded-2xl bg-black";
