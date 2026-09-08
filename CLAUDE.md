@@ -357,6 +357,37 @@ stanzt ihn aus, und der Rest bleibt als heller Rahmen stehen.
 - **Netzwerk** (`/network`) = *mit wem du arbeitest*: Verbindungen verwalten,
   erhaltene Anfragen beantworten, gesendete Einladungen zurückziehen. Drei
   Reiter, echte Listen — kein zweiter Feed.
+
+### Aufbau der Feed-Seite (ENTSCHIEDEN — „Werkbank")
+Von oben nach unten, alles über die volle Breite:
+1. **Kopfband** — links vier Zahlen (Verbindungen, Aktive Pools, Offene
+   Anfragen, Nächste Frist) in 34 px; rechts die **Wolke**: Nachrichten ·
+   Fristen · Beschaffungspartner finden · Empfangene Anfragen ·
+   Gespeicherte Pools. Verschiedene Schriftgrade und Höhenversätze, aber
+   eine Schrift, eine Farbe, ein Verhalten — ohne diese Einschränkung wird
+   aus „durcheinander" sofort „unordentlich". Der Versatz gilt erst ab
+   `lg`; umgebrochen laufen versetzte Zeilen ineinander.
+2. **Werkbank** — `BundleChances wide` links, `KbobTile` rechts daneben.
+   Beide beantworten dieselbe Frage: lohnt es sich gerade?
+3. **Partner für deine Beschaffung** — Zeilen bis an den rechten Rand.
+4. **News** — `NetworkFeed`, geschlossener Composer als eine Zeile
+   („Neu in der Branche" … „selber melden: Bedarf · Kapazität · Projekt ·
+   Frage · Update").
+
+Zwei Regeln, die die Reihenfolge festlegen:
+- **Die News stehen zuletzt.** Sie laden beim Scrollen endlos nach; was
+  darunter stünde, erreicht nie jemand.
+- **Keine eigene Profilkarte im Feed.** Logo, Firmenname, Rolle und Ort
+  gehören ins Dashboard. An der prominentesten Stelle der Seite standen
+  Angaben, die man über die eigene Firma bereits weiss.
+
+Gelöscht und nicht wiederherstellen: `FeedBundleHero` („Was brauchst du
+auf der Baustelle?" — kostete die Höhe eines halben Beitrags und sagte
+nichts, was die Melde-Zeile nicht in vier Wörtern sagt), `ProfileRail`,
+`BundleOpportunities`. „Verbindungen" ist als *Verweis* gestrichen — es
+führte an dieselbe Stelle wie „Beschaffungspartner finden"; als *Zahl*
+bleibt es.
+
 - **Entdecken** (`/network/entdecken`) = die grosse Liste aller Firmen mit
   Suche, Kanton-, Rollen- und Verifiziert-Filter, Sortierung und
   „Weitere anzeigen". Ziel jedes „Passende Firmen finden"-Knopfs.

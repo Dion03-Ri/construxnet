@@ -6,14 +6,13 @@ import { cn } from "@/lib/utils";
 /**
  * „Bündel-Chancen" — die Liste offener Bündel der eigenen Region.
  *
- * Steht an zwei Stellen: in der rechten Schiene des Feeds und als
- * Ausschnitt auf der Startseite. Deshalb liegt sie hier und nicht in
- * einer der beiden Dateien.
+ * Steht an mehreren Stellen, deshalb liegt sie hier und nicht in einer
+ * der Seiten.
  *
- * Der Grund für die Zweitverwendung: die Startseite zeigte an dieser
- * Stelle eine gezeichnete Erklärgrafik. Ein echter Ausschnitt aus der
- * Anwendung überzeugt mehr — er zeigt, was jemand nach der Anmeldung
- * wirklich sieht, statt eine Illustration davon.
+ * Zwei Formen: schmal (`wide={false}`) für eine Schiene, breit für den
+ * Feed. Breit heisst nicht nur „mehr Platz" — die Angaben, die schmal
+ * untereinander stehen müssen, stehen dann nebeneinander in Spalten, und
+ * der Füllstandsbalken bekommt die Länge, die ihn erst lesbar macht.
  */
 
 export type PoolChance = {
@@ -35,39 +34,75 @@ export const POOL_CHANCES: PoolChance[] = [
 export default function BundleChances({
   pools = POOL_CHANCES,
   className,
+  wide = false,
 }: {
   pools?: PoolChance[];
   className?: string;
+  /** Breite Form: Angaben nebeneinander statt untereinander. */
+  wide?: boolean;
 }) {
   return (
     <div className={cn("border-t border-white/[0.12]", className)}>
       <div className="flex items-baseline justify-between pb-3 pt-5">
-        <h3 className="text-[14px] font-bold tracking-tight text-white">Bündel-Chancen</h3>
+        <h3 className={cn("font-bold tracking-tight text-white", wide ? "text-[15px]" : "text-[14px]")}>
+          Bündel-Chancen
+        </h3>
         <span className="text-[11px] text-white/[0.56]">deine Region</span>
       </div>
-      <ul className="divide-y divide-white/[0.12] border-t border-white/[0.12]">
-        {pools.map((p) => (
-          <li key={p.material}>
-            <Link href="/pools" className="-mx-2 block rounded-lg px-2 py-3.5 transition-colors hover:bg-white/[0.05]">
-              <div className="flex items-center justify-between gap-2">
-                <span className="truncate text-[13px] font-semibold text-white">{p.material}</span>
-                <span className="shrink-0 text-[13px] font-bold tabular-nums text-brand">
+
+      {wide ? (
+        <ul className="border-t border-white/[0.12]">
+          {pools.map((p) => (
+            <li key={p.material}>
+              <Link
+                href="/pools"
+                className="grid grid-cols-[minmax(0,1fr)_5rem] items-center gap-x-6 gap-y-2 border-b border-white/[0.12] py-3.5 transition-colors hover:bg-white/[0.03] lg:grid-cols-[15rem_minmax(0,1fr)_11rem_5rem]"
+              >
+                <span className="truncate text-[14px] font-semibold text-white">{p.material}</span>
+                {/* Der Balken steht auf breiten Schirmen in einer eigenen
+                    Spalte, auf schmalen unter der ganzen Zeile. */}
+                <span className="order-last col-span-2 block h-[3px] overflow-hidden rounded-full bg-white/[0.10] lg:order-none lg:col-span-1">
+                  <span className="block h-full rounded-full bg-brand" style={{ width: `${p.pct}%` }} />
+                </span>
+                <span className="col-span-2 text-[12px] text-white/[0.56] lg:col-span-1">
+                  {p.region} · {p.vol}
+                </span>
+                <span className="col-start-2 row-start-1 text-right text-[14px] font-bold tabular-nums text-brand lg:col-start-auto lg:row-start-auto">
                   −{p.disc} %
                 </span>
-              </div>
-              <div className="mt-1 text-[11.5px] text-white/[0.56]">
-                {p.region} · {p.vol}
-              </div>
-              <div className="mt-2.5 h-[3px] w-full overflow-hidden rounded-full bg-white/10">
-                <div className="h-full rounded-full bg-brand" style={{ width: `${p.pct}%` }} />
-              </div>
-            </Link>
-          </li>
-        ))}
-      </ul>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <ul className="divide-y divide-white/[0.12] border-t border-white/[0.12]">
+          {pools.map((p) => (
+            <li key={p.material}>
+              <Link href="/pools" className="-mx-2 block rounded-lg px-2 py-3.5 transition-colors hover:bg-white/[0.05]">
+                <div className="flex items-center justify-between gap-2">
+                  <span className="truncate text-[13px] font-semibold text-white">{p.material}</span>
+                  <span className="shrink-0 text-[13px] font-bold tabular-nums text-brand">
+                    −{p.disc} %
+                  </span>
+                </div>
+                <div className="mt-1 text-[11.5px] text-white/[0.56]">
+                  {p.region} · {p.vol}
+                </div>
+                <div className="mt-2.5 h-[3px] w-full overflow-hidden rounded-full bg-white/10">
+                  <div className="h-full rounded-full bg-brand" style={{ width: `${p.pct}%` }} />
+                </div>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      )}
+
       <Link
         href="/pools"
-        className="flex items-center justify-center gap-1 border-t border-white/[0.12] py-3.5 text-[12.5px] font-semibold text-white/[0.72] transition-colors hover:text-brand"
+        className={cn(
+          "flex items-center gap-1 py-3.5 text-[12.5px] font-semibold text-white/[0.72] transition-colors hover:text-brand",
+          wide ? "justify-start" : "justify-center border-t border-white/[0.12]",
+        )}
       >
         Alle Smart Pools <ChevronRight className="h-3.5 w-3.5" />
       </Link>
