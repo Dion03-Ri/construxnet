@@ -65,6 +65,9 @@ export default function OnboardingForm() {
       <div>
         <label htmlFor="uid_number" className={labelClass}>UID- / CHE-Nummer *</label>
         <input id="uid_number" name="uid_number" required placeholder="CHE-123.456.789" className={inputClass} />
+        <p className="mt-1 text-[11.5px] text-white/[0.56]">
+          Steht auf deinem Handelsregisterauszug. Die Prüfziffer wird nachgerechnet.
+        </p>
       </div>
 
       {/* Kanton + Stadt */}

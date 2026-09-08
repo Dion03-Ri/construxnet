@@ -1,5 +1,7 @@
 "use server";
 
+import { pruefeUid } from "@/lib/uid";
+
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { supabaseAdmin, cleanSupabaseUrl } from "@/lib/supabase";
@@ -49,7 +51,7 @@ export async function createCompany(
   }
 
   const company_name = String(formData.get("company_name") ?? "").trim();
-  const uid_number = String(formData.get("uid_number") ?? "").trim();
+  let uid_number = String(formData.get("uid_number") ?? "").trim();
   const role = String(formData.get("role") ?? "");
   const canton = String(formData.get("canton") ?? "").trim();
   const city = String(formData.get("city") ?? "").trim();
@@ -58,6 +60,20 @@ export async function createCompany(
   if (!company_name || !uid_number || !canton || !city) {
     return { error: "Bitte alle Pflichtfelder ausfüllen." };
   }
+
+  /* Die UID wird beim Anlegen genauso geprueft wie beim Bearbeiten —
+     sonst waere das Onboarding die offene Tuer, durch die jede erfundene
+     Nummer hereinkommt. */
+  const uid = pruefeUid(uid_number);
+  if (!uid.ok) {
+    return {
+      error:
+        uid.grund === "form"
+          ? "Die UID muss die Form CHE-123.456.789 haben."
+          : "Diese UID gibt es nicht — die Prüfziffer stimmt nicht. Bitte die Nummer auf dem Handelsregisterauszug vergleichen.",
+    };
+  }
+  uid_number = uid.normalisiert;
   if (role !== "BUYER" && role !== "SUPPLIER") {
     return { error: "Bitte eine Rolle wählen." };
   }

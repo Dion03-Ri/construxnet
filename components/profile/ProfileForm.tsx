@@ -176,7 +176,9 @@ export default function ProfileForm({ company }: { company: EditableCompany }) {
               placeholder="CHE-123.456.789"
               className={input}
             />
-            <p className="mt-1 text-[11.5px] text-slate-400">Form: CHE-123.456.789</p>
+            <p className="mt-1 text-[11.5px] text-slate-400">
+              Form CHE-123.456.789. Die Prüfziffer wird nachgerechnet.
+            </p>
           </div>
           <div>
             <span className={label}>Rolle</span>

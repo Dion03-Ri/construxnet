@@ -1,5 +1,7 @@
 "use server";
 
+import { pruefeUid } from "@/lib/uid";
+
 import { auth } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
 import { supabaseAdmin } from "@/lib/supabase";
@@ -67,7 +69,7 @@ export async function saveProfile(
   if (!me) return { error: "Firmenprofil nicht gefunden." };
 
   const company_name = str(formData, "company_name", 120);
-  const uid_number = str(formData, "uid_number", 20).toUpperCase();
+  let uid_number = str(formData, "uid_number", 20).toUpperCase();
   const canton = str(formData, "canton", 2).toUpperCase();
   const city = str(formData, "city", 80);
   const address = str(formData, "address", 160);
@@ -80,9 +82,20 @@ export async function saveProfile(
 
   if (!company_name) return { error: "Der Firmenname darf nicht leer sein." };
   if (!uid_number) return { error: "Die UID darf nicht leer sein." };
-  if (!/^CHE-\d{3}\.\d{3}\.\d{3}$/.test(uid_number)) {
-    return { error: "Die UID muss die Form CHE-123.456.789 haben." };
+  /* Bisher wurde nur die Form geprueft — damit kam jede ausgedachte
+     Zahlenfolge durch. Eine UID traegt eine Pruefziffer; die wird jetzt
+     nachgerechnet. Das faengt Tippfehler und erfundene Nummern ab, sagt
+     aber nichts darueber, ob die Firma existiert. */
+  const uid = pruefeUid(uid_number);
+  if (!uid.ok) {
+    return {
+      error:
+        uid.grund === "form"
+          ? "Die UID muss die Form CHE-123.456.789 haben."
+          : "Diese UID gibt es nicht — die Prüfziffer stimmt nicht. Bitte die Nummer auf dem Handelsregisterauszug vergleichen.",
+    };
   }
+  uid_number = uid.normalisiert;
   if (!CANTONS.has(canton)) return { error: "Bitte einen Kanton wählen." };
   if (!city) return { error: "Bitte den Ort angeben." };
   if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) {
