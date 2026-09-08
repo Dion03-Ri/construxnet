@@ -359,11 +359,17 @@ stanzt ihn aus, und der Rest bleibt als heller Rahmen stehen.
   Reiter, echte Listen — kein zweiter Feed.
 
 ### Aufbau der Feed-Seite (ENTSCHIEDEN)
-`SHELL_WORK` (1240 px), **nicht** `SHELL`. Der Feed ist eine Arbeitsfläche.
-Über 1760 px werden Zeilenlisten zu Streifen — eine Haarlinie von 1600 px
-mit einem Firmennamen links und einem Wort rechts —, und ein quadratisches
-Foto in einem Beitrag wird so gross wie der halbe Bildschirm. Breit bleibt,
-was überzeugen soll; gearbeitet wird enger.
+**Der Rand ist überall derselbe: 72 px** (`SHELL_WORK` ist `SHELL`). Eine
+zentrierte, schmalere Hülle war der erste Versuch und war falsch — dann
+sitzt der Feed sichtbar enger als der Rest der Seite.
+
+Begrenzt werden nicht die Hülle, sondern **die Spalten**: Beiträge
+höchstens 820 px (920 ab `2xl`), Schiene 340 px, die eine links, die
+andere rechts am Rand. Was auf breiten Schirmen dazwischen übrigbleibt,
+ist Zwischenraum und keine gestreckte Zeile. Über die volle Breite
+gestreckt wären Zeilenlisten Streifen — eine Haarlinie von 1600 px mit
+einem Firmennamen links und einem Wort rechts — und ein quadratisches Foto
+so gross wie der halbe Bildschirm.
 
 Von oben nach unten:
 1. **Kopfband** — links vier Zahlen (Verbindungen, Aktive Pools, Offene
@@ -375,17 +381,21 @@ Von oben nach unten:
    `lg`; umgebrochen laufen versetzte Zeilen ineinander.
 2. **Bündel-Chancen** (`wide`) — das Einzige über die ganze Breite. Drei
    Zeilen, die man im Vorbeigehen liest.
-3. **News + Schiene** — `NetworkFeed` in rund 700 px, daneben eine Schiene
-   von 320 px mit `KbobTile` und `RecommendedPartners`. Die Schiene ist
+3. **News + Schiene** — `NetworkFeed` links, daneben rechts am Rand eine
+   Schiene mit `KbobTile` und `RecommendedPartners`. Die Schiene ist
    `sticky`; auf dem Handy steht sie mit `order-first` VOR dem Strom.
 
 Drei Regeln, die den Aufbau festlegen:
 - **Die News stehen zuletzt** und alles Begleitende neben ihnen. Sie laden
   beim Scrollen endlos nach; was darunter stünde, erreicht nie jemand —
   auch auf dem Handy nicht, daher `order-first` für die Schiene.
-- **Rund 700 px für einen Beitrag.** Das ist die Lesebreite, und es ist die
-  Breite, bei der ein hochgeladenes Bild noch verhältnismässig ist
+- **Höchstens 820 px für einen Beitrag.** Das ist die Lesebreite, und es
+  ist die Breite, bei der ein hochgeladenes Bild noch verhältnismässig ist
   (zusätzlich auf `max-h-[340px]` beschnitten).
+- **Der Balken in einer Bündel-Zeile hat eine feste Länge (20rem).** Liesse
+  man ihn mitwachsen, wäre er bei 1760 px ein Meter Strich mit drei Wörtern
+  daneben. Region, Füllstand und Rabatt hängen rechts am Rand, mit festen
+  Zellenbreiten, damit die Zahlen der drei Zeilen untereinander stehen.
 - **Keine eigene Profilkarte im Feed.** Logo, Firmenname, Rolle und Ort
   gehören ins Dashboard.
 
