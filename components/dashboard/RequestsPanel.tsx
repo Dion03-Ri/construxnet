@@ -28,7 +28,6 @@ import {
   type DirectRequest,
   type RequestStatus,
 } from "@/lib/directRequests";
-import { PANEL } from "@/lib/ui";
 import { cn } from "@/lib/utils";
 
 const STATUS_STYLE: Record<RequestStatus, string> = {
@@ -451,11 +450,11 @@ export default function RequestsPanel({
       )}
 
       {loading ? (
-        <div className={cn(PANEL, "grid place-items-center py-16 text-white/40")}>
+        <div className={"grid place-items-center py-20 text-white/40"}>
           <Loader2 className="h-5 w-5 animate-spin" />
         </div>
       ) : shown.length === 0 ? (
-        <div className={cn(PANEL, "px-6 py-12 text-center")}>
+        <div className={"border-t border-white/[0.08] py-16 text-center"}>
           <Handshake className="mx-auto h-8 w-8 text-white/25" />
           <p className="mt-3 text-[15px] font-semibold text-white/90">
             {showDone
@@ -487,7 +486,7 @@ export default function RequestsPanel({
             const working = busy === r.id;
 
             return (
-              <div key={r.id} className={cn(PANEL, "p-4")}>
+              <div key={r.id} className={"border-t border-white/[0.08] py-5 transition-colors hover:bg-white/[0.02]"}>
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <div className="min-w-0">
                     <h3 className="text-[14.5px] font-bold text-white">

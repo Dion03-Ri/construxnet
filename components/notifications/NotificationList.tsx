@@ -9,7 +9,6 @@ import {
   relTime,
   type NoticeCat,
 } from "@/lib/useNotifications";
-import { PANEL } from "@/lib/ui";
 import { cn } from "@/lib/utils";
 
 export default function NotificationList() {
@@ -22,7 +21,7 @@ export default function NotificationList() {
   );
 
   return (
-    <div className={cn(PANEL, "overflow-hidden")}>
+    <div className={"border-t border-white/[0.08]"}>
       <div className="flex items-center justify-between gap-3 border-b border-white/[0.08] px-4 py-3 sm:px-5">
         <h1 className="text-[15px] font-semibold text-white">
           Benachrichtigungen

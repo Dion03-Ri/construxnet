@@ -21,7 +21,6 @@ import {
 } from "@/lib/customMaterials";
 import { matchMaterial, WORTH_SHOWING } from "@/lib/materialMatch";
 import { PROC_MATERIALS, type ProcMaterial } from "@/data/procurement";
-import { PANEL } from "@/lib/ui";
 import { cn } from "@/lib/utils";
 
 const STATUS_STYLE: Record<CustomStatus, string> = {
@@ -119,11 +118,11 @@ export default function MaterialsPanel({
       )}
 
       {loading ? (
-        <div className={cn(PANEL, "grid place-items-center py-16 text-white/40")}>
+        <div className={"grid place-items-center py-20 text-white/40"}>
           <Loader2 className="h-5 w-5 animate-spin" />
         </div>
       ) : mine.length === 0 ? (
-        <div className={cn(PANEL, "px-6 py-12 text-center")}>
+        <div className={"border-t border-white/[0.08] py-16 text-center"}>
           <Package className="mx-auto h-8 w-8 text-white/25" />
           <p className="mt-3 text-[15px] font-semibold text-white/90">
             Noch nichts eigenes erfasst
@@ -140,7 +139,7 @@ export default function MaterialsPanel({
             const dupes = m.status === "MERGED" ? [] : duplicatesFor(m, comparable);
             const working = busy === m.id;
             return (
-              <div key={m.id} className={cn(PANEL, "p-4")}>
+              <div key={m.id} className={"border-t border-white/[0.08] py-5 transition-colors hover:bg-white/[0.02]"}>
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <div className="min-w-0">
                     <h3 className="text-[14.5px] font-bold text-white">{m.label}</h3>

@@ -4,7 +4,6 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { Loader2, Package, Map as MapIcon, Truck, Info } from "lucide-react";
 import { useSupabaseBrowser } from "@/lib/supabase-browser";
 import { CANTON_CENTROID } from "@/data/chMap";
-import { PANEL } from "@/lib/ui";
 import { cn } from "@/lib/utils";
 
 type Row = {
@@ -26,7 +25,7 @@ function Panel({
   children: React.ReactNode;
 }) {
   return (
-    <div className={cn(PANEL, "p-5")}>
+    <div className={"border-t border-white/[0.08] pt-5"}>
       <h3 className="flex items-center gap-2 text-[15px] font-semibold text-white">
         <Icon className="h-4 w-4 text-brand" /> {title}
       </h3>
@@ -129,7 +128,7 @@ export default function MapWidgets() {
 
   if (!loaded) {
     return (
-      <div className={cn(PANEL, "grid place-items-center py-16 text-white/40")}>
+      <div className={"grid place-items-center py-20 text-white/40"}>
         <Loader2 className="h-5 w-5 animate-spin" />
       </div>
     );
@@ -137,7 +136,7 @@ export default function MapWidgets() {
 
   return (
     <div className="space-y-4">
-      <div className={cn(PANEL, "px-5 py-4")}>
+      <div className={"border-t border-white/[0.08] py-4"}>
         <div className="grid grid-cols-2 divide-x divide-white/[0.07]">
           <div className="pr-4">
             <div className="text-[11px] font-medium uppercase tracking-wider text-white/40">

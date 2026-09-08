@@ -6,7 +6,6 @@ import { useAuth } from "@clerk/nextjs";
 import { BadgeCheck, Check, Loader2, Inbox, MapPin } from "lucide-react";
 import { useSupabaseBrowser } from "@/lib/supabase-browser";
 import { fetchMyCompanyId } from "@/lib/myCompany";
-import { PANEL } from "@/lib/ui";
 import { cn } from "@/lib/utils";
 
 type Company = {
@@ -89,7 +88,7 @@ export default function ReceivedRequests() {
 
   if (loading) {
     return (
-      <div className={cn(PANEL, "flex items-center justify-center gap-2 py-12 text-sm text-white/55")}>
+      <div className={"flex items-center justify-center gap-2 py-16 text-sm text-white/55"}>
         <Loader2 className="h-4 w-4 animate-spin" /> Anfragen werden geladen …
       </div>
     );
@@ -97,7 +96,7 @@ export default function ReceivedRequests() {
 
   if (reqs.length === 0) {
     return (
-      <div className={cn(PANEL, "flex flex-col items-center gap-3 border-dashed py-14 text-center")}>
+      <div className={"flex flex-col items-center gap-3 border-t border-white/[0.08] py-16 text-center"}>
         <span className="grid h-12 w-12 place-items-center rounded-full bg-white/10 text-white/40">
           <Inbox className="h-6 w-6" />
         </span>
@@ -113,7 +112,7 @@ export default function ReceivedRequests() {
   }
 
   return (
-    <div className={cn(PANEL, "overflow-hidden")}>
+    <div className={"border-t border-white/[0.08]"}>
       <ul className="divide-y divide-white/[0.06]">
         {reqs.map(({ connId, company }) => (
           <li key={connId} className="flex items-center gap-3 px-4 py-3.5 sm:px-5">

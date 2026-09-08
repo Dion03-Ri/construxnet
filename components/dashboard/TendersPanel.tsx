@@ -21,7 +21,6 @@ import {
   deadlineLabel,
   type Bundle,
 } from "@/lib/bundles";
-import { PANEL } from "@/lib/ui";
 import { cn } from "@/lib/utils";
 
 function chf(v: number, d = 0) {
@@ -96,11 +95,11 @@ export default function TendersPanel() {
       )}
 
       {loading ? (
-        <div className={cn(PANEL, "grid place-items-center py-16 text-white/40")}>
+        <div className={"grid place-items-center py-20 text-white/40"}>
           <Loader2 className="h-5 w-5 animate-spin" />
         </div>
       ) : open.length === 0 ? (
-        <div className={cn(PANEL, "px-6 py-12 text-center")}>
+        <div className={"border-t border-white/[0.08] py-16 text-center"}>
           <Gavel className="mx-auto h-8 w-8 text-white/25" />
           <p className="mt-3 text-[15px] font-semibold text-white/90">
             Zurzeit keine offene Ausschreibung
@@ -120,7 +119,7 @@ export default function TendersPanel() {
             const delta = ref && typed > 0 ? ((typed - ref) / ref) * 100 : null;
 
             return (
-              <div key={b.id} className={cn(PANEL, "p-4")}>
+              <div key={b.id} className={"border-t border-white/[0.08] py-5 transition-colors hover:bg-white/[0.02]"}>
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <div className="min-w-0">
                     <h3 className="text-[14.5px] font-bold text-white">
@@ -286,7 +285,7 @@ export default function TendersPanel() {
       )}
 
       {decided.length > 0 && (
-        <div className={cn(PANEL, "overflow-hidden")}>
+        <div className={"border-t border-white/[0.08]"}>
           <div className="border-b border-white/[0.08] px-5 py-3.5">
             <h3 className="text-[15px] font-semibold text-white">Entschieden</h3>
             <p className="mt-0.5 text-[12px] text-white/55">

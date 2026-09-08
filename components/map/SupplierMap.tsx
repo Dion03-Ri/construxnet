@@ -177,6 +177,9 @@ export default function SupplierMap({
   const empty = loaded && points.length === 0;
 
   return (
+    // Hier bleibt PANEL bewusst stehen: die Karte ist ein eigenes Objekt,
+    // kein gruppierter Textblock. Sie braucht einen Rahmen, damit die
+    // Kacheln an den weichen Ecken beschnitten werden.
     <div className={cn(PANEL, "overflow-hidden")}>
       <div className="flex flex-wrap items-center justify-between gap-2 border-b border-white/[0.08] px-4 py-3 sm:px-5">
         <div className="min-w-0">

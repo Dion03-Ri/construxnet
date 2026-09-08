@@ -19,7 +19,6 @@ import {
   type Project,
   type ProjectStatus,
 } from "@/lib/projects";
-import { PANEL } from "@/lib/ui";
 import { cn } from "@/lib/utils";
 
 const STATUS_STYLE: Record<ProjectStatus, string> = {
@@ -369,11 +368,11 @@ export default function ProjectsPanel({
       )}
 
       {loading ? (
-        <div className={cn(PANEL, "grid place-items-center py-16 text-white/40")}>
+        <div className={"grid place-items-center py-20 text-white/40"}>
           <Loader2 className="h-5 w-5 animate-spin" />
         </div>
       ) : sorted.length === 0 ? (
-        <div className={cn(PANEL, "px-6 py-12 text-center")}>
+        <div className={"border-t border-white/[0.08] py-16 text-center"}>
           <Building2 className="mx-auto h-8 w-8 text-white/25" />
           <p className="mt-3 text-[15px] font-semibold text-white/90">
             Noch keine Baustelle angelegt
@@ -398,7 +397,7 @@ export default function ProjectsPanel({
             const from = dateCH(p.starts_on);
             const to = dateCH(p.ends_on);
             return (
-              <div key={p.id} className={cn(PANEL, "flex flex-col p-4")}>
+              <div key={p.id} className={"flex flex-col border-t border-white/[0.08] py-5 transition-colors hover:bg-white/[0.02]"}>
                 <div className="flex items-start justify-between gap-2">
                   <div className="min-w-0">
                     <h3 className="truncate text-[14.5px] font-bold text-white">{p.name}</h3>
