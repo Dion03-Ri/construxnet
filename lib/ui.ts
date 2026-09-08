@@ -200,3 +200,44 @@ export const SHELL = "mx-auto w-full max-w-[1280px] px-5 sm:px-8";
 
 /** Fliesstext und Formulare — eine breite Zeile liest sich schlechter. */
 export const SHELL_NARROW = "mx-auto w-full max-w-[880px] px-5 sm:px-8";
+
+/* ==================================================================
+   REGISTER B — DAS BLATT
+   ------------------------------------------------------------------
+   Es gibt jetzt doch zwei Register, aber nicht wie früher.
+
+   Früher war die Aufteilung willkürlich: Marketing dunkel, Anwendung
+   hell, ohne Grund. Das las sich wie zwei Websites in einer und wurde
+   zu Recht verworfen.
+
+   Die Regel jetzt lässt sich in einem Satz sagen:
+
+       Wo gelesen und geschrieben wird, ist Papier.
+       Wo Zahlen und Markt stehen, ist es dunkel.
+
+   Eine Unterhaltung ist Papier. Eine Marktliste nicht. Deshalb ist die
+   Nachrichtenseite ein weisses Blatt — auf dunklem Grund liegend, wie
+   der Beispiel-Zuschlag auf der Startseite.
+
+   Der Rahmen bleibt immer dunkel: Kopfzeile, Fussbereich und der Grund
+   hinter allem. Das Blatt liegt darauf, es ersetzt ihn nicht. Und Gold
+   bleibt der einzige Akzent, in beiden Registern.
+   ================================================================== */
+
+/** Das Blatt selbst — die einzige helle Fläche, die es geben darf. */
+export const SHEET = "rounded-2xl border border-slate-200 bg-white text-slate-900";
+
+/** Nebenfläche im Blatt (Seitenspalten, Eingabeleisten). */
+export const SHEET_MUTED = "bg-slate-50";
+
+/** Haarlinie im Blatt — das Gegenstück zu HAIRLINE. */
+export const SHEET_LINE = "border-slate-200";
+
+/** Textstufen im Blatt. Wieder genau drei, wie im dunklen Register. */
+export const S_HI = "text-slate-900";
+export const S_MID = "text-slate-500";
+export const S_LOW = "text-slate-400";
+
+/** Eingabefeld im Blatt. */
+export const INPUT_SHEET =
+  "rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-[14px] text-slate-900 outline-none transition-colors placeholder:text-slate-400 focus:border-brand";
