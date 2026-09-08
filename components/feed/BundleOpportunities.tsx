@@ -60,7 +60,7 @@ export default function BundleOpportunities() {
 
       {/* Der eine schwarze Anker der Seite: die Zahl, die zählt,
           steht auf echtem Schwarz statt auf dem Seitengrund. */}
-      <div className="rounded-[20px] bg-black p-5">
+      <div className="rounded-[20px] bg-[#16181a] p-5">
         <div className="flex items-baseline justify-between">
           <h3 className="text-[14px] font-bold tracking-tight text-white">Referenzpreis</h3>
           <Link href="/kbob" className="text-[11.5px] font-semibold text-brand hover:underline">
