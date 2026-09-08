@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Check } from "lucide-react";
 import { BTN_OUTLINE_DARK, D_MD, EYEBROW, LEAD, SECTION, SHELL } from "@/lib/ui";
+import { PLANS } from "@/data/plans";
 import { cn } from "@/lib/utils";
 
 /**
@@ -23,63 +24,23 @@ import { cn } from "@/lib/utils";
  * ═══════════════════════════════════════════════════════════════════
  */
 
-type Tier = {
-  name: string;
-  price: string;
-  unit?: string;
-  note: string;
-  cta: string;
-  href: string;
-  features: string[];
-};
-
-const TIERS: Tier[] = [
-  {
-    name: "Gratis",
-    price: "0",
-    note: "Für Firmen, die das Netzwerk kennenlernen.",
-    cta: "Kostenlos starten",
-    href: "/sign-up",
-    features: [
-      "Firmenprofil mit CHE-Verifizierung",
-      "Netzwerk, Verbindungen und Nachrichten",
-      "KBOB-Referenzpreise ansehen",
-      "Teilnahme an einem Smart Pool",
-    ],
-  },
-  {
-    name: "Pro",
-    price: "79",
-    unit: "pro Monat",
-    note: "Für Baufirmen, die regelmässig einkaufen.",
-    cta: "Pro wählen",
-    href: "/sign-up",
-    features: [
-      "Alles aus Gratis",
-      "Unbegrenzt Smart Pools",
-      "Eigene Ausschreibungen im Sealed-Bid",
-      "Preisverlauf und eigene Abschlüsse",
-      "SIA-118-Vertragswerk",
-      "Lieferschein-Abgleich",
-    ],
-  },
-  {
-    name: "Enterprise",
-    price: "189",
-    unit: "pro Monat",
-    note: "Für Gruppen mit mehreren Niederlassungen.",
-    cta: "Vertrieb kontaktieren",
-    href: "/sign-up",
-    features: [
-      "Alles aus Pro",
-      "Mehrere Niederlassungen unter einem Konto",
-      "KI-Materialabgleich für Ausschreibungen",
-      "Schnittstelle zur eigenen ERP",
-      "Fester Ansprechpartner",
-    ],
-  },
-];
-
+/**
+ * Die Stufen kommen aus `data/plans.ts` — derselben Datei, aus der die
+ * Kontoseite liest. Vorher stand die Liste hier ein zweites Mal; zwei
+ * Listen fuer dieselben drei Stufen laufen auseinander, sobald sich eine
+ * Zeile aendert.
+ */
+const TIERS = PLANS.map((p) => ({
+  name: p.name,
+  price: String(p.price),
+  unit: p.unit,
+  note: p.note,
+  features: p.features,
+  /** Der Weg ist fuer alle derselbe: /konto. Wer nicht angemeldet ist,
+   *  wird dort ohnehin durch Anmeldung und Onboarding geschickt. */
+  cta: p.key === "FREE" ? "Kostenlos starten" : `${p.name} wählen`,
+  href: "/konto",
+}));
 export default function Pricing() {
   return (
     <section id="preise" className="border-t border-white/[0.12] bg-black">
