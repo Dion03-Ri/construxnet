@@ -661,9 +661,18 @@ Linie. Es trägt Kopfbänder auf hellen Seiten (`/beschaffung`, gebaut),
 die eigenen Nachrichtenblasen und einzelne Abschnitte, die etwas
 behaupten. Wichtig: `accent-600` `#1B3A5C`, nicht `navy-900` `#08111E`.
 
+**Die Kopfbänder wechseln ab — das ist der Kern des Rhythmus.**
+Beschaffung Navy, Profil bearbeiten Schwarz, Firmenprofil Navy,
+Rechtsseiten Schwarz. Schwarz und Weiss dürfen überall vorkommen, Navy
+ist die zweite Möglichkeit. Wer eine neue Papierseite baut, nimmt das
+Band, das die vorige NICHT hat. Eine Schablone, die auf jeder Seite
+gleich aussieht, ist genau das, was eine Oberfläche erzeugt wirken
+lässt.
+
 Was daraus folgt:
-- **Papier (`SHEET`):** Nachrichten (gebaut), Beschaffung (gebaut),
-  Profil bearbeiten, Termine, Firmenprofil, Rechtsseiten.
+- **Papier (`SHEET`), gebaut:** Nachrichten, Beschaffung, Profil
+  bearbeiten, Firmenprofil, Impressum/AGB/Datenschutz.
+- **Bleibt dunkel:** Termine (Fristen sind Daten), Benachrichtigungen.
 - **Dunkel:** Feed, Smart Pools, Referenzpreise, Netzwerk, Karte,
   Startseite.
 - Der Rahmen bleibt immer dunkel — Kopfzeile, Fussbereich, der Grund

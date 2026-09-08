@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowLeft, UserCog } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import ProfileForm, { type EditableCompany } from "@/components/profile/ProfileForm";
 import { requireCompanyOrOnboard } from "@/lib/company";
 import { supabaseAdmin } from "@/lib/supabase";
@@ -52,27 +52,40 @@ export default async function EditProfilePage() {
   };
 
   return (
-    <main className={cn(SHELL_NARROW, "py-6")}>
+    <main className={cn(SHELL_NARROW, "py-6 sm:py-8")}>
       <Link
         href={`/company/${me.id}`}
-        className="mb-4 inline-flex items-center gap-1.5 text-[13px] font-medium text-white/55 transition-colors hover:text-brand"
+        className="mb-5 inline-flex items-center gap-1.5 text-[13px] font-medium text-white/45 transition-colors hover:text-brand"
       >
         <ArrowLeft className="h-4 w-4" /> Zurück zum Profil
       </Link>
 
-      <header className="mb-5 flex items-center gap-3">
-        <span className="grid h-11 w-11 shrink-0 place-items-center rounded-lg bg-brand/15 text-brand">
-          <UserCog className="h-6 w-6" />
-        </span>
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight text-white">Profil bearbeiten</h1>
-          <p className="text-sm text-white/55">
-            Firmendaten, Standort, Kontakt{company.role === "SUPPLIER" ? " und Liefer-Profil" : ""}.
-          </p>
-        </div>
-      </header>
+      {/* Blatt mit schwarzem Kopfband.
 
-      <ProfileForm company={company} />
+          Die Beschaffung hat ein Navyband, diese hier ein schwarzes. Das
+          ist Absicht: Schwarz und Weiss sind die Farben, die überall
+          vorkommen dürfen, Navy ist die zweite Möglichkeit. Wechselt man
+          ab, entsteht ein Rhythmus statt einer Schablone — und genau eine
+          Schablone, die auf jeder Seite gleich aussieht, ist das, was eine
+          Oberfläche erzeugt wirken lässt. */}
+      <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white text-slate-900">
+        <header className="bg-[#060B12] px-6 py-7 text-white sm:px-9 sm:py-9">
+          <span className="text-[11px] font-semibold uppercase tracking-[0.16em] text-brand">
+            Dein Profil
+          </span>
+          <h1 className="mt-3 font-display text-[28px] font-bold leading-[1.15] tracking-[-0.02em] sm:text-[34px]">
+            Profil bearbeiten
+          </h1>
+          <p className="mt-3 max-w-xl text-[14.5px] leading-relaxed text-white/55">
+            Firmendaten, Standort, Kontakt{company.role === "SUPPLIER" ? " und Liefer-Profil" : ""}.
+            Was hier steht, sehen die Firmen, mit denen du verhandelst.
+          </p>
+        </header>
+
+        <div className="px-6 py-7 sm:px-9 sm:py-9">
+          <ProfileForm company={company} />
+        </div>
+      </div>
     </main>
   );
 }

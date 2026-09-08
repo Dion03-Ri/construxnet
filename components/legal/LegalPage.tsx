@@ -1,7 +1,7 @@
 import Link from "next/link";
-import { ArrowLeft, Scale } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { LEGAL, isOpen } from "@/data/legal";
-import { PANEL, SHELL_NARROW } from "@/lib/ui";
+import { SHELL_NARROW } from "@/lib/ui";
 import { cn } from "@/lib/utils";
 
 /** Ein noch nicht gesetzter Wert — sichtbar, nicht versteckt. */
@@ -18,25 +18,25 @@ export function Fill({ value }: { value: string }) {
 }
 
 export function H2({ children }: { children: React.ReactNode }) {
-  return <h2 className="mt-8 text-[17px] font-bold tracking-tight text-white">{children}</h2>;
+  return <h2 className="mt-9 text-[17px] font-bold tracking-tight text-slate-900">{children}</h2>;
 }
 
 export function H3({ children }: { children: React.ReactNode }) {
-  return <h3 className="mt-5 text-[14.5px] font-semibold text-white">{children}</h3>;
+  return <h3 className="mt-6 text-[14.5px] font-semibold text-slate-900">{children}</h3>;
 }
 
 export function P({ children }: { children: React.ReactNode }) {
-  return <p className="mt-2.5 text-[14px] leading-relaxed text-white/70">{children}</p>;
+  return <p className="mt-3 text-[15px] leading-[1.7] text-slate-700">{children}</p>;
 }
 
 export function UL({ children }: { children: React.ReactNode }) {
-  return <ul className="mt-2.5 space-y-1.5 text-[14px] leading-relaxed text-white/70">{children}</ul>;
+  return <ul className="mt-3 space-y-2 text-[15px] leading-[1.7] text-slate-700">{children}</ul>;
 }
 
 export function LI({ children }: { children: React.ReactNode }) {
   return (
     <li className="flex gap-2.5">
-      <span aria-hidden className="mt-[0.55em] h-1 w-1 shrink-0 rounded-full bg-brand" />
+      <span aria-hidden className="mt-[0.6em] h-1 w-1 shrink-0 rounded-full bg-brand" />
       <span className="min-w-0">{children}</span>
     </li>
   );
@@ -44,7 +44,7 @@ export function LI({ children }: { children: React.ReactNode }) {
 
 /** Kleine Fussnote auf ein Gesetz — belegt, worauf sich ein Abschnitt stützt. */
 export function Ref({ children }: { children: React.ReactNode }) {
-  return <span className="text-[13px] text-white/40"> ({children})</span>;
+  return <span className="text-[13px] text-slate-400"> ({children})</span>;
 }
 
 const NAV = [
@@ -68,48 +68,55 @@ export default function LegalPage({
     <main className={cn(SHELL_NARROW, "py-6 sm:py-8")}>
       <Link
         href="/"
-        className="mb-4 inline-flex items-center gap-1.5 text-[13px] font-medium text-white/55 transition-colors hover:text-brand"
+        className="mb-5 inline-flex items-center gap-1.5 text-[13px] font-medium text-white/45 transition-colors hover:text-brand"
       >
         <ArrowLeft className="h-4 w-4" /> Zur Startseite
       </Link>
 
-      <header className="relative overflow-hidden rounded-xl border border-white/10 bg-navy-900 p-5 text-white sm:p-6">
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-0 opacity-[0.06]"
-          style={{
-            backgroundImage:
-              "linear-gradient(rgba(255,255,255,.7) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.7) 1px,transparent 1px)",
-            backgroundSize: "26px 26px",
-          }}
-        />
-        <div className="relative">
-          <h1 className="flex items-center gap-2 text-xl font-bold tracking-tight sm:text-2xl">
-            <Scale className="h-5 w-5 text-brand" /> {title}
+      {/* Ein Rechtstext ist der reinste Fall von Papier: nichts als
+          Fliesstext, den jemand von oben bis unten liest. Auf schwarzem
+          Grund ist das nach zwei Absätzen anstrengend.
+
+          Das Kopfband ist schwarz, wie bei „Profil bearbeiten" — die
+          Beschaffung und das Firmenprofil tragen Navy. Der Wechsel ist
+          Absicht: eine Schablone, die auf jeder Seite gleich aussieht,
+          ist genau das, was eine Oberfläche erzeugt wirken lässt.
+
+          Das Raster im alten Kopf ist weg. Ein Millimeterpapier-Muster
+          hinter einer Überschrift zeigt nichts. */}
+      <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white text-slate-900">
+        <header className="bg-[#060B12] px-6 py-7 text-white sm:px-9 sm:py-9">
+          <span className="text-[11px] font-semibold uppercase tracking-[0.16em] text-brand">
+            Rechtliches
+          </span>
+          <h1 className="mt-3 font-display text-[26px] font-bold leading-[1.15] tracking-[-0.02em] sm:text-[32px]">
+            {title}
           </h1>
-          <p className="mt-1.5 text-[13.5px] leading-relaxed text-white/55">{lead}</p>
-          <p className="mt-2 text-[12px] text-white/40">Stand: {LEGAL.stand}</p>
-        </div>
-      </header>
+          <p className="mt-3 max-w-xl text-[14.5px] leading-relaxed text-white/55">{lead}</p>
+          <p className="mt-4 text-[12px] text-white/35">Stand: {LEGAL.stand}</p>
 
-      <nav className="no-scrollbar mt-4 flex gap-1.5 overflow-x-auto">
-        {NAV.map((n) => (
-          <Link
-            key={n.href}
-            href={n.href}
-            className={cn(
-              "shrink-0 whitespace-nowrap rounded-md px-3.5 py-1.5 text-[13px] font-semibold transition-colors",
-              active === n.href
-                ? "bg-navy-900 text-white"
-                : "border border-white/[0.08] bg-[#0B1522] text-white/55 hover:border-white/[0.16] hover:text-white",
-            )}
-          >
-            {n.label}
-          </Link>
-        ))}
-      </nav>
+          {/* Die drei Rechtsseiten als Reiterzeile im Band selbst — sie
+              gehören zusammen und brauchen keine eigene Knopfleiste. */}
+          <nav className="no-scrollbar -mb-px mt-7 flex gap-6 overflow-x-auto border-b border-white/[0.12]">
+            {NAV.map((n) => (
+              <Link
+                key={n.href}
+                href={n.href}
+                className={cn(
+                  "shrink-0 whitespace-nowrap border-b-2 pb-3 text-[13.5px] font-semibold transition-colors",
+                  active === n.href
+                    ? "border-brand text-white"
+                    : "border-transparent text-white/45 hover:text-white",
+                )}
+              >
+                {n.label}
+              </Link>
+            ))}
+          </nav>
+        </header>
 
-      <article className={cn(PANEL, "mt-4 p-5 sm:p-7")}>{children}</article>
+        <article className="px-6 py-8 sm:px-9 sm:py-10 [&>*:first-child]:mt-0">{children}</article>
+      </div>
     </main>
   );
 }
