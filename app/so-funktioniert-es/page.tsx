@@ -83,13 +83,14 @@ export default function SoFunktioniertEsPage() {
         <div className="max-w-3xl">
           <span className={EYEBROW}>Das Modell</span>
           <h1 className={cn(D_LG, "mt-6 text-white")}>
-            Wie aus vielen kleinen Bestellungen eine grosse wird
+            Wie aus einzelnen Bedarfen ein Volumen wird
           </h1>
           <p className={cn(LEAD, "mt-8 max-w-xl text-white/[0.72]")}>
-            Auf dem Baustoffmarkt entscheidet die Menge über den Preis. Wer im Jahr ein paar
-            hundert Kubik Beton abruft, kauft zum Listenpreis. Wer Zehntausende abruft,
-            verhandelt. Obtanet legt den Bedarf mehrerer Firmen zusammen, damit auch der
-            kleinere Betrieb auf der verhandelnden Seite steht.
+            Auf dem Baustoffmarkt entscheidet die Menge über den Preis — für jede Firma, die
+            einkauft. Obtanet legt den Bedarf mehrerer Schweizer Baufirmen zu einem Volumen
+            zusammen. Aus einzelnen Bestellungen wird eine Menge, über die sich verhandeln
+            lässt, und jede beteiligte Firma bekommt bessere Konditionen, als sie allein
+            aushandeln würde.
           </p>
         </div>
       </section>
