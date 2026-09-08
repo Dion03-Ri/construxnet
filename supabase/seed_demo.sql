@@ -29,7 +29,7 @@
 CREATE OR REPLACE FUNCTION seed_me() RETURNS uuid
 LANGUAGE sql STABLE AS $$
   -- Willst du eine bestimmte Firma, ersetze den Rumpf durch:
-  --   SELECT id FROM companies WHERE uid_number = 'CHE-123.456.789'
+  --   SELECT id FROM companies WHERE uid_number = 'CHE-123.456.788'
   SELECT id FROM companies
   WHERE clerk_user_id NOT LIKE 'seed-%'
   ORDER BY created_at
@@ -56,17 +56,17 @@ INSERT INTO companies (
   clerk_user_id, company_name, uid_number, role, canton, city, verified, bio,
   email, phone, address, website, lat, lng, geo_label
 ) VALUES
-  ('seed-01', 'Muster Hochbau AG',        'CHE-101.234.567', 'BUYER',    'BE', 'Bern',        TRUE,
+  ('seed-01', 'Muster Hochbau AG',        'CHE-101.234.564', 'BUYER',    'BE', 'Bern',        TRUE,
    'Hoch- und Tiefbau im Raum Bern. Wohnbauten und Sanierungen.',
    'kontakt@muster-hochbau.example', '+41 31 000 00 01', 'Musterweg 1, 3000 Bern',
    'https://muster-hochbau.example', 46.9480, 7.4474, 'Bern'),
 
-  ('seed-02', 'Musterbau Innerschweiz AG','CHE-102.345.678', 'BUYER',    'LU', 'Luzern',      TRUE,
+  ('seed-02', 'Musterbau Innerschweiz AG','CHE-102.345.686', 'BUYER',    'LU', 'Luzern',      TRUE,
    'Generalunternehmung für Gewerbe- und Industriebauten.',
    'info@musterbau-iz.example', '+41 41 000 00 02', 'Beispielstrasse 8, 6003 Luzern',
    NULL, 47.0502, 8.3093, 'Luzern'),
 
-  ('seed-03', 'Muster Baustoffe AG',      'CHE-103.456.789', 'SUPPLIER', 'ZH', 'Zürich',      TRUE,
+  ('seed-03', 'Muster Baustoffe AG',      'CHE-103.456.785', 'SUPPLIER', 'ZH', 'Zürich',      TRUE,
    'Beton, Kies und Recyclingbaustoffe. Werke im Limmattal.',
    'verkauf@muster-baustoffe.example', '+41 44 000 00 03', 'Industriestrasse 12, 8005 Zürich',
    'https://muster-baustoffe.example', 47.3769, 8.5417, 'Zürich'),
@@ -76,12 +76,12 @@ INSERT INTO companies (
    'disposition@beispiel-beton.example', '+41 31 000 00 04', 'Werkstrasse 3, 3018 Bern',
    NULL, 46.9480, 7.4474, 'Bern'),
 
-  ('seed-05', 'Beispiel Kies AG',         'CHE-105.678.901', 'SUPPLIER', 'SG', 'Wil',         FALSE,
+  ('seed-05', 'Beispiel Kies AG',         'CHE-105.678.902', 'SUPPLIER', 'SG', 'Wil',         FALSE,
    'Kies- und Hartschotterwerk. Lieferung in der Ostschweiz.',
    'werk@beispiel-kies.example', '+41 71 000 00 05', 'Grubenweg 5, 9500 Wil',
    NULL, 47.4625, 9.0450, 'Wil (SG)'),
 
-  ('seed-06', 'Beispiel Bau 3 GmbH',      'CHE-106.789.012', 'BUYER',    'AG', 'Aarau',       FALSE,
+  ('seed-06', 'Beispiel Bau 3 GmbH',      'CHE-106.789.013', 'BUYER',    'AG', 'Aarau',       FALSE,
    'Wohn- und Gewerbebau im Kanton Aargau.',
    'buero@beispiel-bau3.example', '+41 62 000 00 06', 'Baufeldweg 22, 5000 Aarau',
    NULL, 47.3925, 8.0442, 'Aarau'),
@@ -91,17 +91,17 @@ INSERT INTO companies (
    'verkauf@musterwerk-nw.example', '+41 61 000 00 07', 'Hafenstrasse 44, 4057 Basel',
    NULL, 47.5596, 7.5886, 'Basel'),
 
-  ('seed-08', 'Beispiel Tiefbau Ost AG',  'CHE-108.901.234', 'BUYER',    'SG', 'St. Gallen',  TRUE,
+  ('seed-08', 'Beispiel Tiefbau Ost AG',  'CHE-108.901.232', 'BUYER',    'SG', 'St. Gallen',  TRUE,
    'Strassen- und Werkleitungsbau in der Ostschweiz.',
    'leitung@beispiel-tiefbau.example', '+41 71 000 00 08', 'Kanalweg 9, 9000 St. Gallen',
    NULL, 47.4245, 9.3767, 'St. Gallen'),
 
-  ('seed-09', 'Musterstahl Winterthur AG','CHE-109.012.345', 'SUPPLIER', 'ZH', 'Winterthur',  TRUE,
+  ('seed-09', 'Musterstahl Winterthur AG','CHE-109.012.346', 'SUPPLIER', 'ZH', 'Winterthur',  TRUE,
    'Bewehrungsstahl, Matten und Zuschnitt ab Lager.',
    'stahl@musterstahl.example', '+41 52 000 00 09', 'Lagerplatz 2, 8400 Winterthur',
    NULL, 47.5001, 8.7386, 'Winterthur'),
 
-  ('seed-10', 'Beispiel Bergbau Graubünden AG', 'CHE-110.123.456', 'BUYER', 'GR', 'Chur',     FALSE,
+  ('seed-10', 'Beispiel Bergbau Graubünden AG', 'CHE-110.123.455', 'BUYER', 'GR', 'Chur',     FALSE,
    'Bauunternehmung für alpine Infrastruktur.',
    'chur@beispiel-bergbau.example', '+41 81 000 00 10', 'Talstrasse 17, 7000 Chur',
    NULL, 46.8500, 9.5320, 'Chur')
@@ -113,7 +113,7 @@ UPDATE companies SET
   supply_regions     = ARRAY['Zürich','Nordwestschweiz'],
   delivery_radius_km = 25,
   capacity_note      = 'Kurzfristige Mengen meist innert 48 Stunden disponierbar.'
-WHERE uid_number = 'CHE-103.456.789';
+WHERE uid_number = 'CHE-103.456.785';
 
 UPDATE companies SET
   supply_materials   = ARRAY['Beton'],
@@ -125,7 +125,7 @@ UPDATE companies SET
   supply_materials   = ARRAY['Bewehrung & Stahl'],
   supply_regions     = ARRAY['Zürich','Ostschweiz'],
   delivery_radius_km = 60
-WHERE uid_number = 'CHE-109.012.345';
+WHERE uid_number = 'CHE-109.012.346';
 
 -- ------------------------------------------------------------
 -- 2 · Verbindungen
@@ -137,12 +137,12 @@ WHERE uid_number = 'CHE-109.012.345';
 INSERT INTO connections (company_id_a, company_id_b, status, requested_by)
 SELECT seed_me(), c.id, v.status, CASE WHEN v.von_mir THEN seed_me() ELSE c.id END
 FROM (VALUES
-  ('CHE-103.456.789', 'CONNECTED', TRUE),
+  ('CHE-103.456.785', 'CONNECTED', TRUE),
   ('CHE-104.567.890', 'CONNECTED', FALSE),
-  ('CHE-101.234.567', 'CONNECTED', TRUE),
-  ('CHE-109.012.345', 'CONNECTED', FALSE),
-  ('CHE-106.789.012', 'PENDING',   FALSE),   -- Anfrage an dich
-  ('CHE-108.901.234', 'PENDING',   FALSE),   -- Anfrage an dich
+  ('CHE-101.234.564', 'CONNECTED', TRUE),
+  ('CHE-109.012.346', 'CONNECTED', FALSE),
+  ('CHE-106.789.013', 'PENDING',   FALSE),   -- Anfrage an dich
+  ('CHE-108.901.232', 'PENDING',   FALSE),   -- Anfrage an dich
   ('CHE-107.890.123', 'PENDING',   TRUE)     -- von dir gestellt
 ) AS v(uid, status, von_mir)
 JOIN companies c ON c.uid_number = v.uid
@@ -209,19 +209,19 @@ INSERT INTO bundle_participations (bundle_id, buyer_company_id, requested_volume
 SELECT b.id, m.company_id, v.vol, 'CONFIRMED', now() - (v.tage || ' days')::interval
 FROM (VALUES
   ('Beton C25/30 · Raum Zürich',              'ICH',             60::numeric, 6),
-  ('Beton C25/30 · Raum Zürich',              'CHE-101.234.567', 80::numeric, 5),
-  ('Beton C25/30 · Raum Zürich',              'CHE-106.789.012', 50::numeric, 3),
-  ('Beton C25/30 · Raum Zürich',              'CHE-102.345.678', 40::numeric, 1),
+  ('Beton C25/30 · Raum Zürich',              'CHE-101.234.564', 80::numeric, 5),
+  ('Beton C25/30 · Raum Zürich',              'CHE-106.789.013', 50::numeric, 3),
+  ('Beton C25/30 · Raum Zürich',              'CHE-102.345.686', 40::numeric, 1),
   ('Bewehrungsstahl B500B · Bern',            'ICH',             12::numeric, 8),
-  ('Bewehrungsstahl B500B · Bern',            'CHE-101.234.567', 16::numeric, 7),
-  ('Bewehrungsstahl B500B · Bern',            'CHE-102.345.678',  9::numeric, 5),
-  ('Bewehrungsstahl B500B · Bern',            'CHE-106.789.012',  6::numeric, 4),
-  ('Bewehrungsstahl B500B · Bern',            'CHE-110.123.456',  5::numeric, 2),
-  ('Koffer-/Wandkies 0/45 · Nordwestschweiz', 'CHE-108.901.234',120::numeric, 9),
-  ('Koffer-/Wandkies 0/45 · Nordwestschweiz', 'CHE-106.789.012', 90::numeric, 6),
-  ('Koffer-/Wandkies 0/45 · Nordwestschweiz', 'CHE-110.123.456',110::numeric, 2),
-  ('Transportbeton C30/37 · Innerschweiz',    'CHE-102.345.678', 90::numeric,14),
-  ('Transportbeton C30/37 · Innerschweiz',    'CHE-101.234.567', 60::numeric,12)
+  ('Bewehrungsstahl B500B · Bern',            'CHE-101.234.564', 16::numeric, 7),
+  ('Bewehrungsstahl B500B · Bern',            'CHE-102.345.686',  9::numeric, 5),
+  ('Bewehrungsstahl B500B · Bern',            'CHE-106.789.013',  6::numeric, 4),
+  ('Bewehrungsstahl B500B · Bern',            'CHE-110.123.455',  5::numeric, 2),
+  ('Koffer-/Wandkies 0/45 · Nordwestschweiz', 'CHE-108.901.232',120::numeric, 9),
+  ('Koffer-/Wandkies 0/45 · Nordwestschweiz', 'CHE-106.789.013', 90::numeric, 6),
+  ('Koffer-/Wandkies 0/45 · Nordwestschweiz', 'CHE-110.123.455',110::numeric, 2),
+  ('Transportbeton C30/37 · Innerschweiz',    'CHE-102.345.686', 90::numeric,14),
+  ('Transportbeton C30/37 · Innerschweiz',    'CHE-101.234.564', 60::numeric,12)
 ) AS v(bundle_title, uid, vol, tage)
 JOIN bundles b ON b.title = v.bundle_title
 JOIN LATERAL (
@@ -258,27 +258,27 @@ SELECT bundle_recalc(id) FROM bundles WHERE title IN (
 INSERT INTO network_posts (company_id, post_type, title, content, region, media_url, likes_count, created_at)
 SELECT c.id, v.post_type, v.title, v.content, v.region, v.media_url, v.likes, now() - (v.stunden || ' hours')::interval
 FROM (VALUES
-  ('CHE-103.456.789', 'MATERIAL_OFFER', 'Freie Kapazität Beton C25/30 — Raum Zürich, Q4',
+  ('CHE-103.456.785', 'MATERIAL_OFFER', 'Freie Kapazität Beton C25/30 — Raum Zürich, Q4',
    'Wir haben kurzfristig rund 600 m³ Transportbeton C25/30 (Cl 0.20, Dmax 32) frei. Lieferradius Limmattal 25 km. Interessierte Bauunternehmen können einen Smart Pool starten — der aktuelle Stufenrabatt liegt bereits bei 12 %.',
    'Zürich', '/mat-lager.jpg', 34, 2),
 
-  ('CHE-101.234.567', 'PROJECT', 'Neubau Wohnüberbauung Bern-West — Partner gesucht',
+  ('CHE-101.234.564', 'PROJECT', 'Neubau Wohnüberbauung Bern-West — Partner gesucht',
    'Baustart Frühling 2026, 42 Wohneinheiten. Wir bündeln Bewehrungsstahl B500B (rund 48 t) und suchen regionale Werke für die Sealed-Bid-Phase. Wer liefert im Raum Bern zuverlässig nach SN EN?',
    'Bern', NULL, 21, 6),
 
-  ('CHE-105.678.901', 'ANNOUNCEMENT', 'Neue Aufbereitungslinie für RC-Kies in Betrieb',
+  ('CHE-105.678.902', 'ANNOUNCEMENT', 'Neue Aufbereitungslinie für RC-Kies in Betrieb',
    'Ab sofort liefern wir RC-Kies 0/32 aus eigener Aufbereitung. Erste Pools in der Ostschweiz laufen bereits.',
    'Ostschweiz', NULL, 47, 20),
 
-  ('CHE-109.012.345', 'MATERIAL_OFFER', 'Bewehrungsstahl ab Lager Winterthur',
+  ('CHE-109.012.346', 'MATERIAL_OFFER', 'Bewehrungsstahl ab Lager Winterthur',
    'B500B in Ringen und Stäben, Baustahlmatten B500A. Zuschnitt und Biegung im Haus, Lieferung in der ganzen Deutschschweiz.',
    'Zürich', NULL, 12, 26),
 
-  ('CHE-102.345.678', 'UPDATE', 'Rückblick auf ein starkes Quartal',
+  ('CHE-102.345.686', 'UPDATE', 'Rückblick auf ein starkes Quartal',
    'Über 1200 m³ Beton gebündelt, im Schnitt 13.8 % Ersparnis für die Poolteilnehmer. Danke an alle Partner in der Innerschweiz.',
    'Innerschweiz', NULL, 63, 30),
 
-  ('CHE-108.901.234', 'QUESTION', 'Erfahrungen mit RC-Beton im Werkleitungsbau?',
+  ('CHE-108.901.232', 'QUESTION', 'Erfahrungen mit RC-Beton im Werkleitungsbau?',
    'Wir prüfen RC-Betongranulat 0/45 für Leitungsgräben. Wer hat damit gearbeitet und wie war die Verdichtbarkeit?',
    'Ostschweiz', NULL, 8, 44),
 
@@ -286,7 +286,7 @@ FROM (VALUES
    'Silo- und Sackware, Abholung oder Lieferung. Für grössere Mengen lohnt sich ein Pool über die Region Nordwestschweiz.',
    'Nordwestschweiz', NULL, 19, 52),
 
-  ('CHE-106.789.012', 'PROJECT', 'Erweiterung Gewerbehalle Aarau — Beton und Kies',
+  ('CHE-106.789.013', 'PROJECT', 'Erweiterung Gewerbehalle Aarau — Beton und Kies',
    'Fundation und Bodenplatte im Frühjahr. Wir treten dem offenen Kies-Bündel Nordwestschweiz bei und suchen noch Betonlieferanten.',
    'Nordwestschweiz', NULL, 15, 70)
 ) AS v(uid, post_type, title, content, region, media_url, likes, stunden)
@@ -315,7 +315,7 @@ FROM (VALUES
   (TRUE,  'Danke. Der KBOB-Referenzpreis liegt bei 156.12 — das wären 8.7 % unter Referenz. Wir nehmen es in die Ausschreibung auf.', FALSE, NULL::numeric, TRUE, 150),
   (FALSE, 'Gerne. Sagt Bescheid, sobald die Sealed-Bid-Phase startet.',                                  FALSE, NULL::numeric, FALSE, 35)
 ) AS v(von_mir, content, ist_angebot, betrag, gelesen, minuten)
-CROSS JOIN LATERAL (SELECT id FROM companies WHERE uid_number = 'CHE-103.456.789') c
+CROSS JOIN LATERAL (SELECT id FROM companies WHERE uid_number = 'CHE-103.456.785') c
 WHERE NOT EXISTS (SELECT 1 FROM messages m WHERE m.content = v.content);
 
 -- ------------------------------------------------------------

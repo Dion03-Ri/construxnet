@@ -1024,6 +1024,17 @@ Steht ausführlich weiter oben in dieser Datei:
   `/network/requests`, `/delivery-notes`, `/admin-control`,
   `/notifications`, `/pools/saved`. Noch anzusehen: `/map`,
   `/network/entdecken`, `/company/[id]`.
-- Aus dem Master-Briefing: KYB-Prüfung (UID/DUNS), Geofencing,
+- **KYB-Prüfung — halb gebaut.** Die CHE-Nummer trägt eine Prüfziffer
+  (Gewichte 5-4-3-2-7-6-5-4, Modulo 11); die wird jetzt beim Onboarding
+  *und* beim Profil-Bearbeiten nachgerechnet (`lib/uid.ts`). Damit kommen
+  Tippfehler und erfundene Nummern nicht mehr durch. **Was fehlt: der
+  Abgleich gegen das UID-Register des Bundes** (`uid.admin.ch`) — der
+  sagt erst, ob die Firma existiert. Erst wenn der läuft, darf
+  `companies.verified` gesetzt werden; heute setzt es niemand, und das
+  ist richtig so. Der Haken bedeutet sonst nichts.
+  *Hinweis: `uid.admin.ch` ist aus der Entwicklungsumgebung nicht
+  erreichbar (Egress-Sperre) — der Registerabgleich muss auf Vercel
+  gebaut und geprüft werden.*
+- Aus dem Master-Briefing: DUNS (international), Geofencing,
   dynamischer Kontextwechsel (Währung/Einheit/Normwerk) — letzterer
   gehört technisch früh, sonst wird er später zum Umbau von allem.
