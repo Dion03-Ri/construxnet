@@ -12,33 +12,6 @@ export const metadata = {
   description: "Offene, gebündelte Bedarfe der Schweizer Baubranche — beitreten und sparen",
 };
 
-/**
- * Wie das Bündeln abläuft — drei Schritte statt eines Textblocks.
- *
- * Vorher stand die Erklärung als drei Absätze in einem dunklen Kasten über
- * der Liste. Der Kasten war das Erste, was man sah, und die offenen Bündel
- * — der eigentliche Inhalt der Seite — rutschten darunter. Jetzt trägt die
- * Ordnung eine Haarlinie: drei Schritte nebeneinander, kurz, und darunter
- * beginnt sofort die Liste.
- */
-const ABLAUF = [
-  {
-    n: "01",
-    head: "Sammelphase",
-    body: "Bedarf melden, Bündel beitreten. Je grösser das Volumen, desto höher der garantierte Mindestvorteil.",
-  },
-  {
-    n: "02",
-    head: "Sealed-Bid",
-    body: "Die Werke geben verdeckte Angebote gegen den KBOB-Referenzpreis ab. Das beste erhält den Zuschlag — und kann die Garantie übertreffen.",
-  },
-  {
-    n: "03",
-    head: "Kein Zwang",
-    body: "Wird das Zielvolumen bis zur Frist nicht erreicht, löst sich das Bündel auf. Es entsteht keine Verpflichtung.",
-  },
-];
-
 export default function PoolsPage() {
   return (
     <main className={cn(SHELL, "py-6")}>
@@ -66,23 +39,6 @@ export default function PoolsPage() {
           </div>
         </div>
       </header>
-
-      {/* Ablauf — drei Spalten, nur durch senkrechte Haarlinien getrennt */}
-      <div className="grid grid-cols-1 gap-y-8 border-b border-white/[0.08] py-8 sm:grid-cols-3 sm:gap-y-0">
-        {ABLAUF.map((s, i) => (
-          <div
-            key={s.n}
-            className={cn(
-              i > 0 && "sm:border-l sm:border-white/[0.08] sm:pl-8",
-              i < ABLAUF.length - 1 && "sm:pr-8",
-            )}
-          >
-            <span className="font-display text-[12px] font-bold tabular-nums text-brand">{s.n}</span>
-            <h2 className="mt-2 text-[14px] font-bold tracking-tight text-white">{s.head}</h2>
-            <p className="mt-1.5 text-[12.5px] leading-relaxed text-white/45">{s.body}</p>
-          </div>
-        ))}
-      </div>
 
       {/* Hauptinhalt: offene Bündel mit Countdown */}
       <div className="pt-8">

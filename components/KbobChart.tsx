@@ -198,7 +198,7 @@ function Stat({
   hint?: string;
 }) {
   return (
-    <div className="border-t border-white/[0.08] py-5 first:border-t-0 first:pt-0 sm:border-l sm:border-t-0 sm:py-0 sm:pl-8 sm:first:border-l-0 sm:first:pl-0">
+    <div className="border-t border-white/[0.10] py-5 first:border-t-0 first:pt-0 sm:border-l sm:border-t-0 sm:py-0 sm:pl-8 sm:first:border-l-0 sm:first:pl-0">
       <div className="text-[10.5px] font-semibold uppercase tracking-[0.12em] text-white/30">
         {label}
       </div>
@@ -517,7 +517,7 @@ export default function KbobChart({ initialMaterial }: { initialMaterial?: strin
       </div>
 
       {/* Zahlen */}
-      <div className="grid grid-cols-1 border-t border-white/[0.08] pt-6 sm:grid-cols-3">
+      <div className="grid grid-cols-1 rounded-2xl bg-black p-6 sm:grid-cols-3 sm:gap-x-2">
         <Stat label="Referenzpreis" hint={`${data.regions[region]} · Stand ${data.meta.updated}`}>
           <div className="flex items-baseline gap-1.5">
             <span className="font-display text-[30px] font-bold leading-none tabular-nums text-white">
