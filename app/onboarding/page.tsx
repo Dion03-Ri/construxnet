@@ -1,5 +1,4 @@
 import { redirect } from "next/navigation";
-import { HardHat } from "lucide-react";
 import { getMyCompany } from "@/lib/company";
 import OnboardingForm from "@/components/OnboardingForm";
 
@@ -17,9 +16,8 @@ export default async function OnboardingPage() {
   return (
     <main className="mx-auto max-w-lg px-4 py-8 sm:px-6 sm:py-12">
       <header className="mb-8 text-center">
-        <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-lg bg-brand/15 text-brand">
-          <HardHat className="h-6 w-6" />
-        </span>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/logo-zeichen-hell.png" alt="" className="mx-auto h-11 w-11" />
         <h1 className="mt-4 text-2xl font-semibold tracking-tight text-white sm:text-3xl">
           Willkommen bei Obtanet
         </h1>
