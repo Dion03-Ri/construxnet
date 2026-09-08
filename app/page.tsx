@@ -53,6 +53,40 @@ const STEPS = [
 /*  Produkt-Vorschau: Miniatur des 3-Spalten-Dashboards                */
 /* ------------------------------------------------------------------ */
 
+/**
+ * Ein Foto, das als Grund gemeint ist und nicht als Bild.
+ *
+ * Vorher lagen hier zwei Aufnahmen in voller Helligkeit auf weissem
+ * Papier. Sie waren das Lauteste im ganzen Abschnitt und standen dabei
+ * ueber zwei Listen, mit denen sie nichts zu tun haben — das Auge blieb
+ * am Foto haengen statt an den Zahlen darunter.
+ *
+ * Jetzt abgedunkelt und in Navy getoent: die Aufnahme bleibt am selben
+ * Ort und zeigt dasselbe, tritt aber hinter die Liste zurueck. Der
+ * Ein Verlauf nach Weiss stand kurz drin und war falsch: er machte den
+ * unteren Rand milchig, statt das Bild einzufaedeln. Eine dunkle Flaeche
+ * auf weissem Papier braucht keinen Uebergang — so sieht ein gedrucktes
+ * Bild aus.
+ *
+ * Die Werte sind von Hand eingestellt, nicht geraten: bei 0.58 Helligkeit
+ * bleibt die Struktur des Materials erkennbar, darunter wird das Bild zur
+ * grauen Flaeche.
+ */
+function SectionPhoto({ slot }: { slot: { src: string; alt: string } }) {
+  return (
+    <div className="relative mb-8 h-44 overflow-hidden rounded-xl sm:h-52">
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={slot.src}
+        alt={slot.alt}
+        loading="lazy"
+        className="h-full w-full object-cover [filter:brightness(0.58)_saturate(0.5)_contrast(1.08)]"
+      />
+      <span aria-hidden className="pointer-events-none absolute inset-0 bg-[#1B3A5C]/30" />
+    </div>
+  );
+}
+
 export default function Home() {
   return (
     <main className={GROUND}>
@@ -221,13 +255,7 @@ export default function Home() {
         <div className="grid grid-cols-1 gap-y-14 lg:grid-cols-2 lg:gap-y-0">
           {/* Pools */}
           <div className="lg:border-r lg:border-slate-200 lg:pr-12">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={PHOTO_POOLS.src}
-              alt={PHOTO_POOLS.alt}
-              loading="lazy"
-              className="mb-8 h-44 w-full rounded-xl object-cover sm:h-52"
-            />
+            <SectionPhoto slot={PHOTO_POOLS} />
             <div className="flex items-baseline justify-between">
               <h2 className="text-[19px] font-bold tracking-tight text-slate-900">Aktive Smart Pools</h2>
               <Link href="/pools" className="inline-flex items-center gap-1 text-[13px] font-semibold text-brand-700 hover:text-brand">
@@ -261,13 +289,7 @@ export default function Home() {
 
           {/* Netzwerk */}
           <div className="border-t border-slate-200 pt-14 lg:border-t-0 lg:pl-12 lg:pt-0">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={PHOTO_NETWORK.src}
-              alt={PHOTO_NETWORK.alt}
-              loading="lazy"
-              className="mb-8 h-44 w-full rounded-xl object-cover sm:h-52"
-            />
+            <SectionPhoto slot={PHOTO_NETWORK} />
             <div className="flex items-baseline justify-between">
               <h2 className="text-[19px] font-bold tracking-tight text-slate-900">Firmen im Netzwerk</h2>
               <Link href="/network" className="inline-flex items-center gap-1 text-[13px] font-semibold text-brand-700 hover:text-brand">

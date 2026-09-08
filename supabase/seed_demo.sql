@@ -233,6 +233,20 @@ WHERE NOT EXISTS (
   WHERE p.bundle_id = b.id AND p.buyer_company_id = m.company_id
 );
 
+-- Kennzahlen von der Datenbank rechnen lassen statt von Hand setzen.
+--
+-- Volumen, Teilnehmerzahl, Stufe und Rabatt hängen an derselben Treppe,
+-- die auch die Anwendung anzeigt (bundle_tier: 101 / 201 / 351 / 501).
+-- Trüge man sie hier von Hand ein, stünde in einer Zeile „Stufe 2, 12 %"
+-- und daneben „Stufe 4 bei 351" — zwei Zahlen aus zwei Quellen, die sich
+-- widersprechen.
+SELECT bundle_recalc(id) FROM bundles WHERE title IN (
+  'Beton C25/30 · Raum Zürich',
+  'Bewehrungsstahl B500B · Bern',
+  'Koffer-/Wandkies 0/45 · Nordwestschweiz',
+  'Transportbeton C30/37 · Innerschweiz'
+);
+
 -- ------------------------------------------------------------
 -- 5 · Feed-Beiträge
 --

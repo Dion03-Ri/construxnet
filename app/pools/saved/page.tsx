@@ -1,8 +1,8 @@
 import Link from "next/link";
-import { Bookmark, ArrowLeft } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import SavedPools from "@/components/pools/SavedPools";
 import { requireCompanyOrOnboard } from "@/lib/company";
-import { SHELL } from "@/lib/ui";
+import { D_MD, EYEBROW, SHELL } from "@/lib/ui";
 import { cn } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
@@ -12,22 +12,35 @@ export const metadata = {
   description: "Deine gemerkten Smart Pools auf einen Blick.",
 };
 
+/**
+ * Der Kopf hatte ein goldenes Kästchen mit einem Lesezeichen-Symbol neben
+ * der Überschrift. Ein Symbol, das nur wiederholt, was das Wort daneben
+ * schon sagt, ist Dekoration — und ein gerundetes Farbkästchen davor ist
+ * das Erkennungszeichen erzeugter Oberflächen.
+ *
+ * Stattdessen dieselbe Kopfform wie auf /pools: Zeile, Überschrift, Satz,
+ * Haarlinie. Was zusammengehört, sieht gleich aus.
+ */
 export default async function SavedPoolsPage() {
   await requireCompanyOrOnboard();
+
   return (
-    <main className={cn(SHELL, "py-6 sm:py-8")}>
-      <Link href="/pools" className="mb-4 inline-flex items-center gap-1.5 text-[13px] font-medium text-white/[0.72] transition-colors hover:text-brand">
-        <ArrowLeft className="h-4 w-4" /> Zurück zu Smart Pools
-      </Link>
-      <header className="mb-6 flex items-center gap-3">
-        <span className="grid h-11 w-11 shrink-0 place-items-center rounded-lg bg-brand/15 text-brand">
-          <Bookmark className="h-6 w-6" />
-        </span>
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight text-white">Gespeicherte Pools</h1>
-          <p className="text-sm text-white/[0.72]">Deine gemerkten Bündel — jederzeit schnell wiederfinden und beitreten.</p>
-        </div>
+    <main className={cn(SHELL, "py-6")}>
+      <header className="border-b border-white/[0.12] pb-8">
+        <Link
+          href="/pools"
+          className="inline-flex items-center gap-1.5 text-[13px] font-medium text-white/[0.56] transition-colors hover:text-brand"
+        >
+          <ArrowLeft className="h-4 w-4" /> Zurück zu Smart Pools
+        </Link>
+
+        <span className={cn(EYEBROW, "mt-6 block")}>Smart Pools</span>
+        <h1 className={cn(D_MD, "mt-3 text-white")}>Merkliste</h1>
+        <p className="mt-5 max-w-xl text-[15px] leading-relaxed text-white/[0.56]">
+          Bündel, die du dir gemerkt hast. Geschlossene fallen von selbst heraus.
+        </p>
       </header>
+
       <SavedPools />
     </main>
   );
