@@ -1,6 +1,7 @@
 import { TrendingUp, TrendingDown, Minus } from "lucide-react";
 import kbobData from "@/data/kbobData.json";
 import { cn } from "@/lib/utils";
+import { chfAuto as chf } from "@/lib/format";
 
 type Point = { period: string; kbob: number };
 type Data = {
@@ -11,13 +12,6 @@ type Data = {
 
 const data = kbobData as unknown as Data;
 
-function chf(v: number) {
-  const d = v >= 300 ? 0 : v >= 10 ? 2 : 3;
-  return new Intl.NumberFormat("de-CH", {
-    minimumFractionDigits: d,
-    maximumFractionDigits: d,
-  }).format(v);
-}
 
 /**
  * Alle Warengruppen nebeneinander — beantwortet die Frage, wo es gerade
