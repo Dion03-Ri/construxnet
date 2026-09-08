@@ -315,9 +315,9 @@ export default function BeschaffungFlow({
   if (done) {
     return (
       <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="p-8 text-center">
-        <div className="mx-auto grid h-14 w-14 place-items-center rounded-lg bg-brand/10 text-brand-700">
-          <Check className="h-7 w-7" />
-        </div>
+        {/* Ein Haken in einem gerundeten Farbkasten ist das Erfolgsbild jeder
+            erzeugten Oberflaeche. Der Haken allein sagt dasselbe. */}
+        <Check className="mx-auto h-8 w-8 text-brand-700" />
         <h2 className="mt-4 text-xl font-bold text-slate-900">Bedarf eingereicht</h2>
         <p className="mx-auto mt-1.5 max-w-lg text-sm leading-relaxed text-slate-500">
           {bundleIds.length === 1

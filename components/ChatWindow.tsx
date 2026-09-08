@@ -682,9 +682,7 @@ export default function ChatWindow({ initialTo }: { initialTo?: string }) {
                 href="/pools"
                 className="group flex items-center gap-3 border-b border-slate-200 bg-brand/[0.06] px-4 py-2.5 transition-colors hover:bg-brand/[0.10]"
               >
-                <span className="grid h-8 w-8 shrink-0 place-items-center rounded-md bg-brand/10 text-brand-700">
-                  <Boxes className="h-4 w-4" />
-                </span>
+                <Boxes className="h-4 w-4 shrink-0 text-brand-700" />
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2 text-[13px] font-semibold text-slate-900">
                     <span className="truncate">{activeDeal.material}</span>
