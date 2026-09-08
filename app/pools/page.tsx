@@ -18,13 +18,13 @@ export default function PoolsPage() {
       {/* ===================== KOPF, VOLLE BREITE =====================
           Kein Panel, kein Raster, kein Goldkästchen — Zeile, Überschrift,
           Handlung, Haarlinie. Dieselbe Machart wie auf der Netzwerkseite. */}
-      <header className="border-b border-white/[0.08]">
+      <header className="border-b border-white/[0.12]">
         <div className="py-8">
           <span className={EYEBROW}>Smart Pools</span>
           <h1 className={cn(D_MD, "mt-4 max-w-3xl text-white")}>
             Offene, gebündelte Bedarfe in deiner Region
           </h1>
-          <p className="mt-6 max-w-xl text-[16px] leading-relaxed text-white/55">
+          <p className="mt-6 max-w-xl text-[16px] leading-relaxed text-white/[0.72]">
             Melde deinen Materialbedarf und tritt einem Bündel bei. Aus vielen
             kleinen Mengen wird eine grosse — und aus einer grossen Menge ein
             besserer Preis.

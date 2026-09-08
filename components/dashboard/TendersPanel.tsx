@@ -76,7 +76,7 @@ export default function TendersPanel() {
     <div className="space-y-4">
       <div>
         <h2 className="text-lg font-bold text-white">Ausschreibungen</h2>
-        <p className="mt-0.5 max-w-2xl text-sm text-white/55">
+        <p className="mt-0.5 max-w-2xl text-sm text-white/[0.72]">
           Gebündelte Bedarfe, auf die du bieten kannst. Gebote sind verdeckt —
           du siehst weder fremde Preise noch, welche Firmen im Bündel stecken.
           Den Zuschlag bekommt das günstigste Angebot gemessen am
@@ -95,16 +95,16 @@ export default function TendersPanel() {
       )}
 
       {loading ? (
-        <div className={"grid place-items-center py-20 text-white/40"}>
+        <div className={"grid place-items-center py-20 text-white/[0.56]"}>
           <Loader2 className="h-5 w-5 animate-spin" />
         </div>
       ) : open.length === 0 ? (
-        <div className={"border-t border-white/[0.08] py-16 text-center"}>
-          <Gavel className="mx-auto h-8 w-8 text-white/25" />
+        <div className={"border-t border-white/[0.12] py-16 text-center"}>
+          <Gavel className="mx-auto h-8 w-8 text-white/[0.4]" />
           <p className="mt-3 text-[15px] font-semibold text-white/90">
             Zurzeit keine offene Ausschreibung
           </p>
-          <p className="mx-auto mt-1 max-w-md text-[13px] leading-relaxed text-white/55">
+          <p className="mx-auto mt-1 max-w-md text-[13px] leading-relaxed text-white/[0.72]">
             Ein Bündel geht in die Ausschreibung, sobald seine Sammelfrist
             abgelaufen ist und genug Firmen dabei sind. Dann steht es hier, mit
             Menge und Referenzpreis.
@@ -119,31 +119,31 @@ export default function TendersPanel() {
             const delta = ref && typed > 0 ? ((typed - ref) / ref) * 100 : null;
 
             return (
-              <div key={b.id} className={"border-t border-white/[0.08] py-5 transition-colors hover:bg-white/[0.02]"}>
+              <div key={b.id} className={"border-t border-white/[0.12] py-5 transition-colors hover:bg-white/[0.02]"}>
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <div className="min-w-0">
                     <h3 className="text-[14.5px] font-bold text-white">
                       {b.material_label ?? b.title}
                     </h3>
-                    <p className="mt-0.5 flex flex-wrap items-center gap-x-2.5 gap-y-1 text-[12.5px] text-white/55">
+                    <p className="mt-0.5 flex flex-wrap items-center gap-x-2.5 gap-y-1 text-[12.5px] text-white/[0.72]">
                       <span className="inline-flex items-center gap-1">
-                        <MapPin className="h-3.5 w-3.5 text-white/40" /> {b.region}
+                        <MapPin className="h-3.5 w-3.5 text-white/[0.56]" /> {b.region}
                       </span>
-                      <span className="font-semibold text-white/75">
+                      <span className="font-semibold text-white/[0.72]">
                         {chf(b.current_volume)} {b.unit}
                       </span>
                       <span className="inline-flex items-center gap-1">
-                        <Users className="h-3.5 w-3.5 text-white/40" />
+                        <Users className="h-3.5 w-3.5 text-white/[0.56]" />
                         {b.participant_count} Firmen
                       </span>
                       {ref != null && (
-                        <span className="text-white/40">
+                        <span className="text-white/[0.56]">
                           KBOB-Ref CHF {chf(ref, 2)}/{b.unit}
                         </span>
                       )}
                     </p>
                     {b.sia_specification && (
-                      <p className="mt-0.5 truncate text-[11.5px] text-white/40">
+                      <p className="mt-0.5 truncate text-[11.5px] text-white/[0.56]">
                         {b.sia_specification}
                       </p>
                     )}
@@ -159,7 +159,7 @@ export default function TendersPanel() {
 
                 <div className="mt-2 flex flex-wrap items-center gap-x-4 text-[12.5px]">
                   {b.bid_deadline && (
-                    <span className="inline-flex items-center gap-1 font-semibold text-white/70">
+                    <span className="inline-flex items-center gap-1 font-semibold text-white/[0.72]">
                       <Clock className="h-3.5 w-3.5" />
                       Angebotsfrist {deadlineLabel(b.bid_deadline)}
                     </span>
@@ -171,7 +171,7 @@ export default function TendersPanel() {
                     <div className="space-y-2.5">
                       <div className="grid grid-cols-2 gap-3">
                         <div>
-                          <label className="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-white/40">
+                          <label className="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-white/[0.56]">
                             Dein Preis (CHF / {b.unit}) *
                           </label>
                           <input
@@ -180,11 +180,11 @@ export default function TendersPanel() {
                             inputMode="decimal"
                             autoFocus
                             placeholder={ref ? `Referenz ${chf(ref, 2)}` : "z. B. 148.50"}
-                            className="w-full rounded-md border border-white/[0.16] bg-white/[0.03] px-3 py-2 text-sm text-white outline-none focus:border-brand focus:bg-[#0B1522]"
+                            className="w-full rounded-md border border-white/[0.16] bg-white/[0.03] px-3 py-2 text-sm text-white outline-none focus:border-brand focus:bg-[#16181a]"
                           />
                         </div>
                         <div>
-                          <label className="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-white/40">
+                          <label className="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-white/[0.56]">
                             Listenpreis (optional)
                           </label>
                           <input
@@ -192,26 +192,26 @@ export default function TendersPanel() {
                             onChange={(e) => setListPrice(e.target.value.replace(/[^0-9.]/g, ""))}
                             inputMode="decimal"
                             placeholder="nur zur Anzeige"
-                            className="w-full rounded-md border border-white/[0.16] bg-white/[0.03] px-3 py-2 text-sm text-white outline-none focus:border-brand focus:bg-[#0B1522]"
+                            className="w-full rounded-md border border-white/[0.16] bg-white/[0.03] px-3 py-2 text-sm text-white outline-none focus:border-brand focus:bg-[#16181a]"
                           />
                         </div>
                       </div>
 
                       {typed > 0 && (
-                        <div className="rounded-md border border-white/[0.08] bg-white/[0.03] px-3 py-2.5 text-[13px]">
+                        <div className="rounded-md border border-white/[0.12] bg-white/[0.03] px-3 py-2.5 text-[13px]">
                           <div className="flex items-center justify-between">
-                            <span className="text-white/55">Auftragswert</span>
+                            <span className="text-white/[0.72]">Auftragswert</span>
                             <b className="text-white">
                               CHF {chf(typed * b.current_volume)}
                             </b>
                           </div>
                           {delta !== null && (
                             <div className="mt-1 flex items-center justify-between">
-                              <span className="text-white/55">gegenüber KBOB-Referenz</span>
+                              <span className="text-white/[0.72]">gegenüber KBOB-Referenz</span>
                               <span
                                 className={cn(
                                   "inline-flex items-center gap-1 font-semibold",
-                                  delta <= 0 ? "text-brand-700" : "text-white/55",
+                                  delta <= 0 ? "text-brand-700" : "text-white/[0.72]",
                                 )}
                               >
                                 {delta <= 0 ? (
@@ -227,8 +227,8 @@ export default function TendersPanel() {
                         </div>
                       )}
 
-                      <p className="flex items-start gap-2 rounded-md bg-white/[0.03] px-3 py-2.5 text-[11.5px] leading-relaxed text-white/55">
-                        <Info className="mt-px h-3.5 w-3.5 shrink-0 text-white/40" />
+                      <p className="flex items-start gap-2 rounded-md bg-white/[0.03] px-3 py-2.5 text-[11.5px] leading-relaxed text-white/[0.72]">
+                        <Info className="mt-px h-3.5 w-3.5 shrink-0 text-white/[0.56]" />
                         Bewertet wird dein Preis gegen den Referenzpreis, nicht
                         gegen deinen Listenpreis — ein hoher Listenpreis mit
                         grossem Rabatt bringt also nichts. Nachbessern ersetzt
@@ -256,7 +256,7 @@ export default function TendersPanel() {
                         <button
                           type="button"
                           onClick={() => { setOpenFor(null); setFormError(null); }}
-                          className="rounded-md px-3 py-2 text-sm font-semibold text-white/55 transition-colors hover:bg-white/[0.07]"
+                          className="rounded-md px-3 py-2 text-sm font-semibold text-white/[0.72] transition-colors hover:bg-white/[0.07]"
                         >
                           Abbrechen
                         </button>
@@ -285,14 +285,14 @@ export default function TendersPanel() {
       )}
 
       {decided.length > 0 && (
-        <div className={"border-t border-white/[0.08]"}>
-          <div className="border-b border-white/[0.08] px-5 py-3.5">
+        <div className={"border-t border-white/[0.12]"}>
+          <div className="border-b border-white/[0.12] px-5 py-3.5">
             <h3 className="text-[15px] font-semibold text-white">Entschieden</h3>
-            <p className="mt-0.5 text-[12px] text-white/55">
+            <p className="mt-0.5 text-[12px] text-white/[0.72]">
               Bündel, auf die du geboten hast und die vergeben sind.
             </p>
           </div>
-          <ul className="divide-y divide-white/[0.06]">
+          <ul className="divide-y divide-white/[0.12]">
             {decided.map((b) => {
               const mine = myBid.get(b.id)!;
               return (
@@ -301,7 +301,7 @@ export default function TendersPanel() {
                     <span className="block truncate text-[13px] font-semibold text-white/90">
                       {b.material_label ?? b.title}
                     </span>
-                    <span className="block text-[11.5px] text-white/40">
+                    <span className="block text-[11.5px] text-white/[0.56]">
                       {b.region} · {chf(b.current_volume)} {b.unit} · dein Gebot CHF{" "}
                       {chf(mine.customer_price_net, 2)}
                     </span>
@@ -311,7 +311,7 @@ export default function TendersPanel() {
                       <Trophy className="h-3.5 w-3.5" /> Zuschlag
                     </span>
                   ) : (
-                    <span className="shrink-0 text-[12px] text-white/40">
+                    <span className="shrink-0 text-[12px] text-white/[0.56]">
                       nicht zum Zug gekommen
                     </span>
                   )}

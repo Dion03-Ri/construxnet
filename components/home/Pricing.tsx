@@ -82,14 +82,14 @@ const TIERS: Tier[] = [
 
 export default function Pricing() {
   return (
-    <section id="preise" className="border-t border-white/[0.08] bg-[#040810]">
+    <section id="preise" className="border-t border-white/[0.12] bg-black">
       <div className={cn(SHELL, SECTION)}>
         <div className="max-w-2xl">
           <span className={EYEBROW}>Preise</span>
           <h2 className={cn(D_MD, "mt-5 text-white")}>
             Was Obtanet kostet.
           </h2>
-          <p className={cn(LEAD, "mt-6 text-white/55")}>
+          <p className={cn(LEAD, "mt-6 text-white/[0.72]")}>
             Das Netzwerk ist gratis. Bezahlt wird für das Bündeln.
           </p>
         </div>
@@ -102,7 +102,7 @@ export default function Pricing() {
                 // Nur senkrechte Haarlinien zwischen den Stufen — kein Rahmen
                 // um sie herum. Auf dem Handy wird daraus eine waagrechte.
                 "pt-14 lg:pt-0",
-                i > 0 && "border-t border-white/[0.08] lg:border-l lg:border-t-0 lg:pl-10",
+                i > 0 && "border-t border-white/[0.12] lg:border-l lg:border-t-0 lg:pl-10",
                 i < TIERS.length - 1 && "lg:pr-10",
                 i === 0 && "pt-0",
               )}
@@ -110,14 +110,14 @@ export default function Pricing() {
               <h3 className="text-[22px] font-bold tracking-tight text-white">{t.name}</h3>
 
               <div className="mt-5 flex items-baseline gap-2">
-                <span className="text-[15px] font-semibold text-white/45">CHF</span>
+                <span className="text-[15px] font-semibold text-white/[0.56]">CHF</span>
                 <span className="font-display text-[52px] font-bold leading-none tabular-nums text-white">
                   {t.price}
                 </span>
-                {t.unit && <span className="text-[13.5px] text-white/40">{t.unit}</span>}
+                {t.unit && <span className="text-[13.5px] text-white/[0.56]">{t.unit}</span>}
               </div>
 
-              <p className="mt-5 text-[13.5px] leading-relaxed text-white/45">{t.note}</p>
+              <p className="mt-5 text-[13.5px] leading-relaxed text-white/[0.56]">{t.note}</p>
 
               <Link
                 href={t.href}
@@ -126,9 +126,9 @@ export default function Pricing() {
                 {t.cta}
               </Link>
 
-              <ul className="mt-10 space-y-3.5 border-t border-white/[0.08] pt-8">
+              <ul className="mt-10 space-y-3.5 border-t border-white/[0.12] pt-8">
                 {t.features.map((f) => (
-                  <li key={f} className="flex items-start gap-2.5 text-[13.5px] leading-snug text-white/70">
+                  <li key={f} className="flex items-start gap-2.5 text-[13.5px] leading-snug text-white/[0.72]">
                     <Check className="mt-0.5 h-4 w-4 shrink-0 text-brand" />
                     {f}
                   </li>
@@ -138,7 +138,7 @@ export default function Pricing() {
           ))}
         </div>
 
-        <p className="mt-16 text-[12.5px] text-white/35">
+        <p className="mt-16 text-[12.5px] text-white/[0.5]">
           Preise exkl. MwSt. Die Vermittlungsgebühr auf abgeschlossene Bündel ist
           im Abo nicht enthalten und wird pro Abschluss ausgewiesen.
         </p>

@@ -23,12 +23,12 @@ export default async function OnboardingPage() {
         <h1 className="mt-4 text-2xl font-semibold tracking-tight text-white sm:text-3xl">
           Willkommen bei Obtanet
         </h1>
-        <p className="mt-2 text-white/55">
+        <p className="mt-2 text-white/[0.72]">
           Lege dein Firmenprofil an, um Feed, Netzwerk und Dashboard zu nutzen.
         </p>
       </header>
 
-      <div className="rounded-lg border border-white/[0.08] bg-[#0B1522] p-6 backdrop-blur sm:p-8">
+      <div className="rounded-lg border border-white/[0.12] bg-[#16181a] p-6 backdrop-blur sm:p-8">
         <OnboardingForm />
       </div>
     </main>

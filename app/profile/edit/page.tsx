@@ -55,7 +55,7 @@ export default async function EditProfilePage() {
     <main className={cn(SHELL_NARROW, "py-6 sm:py-8")}>
       <Link
         href={`/company/${me.id}`}
-        className="mb-5 inline-flex items-center gap-1.5 text-[13px] font-medium text-white/45 transition-colors hover:text-brand"
+        className="mb-5 inline-flex items-center gap-1.5 text-[13px] font-medium text-white/[0.56] transition-colors hover:text-brand"
       >
         <ArrowLeft className="h-4 w-4" /> Zurück zum Profil
       </Link>
@@ -68,15 +68,15 @@ export default async function EditProfilePage() {
           ab, entsteht ein Rhythmus statt einer Schablone — und genau eine
           Schablone, die auf jeder Seite gleich aussieht, ist das, was eine
           Oberfläche erzeugt wirken lässt. */}
-      <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white text-slate-900">
-        <header className="bg-[#060B12] px-6 py-7 text-white sm:px-9 sm:py-9">
+      <div className="overflow-hidden rounded-[20px] border border-slate-200 bg-white text-slate-900">
+        <header className="bg-black px-6 py-7 text-white sm:px-9 sm:py-9">
           <span className="text-[11px] font-semibold uppercase tracking-[0.16em] text-brand">
             Dein Profil
           </span>
           <h1 className="mt-3 font-display text-[28px] font-bold leading-[1.15] tracking-[-0.02em] sm:text-[34px]">
             Profil bearbeiten
           </h1>
-          <p className="mt-3 max-w-xl text-[14.5px] leading-relaxed text-white/55">
+          <p className="mt-3 max-w-xl text-[14.5px] leading-relaxed text-white/[0.72]">
             Firmendaten, Standort, Kontakt{company.role === "SUPPLIER" ? " und Liefer-Profil" : ""}.
             Was hier steht, sehen die Firmen, mit denen du verhandelst.
           </p>

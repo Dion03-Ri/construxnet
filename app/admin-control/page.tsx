@@ -38,7 +38,7 @@ export default function AdminControlPage() {
           <h1 className="text-2xl font-bold tracking-tight text-white">
             Gap-Closer Control Center
           </h1>
-          <p className="mt-2 max-w-2xl text-white/55">
+          <p className="mt-2 max-w-2xl text-white/[0.72]">
             Interner Admin-Bereich — Pools nahe der nächsten Rabattschwelle
             überwachen und gezielt aktivieren.
           </p>
@@ -54,10 +54,10 @@ export default function AdminControlPage() {
         {MODULES.map((m) => (
           <div
             key={m.title}
-            className="rounded-lg border border-dashed border-white/[0.08] bg-white/[0.03] p-5"
+            className="rounded-lg border border-dashed border-white/[0.12] bg-white/[0.03] p-5"
           >
-            <h3 className="font-semibold text-white/75">{m.title}</h3>
-            <p className="mt-1.5 text-sm text-white/55">{m.text}</p>
+            <h3 className="font-semibold text-white/[0.72]">{m.title}</h3>
+            <p className="mt-1.5 text-sm text-white/[0.72]">{m.text}</p>
           </div>
         ))}
       </div>

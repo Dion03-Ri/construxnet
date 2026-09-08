@@ -21,12 +21,12 @@ export default function GroupOverview() {
   const regionKeys = Object.keys(data.regions);
 
   return (
-    <div className="border-t border-white/[0.08]">
+    <div className="border-t border-white/[0.12]">
       <div className="pb-5 pt-5">
         <h3 className="text-[15px] font-bold tracking-tight text-white">
           Alle Warengruppen im Überblick
         </h3>
-        <p className="mt-1.5 max-w-2xl text-[12.5px] leading-relaxed text-white/40">
+        <p className="mt-1.5 max-w-2xl text-[12.5px] leading-relaxed text-white/[0.56]">
           Referenzpreis und Veränderung zum Vorquartal, Stand {data.meta.updated}.
           Mehr Reihen führt der Index nicht — für alle übrigen Materialien
           zählt der Referenzpreis aus der jeweiligen Anfrage.
@@ -36,7 +36,7 @@ export default function GroupOverview() {
       <div className="overflow-x-auto">
         <table className="w-full text-left text-[13px]">
           <thead>
-            <tr className="border-y border-white/[0.08] text-[10.5px] uppercase tracking-[0.12em] text-white/30">
+            <tr className="border-y border-white/[0.12] text-[10.5px] uppercase tracking-[0.12em] text-white/[0.5]">
               <th className="py-2.5 pr-3 font-semibold">Warengruppe</th>
               {regionKeys.map((r) => (
                 <th key={r} className="px-3 py-2.5 text-right font-semibold">
@@ -45,12 +45,12 @@ export default function GroupOverview() {
               ))}
             </tr>
           </thead>
-          <tbody className="divide-y divide-white/[0.07]">
+          <tbody className="divide-y divide-white/[0.12]">
             {Object.entries(data.materials).map(([key, m]) => (
               <tr key={key}>
                 <td className="py-3.5 pr-3">
                   <div className="font-semibold text-white">{m.label}</div>
-                  <div className="text-[11px] text-white/40">CHF / {m.unit}</div>
+                  <div className="text-[11px] text-white/[0.56]">CHF / {m.unit}</div>
                 </td>
                 {regionKeys.map((r) => {
                   const series = m.regions[r];
@@ -67,7 +67,7 @@ export default function GroupOverview() {
                         className={cn(
                           "mt-0.5 inline-flex items-center gap-0.5 text-[11px] font-semibold",
                           change === 0
-                            ? "text-white/40"
+                            ? "text-white/[0.56]"
                             : change > 0
                               ? "text-rose-300"
                               : "text-brand",

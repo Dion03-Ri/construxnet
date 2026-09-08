@@ -103,7 +103,7 @@ function Trend({
         big
           ? "gap-2 font-display text-[30px] leading-none tabular-nums"
           : "gap-1 text-[13px]",
-        value === 0 ? "text-white/40" : good ? "text-brand" : "text-rose-300",
+        value === 0 ? "text-white/[0.56]" : good ? "text-brand" : "text-rose-300",
       )}
     >
       <Icon className={big ? "h-5 w-5" : "h-3.5 w-3.5"} />
@@ -144,7 +144,7 @@ function Segmented({
               "border-b-2 pb-0.5 text-[12.5px] font-semibold transition-colors",
               active
                 ? "border-brand text-white"
-                : "border-transparent text-white/40 hover:text-white",
+                : "border-transparent text-white/[0.56] hover:text-white",
             )}
           >
             {o.label}
@@ -167,15 +167,15 @@ function ChartTooltip({
   const delta = row.own != null ? ((row.own - row.kbob) / row.kbob) * 100 : null;
 
   return (
-    <div className="rounded-md border border-white/[0.08] bg-[#0B1522] px-3 py-2 shadow-cardhover">
-      <div className="text-[11px] font-semibold uppercase tracking-wider text-white/40">
+    <div className="rounded-md border border-white/[0.12] bg-[#16181a] px-3 py-2 shadow-cardhover">
+      <div className="text-[11px] font-semibold uppercase tracking-wider text-white/[0.56]">
         {shortPeriod(row.period)}
       </div>
-      <div className="mt-1 text-[13px] text-white/70">
+      <div className="mt-1 text-[13px] text-white/[0.72]">
         Referenz <b className="text-white">CHF {chf(row.kbob)}</b> / {unit}
       </div>
       {row.own != null && (
-        <div className="mt-0.5 text-[13px] text-white/70">
+        <div className="mt-0.5 text-[13px] text-white/[0.72]">
           Dein Einkauf <b className="text-brand">CHF {chf(row.own)}</b> / {unit}
           {delta !== null && (
             <span className={cn("ml-1.5 font-semibold", delta <= 0 ? "text-brand" : "text-rose-300")}>
@@ -198,12 +198,12 @@ function Stat({
   hint?: string;
 }) {
   return (
-    <div className="border-t border-white/[0.10] py-5 first:border-t-0 first:pt-0 sm:border-l sm:border-t-0 sm:py-0 sm:pl-8 sm:first:border-l-0 sm:first:pl-0">
-      <div className="text-[10.5px] font-semibold uppercase tracking-[0.12em] text-white/30">
+    <div className="border-t border-white/[0.12] py-5 first:border-t-0 first:pt-0 sm:border-l sm:border-t-0 sm:py-0 sm:pl-8 sm:first:border-l-0 sm:first:pl-0">
+      <div className="text-[10.5px] font-semibold uppercase tracking-[0.12em] text-white/[0.5]">
         {label}
       </div>
       <div className="mt-2.5">{children}</div>
-      {hint && <div className="mt-2 text-[11px] leading-relaxed text-white/35">{hint}</div>}
+      {hint && <div className="mt-2 text-[11px] leading-relaxed text-white/[0.5]">{hint}</div>}
     </div>
   );
 }
@@ -226,10 +226,10 @@ function OwnPurchases({
   const procureKey = PROCURE_LINK[materialKey];
 
   return (
-    <div className="border-t border-white/[0.08]">
+    <div className="border-t border-white/[0.12]">
       <div className="pb-4 pt-5">
         <h3 className="text-[15px] font-semibold text-white">Deine Abschlüsse</h3>
-        <p className="mt-0.5 text-[12px] leading-relaxed text-white/55">
+        <p className="mt-0.5 text-[12px] leading-relaxed text-white/[0.72]">
           Angenommene Angebote in dieser Warengruppe und im gewählten Zeitraum,
           gemessen am Referenzpreis zum Zeitpunkt der Anfrage. Bündel-Teilnahmen
           sind nicht dabei — dort wird noch kein Abschlusspreis erfasst.
@@ -237,15 +237,15 @@ function OwnPurchases({
       </div>
 
       {loading ? (
-        <div className="grid place-items-center py-14 text-white/40">
+        <div className="grid place-items-center py-14 text-white/[0.56]">
           <Loader2 className="h-5 w-5 animate-spin" />
         </div>
       ) : purchases.length === 0 ? (
-        <div className="border-t border-white/[0.08] py-8">
+        <div className="border-t border-white/[0.12] py-8">
           <p className="text-[14px] font-bold tracking-tight text-white">
             Kein Abschluss in dieser Gruppe
           </p>
-          <p className="mt-1.5 max-w-md text-[12.5px] leading-relaxed text-white/40">
+          <p className="mt-1.5 max-w-md text-[12.5px] leading-relaxed text-white/[0.56]">
             Sobald du ein Angebot annimmst, erscheint es hier und in der Kurve —
             so siehst du, wie du gegenüber der Referenz gefahren bist.
           </p>
@@ -260,14 +260,14 @@ function OwnPurchases({
             )}
             <Link
               href="/network"
-              className="inline-flex items-center gap-1.5 text-[13px] font-semibold text-white/60 transition-colors hover:text-white"
+              className="inline-flex items-center gap-1.5 text-[13px] font-semibold text-white/[0.72] transition-colors hover:text-white"
             >
               <Handshake className="h-3.5 w-3.5" /> Lieferant direkt anfragen
             </Link>
           </div>
         </div>
       ) : (
-        <ul className="divide-y divide-white/[0.07] border-t border-white/[0.08]">
+        <ul className="divide-y divide-white/[0.12] border-t border-white/[0.12]">
           {[...purchases].reverse().map((p) => {
             const delta =
               p.reference && p.reference > 0
@@ -283,7 +283,7 @@ function OwnPurchases({
                     CHF {chf(p.unitPrice)}
                   </span>
                 </div>
-                <div className="mt-0.5 flex flex-wrap items-center gap-x-2.5 text-[11.5px] text-white/40">
+                <div className="mt-0.5 flex flex-wrap items-center gap-x-2.5 text-[11.5px] text-white/[0.56]">
                   <span>{shortPeriod(p.period)}</span>
                   <span>
                     {chf(p.quantity, 0)} {p.unit}
@@ -326,13 +326,13 @@ function OtherPurchases({ purchases }: { purchases: Purchase[] }) {
   const avg = averageDelta(purchases);
 
   return (
-    <div className="border-t border-white/[0.08]">
+    <div className="border-t border-white/[0.12]">
       <div className="flex flex-wrap items-baseline justify-between gap-2 pb-4 pt-5">
         <div>
           <h3 className="text-[15px] font-semibold text-white">
             Abschlüsse ohne Index-Reihe
           </h3>
-          <p className="mt-0.5 max-w-xl text-[12px] leading-relaxed text-white/55">
+          <p className="mt-0.5 max-w-xl text-[12px] leading-relaxed text-white/[0.72]">
             Für Dämmung, Mauerwerk, Holz, Asphalt, Rohre und Bauchemie führt
             der Index keine Kurve. Der Abstand zum Referenzpreis stimmt
             trotzdem — er wird bei jeder Anfrage einzeln festgehalten.
@@ -340,7 +340,7 @@ function OtherPurchases({ purchases }: { purchases: Purchase[] }) {
         </div>
         {avg !== null && (
           <div className="shrink-0 text-right">
-            <div className="text-[11px] font-semibold uppercase tracking-wider text-white/40">
+            <div className="text-[11px] font-semibold uppercase tracking-wider text-white/[0.56]">
               Ø zur Referenz
             </div>
             <Trend value={avg} />
@@ -348,7 +348,7 @@ function OtherPurchases({ purchases }: { purchases: Purchase[] }) {
         )}
       </div>
 
-      <ul className="divide-y divide-white/[0.07] border-t border-white/[0.08]">
+      <ul className="divide-y divide-white/[0.12] border-t border-white/[0.12]">
         {[...purchases].reverse().map((p) => {
           const delta =
             p.reference && p.reference > 0
@@ -364,7 +364,7 @@ function OtherPurchases({ purchases }: { purchases: Purchase[] }) {
                   CHF {chf(p.unitPrice)} / {p.unit}
                 </span>
               </div>
-              <div className="mt-0.5 flex flex-wrap items-center gap-x-2.5 text-[11.5px] text-white/40">
+              <div className="mt-0.5 flex flex-wrap items-center gap-x-2.5 text-[11.5px] text-white/[0.56]">
                 <span>{shortPeriod(p.period)}</span>
                 <span>
                   {chf(p.quantity, 0)} {p.unit}
@@ -468,7 +468,7 @@ export default function KbobChart({ initialMaterial }: { initialMaterial?: strin
           ein Raster hat — das war ein Muster zu viel. Jetzt traegt der aktive
           Reiter eine Goldkante unten, wie ueberall sonst. */}
       <div>
-        <div className="-mb-px flex gap-6 overflow-x-auto border-b border-white/[0.08]">
+        <div className="-mb-px flex gap-6 overflow-x-auto border-b border-white/[0.12]">
           {MATERIAL_KEYS.map((k) => {
             const active = k === material;
             return (
@@ -480,7 +480,7 @@ export default function KbobChart({ initialMaterial }: { initialMaterial?: strin
                   "shrink-0 whitespace-nowrap border-b-2 pb-3 text-[13.5px] font-semibold transition-colors",
                   active
                     ? "border-brand text-white"
-                    : "border-transparent text-white/45 hover:text-white",
+                    : "border-transparent text-white/[0.56] hover:text-white",
                 )}
               >
                 {data.materials[k].label}
@@ -490,9 +490,9 @@ export default function KbobChart({ initialMaterial }: { initialMaterial?: strin
         </div>
 
         <div className="flex flex-wrap items-center gap-x-6 gap-y-3 pt-4">
-          <p className="text-[12px] text-white/35">{entry.spec}</p>
+          <p className="text-[12px] text-white/[0.5]">{entry.spec}</p>
           <div className="flex items-center gap-2">
-            <span className="text-[10.5px] font-semibold uppercase tracking-[0.12em] text-white/30">
+            <span className="text-[10.5px] font-semibold uppercase tracking-[0.12em] text-white/[0.5]">
               Region
             </span>
             <Segmented
@@ -503,7 +503,7 @@ export default function KbobChart({ initialMaterial }: { initialMaterial?: strin
             />
           </div>
           <div className="flex items-center gap-2">
-            <span className="text-[10.5px] font-semibold uppercase tracking-[0.12em] text-white/30">
+            <span className="text-[10.5px] font-semibold uppercase tracking-[0.12em] text-white/[0.5]">
               Zeitraum
             </span>
             <Segmented
@@ -517,13 +517,13 @@ export default function KbobChart({ initialMaterial }: { initialMaterial?: strin
       </div>
 
       {/* Zahlen */}
-      <div className="grid grid-cols-1 rounded-2xl bg-black p-6 sm:grid-cols-3 sm:gap-x-2">
+      <div className="grid grid-cols-1 rounded-[20px] bg-black p-6 sm:grid-cols-3 sm:gap-x-2">
         <Stat label="Referenzpreis" hint={`${data.regions[region]} · Stand ${data.meta.updated}`}>
           <div className="flex items-baseline gap-1.5">
             <span className="font-display text-[30px] font-bold leading-none tabular-nums text-white">
               {chf(stats.current)}
             </span>
-            <span className="text-[13px] text-white/40">CHF / {unit}</span>
+            <span className="text-[13px] text-white/[0.56]">CHF / {unit}</span>
           </div>
         </Stat>
         <Stat label="Gegenüber Vorquartal">
@@ -546,12 +546,12 @@ export default function KbobChart({ initialMaterial }: { initialMaterial?: strin
       </div>
 
       {/* Kurve */}
-      <div className="border-t border-white/[0.08] pt-6">
+      <div className="border-t border-white/[0.12] pt-6">
         <div className="flex flex-wrap items-baseline justify-between gap-2">
           <h2 className="text-[15px] font-semibold text-white">
             {entry.label} · {data.regions[region]}
           </h2>
-          <div className="flex items-center gap-3 text-[11.5px] text-white/55">
+          <div className="flex items-center gap-3 text-[11.5px] text-white/[0.72]">
             <span className="inline-flex items-center gap-1.5">
               <span className="h-0.5 w-4 rounded bg-[#5B87C2]" /> Referenzpreis
             </span>
@@ -597,8 +597,8 @@ export default function KbobChart({ initialMaterial }: { initialMaterial?: strin
         </div>
 
         {ownPoints === 0 && !loading && (
-          <p className="mt-4 flex items-start gap-2 border-l-2 border-white/[0.12] pl-3 text-[12px] leading-relaxed text-white/45">
-            <Info className="mt-px h-3.5 w-3.5 shrink-0 text-white/40" />
+          <p className="mt-4 flex items-start gap-2 border-l-2 border-white/[0.12] pl-3 text-[12px] leading-relaxed text-white/[0.56]">
+            <Info className="mt-px h-3.5 w-3.5 shrink-0 text-white/[0.56]" />
             In der Kurve steht bisher nur die Referenz. Sobald du ein Angebot
             annimmst, kommt dein tatsächlicher Preis als Punkt dazu — dann
             zeigt die Grafik, ob du über oder unter der Referenz eingekauft

@@ -27,7 +27,7 @@ export default function SavedPools() {
 
   if (!ready || loading) {
     return (
-      <div className="grid place-items-center py-20 text-white/40">
+      <div className="grid place-items-center py-20 text-white/[0.56]">
         <Loader2 className="h-5 w-5 animate-spin" />
       </div>
     );
@@ -35,12 +35,12 @@ export default function SavedPools() {
 
   if (saved.length === 0) {
     return (
-      <div className="flex flex-col items-center gap-3 border-t border-white/[0.08] py-20 text-center">
-        <span className="grid h-12 w-12 place-items-center rounded-full bg-white/10 text-white/40">
+      <div className="flex flex-col items-center gap-3 border-t border-white/[0.12] py-20 text-center">
+        <span className="grid h-12 w-12 place-items-center rounded-full bg-white/10 text-white/[0.56]">
           <Bookmark className="h-6 w-6" />
         </span>
         <p className="text-sm font-semibold text-white">Keine gemerkten Bündel</p>
-        <p className="max-w-sm text-[13px] leading-relaxed text-white/55">
+        <p className="max-w-sm text-[13px] leading-relaxed text-white/[0.72]">
           Merke dir laufende Bündel über das Lesezeichen-Symbol — sie erscheinen
           dann hier zum schnellen Wiederfinden. Gemerkte Bündel, die inzwischen
           geschlossen sind, fallen aus dieser Liste.
@@ -56,25 +56,25 @@ export default function SavedPools() {
   }
 
   return (
-    <div className="border-b border-white/[0.08]">
+    <div className="border-b border-white/[0.12]">
       {saved.map((b) => {
         const step = nextStep(b.current_volume);
         const goal = step?.at ?? b.current_volume;
         const pct = Math.min(100, Math.round((b.current_volume / (goal || 1)) * 100));
         const sealed = b.status === "SEALED_BIDDING";
         return (
-          <div key={b.id} className="flex flex-col border-t border-white/[0.08] py-6 transition-colors hover:bg-white/[0.02]">
+          <div key={b.id} className="flex flex-col border-t border-white/[0.12] py-6 transition-colors hover:bg-white/[0.02]">
             <div className="flex items-start justify-between gap-2">
               <div className="min-w-0">
                 <h3 className="truncate text-[15px] font-semibold text-white">
                   {b.material_label ?? b.title}
                 </h3>
-                <p className="mt-0.5 flex items-center gap-1 text-[12px] text-white/55">
+                <p className="mt-0.5 flex items-center gap-1 text-[12px] text-white/[0.72]">
                   <MapPin className="h-3.5 w-3.5" /> {b.region}
                 </p>
               </div>
               <div className="flex shrink-0 items-center gap-1.5">
-                <span className={cn("inline-flex items-center gap-1.5 text-[10.5px] font-semibold uppercase tracking-[0.12em]", sealed ? "text-white/45" : "text-brand")}>
+                <span className={cn("inline-flex items-center gap-1.5 text-[10.5px] font-semibold uppercase tracking-[0.12em]", sealed ? "text-white/[0.56]" : "text-brand")}>
                   {sealed ? (
                     <><Gavel className="h-3 w-3" /> Sealed-Bid</>
                   ) : (
@@ -85,7 +85,7 @@ export default function SavedPools() {
                   type="button"
                   onClick={() => toggle(b.id)}
                   aria-label="Aus Merkliste entfernen"
-                  className="grid h-7 w-7 place-items-center rounded-md border border-white/[0.08] text-white/40 transition-colors hover:border-rose-400/35 hover:text-rose-500"
+                  className="grid h-7 w-7 place-items-center rounded-md border border-white/[0.12] text-white/[0.56] transition-colors hover:border-rose-400/35 hover:text-rose-500"
                 >
                   <BookmarkX className="h-3.5 w-3.5" />
                 </button>
@@ -94,13 +94,13 @@ export default function SavedPools() {
 
             <div className="mt-4">
               <div className="mb-1 flex items-center justify-between text-[12px]">
-                <span className="text-white/55">
+                <span className="text-white/[0.72]">
                   {chf(b.current_volume)} {b.unit}
-                  {step && <span className="text-white/40"> / {chf(step.at)}</span>}
+                  {step && <span className="text-white/[0.56]"> / {chf(step.at)}</span>}
                 </span>
                 <span className="font-semibold text-brand">
                   mind. {b.current_discount_pct} %
-                  <span className="ml-1 font-normal text-white/40">Stufe {b.current_tier}</span>
+                  <span className="ml-1 font-normal text-white/[0.56]">Stufe {b.current_tier}</span>
                 </span>
               </div>
               <div className="h-2 w-full overflow-hidden rounded-full bg-white/10">
@@ -108,7 +108,7 @@ export default function SavedPools() {
               </div>
             </div>
 
-            <div className="mt-3 flex items-center justify-between text-[12px] text-white/55">
+            <div className="mt-3 flex items-center justify-between text-[12px] text-white/[0.72]">
               <span className="inline-flex items-center gap-1">
                 <Users className="h-3.5 w-3.5" /> {b.participant_count}{" "}
                 {b.participant_count === 1 ? "Firma" : "Firmen"}

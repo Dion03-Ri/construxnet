@@ -60,14 +60,14 @@ export default function BundleOpportunities() {
 
       {/* Der eine schwarze Anker der Seite: die Zahl, die zählt,
           steht auf echtem Schwarz statt auf dem Seitengrund. */}
-      <div className="rounded-2xl bg-black p-5">
+      <div className="rounded-[20px] bg-black p-5">
         <div className="flex items-baseline justify-between">
           <h3 className="text-[14px] font-bold tracking-tight text-white">Referenzpreis</h3>
           <Link href="/kbob" className="text-[11.5px] font-semibold text-brand hover:underline">
             Verlauf
           </Link>
         </div>
-        <div className="mt-1 text-[11.5px] text-white/40">
+        <div className="mt-1 text-[11.5px] text-white/[0.56]">
           {entry.label} · {kbobData.regions[REGION]}
         </div>
 
@@ -75,13 +75,13 @@ export default function BundleOpportunities() {
           <span className="font-display text-[32px] font-bold leading-none tabular-nums text-white">
             {last.kbob.toLocaleString("de-CH", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
           </span>
-          <span className="text-[12px] text-white/40">CHF / {entry.unit}</span>
+          <span className="text-[12px] text-white/[0.56]">CHF / {entry.unit}</span>
         </div>
 
         <Sparkline />
 
-        <div className="mt-3 flex items-center justify-between border-t border-white/[0.10] pt-3 text-[12.5px]">
-          <span className="text-white/45">gegenüber Vorquartal</span>
+        <div className="mt-3 flex items-center justify-between border-t border-white/[0.12] pt-3 text-[12.5px]">
+          <span className="text-white/[0.56]">gegenüber Vorquartal</span>
           <span
             className={
               change <= 0
@@ -93,7 +93,7 @@ export default function BundleOpportunities() {
             {change.toFixed(1)} %
           </span>
         </div>
-        <p className="mt-2.5 text-[11px] leading-relaxed text-white/30">
+        <p className="mt-2.5 text-[11px] leading-relaxed text-white/[0.5]">
           Stand {kbobData.meta.updated}. Nachgebildete Reihe am KBOB-Preisindex,
           keine amtliche Publikation.
         </p>

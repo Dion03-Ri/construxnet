@@ -96,16 +96,16 @@ export default function DiscoverGrid() {
     <div className="space-y-5">
       {/* Seitenkopf über die volle Breite — kein Panel, wie auf Netzwerk,
           Smart Pools und Referenzpreise. */}
-      <header className="border-b border-white/[0.08] pb-8">
+      <header className="border-b border-white/[0.12] pb-8">
         <Link
           href="/network"
-          className="inline-flex items-center gap-1.5 text-[13px] font-medium text-white/45 transition-colors hover:text-brand"
+          className="inline-flex items-center gap-1.5 text-[13px] font-medium text-white/[0.56] transition-colors hover:text-brand"
         >
           <ArrowLeft className="h-4 w-4" /> Zurück zum Netzwerk
         </Link>
         <span className={cn(EYEBROW, "mt-6 block")}>Netzwerk</span>
         <h1 className={cn(D_MD, "mt-4 text-white")}>Firmen entdecken</h1>
-        <p className="mt-6 max-w-xl text-[16px] leading-relaxed text-white/55">
+        <p className="mt-6 max-w-xl text-[16px] leading-relaxed text-white/[0.72]">
           Alle Bauunternehmen und Baustoffwerke auf Obtanet.
           <span className="hidden sm:inline">
             {" "}Filtere nach Kanton und Rolle — jede Verbindung ist ein möglicher
@@ -114,24 +114,24 @@ export default function DiscoverGrid() {
         </p>
 
         <div className="relative mt-8 max-w-xl">
-          <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-white/40" />
+          <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-white/[0.56]" />
           <input
             type="search"
             value={query}
             onChange={(e) => { setQuery(e.target.value); setLimit(PAGE); }}
             placeholder="Firma, Ort, Kanton oder UID suchen …"
-            className="w-full rounded-xl border border-white/[0.10] bg-white/[0.04] py-3 pl-11 pr-3 text-sm text-white placeholder:text-white/40 outline-none transition-colors focus:border-brand"
+            className="w-full rounded-xl border border-white/[0.12] bg-white/[0.04] py-3 pl-11 pr-3 text-sm text-white placeholder:text-white/[0.56] outline-none transition-colors focus:border-brand"
           />
         </div>
       </header>
 
       {/* Filterleiste */}
-      <div className="border-t border-white/[0.08] pt-5">
-        <div className="hidden items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.12em] text-white/40 sm:flex">
+      <div className="border-t border-white/[0.12] pt-5">
+        <div className="hidden items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.12em] text-white/[0.56] sm:flex">
           <SlidersHorizontal className="h-3.5 w-3.5" /> Filter
         </div>
 
-        <div className="no-scrollbar -mb-px flex gap-6 overflow-x-auto border-b border-white/[0.08] sm:mt-3">
+        <div className="no-scrollbar -mb-px flex gap-6 overflow-x-auto border-b border-white/[0.12] sm:mt-3">
           {ROLE_FILTERS.map((r) => (
             <button
               key={r.key}
@@ -141,7 +141,7 @@ export default function DiscoverGrid() {
                 "shrink-0 whitespace-nowrap border-b-2 pb-2 text-[13px] font-semibold transition-colors",
                 role === r.key
                   ? "border-brand text-white"
-                  : "border-transparent text-white/40 hover:text-white",
+                  : "border-transparent text-white/[0.56] hover:text-white",
               )}
             >
               {r.label}
@@ -154,7 +154,7 @@ export default function DiscoverGrid() {
               "shrink-0 whitespace-nowrap border-b-2 pb-2 text-[13px] font-semibold transition-colors",
               onlyVerified
                 ? "border-brand text-white"
-                : "border-transparent text-white/40 hover:text-white",
+                : "border-transparent text-white/[0.56] hover:text-white",
             )}
           >
             Nur verifizierte
@@ -163,12 +163,12 @@ export default function DiscoverGrid() {
 
         <div className="mt-4 grid grid-cols-2 gap-2">
           <label className="relative block">
-            <MapPin className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-white/40" />
+            <MapPin className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-white/[0.56]" />
             <select
               value={canton}
               onChange={(e) => { setCanton(e.target.value); setLimit(PAGE); }}
               aria-label="Kanton"
-              className="w-full appearance-none rounded-xl border border-white/[0.10] bg-white/[0.04] py-2.5 pl-9 pr-3 text-[13px] text-white/90 outline-none focus:border-brand"
+              className="w-full appearance-none rounded-xl border border-white/[0.12] bg-white/[0.04] py-2.5 pl-9 pr-3 text-[13px] text-white/90 outline-none focus:border-brand"
             >
               <option value="ALL">Alle Kantone</option>
               {SWISS_CANTONS.map((k) => (
@@ -182,7 +182,7 @@ export default function DiscoverGrid() {
             value={sort}
             onChange={(e) => setSort(e.target.value)}
             aria-label="Sortierung"
-            className="w-full appearance-none rounded-xl border border-white/[0.10] bg-white/[0.04] px-3 py-2.5 text-[13px] text-white/90 outline-none focus:border-brand"
+            className="w-full appearance-none rounded-xl border border-white/[0.12] bg-white/[0.04] px-3 py-2.5 text-[13px] text-white/90 outline-none focus:border-brand"
           >
             {SORTS.map((s) => (
               <option key={s.key} value={s.key}>{s.label}</option>
@@ -194,12 +194,12 @@ export default function DiscoverGrid() {
 
       {/* Ergebnisse */}
       {loading ? (
-        <div className="flex items-center justify-center gap-2 py-16 text-sm text-white/55">
+        <div className="flex items-center justify-center gap-2 py-16 text-sm text-white/[0.72]">
           <Loader2 className="h-4 w-4 animate-spin" /> Firmen werden geladen …
         </div>
       ) : results.length === 0 ? (
-        <div className="border-t border-white/[0.08] py-20 text-center">
-          <p className="text-sm text-white/55">
+        <div className="border-t border-white/[0.12] py-20 text-center">
+          <p className="text-sm text-white/[0.72]">
             {filtersOn
               ? "Keine Firma passt zu diesen Filtern."
               : "Es sind noch keine weiteren Firmen registriert."}
@@ -208,7 +208,7 @@ export default function DiscoverGrid() {
             <button
               type="button"
               onClick={() => { setQuery(""); setRole("ALL"); setCanton("ALL"); setOnlyVerified(false); }}
-              className="mt-3 rounded-md border border-white/[0.08] px-3.5 py-2 text-[13px] font-semibold text-white/70 transition-colors hover:border-brand/40 hover:text-brand"
+              className="mt-3 rounded-md border border-white/[0.12] px-3.5 py-2 text-[13px] font-semibold text-white/[0.72] transition-colors hover:border-brand/40 hover:text-brand"
             >
               Filter zurücksetzen
             </button>
@@ -217,18 +217,18 @@ export default function DiscoverGrid() {
       ) : (
         <>
           <div className="flex items-center justify-between px-1">
-            <p className="text-[13px] text-white/55">
+            <p className="text-[13px] text-white/[0.72]">
               <span className="font-semibold text-white">{results.length}</span>{" "}
               {results.length === 1 ? "Firma" : "Firmen"}
               {canton !== "ALL" ? ` in ${canton}` : ""}
             </p>
-            <p className="text-[12px] text-white/40">
+            <p className="text-[12px] text-white/[0.56]">
               {Math.min(limit, results.length)} angezeigt
               {connectedCount > 0 ? ` · ${connectedCount} bereits verbunden` : ""}
             </p>
           </div>
 
-          <div className="border-b border-white/[0.08]">
+          <div className="border-b border-white/[0.12]">
             {shown.map((c) => (
               <CompanyCard
                 key={c.id}
@@ -248,7 +248,7 @@ export default function DiscoverGrid() {
               <button
                 type="button"
                 onClick={() => setLimit((l) => l + PAGE)}
-                className="rounded-xl border border-white/[0.10] px-5 py-2.5 text-sm font-semibold text-white/75 transition-colors hover:border-brand/40 hover:text-brand"
+                className="rounded-xl border border-white/[0.12] px-5 py-2.5 text-sm font-semibold text-white/[0.72] transition-colors hover:border-brand/40 hover:text-brand"
               >
                 Weitere {Math.min(PAGE, results.length - limit)} anzeigen
               </button>
@@ -258,7 +258,7 @@ export default function DiscoverGrid() {
       )}
 
       {isSignedIn && !myCompanyId && !loading && (
-        <p className="text-center text-xs text-white/55">
+        <p className="text-center text-xs text-white/[0.72]">
           Lege ein Firmenprofil an, um dich mit anderen Firmen zu vernetzen.
         </p>
       )}

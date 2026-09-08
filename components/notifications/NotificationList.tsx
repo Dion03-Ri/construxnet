@@ -21,8 +21,8 @@ export default function NotificationList() {
   );
 
   return (
-    <div className={"border-t border-white/[0.08]"}>
-      <div className="flex items-center justify-between gap-3 border-b border-white/[0.08] px-4 py-3 sm:px-5">
+    <div className={"border-t border-white/[0.12]"}>
+      <div className="flex items-center justify-between gap-3 border-b border-white/[0.12] px-4 py-3 sm:px-5">
         <h1 className="text-[15px] font-semibold text-white">
           Benachrichtigungen
           {unread > 0 && (
@@ -35,14 +35,14 @@ export default function NotificationList() {
           <button
             type="button"
             onClick={markAllSeen}
-            className="inline-flex items-center gap-1 text-[12px] font-medium text-white/55 transition-colors hover:text-brand"
+            className="inline-flex items-center gap-1 text-[12px] font-medium text-white/[0.72] transition-colors hover:text-brand"
           >
             <Check className="h-3.5 w-3.5" /> Alle als gelesen
           </button>
         )}
       </div>
 
-      <div className="flex flex-wrap gap-1 border-b border-white/[0.08] px-3 py-2.5">
+      <div className="flex flex-wrap gap-1 border-b border-white/[0.12] px-3 py-2.5">
         {NOTICE_TABS.map((t) => (
           <button
             key={t.key}
@@ -52,7 +52,7 @@ export default function NotificationList() {
               "rounded-md px-3 py-1.5 text-[13px] font-medium transition-colors",
               tab === t.key
                 ? "bg-brand/10 text-brand"
-                : "text-white/55 hover:bg-white/[0.07] hover:text-white",
+                : "text-white/[0.72] hover:bg-white/[0.07] hover:text-white",
             )}
           >
             {t.label}
@@ -61,23 +61,23 @@ export default function NotificationList() {
       </div>
 
       {loading ? (
-        <div className="grid place-items-center py-16 text-white/40">
+        <div className="grid place-items-center py-16 text-white/[0.56]">
           <Loader2 className="h-5 w-5 animate-spin" />
         </div>
       ) : list.length === 0 ? (
         <div className="px-6 py-14 text-center">
-          <BellOff className="mx-auto h-8 w-8 text-white/25" />
+          <BellOff className="mx-auto h-8 w-8 text-white/[0.4]" />
           <p className="mt-3 text-[15px] font-semibold text-white/90">
             {notices.length === 0 ? "Nichts Neues" : "Nichts in dieser Kategorie"}
           </p>
-          <p className="mx-auto mt-1 max-w-sm text-[13px] leading-relaxed text-white/55">
+          <p className="mx-auto mt-1 max-w-sm text-[13px] leading-relaxed text-white/[0.72]">
             {notices.length === 0
               ? "Hier stehen Verbindungsanfragen, eingegangene Angebote, der Stand deiner Bündel und ungelesene Nachrichten — sobald es etwas gibt."
               : "In anderen Kategorien liegt vielleicht etwas."}
           </p>
         </div>
       ) : (
-        <ul className="divide-y divide-white/[0.06]">
+        <ul className="divide-y divide-white/[0.12]">
           {list.map((n) => {
             const fresh = isUnread(n);
             return (
@@ -91,12 +91,12 @@ export default function NotificationList() {
                     <n.icon className="h-4 w-4" />
                   </span>
                   <div className="min-w-0 flex-1">
-                    <p className="text-[13.5px] leading-snug text-white/75">
+                    <p className="text-[13.5px] leading-snug text-white/[0.72]">
                       <span className="font-semibold text-white">{n.actor}</span> {n.text}
                     </p>
-                    <p className="mt-1 text-[11px] text-white/40">{relTime(n.at)}</p>
+                    <p className="mt-1 text-[11px] text-white/[0.56]">{relTime(n.at)}</p>
                   </div>
-                  <ChevronRight className="mt-2 h-4 w-4 shrink-0 text-white/25" />
+                  <ChevronRight className="mt-2 h-4 w-4 shrink-0 text-white/[0.4]" />
                 </Link>
               </li>
             );

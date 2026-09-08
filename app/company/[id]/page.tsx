@@ -134,12 +134,12 @@ export default async function CompanyPage({ params }: { params: Promise<{ id: st
           schwarzes, hier wieder Navy — Schwarz und Weiss dürfen überall
           sein, Navy ist die zweite Möglichkeit. Der Wechsel ist der
           Punkt. */}
-      <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white text-slate-900">
+      <div className="overflow-hidden rounded-[20px] border border-slate-200 bg-white text-slate-900">
         <div className="bg-accent-600 px-6 pb-16 pt-7 sm:px-9" />
         <div className="px-6 pb-9 sm:px-9">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
             <div className="min-w-0">
-              <span className="-mt-12 flex h-20 w-20 items-center justify-center overflow-hidden rounded-2xl border-4 border-white bg-accent-600 text-xl font-bold text-white shadow-[0_10px_30px_-10px_rgba(0,0,0,0.35)]">
+              <span className="-mt-12 flex h-20 w-20 items-center justify-center overflow-hidden rounded-[20px] border-4 border-white bg-accent-600 text-xl font-bold text-white shadow-[0_10px_30px_-10px_rgba(0,0,0,0.35)]">
                 {company.logo_url ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img src={company.logo_url} alt={company.company_name} className="h-full w-full object-cover" />

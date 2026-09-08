@@ -126,23 +126,23 @@ function TerminCard({ t }: { t: Termin }) {
   const past = t.at.getTime() < Date.now();
 
   return (
-    <div className="flex flex-col gap-4 border-t border-white/[0.08] py-6 transition-colors hover:bg-white/[0.02] sm:flex-row sm:items-start">
-      <div className="flex shrink-0 flex-col items-center justify-center rounded-lg border border-white/[0.08] bg-white/[0.03] px-4 py-2.5 text-center sm:w-20">
+    <div className="flex flex-col gap-4 border-t border-white/[0.12] py-6 transition-colors hover:bg-white/[0.02] sm:flex-row sm:items-start">
+      <div className="flex shrink-0 flex-col items-center justify-center rounded-lg border border-white/[0.12] bg-white/[0.03] px-4 py-2.5 text-center sm:w-20">
         <span className="text-[11px] font-semibold uppercase tracking-wider text-brand">
           {t.at.toLocaleDateString("de-CH", { month: "short" })}
         </span>
         <span className="text-2xl font-bold leading-tight text-white">{t.at.getDate()}</span>
-        <span className="text-[11px] text-white/40">
+        <span className="text-[11px] text-white/[0.56]">
           {t.at.toLocaleDateString("de-CH", { weekday: "short" })}
         </span>
       </div>
 
       <div className="min-w-0 flex-1">
         <div className="flex flex-wrap items-center gap-2">
-          <span className={cn("inline-flex items-center gap-1.5 text-[10.5px] font-semibold uppercase tracking-[0.12em]", meta.tone === "gold" ? "text-brand" : "text-white/45")}>
+          <span className={cn("inline-flex items-center gap-1.5 text-[10.5px] font-semibold uppercase tracking-[0.12em]", meta.tone === "gold" ? "text-brand" : "text-white/[0.56]")}>
             <Icon className="h-3 w-3" /> {t.kind}
           </span>
-          <span className="inline-flex items-center gap-1 text-[12px] text-white/40">
+          <span className="inline-flex items-center gap-1 text-[12px] text-white/[0.56]">
             <Clock className="h-3.5 w-3.5" />
             {t.at.toLocaleTimeString("de-CH", { hour: "2-digit", minute: "2-digit" })} Uhr
           </span>
@@ -151,7 +151,7 @@ function TerminCard({ t }: { t: Termin }) {
           )}
         </div>
         <h3 className="mt-1.5 text-[15px] font-semibold text-white">{t.title}</h3>
-        <p className="mt-1 text-[13px] leading-relaxed text-white/55">{t.description}</p>
+        <p className="mt-1 text-[13px] leading-relaxed text-white/[0.72]">{t.description}</p>
 
         <div className="mt-3 flex flex-wrap items-center gap-2">
           <button
@@ -170,7 +170,7 @@ function TerminCard({ t }: { t: Termin }) {
           </button>
           <Link
             href={t.href}
-            className="inline-flex items-center gap-1 rounded-md border border-white/[0.08] px-3.5 py-2 text-[13px] font-semibold text-white/70 transition-colors hover:bg-white/[0.05]"
+            className="inline-flex items-center gap-1 rounded-md border border-white/[0.12] px-3.5 py-2 text-[13px] font-semibold text-white/[0.72] transition-colors hover:bg-white/[0.05]"
           >
             Zum Bündel <ArrowRight className="h-3.5 w-3.5" />
           </Link>
@@ -194,7 +194,7 @@ export default function TermineList() {
 
   if (loading) {
     return (
-      <div className="grid place-items-center py-20 text-white/40">
+      <div className="grid place-items-center py-20 text-white/[0.56]">
         <Loader2 className="h-5 w-5 animate-spin" />
       </div>
     );
@@ -202,10 +202,10 @@ export default function TermineList() {
 
   if (termine.length === 0) {
     return (
-      <div className="border-t border-white/[0.08] py-20 text-center">
-        <CalendarDays className="mx-auto h-8 w-8 text-white/25" />
+      <div className="border-t border-white/[0.12] py-20 text-center">
+        <CalendarDays className="mx-auto h-8 w-8 text-white/[0.4]" />
         <p className="mt-3 text-[15px] font-semibold text-white/90">Keine anstehenden Fristen</p>
-        <p className="mx-auto mt-1 max-w-md text-[13px] leading-relaxed text-white/55">
+        <p className="mx-auto mt-1 max-w-md text-[13px] leading-relaxed text-white/[0.72]">
           Sobald du an einem Bündel beteiligt bist, stehen hier seine Sammel- und
           Angebotsfristen — mit einem Klick in deinen Kalender.
         </p>
@@ -220,7 +220,7 @@ export default function TermineList() {
   }
 
   return (
-    <div className="border-b border-white/[0.08]">
+    <div className="border-b border-white/[0.12]">
       {termine.map((t) => <TerminCard key={t.id} t={t} />)}
     </div>
   );

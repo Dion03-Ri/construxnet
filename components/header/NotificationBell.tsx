@@ -37,7 +37,7 @@ export default function NotificationBell() {
         type="button"
         aria-label="Benachrichtigungen"
         onClick={() => setOpen((o) => !o)}
-        className="relative grid h-9 w-9 place-items-center rounded-full text-white/70 transition-colors hover:bg-white/10 hover:text-white"
+        className="relative grid h-9 w-9 place-items-center rounded-full text-white/[0.72] transition-colors hover:bg-white/10 hover:text-white"
       >
         <Bell className="h-5 w-5" />
         {unread > 0 && (
@@ -56,7 +56,7 @@ export default function NotificationBell() {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -6, scale: 0.98 }}
               transition={{ duration: 0.15 }}
-              className="absolute right-0 z-50 mt-2 w-[340px] overflow-hidden rounded-2xl border border-white/[0.10] bg-[#0B1522] shadow-[0_24px_60px_-20px_rgba(0,0,0,0.8)]"
+              className="absolute right-0 z-50 mt-2 w-[340px] overflow-hidden rounded-[20px] border border-white/[0.12] bg-[#16181a] shadow-[0_24px_60px_-20px_rgba(0,0,0,0.8)]"
             >
               <div className="flex items-center justify-between border-b border-white/[0.06] px-4 py-3">
                 <span className="text-sm font-semibold text-white">Benachrichtigungen</span>
@@ -79,7 +79,7 @@ export default function NotificationBell() {
                     onClick={() => setTab(t.key)}
                     className={cn(
                       "rounded-md px-3 py-1 text-xs font-medium transition-colors",
-                      tab === t.key ? "bg-brand text-white" : "text-white/55 hover:bg-white/[0.07]",
+                      tab === t.key ? "bg-brand text-white" : "text-white/[0.72] hover:bg-white/[0.07]",
                     )}
                   >
                     {t.label}
@@ -89,7 +89,7 @@ export default function NotificationBell() {
 
               <ul className="max-h-[360px] overflow-y-auto">
                 {list.length === 0 ? (
-                  <li className="px-4 py-8 text-center text-sm text-white/40">Nichts Neues hier.</li>
+                  <li className="px-4 py-8 text-center text-sm text-white/[0.56]">Nichts Neues hier.</li>
                 ) : (
                   list.map((n) => {
                     const isRead = !isUnread(n);
@@ -107,10 +107,10 @@ export default function NotificationBell() {
                             <n.icon className="h-4 w-4" />
                           </span>
                           <div className="min-w-0">
-                            <p className="text-[13px] leading-snug text-white/75">
+                            <p className="text-[13px] leading-snug text-white/[0.72]">
                               <span className="font-semibold text-white">{n.actor}</span> {n.text}
                             </p>
-                            <p className="mt-0.5 text-[11px] text-white/40">{relTime(n.at)}</p>
+                            <p className="mt-0.5 text-[11px] text-white/[0.56]">{relTime(n.at)}</p>
                           </div>
                           {!isRead && <span className="ml-auto mt-1 h-2 w-2 shrink-0 rounded-full bg-brand" />}
                         </Link>

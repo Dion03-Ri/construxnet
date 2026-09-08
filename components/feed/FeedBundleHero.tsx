@@ -24,13 +24,13 @@ export default function FeedBundleHero() {
     .slice(0, 3);
 
   return (
-    <section className="border-t border-white/[0.08]">
+    <section className="border-t border-white/[0.12]">
       <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-4 py-5">
         <div className="min-w-0">
           <h2 className="text-[15px] font-bold tracking-tight text-white">
             Was brauchst du auf der Baustelle?
           </h2>
-          <p className="mt-1 text-[12.5px] text-white/40">
+          <p className="mt-1 text-[12.5px] text-white/[0.56]">
             Gleiche Bedarfe deiner Region werden gebündelt — die Werke bieten verdeckt dagegen.
           </p>
         </div>
@@ -43,7 +43,7 @@ export default function FeedBundleHero() {
           </Link>
           <Link
             href="/pools"
-            className="inline-flex items-center gap-2 rounded-xl border border-white/[0.16] px-4 py-2.5 text-[13px] font-semibold text-white/75 transition-colors hover:bg-white/[0.05]"
+            className="inline-flex items-center gap-2 rounded-xl border border-white/[0.16] px-4 py-2.5 text-[13px] font-semibold text-white/[0.72] transition-colors hover:bg-white/[0.05]"
           >
             Offene Bündel <ArrowRight className="h-4 w-4" />
           </Link>
@@ -52,8 +52,8 @@ export default function FeedBundleHero() {
 
       {/* Laufende Bündel — echte, oder gar keine */}
       {top.length > 0 && (
-        <div className="border-t border-white/[0.08] py-5">
-          <div className="text-[10.5px] font-semibold uppercase tracking-[0.14em] text-white/40">
+        <div className="border-t border-white/[0.12] py-5">
+          <div className="text-[10.5px] font-semibold uppercase tracking-[0.14em] text-white/[0.56]">
             Laufende Bündel
           </div>
           <div className="mt-4 grid grid-cols-1 gap-y-5 sm:grid-cols-3 sm:gap-y-0">
@@ -67,7 +67,7 @@ export default function FeedBundleHero() {
                   href={`/beschaffung?material=${encodeURIComponent(b.material_id ?? "")}`}
                   className={cn(
                     "group",
-                    i > 0 && "border-t border-white/[0.08] pt-5 sm:border-l sm:border-t-0 sm:pl-6 sm:pt-0",
+                    i > 0 && "border-t border-white/[0.12] pt-5 sm:border-l sm:border-t-0 sm:pl-6 sm:pt-0",
                     i < top.length - 1 && "sm:pr-6",
                   )}
                 >
@@ -79,7 +79,7 @@ export default function FeedBundleHero() {
                       −{b.current_discount_pct} %
                     </span>
                   </div>
-                  <div className="mt-1.5 flex items-center gap-2.5 text-[11.5px] text-white/40">
+                  <div className="mt-1.5 flex items-center gap-2.5 text-[11.5px] text-white/[0.56]">
                     <span className="inline-flex items-center gap-1">
                       <MapPin className="h-3 w-3" /> {b.region}
                     </span>

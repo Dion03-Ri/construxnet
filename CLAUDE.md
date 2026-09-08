@@ -628,6 +628,37 @@ gerenderte Zahl führt damit zu einem Hydration-Fehler — auf
 eine eigene Kopie der Funktion; wer eine siebte braucht, nimmt die
 geteilte. **Nie wieder `Intl.NumberFormat` direkt in einem Baustein.**
 
+---
+
+# DIE OBTANET-MISCHUNG (verbindlich)
+
+Der Nutzer: „Robinhood als Vorbild, mit Revolut gemischt und bisschen
+Linear — am Ende ein Mischmasch, aber halt immer das best passende. So
+entsteht mein Obtanet-Design."
+
+Jede Entscheidung hier stammt aus einer der drei Spezifikationen, mit
+Begründung warum diese und nicht die andere. **Wer etwas ändert, ändert
+es hier und nirgends sonst.**
+
+| Element | Von | Wert | Warum |
+|---|---|---|---|
+| Grund | Robinhood/Revolut | reines `#000000` | Ein schwarzer Anker (`TILE`) tritt nur auf reinem Schwarz nicht hervor — deshalb liegen Bänder auf `#0a0a0a`, der Grund auf Schwarz |
+| Fläche | Revolut | `#16181a`, Radius 20 px, 32 px innen | Linear ist mit vier Stufen feiner, aber wir haben nicht genug Verschachtelung dafür |
+| Haarlinie | Linear | 12 % Weiss | Unsere alten 8 % waren zu schwach zum Trennen |
+| Text | Revolut | `#fff` / `.72` / `.56` | Linear ist mit `#8a8f98` dunkler; unser Fliesstext war ohnehin zu flau |
+| Display | Robinhood/Revolut | Gewicht 500, Laufweite −0.01em | Linears −3 px ist für eine Baubranche zu modisch eng |
+| Fliesstext | Revolut | 18 px / 1.56 | |
+| Knopf | **Mischung** | 48 px hoch, 16 px/600 (Revolut-Mass), Radius 12 px (nicht Pille) | Revoluts Pillen hat der Nutzer ausdrücklich abgelehnt |
+| Abstände | Revolut | 88 px Abschnitt, 120 px Band | |
+| Container | Revolut | 1200 px | |
+| Schatten, Verläufe, Leuchten | alle drei | **keine** | Keines der drei Vorbilder benutzt sie. Tiefe kommt aus Fläche und Haarlinie |
+
+**Nicht überprüfbar:** robinhood.com ist vom Netzwerk dieser Umgebung
+gesperrt (403 am Proxy), und eine veröffentlichte Robinhood-Spezifikation
+gibt es nicht. Was von Robinhood kommt, stammt aus den Referenzbildern,
+die der Nutzer selbst geschickt hat — nicht aus einer Messung. Linear und
+Revolut sind gemessen.
+
 ## Was ich davon nicht ohne Zuruf anfasse
 - Die CI-Farben. Sie stehen als „STRIKT" in dieser Datei.
 - Die Formensprache (weiche Ecken).

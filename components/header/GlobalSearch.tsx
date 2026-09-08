@@ -77,7 +77,7 @@ export default function GlobalSearch() {
 
   return (
     <div className="relative hidden w-full max-w-xs md:block">
-      <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-white/50" />
+      <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-white/[0.56]" />
       <input
         type="search"
         value={q}
@@ -85,9 +85,9 @@ export default function GlobalSearch() {
         onFocus={() => setFocus(true)}
         onBlur={() => setTimeout(() => setFocus(false), 150)}
         placeholder="Firmen oder Material suchen …"
-        className="w-full rounded-md border border-white/15 bg-white/10 py-2 pl-9 pr-14 text-[13px] text-white placeholder:text-white/50 outline-none transition-colors focus:border-white/30 focus:bg-white/15"
+        className="w-full rounded-md border border-white/15 bg-white/10 py-2 pl-9 pr-14 text-[13px] text-white placeholder:text-white/[0.56] outline-none transition-colors focus:border-white/30 focus:bg-white/15"
       />
-      <kbd className="pointer-events-none absolute right-2 top-1/2 hidden -translate-y-1/2 items-center gap-0.5 rounded border border-white/20 bg-white/5 px-1.5 py-0.5 text-[10px] font-semibold text-white/50 lg:inline-flex">
+      <kbd className="pointer-events-none absolute right-2 top-1/2 hidden -translate-y-1/2 items-center gap-0.5 rounded border border-white/20 bg-white/5 px-1.5 py-0.5 text-[10px] font-semibold text-white/[0.56] lg:inline-flex">
         ⌘K
       </kbd>
 
@@ -98,16 +98,16 @@ export default function GlobalSearch() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -6 }}
             transition={{ duration: 0.15 }}
-            className="absolute left-0 right-0 z-50 mt-2 overflow-hidden rounded-2xl border border-white/[0.10] bg-[#0B1522] shadow-[0_24px_60px_-20px_rgba(0,0,0,0.8)]"
+            className="absolute left-0 right-0 z-50 mt-2 overflow-hidden rounded-[20px] border border-white/[0.12] bg-[#16181a] shadow-[0_24px_60px_-20px_rgba(0,0,0,0.8)]"
           >
             {empty ? (
-              <div className="px-4 py-6 text-center text-sm text-white/40">
+              <div className="px-4 py-6 text-center text-sm text-white/[0.56]">
                 Keine Treffer für „{q}“.
               </div>
             ) : (
               groups.map((g) => (
                 <div key={g.key} className="border-b border-white/[0.06] last:border-0">
-                  <div className="px-4 pt-2.5 text-[11px] font-semibold uppercase tracking-wider text-white/40">
+                  <div className="px-4 pt-2.5 text-[11px] font-semibold uppercase tracking-wider text-white/[0.56]">
                     {g.key}
                   </div>
                   <ul className="pb-1.5">
@@ -119,12 +119,12 @@ export default function GlobalSearch() {
                           onClick={() => go(i.href)}
                           className="flex w-full items-center gap-3 px-4 py-2 text-left transition-colors hover:bg-white/[0.05]"
                         >
-                          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white/10 text-white/55">
+                          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white/10 text-white/[0.72]">
                             <i.icon className="h-4 w-4" />
                           </span>
                           <span className="min-w-0">
                             <span className="block truncate text-[13px] font-medium text-white/90">{i.label}</span>
-                            <span className="block truncate text-[11px] text-white/40">{i.sub}</span>
+                            <span className="block truncate text-[11px] text-white/[0.56]">{i.sub}</span>
                           </span>
                         </button>
                       </li>

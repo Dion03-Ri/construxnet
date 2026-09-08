@@ -55,13 +55,13 @@ export function segment(active: boolean) {
 
 /** Display-Ueberschriften. Immer die Display-Schrift, nie Inter. */
 export const D_XL =
-  "font-display font-bold text-[3.1rem] leading-[0.99] tracking-[-0.03em] sm:text-d-lg lg:text-d-xl";
+  "font-display font-medium text-[3rem] leading-[1.0] tracking-[-0.01em] sm:text-[4rem] lg:text-[5rem]";
 export const D_LG =
-  "font-display font-bold text-[2.25rem] leading-[1.06] tracking-[-0.025em] sm:text-d-md lg:text-d-lg";
-export const D_MD = "font-display font-bold text-[1.75rem] leading-[1.12] tracking-[-0.02em] sm:text-d-sm lg:text-d-md";
+  "font-display font-medium text-[2.25rem] leading-[1.21] tracking-[-0.01em] sm:text-[2.5rem] lg:text-[3rem]";
+export const D_MD = "font-display font-medium text-[1.75rem] leading-[1.2] tracking-[-0.01em] sm:text-[2rem] lg:text-[2.5rem]";
 
 /** Fliesstext direkt unter einer Display-Ueberschrift. */
-export const LEAD = "text-[16px] leading-relaxed sm:text-[17px]";
+export const LEAD = "text-[18px] leading-[1.56] tracking-[-0.005em]";
 
 /** Kategorie-Zeile ueber einer Ueberschrift. Ohne Icon — Icons in
  *  Kacheln sind das Erkennungszeichen generierter Seiten. */
@@ -71,9 +71,9 @@ export const EYEBROW =
 /* ---- Abstands-Rhythmus ----
    Bewusst nur drei Stufen. Ein Abschnitt mit viel Luft muss auf einen
    dichten folgen, sonst entsteht wieder die gleichfoermige Liste. */
-export const SECTION = "py-20 sm:py-28 lg:py-32";
-export const SECTION_TIGHT = "py-14 sm:py-16 lg:py-20";
-export const SECTION_WIDE = "py-24 sm:py-32 lg:py-40";
+export const SECTION = "py-16 sm:py-20 lg:py-[88px]";
+export const SECTION_TIGHT = "py-12 sm:py-14 lg:py-16";
+export const SECTION_WIDE = "py-20 sm:py-28 lg:py-[120px]";
 
 /* ---- Knoepfe ----
    Gold ist die knappste Ressource der Seite: hoechstens EIN gefuellter
@@ -87,7 +87,7 @@ export const SECTION_WIDE = "py-24 sm:py-32 lg:py-40";
    ohne Pfeil. So machen es Linear und Stripe: der Knopf ist ein Knopf,
    kein Aufkleber. */
 export const BTN_BASE =
-  "inline-flex items-center justify-center gap-2 rounded-xl px-5 py-3 text-[14px] font-semibold transition-colors";
+  "inline-flex h-12 items-center justify-center gap-2 rounded-xl px-7 text-[16px] font-semibold leading-[1.5] tracking-[0.015em] transition-colors";
 
 /** Die eine Hauptaktion. Voll gefuelltes Gold auf dunklem Text. */
 export const BTN_GOLD = cn(BTN_BASE, "bg-brand text-navy-950 hover:bg-brand-500");
@@ -121,14 +121,14 @@ export const BTN_OUTLINE_LIGHT = cn(
    ================================================================== */
 
 /** Seitengrund. Gehoert auf das <main> jeder Seite. */
-export const GROUND = "bg-[#060B12] text-white";
+export const GROUND = "bg-black text-white";
 
 /** Karte auf dem Grund. */
-export const PANEL = "rounded-2xl border border-white/[0.08] bg-[#0B1522]";
+export const PANEL = "rounded-[20px] bg-[#16181a]";
 
 /** Anklickbare Karte. */
 export const PANEL_HOVER =
-  "rounded-2xl border border-white/[0.08] bg-[#0B1522] transition-colors hover:border-brand/40 hover:bg-[#0E1A2A]";
+  "rounded-[20px] bg-[#16181a] transition-colors hover:bg-[#1c1f21]";
 
 /** Zeile oder Feld innerhalb eines Panels. */
 export const ROW = "rounded-xl border border-white/[0.07] bg-white/[0.03]";
@@ -138,12 +138,12 @@ export const ROW_HOVER =
   "rounded-xl border border-white/[0.07] bg-white/[0.03] transition-colors hover:border-brand/40 hover:bg-white/[0.06]";
 
 /** Trennlinie auf dunklem Grund. */
-export const HAIRLINE = "border-white/[0.08]";
+export const HAIRLINE = "border-white/[0.12]";
 
 /* ---- Textstufen. Nur drei, sonst franst die Hierarchie aus. ---- */
 export const T_HI = "text-white";
-export const T_MID = "text-white/60";
-export const T_LOW = "text-white/40";
+export const T_MID = "text-white/[0.72]";
+export const T_LOW = "text-white/[0.56]";
 
 /** Eingabefeld auf dunklem Grund. */
 export const INPUT_DARK =
@@ -191,7 +191,7 @@ export const LIST_ROW = "border-t border-white/[0.08]";
    seitliche Abstand ist grosszügiger als die üblichen 16 px — Luft am
    Rand ist das Billigste, was eine Seite teuer aussehen lässt.
    ================================================================== */
-export const SHELL = "mx-auto w-full max-w-[1280px] px-5 sm:px-8";
+export const SHELL = "mx-auto w-full max-w-[1200px] px-6 sm:px-8";
 
 /** Fliesstext und Formulare — eine breite Zeile liest sich schlechter. */
 export const SHELL_NARROW = "mx-auto w-full max-w-[880px] px-5 sm:px-8";
@@ -252,4 +252,4 @@ export const INPUT_SHEET =
    Sparsam einsetzen. Zwei schwarze Anker auf einem Bildschirm heben
    sich gegenseitig auf.
    ================================================================== */
-export const TILE = "rounded-2xl bg-black";
+export const TILE = "rounded-[20px] bg-black";

@@ -68,7 +68,7 @@ export default function LegalPage({
     <main className={cn(SHELL_NARROW, "py-6 sm:py-8")}>
       <Link
         href="/"
-        className="mb-5 inline-flex items-center gap-1.5 text-[13px] font-medium text-white/45 transition-colors hover:text-brand"
+        className="mb-5 inline-flex items-center gap-1.5 text-[13px] font-medium text-white/[0.56] transition-colors hover:text-brand"
       >
         <ArrowLeft className="h-4 w-4" /> Zur Startseite
       </Link>
@@ -84,16 +84,16 @@ export default function LegalPage({
 
           Das Raster im alten Kopf ist weg. Ein Millimeterpapier-Muster
           hinter einer Überschrift zeigt nichts. */}
-      <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white text-slate-900">
-        <header className="bg-[#060B12] px-6 py-7 text-white sm:px-9 sm:py-9">
+      <div className="overflow-hidden rounded-[20px] border border-slate-200 bg-white text-slate-900">
+        <header className="bg-black px-6 py-7 text-white sm:px-9 sm:py-9">
           <span className="text-[11px] font-semibold uppercase tracking-[0.16em] text-brand">
             Rechtliches
           </span>
           <h1 className="mt-3 font-display text-[26px] font-bold leading-[1.15] tracking-[-0.02em] sm:text-[32px]">
             {title}
           </h1>
-          <p className="mt-3 max-w-xl text-[14.5px] leading-relaxed text-white/55">{lead}</p>
-          <p className="mt-4 text-[12px] text-white/35">Stand: {LEGAL.stand}</p>
+          <p className="mt-3 max-w-xl text-[14.5px] leading-relaxed text-white/[0.72]">{lead}</p>
+          <p className="mt-4 text-[12px] text-white/[0.5]">Stand: {LEGAL.stand}</p>
 
           {/* Die drei Rechtsseiten als Reiterzeile im Band selbst — sie
               gehören zusammen und brauchen keine eigene Knopfleiste. */}
@@ -106,7 +106,7 @@ export default function LegalPage({
                   "shrink-0 whitespace-nowrap border-b-2 pb-3 text-[13.5px] font-semibold transition-colors",
                   active === n.href
                     ? "border-brand text-white"
-                    : "border-transparent text-white/45 hover:text-white",
+                    : "border-transparent text-white/[0.56] hover:text-white",
                 )}
               >
                 {n.label}

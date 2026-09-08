@@ -52,7 +52,7 @@ export default function ProfileMenu() {
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
-        className="flex items-center gap-1 rounded-full p-0.5 text-white/70 transition-colors hover:text-white"
+        className="flex items-center gap-1 rounded-full p-0.5 text-white/[0.72] transition-colors hover:text-white"
         aria-label="Profilmenü"
         aria-expanded={open}
       >
@@ -61,13 +61,13 @@ export default function ProfileMenu() {
       </button>
 
       {open && (
-        <div className="absolute right-0 z-50 mt-2 w-64 overflow-hidden rounded-2xl border border-white/[0.10] bg-[#0B1522] shadow-[0_24px_60px_-20px_rgba(0,0,0,0.8)]">
+        <div className="absolute right-0 z-50 mt-2 w-64 overflow-hidden rounded-[20px] border border-white/[0.12] bg-[#16181a] shadow-[0_24px_60px_-20px_rgba(0,0,0,0.8)]">
           {/* Kopf */}
           <div className="flex items-center gap-3 border-b border-white/[0.06] p-4">
             {avatar("h-11 w-11")}
             <div className="min-w-0">
               <div className="truncate text-sm font-semibold text-white">{name}</div>
-              {email && <div className="truncate text-[11px] text-white/40">{email}</div>}
+              {email && <div className="truncate text-[11px] text-white/[0.56]">{email}</div>}
             </div>
           </div>
           <Link
@@ -79,7 +79,7 @@ export default function ProfileMenu() {
           </Link>
 
           <div className="px-1.5 pb-1.5">
-            <div className="px-2.5 pb-1 pt-2 text-[10px] font-semibold uppercase tracking-wider text-white/40">Konto</div>
+            <div className="px-2.5 pb-1 pt-2 text-[10px] font-semibold uppercase tracking-wider text-white/[0.56]">Konto</div>
             {[
               { href: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
               { href: "/network", icon: Users, label: "Mein Netzwerk" },
@@ -89,13 +89,13 @@ export default function ProfileMenu() {
                 key={l.label}
                 href={l.href}
                 onClick={() => setOpen(false)}
-                className="flex items-center gap-2.5 rounded-md px-2.5 py-2 text-[13px] font-medium text-white/70 transition-colors hover:bg-white/[0.07] hover:text-white"
+                className="flex items-center gap-2.5 rounded-md px-2.5 py-2 text-[13px] font-medium text-white/[0.72] transition-colors hover:bg-white/[0.07] hover:text-white"
               >
-                <l.icon className="h-4 w-4 text-white/40" /> {l.label}
+                <l.icon className="h-4 w-4 text-white/[0.56]" /> {l.label}
               </Link>
             ))}
 
-            <div className="px-2.5 pb-1 pt-2 text-[10px] font-semibold uppercase tracking-wider text-white/40">Verwalten</div>
+            <div className="px-2.5 pb-1 pt-2 text-[10px] font-semibold uppercase tracking-wider text-white/[0.56]">Verwalten</div>
             {[
               { href: "/profile/edit", icon: UserCog, label: "Profil bearbeiten" },
               { href: "/dashboard?view=settings", icon: Settings, label: "Einstellungen" },
@@ -104,9 +104,9 @@ export default function ProfileMenu() {
                 key={l.label}
                 href={l.href}
                 onClick={() => setOpen(false)}
-                className="flex items-center gap-2.5 rounded-md px-2.5 py-2 text-[13px] font-medium text-white/70 transition-colors hover:bg-white/[0.07] hover:text-white"
+                className="flex items-center gap-2.5 rounded-md px-2.5 py-2 text-[13px] font-medium text-white/[0.72] transition-colors hover:bg-white/[0.07] hover:text-white"
               >
-                <l.icon className="h-4 w-4 text-white/40" /> {l.label}
+                <l.icon className="h-4 w-4 text-white/[0.56]" /> {l.label}
               </Link>
             ))}
           </div>
