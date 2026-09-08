@@ -56,7 +56,7 @@ export default function BundleChances({
             <li key={p.material}>
               <Link
                 href="/pools"
-                className="grid grid-cols-[minmax(0,1fr)_5rem] items-center gap-x-6 gap-y-2 border-b border-white/[0.12] py-3.5 transition-colors hover:bg-white/[0.03] lg:grid-cols-[15rem_minmax(0,1fr)_11rem_5rem]"
+                className="grid grid-cols-[minmax(0,1fr)_5rem] items-center gap-x-6 gap-y-2 border-b border-white/[0.12] py-3.5 transition-colors hover:bg-white/[0.03] lg:grid-cols-[14rem_minmax(0,1fr)_10rem_7rem_5rem]"
               >
                 <span className="truncate text-[14px] font-semibold text-white">{p.material}</span>
                 {/* Der Balken steht auf breiten Schirmen in einer eigenen
@@ -66,6 +66,9 @@ export default function BundleChances({
                 </span>
                 <span className="col-span-2 text-[12px] text-white/[0.56] lg:col-span-1">
                   {p.region} · {p.vol}
+                </span>
+                <span className="hidden text-[12px] tabular-nums text-white/[0.56] lg:block">
+                  {p.pct} % voll
                 </span>
                 <span className="col-start-2 row-start-1 text-right text-[14px] font-bold tabular-nums text-brand lg:col-start-auto lg:row-start-auto">
                   −{p.disc} %

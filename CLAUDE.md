@@ -358,8 +358,14 @@ stanzt ihn aus, und der Rest bleibt als heller Rahmen stehen.
   erhaltene Anfragen beantworten, gesendete Einladungen zurückziehen. Drei
   Reiter, echte Listen — kein zweiter Feed.
 
-### Aufbau der Feed-Seite (ENTSCHIEDEN — „Werkbank")
-Von oben nach unten, alles über die volle Breite:
+### Aufbau der Feed-Seite (ENTSCHIEDEN)
+`SHELL_WORK` (1240 px), **nicht** `SHELL`. Der Feed ist eine Arbeitsfläche.
+Über 1760 px werden Zeilenlisten zu Streifen — eine Haarlinie von 1600 px
+mit einem Firmennamen links und einem Wort rechts —, und ein quadratisches
+Foto in einem Beitrag wird so gross wie der halbe Bildschirm. Breit bleibt,
+was überzeugen soll; gearbeitet wird enger.
+
+Von oben nach unten:
 1. **Kopfband** — links vier Zahlen (Verbindungen, Aktive Pools, Offene
    Anfragen, Nächste Frist) in 34 px; rechts die **Wolke**: Nachrichten ·
    Fristen · Beschaffungspartner finden · Empfangene Anfragen ·
@@ -367,26 +373,29 @@ Von oben nach unten, alles über die volle Breite:
    eine Schrift, eine Farbe, ein Verhalten — ohne diese Einschränkung wird
    aus „durcheinander" sofort „unordentlich". Der Versatz gilt erst ab
    `lg`; umgebrochen laufen versetzte Zeilen ineinander.
-2. **Werkbank** — `BundleChances wide` links, `KbobTile` rechts daneben.
-   Beide beantworten dieselbe Frage: lohnt es sich gerade?
-3. **Partner für deine Beschaffung** — Zeilen bis an den rechten Rand.
-4. **News** — `NetworkFeed`, geschlossener Composer als eine Zeile
-   („Neu in der Branche" … „selber melden: Bedarf · Kapazität · Projekt ·
-   Frage · Update").
+2. **Bündel-Chancen** (`wide`) — das Einzige über die ganze Breite. Drei
+   Zeilen, die man im Vorbeigehen liest.
+3. **News + Schiene** — `NetworkFeed` in rund 700 px, daneben eine Schiene
+   von 320 px mit `KbobTile` und `RecommendedPartners`. Die Schiene ist
+   `sticky`; auf dem Handy steht sie mit `order-first` VOR dem Strom.
 
-Zwei Regeln, die die Reihenfolge festlegen:
-- **Die News stehen zuletzt.** Sie laden beim Scrollen endlos nach; was
-  darunter stünde, erreicht nie jemand.
+Drei Regeln, die den Aufbau festlegen:
+- **Die News stehen zuletzt** und alles Begleitende neben ihnen. Sie laden
+  beim Scrollen endlos nach; was darunter stünde, erreicht nie jemand —
+  auch auf dem Handy nicht, daher `order-first` für die Schiene.
+- **Rund 700 px für einen Beitrag.** Das ist die Lesebreite, und es ist die
+  Breite, bei der ein hochgeladenes Bild noch verhältnismässig ist
+  (zusätzlich auf `max-h-[340px]` beschnitten).
 - **Keine eigene Profilkarte im Feed.** Logo, Firmenname, Rolle und Ort
-  gehören ins Dashboard. An der prominentesten Stelle der Seite standen
-  Angaben, die man über die eigene Firma bereits weiss.
+  gehören ins Dashboard.
 
 Gelöscht und nicht wiederherstellen: `FeedBundleHero` („Was brauchst du
 auf der Baustelle?" — kostete die Höhe eines halben Beitrags und sagte
 nichts, was die Melde-Zeile nicht in vier Wörtern sagt), `ProfileRail`,
 `BundleOpportunities`. „Verbindungen" ist als *Verweis* gestrichen — es
 führte an dieselbe Stelle wie „Beschaffungspartner finden"; als *Zahl*
-bleibt es.
+bleibt es. Die Region ist ein Auswahlfeld und keine Chip-Reihe:
+sechsundzwanzig Kantone gehören nicht als Wörterband auf die Seite.
 
 - **Entdecken** (`/network/entdecken`) = die grosse Liste aller Firmen mit
   Suche, Kanton-, Rollen- und Verifiziert-Filter, Sortierung und

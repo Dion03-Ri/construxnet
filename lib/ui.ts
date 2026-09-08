@@ -203,6 +203,22 @@ export const SHELL = "mx-auto w-full max-w-[1760px] px-5 sm:px-10 lg:px-[72px]";
 /** Fliesstext und Formulare — eine breite Zeile liest sich schlechter. */
 export const SHELL_NARROW = "mx-auto w-full max-w-[980px] px-5 sm:px-10 lg:px-[72px]";
 
+/**
+ * Arbeitsflächen — Feed, später auch andere Seiten, auf denen man liest und
+ * handelt statt überzeugt zu werden.
+ *
+ * Die Startseite darf bis an die Fensterkante laufen: dort stehen grosse
+ * Überschriften und Bilder, und Weite wirkt teuer. Eine Liste aus Zeilen
+ * wirkt bei derselben Weite nur gestreift — 1760 px lange Haarlinien mit
+ * drei Wörtern darauf, und ein quadratisches Foto in einem Beitrag wird so
+ * gross wie der halbe Bildschirm.
+ *
+ * 1240 px ist die Breite, bei der eine Textspalte von rund 700 px und eine
+ * Schiene von 320 px nebeneinander Platz haben — beides Masse, die sich
+ * lesen lassen. Breit bleibt, was breit sein soll; gearbeitet wird enger.
+ */
+export const SHELL_WORK = "mx-auto w-full max-w-[1240px] px-5 sm:px-10 lg:px-[72px]";
+
 /* ==================================================================
    REGISTER B — DAS BLATT
    ------------------------------------------------------------------
