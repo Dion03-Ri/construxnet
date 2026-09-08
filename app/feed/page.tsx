@@ -27,10 +27,12 @@ export const metadata = {
  *
  * Zwei Masse bestimmen den Aufbau:
  *
- * `SHELL_WORK` statt `SHELL` — die Seite ist eine Arbeitsfläche, keine
- * Werbeseite. Über 1760 px werden Zeilenlisten zu Streifen, und ein
- * quadratisches Foto in einem Beitrag wird so gross wie der halbe
- * Bildschirm.
+ * Der Rand ist überall derselbe — 72 px, rund zwei Zentimeter. Begrenzt
+ * werden nicht die Hülle, sondern die Spalten: die Beiträge bekommen
+ * höchstens 820 px, die Schiene 340 px, und was auf breiten Schirmen
+ * dazwischen übrigbleibt, ist Zwischenraum. Über die volle Breite
+ * gestreckt wären Zeilenlisten Streifen und ein quadratisches Foto so
+ * gross wie der halbe Bildschirm.
  *
  * Die News stehen zuletzt, weil sie beim Scrollen endlos nachladen. Was
  * darunter stünde, erreicht nie jemand — deshalb steht alles, was daneben
@@ -98,8 +100,8 @@ export default async function FeedPage() {
           im Vorbeigehen liest. */}
       <BundleChances wide />
 
-      <div className="mt-8 grid grid-cols-1 gap-x-16 gap-y-10 lg:grid-cols-[minmax(0,1fr)_320px]">
-        <div className="min-w-0">
+      <div className="mt-8 flex flex-col gap-10 lg:flex-row lg:justify-between lg:gap-16">
+        <div className="min-w-0 flex-1 lg:max-w-[820px] 2xl:max-w-[920px]">
           <NetworkFeed />
         </div>
 
@@ -109,7 +111,7 @@ export default async function FeedPage() {
             Auf dem Handy gibt es kein Nebeneinander: dort rutscht die
             Schiene VOR den Strom. Hinter einer Liste, die endlos nachlaedt,
             waere sie unerreichbar. */}
-        <aside className="order-first lg:order-none lg:sticky lg:top-[88px] lg:self-start">
+        <aside className="order-first w-full lg:order-none lg:sticky lg:top-[88px] lg:w-[340px] lg:shrink-0 lg:self-start">
           <KbobTile />
           <RecommendedPartners />
         </aside>

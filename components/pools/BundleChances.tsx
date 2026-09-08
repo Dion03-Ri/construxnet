@@ -56,22 +56,39 @@ export default function BundleChances({
             <li key={p.material}>
               <Link
                 href="/pools"
-                className="grid grid-cols-[minmax(0,1fr)_5rem] items-center gap-x-6 gap-y-2 border-b border-white/[0.12] py-3.5 transition-colors hover:bg-white/[0.03] lg:grid-cols-[14rem_minmax(0,1fr)_10rem_7rem_5rem]"
+                className="grid grid-cols-[minmax(0,1fr)_5rem] items-center gap-x-6 gap-y-2 border-b border-white/[0.12] py-3.5 transition-colors hover:bg-white/[0.03] lg:grid-cols-[15rem_20rem_minmax(0,1fr)_auto]"
               >
                 <span className="truncate text-[14px] font-semibold text-white">{p.material}</span>
-                {/* Der Balken steht auf breiten Schirmen in einer eigenen
-                    Spalte, auf schmalen unter der ganzen Zeile. */}
+
+                {/* Der Balken hat auf breiten Schirmen eine feste Länge. Liesse
+                    man ihn mitwachsen, wäre er bei 1760 px ein Meter Strich mit
+                    drei Wörtern daneben — genau der Streifen, den die Seite
+                    nicht haben soll. Auf schmalen Schirmen steht er unter der
+                    ganzen Zeile. */}
                 <span className="order-last col-span-2 block h-[3px] overflow-hidden rounded-full bg-white/[0.10] lg:order-none lg:col-span-1">
                   <span className="block h-full rounded-full bg-brand" style={{ width: `${p.pct}%` }} />
                 </span>
-                <span className="col-span-2 text-[12px] text-white/[0.56] lg:col-span-1">
+
+                <span className="col-span-2 text-[12px] text-white/[0.56] lg:hidden">
                   {p.region} · {p.vol}
                 </span>
-                <span className="hidden text-[12px] tabular-nums text-white/[0.56] lg:block">
-                  {p.pct} % voll
-                </span>
-                <span className="col-start-2 row-start-1 text-right text-[14px] font-bold tabular-nums text-brand lg:col-start-auto lg:row-start-auto">
+
+                {/* Der Rest hängt rechts am Rand statt in der Mitte zu
+                    schweben; feste Zellenbreiten halten die Zahlen der drei
+                    Zeilen untereinander. */}
+                <span className="col-start-2 row-start-1 text-right text-[14px] font-bold tabular-nums text-brand lg:hidden">
                   −{p.disc} %
+                </span>
+                <span className="hidden lg:col-start-4 lg:flex lg:items-baseline lg:justify-end lg:gap-9">
+                  <span className="w-[11rem] truncate text-right text-[12px] text-white/[0.56]">
+                    {p.region} · {p.vol}
+                  </span>
+                  <span className="w-[4.5rem] text-right text-[12px] tabular-nums text-white/[0.56]">
+                    {p.pct} % voll
+                  </span>
+                  <span className="w-[3.5rem] text-right text-[14px] font-bold tabular-nums text-brand">
+                    −{p.disc} %
+                  </span>
                 </span>
               </Link>
             </li>
