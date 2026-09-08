@@ -411,7 +411,6 @@ function printOrder(o: Order, companyName: string) {
   *{box-sizing:border-box} body{font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:#0F172A;margin:0;padding:48px}
   h1{font-size:22px;margin:0 0 2px} .sub{color:#64748B;font-size:13px;margin-bottom:28px}
   .head{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:2px solid #0F2238;padding-bottom:16px;margin-bottom:24px}
-  .brand{font-size:18px;font-weight:800;letter-spacing:-.02em} .brand span{color:#D99000}
   table{width:100%;border-collapse:collapse;font-size:13px}
   .box{border:1px solid #E2E8F0;border-radius:8px;padding:16px 18px;margin-bottom:16px}
   .lbl{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:#94A3B8;margin-bottom:10px;font-weight:700}
@@ -420,7 +419,7 @@ function printOrder(o: Order, companyName: string) {
   @media print{body{padding:24px}}
 </style></head><body>
 <div class="head">
-  <div><div class="brand">Obta<span>net</span></div><div class="sub" style="margin:2px 0 0">Schweizer Baubranche</div></div>
+  <div><img src="${window.location.origin}/logo-dunkel.png" alt="Obtanet" style="height:26px;width:auto;display:block"><div class="sub" style="margin:6px 0 0">Schweizer Baubranche</div></div>
   <div style="text-align:right"><h1>Bestellung ${esc(o.id)}</h1><div class="sub" style="margin:0">${esc(o.date)} · ${esc(o.status)}</div></div>
 </div>
 <div class="box"><div class="lbl">Besteller</div><div style="font-weight:600">${esc(companyName)}</div></div>

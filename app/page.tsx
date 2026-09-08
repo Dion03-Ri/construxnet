@@ -7,7 +7,6 @@ import TrustBar from "@/components/home/TrustBar";
 import {
   ArrowRight,
   Megaphone,
-  Layers,
   BadgeCheck,
   MapPin,
   Clock,
@@ -374,12 +373,13 @@ export default function Home() {
       <footer className="border-t border-white/[0.12] bg-[#16181a]">
         <div className={cn(SHELL, "grid grid-cols-2 gap-8 py-12 md:grid-cols-5")}>
           <div className="col-span-2 md:col-span-1">
-            <div className="flex items-center gap-2 font-bold tracking-tight text-white">
-              <span className="grid h-8 w-8 place-items-center rounded-lg bg-navy-900 text-brand">
-                <Layers className="h-4 w-4" />
-              </span>
-              Obta<span className="text-brand">net</span>
-            </div>
+            {/* Hier stand ein Symbolkaestchen und daneben der Name als Text.
+                Das „gap-2" des Flex-Kastens lief dabei zwischen „Obta" und
+                „net" — sichtbar als Leerzeichen mitten im Namen, weil Flex
+                den Textknoten und das span als zwei Kinder behandelt.
+                Beides erledigt sich mit der echten Wortmarke. */}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/logo-hell.png" alt="Obtanet" className="h-7 w-auto" />
             <p className="mt-3 max-w-xs text-[13px] leading-relaxed text-white/[0.72]">
               Das B2B-Netzwerk der Schweizer Baubranche — vernetzen, bündeln, sparen.
             </p>

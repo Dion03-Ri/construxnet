@@ -52,12 +52,8 @@ export default function ComingSoon({ accessError = false }: { accessError?: bool
 
       <div className="relative w-full max-w-md text-center">
         {/* Logo */}
-        <div className="mx-auto mb-8 inline-flex items-center gap-2.5">
-          <span className="grid h-11 w-11 place-items-center rounded-xl bg-brand text-lg font-black text-navy-900 shadow-lg shadow-brand/25">
-            O
-          </span>
-          <span className="text-2xl font-extrabold tracking-tight text-white">Obtanet</span>
-        </div>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/logo-hell.png" alt="Obtanet" className="mx-auto mb-8 h-10 w-auto" />
 
         <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.14em] text-brand">
           Coming Soon

@@ -18,9 +18,8 @@ export default async function PreviewPage({
   return (
     <main className="flex min-h-screen items-center justify-center bg-black px-4">
       <div className="w-full max-w-sm text-center">
-        <div className="text-2xl font-extrabold tracking-tight text-white">
-          Obta<span className="text-brand">net</span>
-        </div>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/logo-hell.png" alt="Obtanet" className="mx-auto h-8 w-auto" />
         <p className="mt-6 text-[13px] leading-relaxed text-white/[0.72]">
           Diese Umgebung befindet sich im Aufbau und ist noch nicht öffentlich.
           Bitte gib das Zugangs-Passwort ein.
