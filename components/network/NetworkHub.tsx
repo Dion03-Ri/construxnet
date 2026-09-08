@@ -426,7 +426,7 @@ export default function NetworkHub() {
         </div>
 
         <aside className="space-y-10">
-        <div className="rounded-[20px] bg-black text-white">
+        <div className="rounded-[20px] bg-[#16181a] text-white">
           <div className="border-b border-white/[0.12] px-5 pb-3.5 pt-5">
             <Eyebrow dark>Dein Netzwerk</Eyebrow>
             <h2 className="mt-0.5 text-[15px] font-bold">Überblick</h2>

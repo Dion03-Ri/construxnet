@@ -252,4 +252,4 @@ export const INPUT_SHEET =
    Sparsam einsetzen. Zwei schwarze Anker auf einem Bildschirm heben
    sich gegenseitig auf.
    ================================================================== */
-export const TILE = "rounded-[20px] bg-black";
+export const TILE = "rounded-[20px] bg-[#16181a]";

@@ -517,7 +517,7 @@ export default function KbobChart({ initialMaterial }: { initialMaterial?: strin
       </div>
 
       {/* Zahlen */}
-      <div className="grid grid-cols-1 rounded-[20px] bg-black p-6 sm:grid-cols-3 sm:gap-x-2">
+      <div className="grid grid-cols-1 rounded-[20px] bg-[#16181a] p-6 sm:grid-cols-3 sm:gap-x-2">
         <Stat label="Referenzpreis" hint={`${data.regions[region]} · Stand ${data.meta.updated}`}>
           <div className="flex items-baseline gap-1.5">
             <span className="font-display text-[30px] font-bold leading-none tabular-nums text-white">
