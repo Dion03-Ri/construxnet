@@ -163,20 +163,24 @@ export default function Home() {
       {/* ============ Zwei Wege zum besseren Preis ============ */}
       <TwoWays />
 
-      {/* ================= Smart Pools ================= */}
-      {/* Aufbau nach dem Vorbild grosser Produktseiten: links die Aussage
-          mit drei Punkten, rechts die Sache selbst — gross, schwebend und
-          ueber den Spaltenrand hinaus. Der Text ist bewusst kurz; wer drei
-          Saetze braucht, um einen Vorteil zu erklaeren, hat keinen. */}
-      {/* Smart Pools — asymmetrisch, links die Aussage, rechts die Belege.
+      {/* ================= Smart Pools =================
+          Rechts bleibt frei — dort kommt das Video hin.
 
-          Vorher ein Dreispalter mit senkrechten Haarlinien. Genau dieselbe
-          Form hatten auch Vertrauensanker, Ablauf und Preisstufen: vier
-          Abschnitte, ein Raster. Hier steht die Überschnitt jetzt gross auf
-          fünf Spalten, die drei Belege stehen daneben untereinander. Zwei
-          ungleiche Hälften statt drei gleicher Drittel. */}
+          Der Abschnitt hatte zwei ungleiche Haelften: links die Aussage,
+          rechts drei nummerierte Belege. Die Belege stehen jetzt unter dem
+          Text auf derselben Seite, damit die rechte Haelfte leer ist.
+
+          Warum leer und nicht mit etwas gefuellt: das Video wird ueber die
+          volle Breite laufen und rechts aus dem Bild fliessen, waehrend der
+          Text links stehen bleibt. Was jetzt dort staende, muesste dann
+          wieder weg — und ein Platzhalter, der so tut als waere er Inhalt,
+          ist schlimmer als eine leere Flaeche.
+
+          Solange kein Video da ist, sieht man auf breiten Schirmen rechts
+          nichts. Das ist Absicht. Auf schmalen faellt die Spalte ohnehin
+          weg. */}
       <section className="border-y border-white/[0.12] bg-[#0a0a0a]">
-        <div className={cn(SHELL, SECTION_WIDE, "grid grid-cols-1 gap-x-20 gap-y-14 lg:grid-cols-[1.15fr_1fr]")}>
+        <div className={cn(SHELL, SECTION_WIDE, "grid grid-cols-1 gap-x-20 lg:grid-cols-[minmax(0,560px)_minmax(0,1fr)]")}>
           <div>
             <span className={EYEBROW}>Smart Pools</span>
             <h2 className={cn(D_LG, "mt-6 text-white")}>
@@ -186,30 +190,34 @@ export default function Home() {
               Wer alleine einkauft, zahlt Einzelpreise. Obtanet legt den Bedarf
               mehrerer Baufirmen zusammen und verhandelt mit dem ganzen Volumen.
             </p>
-            <Link href="/pools" className={cn(BTN_LIGHT, "mt-10")}>
+
+            {/* Die drei Belege untereinander, jeder mit einer laufenden
+                Nummer — kein Raster, eine Aufzaehlung. */}
+            <dl className="mt-12">
+              {[
+                ["Je grösser das Bündel, desto höher der Rabatt", "Auch kleine Einzelbestellungen profitieren — der Vorteil hängt am Volumen des Bündels, nicht am eigenen."],
+                ["Gemessen am KBOB-Referenzpreis", "Kein Prospektversprechen, sondern eine Grösse, die sich nachrechnen lässt."],
+                ["Der Mindestvorteil steht vorher fest", "Wird er bis zur Frist nicht erreicht, löst sich das Bündel auf. Es entsteht keine Verpflichtung."],
+              ].map(([t, d], i) => (
+                <div key={t} className="border-t border-white/[0.12] py-7 last:pb-0">
+                  <dt className="flex items-baseline gap-4">
+                    <span className="font-display text-[13px] font-bold tabular-nums text-brand">
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                    <span className="text-[17px] font-bold leading-snug tracking-tight text-white">{t}</span>
+                  </dt>
+                  <dd className="mt-2.5 pl-[2.1rem] text-[13.5px] leading-relaxed text-white/[0.56]">{d}</dd>
+                </div>
+              ))}
+            </dl>
+
+            <Link href="/pools" className={cn(BTN_LIGHT, "mt-12")}>
               So funktioniert ein Pool
             </Link>
           </div>
 
-          {/* Die drei Belege untereinander, jeder mit einer laufenden
-              Nummer — kein Raster, eine Aufzählung. */}
-          <dl className="lg:pt-4">
-            {[
-              ["Je grösser das Bündel, desto höher der Rabatt", "Auch kleine Einzelbestellungen profitieren — der Vorteil hängt am Volumen des Bündels, nicht am eigenen."],
-              ["Gemessen am KBOB-Referenzpreis", "Kein Prospektversprechen, sondern eine Grösse, die sich nachrechnen lässt."],
-              ["Der Mindestvorteil steht vorher fest", "Wird er bis zur Frist nicht erreicht, löst sich das Bündel auf. Es entsteht keine Verpflichtung."],
-            ].map(([t, d], i) => (
-              <div key={t} className="border-t border-white/[0.12] py-7 first:pt-0 last:pb-0">
-                <dt className="flex items-baseline gap-4">
-                  <span className="font-display text-[13px] font-bold tabular-nums text-brand">
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-                  <span className="text-[17px] font-bold leading-snug tracking-tight text-white">{t}</span>
-                </dt>
-                <dd className="mt-2.5 pl-[2.1rem] text-[13.5px] leading-relaxed text-white/[0.56]">{d}</dd>
-              </div>
-            ))}
-          </dl>
+          {/* Platz fuer das Video. Bleibt leer, bis es da ist. */}
+          <div aria-hidden className="hidden lg:block" />
         </div>
       </section>
 

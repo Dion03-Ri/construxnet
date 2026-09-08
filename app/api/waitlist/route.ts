@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { rateLimit, callerKey } from "@/lib/rateLimit";
+import { rateLimitShared, callerKey } from "@/lib/rateLimit";
 import { supabaseAdmin, cleanSupabaseUrl } from "@/lib/supabase";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -7,7 +7,7 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 // Speichert eine E-Mail in der Warteliste (Coming-Soon-Seite).
 export async function POST(req: Request) {
   // Fünf Eintragungen pro Stunde. Mehr braucht niemand ehrlich.
-  const limit = rateLimit(callerKey(req, "waitlist"), 5, 60 * 60_000);
+  const limit = await rateLimitShared(callerKey(req, "waitlist"), 5, 60 * 60_000);
   if (!limit.ok) {
     return NextResponse.json(
       { error: "Zu viele Anfragen. Bitte später erneut." },

@@ -854,10 +854,22 @@ daraus, nicht aus einer zweiten Liste.
 stehen in `data/plans.ts` und nirgends sonst; steht der Preis fest, wird
 er dort geändert.
 
-**Noch nicht gebaut:** die Durchsetzung der Grenzen. `poolLimit` steht in
-`data/plans.ts` (Gratis = 1 Bündel), wird aber nirgends geprüft. Das ist
-der nächste kleine Schritt und sollte erst kurz vor dem Start scharf
-geschaltet werden — vorher blockiert es die eigene Erprobung.
+**Die Grenzen sind gebaut, aber AUSGESCHALTET** (Migration 26). Geprüft
+wird in einem Trigger auf `bundle_participations`, nicht in der
+Anwendung: eine Grenze, die der Browser durchsetzt, ist keine — der
+Aufruf lässt sich nachbauen. Der Trigger deckt ausserdem jeden Weg ab,
+auf dem eine Teilnahme entsteht.
+
+Einschalten mit einer Zeile, ohne neue Auslieferung:
+```sql
+UPDATE app_settings SET value = 'on' WHERE key = 'plan_limits';
+```
+Vor dem Start würde die Grenze die eigene Erprobung blockieren.
+
+Gezählt werden nur **laufende** Bündel (`OPEN`/`SEALED_BIDDING`) — sonst
+wäre die Gratis-Stufe nach dem ersten abgeschlossenen Geschäft für immer
+voll. Die Zahlen stehen an zwei Stellen: `plan_limits` (setzt durch) und
+`data/plans.ts` (zeigt an). Wer eine ändert, muss die andere mitändern.
 
 ## 2. Zahlungsmethoden und Zahlungssysteme einbauen
 Bisher ist gar keine Zahlung angebunden. Aus dem Master-Briefing:
@@ -968,7 +980,23 @@ Favicon trägt „on" in zwei Fassungen.
 
 **Noch offen dazu:** ein SVG für Druck und Beschriftung.
 
-## 8. Grafik bei Smart Pools ändern
+## 8. Grafik bei Smart Pools — RECHTE HÄLFTE IST FREI
+Der Abschnitt hatte links die Aussage und rechts drei nummerierte Belege.
+Die Belege stehen jetzt unter dem Text auf derselben Seite; **die rechte
+Hälfte ist leer und bleibt es**, bis das Video da ist.
+
+Der Nutzer: das Video wird über die volle Breite laufen und rechts aus
+dem Bild fliessen, während der Text links stehen bleibt. Was jetzt dort
+stünde, müsste dann wieder weg — und ein Platzhalter, der so tut als wäre
+er Inhalt, ist schlimmer als eine leere Fläche.
+
+**Offen:** ob das Video hierher gehört oder in den Ablauf-Abschnitt.
+`components/home/ProcessVideo.tsx` steht schon und macht genau diese Form
+(links die Kapitel, rechts das Video mit weichem linkem Rand). Beim
+Einbauen entscheiden — zwei Videos in derselben Form auf einer Seite
+wären eins zu viel.
+
+## 8b. Frühere Fassung dieses Punktes
 Der Abschnitt „Mengenrabatte, die alleine niemand bekommt" auf `/`
 zeigt rechts `components/home/OfferSheet.tsx` — den Zuschlag als
 weisses Blatt. Was stattdessen dort stehen soll, ist noch offen.
@@ -1017,8 +1045,14 @@ Steht ausführlich weiter oben in dieser Datei:
 - **Rabattstufen festlegen** und **KBOB-Referenz aus belegbarer Quelle**
   — ohne beides darf keine Garantie raus.
 - `data/legal.ts`: alle `[[…]]` füllen, anwaltliche Durchsicht.
-- Vorstart-Sperre entfernen, Web-Push, Ratenbegrenzung über einen
-  gemeinsamen Speicher, Lieferschein-Abgleich.
+- Vorstart-Sperre entfernen, Web-Push, Lieferschein-Abgleich.
+- **Ratenbegrenzung — erledigt** (Migration 25). Zwei Stufen: der alte
+  Zähler im Arbeitsspeicher fängt den Ansturm auf derselben Instanz ab,
+  darunter die Tabelle `rate_limits` in Supabase über alle Instanzen
+  hinweg. Kein Redis: das kostete ein weiteres Konto, weitere Zugangsdaten
+  und eine weitere Sache, die ausfallen kann. Fällt die Datenbank aus,
+  bleibt Stufe 1 stehen — eine Anmeldeseite, die bei einer Störung
+  niemanden mehr durchlässt, wäre schlimmer.
 - KI-Materialabgleich Stufe 3 — wartet auf `ANTHROPIC_API_KEY`.
 - Kästchen-Abbau: erledigt auf `/termine`, `/profile/edit`,
   `/network/requests`, `/delivery-notes`, `/admin-control`,

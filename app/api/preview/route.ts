@@ -1,12 +1,12 @@
 import { NextResponse } from "next/server";
-import { rateLimit, callerKey } from "@/lib/rateLimit";
+import { rateLimitShared, callerKey } from "@/lib/rateLimit";
 import { PREVIEW_COOKIE, sha256Hex, safeNext, getBypassPassword, timingSafeEqual } from "@/lib/preview";
 
 // Setzt nach korrekter Passworteingabe das Preview-Cookie (Team-Zugang).
 export async function POST(req: Request) {
   // Zehn Versuche in zehn Minuten. Wer das Passwort kennt, braucht einen;
   // wer es durchprobiert, kommt so nicht weit.
-  const limit = rateLimit(callerKey(req, "preview"), 10, 10 * 60_000);
+  const limit = await rateLimitShared(callerKey(req, "preview"), 10, 10 * 60_000);
   if (!limit.ok) {
     return NextResponse.json(
       { error: "Zu viele Versuche. Bitte später erneut." },
