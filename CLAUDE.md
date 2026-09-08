@@ -596,6 +596,24 @@ Gold. Das ist das meistkopierte Überschriftenmuster überhaupt. Eine
 Überschrift sagt einen Satz, der etwas behauptet, und die Farbe steckt
 in der Zeile darüber und im Knopf darunter, nicht im letzten Wort.
 
+**Jeder Abschnitt der Startseite hat eine EIGENE Form.** Es gab einmal
+vier Abschnitte hintereinander mit demselben Raster — Vertrauensanker,
+Smart Pools, Ablauf und Preisstufen, alle als gleichbreite Spalten mit
+Haarlinie oben, alle mit `SECTION` als Abstand. Genau das meinte der
+Nutzer mit „gleiche Kästchen, gleiche Abstände". Jetzt:
+- Hero: Foto, Text links
+- Vertrauensanker: flacher Streifen, `py-8`
+- Zwei Wege: zwei hohe Karten mit randlosem Bild
+- Smart Pools: asymmetrisch, grosse Überschrift links, Belege rechts
+- Ablauf: gestaffelte Treppe, jeder Schritt rückt ein
+- Pools/Netzwerk: weisser Abschnitt, zwei Spalten mit Foto
+- Preise: drei Spalten (eine Preistabelle darf eine sein)
+- Abschluss: Navyfläche
+
+Und die Abstände wechseln: `SECTION_TIGHT`, `SECTION`, `SECTION_WIDE`
+je nach Gewicht. Wer einen Abschnitt hinzufügt, gibt ihm eine Form, die
+noch keiner hat.
+
 **Schriftgrössen-Hierarchie der Startseite:** `D_LG` nur für die
 Hero-Zeile, `D_MD` für alle Abschnittsüberschriften. Zwei Stufen, mehr
 nicht — wenn drei Überschriften gleich gross sind, gibt es keine
