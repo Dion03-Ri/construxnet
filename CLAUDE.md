@@ -362,12 +362,22 @@ stanzt ihn aus, und der Rest bleibt als heller Rahmen stehen.
 Wortmarke „obtanet" — „obta" in Navy `#1B3A5C` bzw. Weiss, „net" in Gold
 `#D99000`. Kein Bauhelm, kein Symbolkästchen, kein Verlauf.
 
-Dateien unter `public/`:
-- `logo-hell.png` — Weiss + Gold, für dunklen Grund (Seitenkopf)
-- `logo-dunkel.png` — Navy + Gold, für hellen Grund
-- `logo-zeichen-hell.png` / `-dunkel.png` — nur das „o", quadratisch
-- `logo-zeichen-gold.png` — das „o" in Gold, 512 px
-- `app/icon.png`, `app/apple-icon.png` — Navy-Kachel mit goldenem „o"
+**Das „o" steht nirgends allein.** Es gab kurz ein Zeichen aus dem
+einzelnen Buchstaben — im Kopf des Handys, auf der Onboarding-Seite und
+als Favicon. Der Nutzer hat es abgelehnt, und er hat recht: ein heller
+Ring bei 28 px sieht aus wie ein Ladekreis. Überall steht die ganze
+Wortmarke, auch im Favicon.
+
+Es gibt genau zwei Dateien:
+- `public/logo-hell.png` — Weiss + Gold, für dunklen Grund
+- `public/logo-dunkel.png` — Navy + Gold, für hellen Grund
+- `app/icon.png`, `app/apple-icon.png` — Navy-Kachel mit der Wortmarke
+
+**Nirgends den Namen als Text setzen.** `Obta<span>net</span>` stand im
+Fuss, auf der Zugangsseite und in Coming-Soon. Im Fuss lief dabei das
+`gap-2` des Flex-Kastens zwischen „Obta" und „net" — sichtbar als
+Leerzeichen mitten im Namen, weil Flex Textknoten und `span` als zwei
+Kinder behandelt. Immer `logo-hell.png` bzw. `logo-dunkel.png`.
 
 Die Vorlagen liegen unter `design/logo/` als JPEG. Die Dateien in
 `public/` sind daraus freigestellt und **auf die CI-Werte umgefärbt** —
@@ -379,6 +389,17 @@ Commit-Beschreibung; ändert sich die Vorlage, muss es neu laufen.
 **Offen:** es gibt noch kein SVG. Für Druck, Fahrzeugbeschriftung und
 sehr grosse Darstellung braucht es eins — die PNGs reichen für den
 Bildschirm (1254 px breit, also rund 9-fach über der Kopfgrösse).
+
+### Die Kopfleiste trägt Wörter, keine Symbole
+Fünf Symbole mit je einem Wort darunter, in Kästen fester Breite — das
+ist das Erkennungszeichen jeder erzeugten Verwaltungsoberfläche, und ein
+Haus für „Feed" sagt nichts, was das Wort nicht schon sagt. Die
+Kopfleiste hat nur Wörter, mit Luft dazwischen; die aktive Seite bekommt
+einen goldenen Strich auf der Unterkante der Leiste — dieselbe Markierung
+wie bei den Reitern im Feed.
+
+Die Symbole bleiben in der **unteren Leiste des Handys**: dort trägt eine
+Reihe aus fünf Wörtern nicht.
 
 ### Der Rand ist überall 72 px
 `SHELL`, `SHELL_NARROW` und `SHELL_WORK` haben dieselbe Geometrie:

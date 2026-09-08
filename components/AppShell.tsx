@@ -65,7 +65,22 @@ function TopBar() {
 
         <GlobalSearch />
 
-        <nav className="ml-auto hidden items-stretch gap-1 md:flex">
+        {/* Die Kopfleiste trug fuenf Symbole mit je einem Wort darunter, in
+            Kaesten von 68 px Breite. Daher standen „Smart Pools" und
+            „Nachrichten" fast aneinander, und das aktive Feld hatte einen
+            Rahmen um sich.
+
+            Ein Haus fuer „Feed", ein Paket fuer „Smart Pools" — die
+            Symbole sagen nichts, was das Wort daneben nicht schon sagt,
+            und eine Reihe aus fuenf davon ist das Erkennungszeichen jeder
+            erzeugten Verwaltungsoberflaeche. Jetzt nur Woerter, mit Luft
+            dazwischen, und die aktive Seite bekommt einen goldenen Strich
+            auf der Kante der Leiste — dieselbe Markierung wie bei den
+            Reitern im Feed.
+
+            Die Symbole bleiben in der unteren Leiste des Handys: dort
+            traegt eine Reihe aus fuenf Woertern nicht. */}
+        <nav className="ml-auto hidden items-stretch self-stretch md:flex">
           {NAV.map((item) => {
             const active = isActive(item.href);
             return (
@@ -73,18 +88,16 @@ function TopBar() {
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  "group relative flex w-[68px] flex-col items-center justify-center gap-0.5 pt-1 text-[11px] transition-colors",
-                  active ? "font-semibold text-white" : "font-medium text-white/[0.72] hover:text-white",
+                  "relative flex items-center px-4 text-[13.5px] transition-colors lg:px-5",
+                  active
+                    ? "font-semibold text-white"
+                    : "font-medium text-white/[0.56] hover:text-white",
                 )}
               >
-                <item.icon className="h-5 w-5" />
                 {item.label}
-                <span
-                  className={cn(
-                    "absolute -bottom-[10px] h-[2px] w-full transition-colors",
-                    active ? "bg-brand" : "bg-transparent",
-                  )}
-                />
+                {active && (
+                  <span className="absolute inset-x-4 -bottom-px h-[2px] rounded-full bg-brand lg:inset-x-5" />
+                )}
               </Link>
             );
           })}
