@@ -27,6 +27,27 @@ export const metadata: Metadata = {
   title: "Obtanet",
   description:
     "Das B2B-Netzwerk der Schweizer Baubranche — Vernetzung, Feed und Smart Pools.",
+  /**
+   * Zwei Favicons statt eines.
+   *
+   * Das Zeichen soll „o" in Navy und „n" in Gold zeigen. Navy steht auf
+   * einer hellen Tab-Leiste hervorragend (10,4:1), auf einer dunklen aber
+   * gar nicht (1,4:1) — dort waere das „o" schlicht verschwunden. Weiss
+   * ist genau umgekehrt: 16:1 auf Dunkel, 1,1:1 auf Hell.
+   *
+   * Also gibt es beide, und der Browser nimmt die passende. Die helle
+   * Fassung steht zuerst: wer `media` nicht auswertet, nimmt sie — und
+   * eine helle Tab-Leiste ist der haeufigere Fall.
+   *
+   * Das Apple-Symbol liegt weiterhin als Datei unter `app/apple-icon.png`
+   * und bleibt deckend; iOS macht aus Transparenz Schwarz.
+   */
+  icons: {
+    icon: [
+      { url: "/icon-hell.png", media: "(prefers-color-scheme: light)", type: "image/png" },
+      { url: "/icon-dunkel.png", media: "(prefers-color-scheme: dark)", type: "image/png" },
+    ],
+  },
 };
 
 export default function RootLayout({
