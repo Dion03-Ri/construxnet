@@ -14,7 +14,6 @@ import {
 } from "lucide-react";
 import { useBundles, nextStep, deadlineLabel } from "@/lib/bundles";
 import { useSavedPools } from "@/lib/useSavedPools";
-import { PANEL } from "@/lib/ui";
 import { cn } from "@/lib/utils";
 
 function chf(v: number) {
@@ -28,7 +27,7 @@ export default function SavedPools() {
 
   if (!ready || loading) {
     return (
-      <div className={cn(PANEL, "grid place-items-center py-16 text-white/40")}>
+      <div className="grid place-items-center py-20 text-white/40">
         <Loader2 className="h-5 w-5 animate-spin" />
       </div>
     );
@@ -36,7 +35,7 @@ export default function SavedPools() {
 
   if (saved.length === 0) {
     return (
-      <div className={cn(PANEL, "flex flex-col items-center gap-3 border-dashed py-14 text-center")}>
+      <div className="flex flex-col items-center gap-3 border-t border-white/[0.08] py-20 text-center">
         <span className="grid h-12 w-12 place-items-center rounded-full bg-white/10 text-white/40">
           <Bookmark className="h-6 w-6" />
         </span>
@@ -57,14 +56,14 @@ export default function SavedPools() {
   }
 
   return (
-    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
+    <div className="border-b border-white/[0.08]">
       {saved.map((b) => {
         const step = nextStep(b.current_volume);
         const goal = step?.at ?? b.current_volume;
         const pct = Math.min(100, Math.round((b.current_volume / (goal || 1)) * 100));
         const sealed = b.status === "SEALED_BIDDING";
         return (
-          <div key={b.id} className={cn(PANEL, "flex flex-col p-5")}>
+          <div key={b.id} className="flex flex-col border-t border-white/[0.08] py-6 transition-colors hover:bg-white/[0.02]">
             <div className="flex items-start justify-between gap-2">
               <div className="min-w-0">
                 <h3 className="truncate text-[15px] font-semibold text-white">

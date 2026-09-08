@@ -58,7 +58,6 @@ import TendersPanel from "@/components/dashboard/TendersPanel";
 import { useCustomMaterials } from "@/lib/customMaterials";
 import { useBundles, nextStep, deadlineLabel, hoursLeft, type Bundle } from "@/lib/bundles";
 import { useDirectRequests, isLive } from "@/lib/directRequests";
-import { PANEL } from "@/lib/ui";
 import { cn } from "@/lib/utils";
 import { matchesMaterial, PROC_CATEGORIES, tierForVolume, type ProcMaterial, type ProcCategory } from "@/data/procurement";
 import kbobData from "@/data/kbobData.json";
@@ -168,7 +167,7 @@ type CartItem = { key: string; id: string; label: string; unit: string; kbobPric
 function KpiCard({ k }: { k: Kpi }) {
   const up = k.delta >= 0;
   return (
-    <div className={cn(PANEL, "p-4")}>
+    <div className="border-t border-white/[0.08] pt-5">
       <div className="text-[13px] font-medium text-white/55">{k.label}</div>
       <div className="mt-1.5 flex items-end justify-between gap-2">
         <div className="text-2xl font-bold tracking-tight text-white">{k.value}</div>
@@ -271,7 +270,7 @@ function MyBundles({ limit }: { limit?: number }) {
         </p>
         <Link
           href="/beschaffung"
-          className="mt-3 inline-flex items-center gap-1.5 rounded-md bg-brand px-3.5 py-2 text-[12.5px] font-semibold text-navy-900 transition-colors hover:bg-brand/100"
+          className="mt-3 inline-flex items-center gap-1.5 rounded-xl bg-brand px-3.5 py-2 text-[12.5px] font-semibold text-navy-950 transition-colors hover:bg-brand-600"
         >
           Bedarf melden
         </Link>
@@ -329,7 +328,7 @@ function OverviewPanel({ role }: { role: "buyer" | "supplier" }) {
   return (
     <div className="space-y-4">
       {/* Offene Punkte */}
-      <div className={cn(PANEL, "overflow-hidden")}>
+      <div className="border-t border-white/[0.08]">
         <div className="border-b border-white/[0.06] px-5 py-3.5">
           <h3 className="text-[15px] font-bold text-white">Das braucht deine Aufmerksamkeit</h3>
           <p className="mt-0.5 text-[12.5px] text-white/55">
@@ -355,7 +354,7 @@ function OverviewPanel({ role }: { role: "buyer" | "supplier" }) {
       </div>
 
       {/* Laufende Bündel — hier kann man noch Menge einbringen */}
-      <div className={cn(PANEL, "p-5")}>
+      <div className="border-t border-white/[0.08] pt-6">
         <div className="mb-3 flex items-center justify-between">
           <div>
             <h3 className="text-[15px] font-bold text-white">Deine laufenden Bündel</h3>
@@ -371,7 +370,7 @@ function OverviewPanel({ role }: { role: "buyer" | "supplier" }) {
       </div>
 
       {isSupplier && (
-        <div className={cn(PANEL, "flex items-center gap-3 p-5")}>
+        <div className="flex items-center gap-3 border-t border-white/[0.08] pt-6">
           <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-navy-900 text-brand">
             <Gavel className="h-4 w-4" />
           </span>
@@ -446,7 +445,7 @@ ${o.contract ? `<div class="box"><div class="lbl">Vertrag</div><table>${row("SIA
 
 function OrdersPanel({ companyName }: { companyName: string }) {
   return (
-    <div className={cn(PANEL, "p-5")}>
+    <div className="border-t border-white/[0.08] pt-6">
       <div className="mb-3 flex items-center justify-between">
         <h3 className="text-[15px] font-bold text-white">Bestellungen</h3>
         <span className="rounded-md border border-white/[0.08] px-2.5 py-1 text-xs text-white/55">letzte 60 Tage</span>
@@ -505,7 +504,7 @@ function SpendByCategory() {
 
   return (
     <>
-      <div className={cn(PANEL, "p-5")}>
+      <div className="border-t border-white/[0.08] pt-6">
         <div className="flex items-center justify-between">
           <h3 className="text-[14px] font-bold text-white">Ausgaben nach Kategorie</h3>
           <span className="text-[11.5px] text-white/40">letzte 12 Monate</span>
@@ -596,7 +595,7 @@ function SpendByCategory() {
 /** Kennzahlen — schlichte Zahlen statt weiterer Diagramme. */
 function ReportStat({ label, value, hint }: { label: string; value: string; hint: string }) {
   return (
-    <div className={cn(PANEL, "p-4")}>
+    <div className="border-t border-white/[0.08] pt-5">
       <div className="text-[12.5px] text-white/55">{label}</div>
       <div className="mt-1 text-2xl font-bold tracking-tight text-white">{value}</div>
       <div className="mt-0.5 text-[11.5px] text-white/40">{hint}</div>
@@ -622,7 +621,7 @@ function ReportsPanel({ role }: { role: "buyer" | "supplier" }) {
       </div>
 
       {/* Das einzige grosse Diagramm */}
-      <div className={cn(PANEL, "p-5")}>
+      <div className="border-t border-white/[0.08] pt-6">
         <div className="flex items-center justify-between">
           <div>
             <h3 className="text-[15px] font-bold text-white">Beschaffungsvolumen</h3>
@@ -656,14 +655,14 @@ function ReportsPanel({ role }: { role: "buyer" | "supplier" }) {
 function ContractsPanel() {
   return (
     <div className="space-y-4">
-      <div className={cn(PANEL, "p-5")}>
+      <div className="border-t border-white/[0.08] pt-6">
         <h3 className="text-[15px] font-semibold text-white">Aktive Pool-Teilnahmen</h3>
         <div className="mt-4 space-y-3">
           <MyBundles />
         </div>
       </div>
 
-      <div className={cn(PANEL, "p-5")}>
+      <div className="border-t border-white/[0.08] pt-6">
         <h3 className="text-[15px] font-bold text-white">SIA-118 Verträge</h3>
         <div className="mt-2 flex items-start gap-2.5 rounded-lg border border-white/[0.08] bg-white/[0.03] p-3.5">
           <Info className="mt-0.5 h-4 w-4 shrink-0 text-white/40" />
@@ -743,7 +742,7 @@ function WorkspacePanel({
   return (
     <div className="space-y-4">
       {/* Suche + Ausschreibung hochladen */}
-      <div className={cn(PANEL, "p-4")}>
+      <div className="border-t border-white/[0.08] pt-5">
         <div className="flex flex-col gap-3 sm:flex-row">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-white/40" />
@@ -792,7 +791,7 @@ function WorkspacePanel({
       </div>
 
       {/* Material-Tabelle */}
-      <div className={cn(PANEL, "overflow-hidden p-0")}>
+      <div className="border-t border-white/[0.08]">
         <div className="flex items-center justify-between border-b border-white/[0.06] px-4 py-3">
           <h3 className="text-[15px] font-semibold text-white">Material-Katalog</h3>
           <span className="text-[11px] text-white/40">{results.length} von {catalog.length}</span>
@@ -824,7 +823,7 @@ function WorkspacePanel({
                       type="button"
                       onClick={() => onAdd(m)}
                       aria-label={`${m.label} in den Warenkorb`}
-                      className="inline-flex items-center gap-1 rounded-md border border-brand/30 bg-brand/10 px-2.5 py-1.5 text-xs font-semibold text-brand transition-colors hover:bg-brand/20"
+                      className="inline-flex items-center gap-1 rounded-lg border border-brand/35 px-2.5 py-1.5 text-xs font-semibold text-brand transition-colors hover:bg-brand hover:text-navy-950"
                     >
                       <Plus className="h-3.5 w-3.5" />
                       <span className="hidden sm:inline">Warenkorb</span>
@@ -876,7 +875,7 @@ function CartPanel({
   const savings = cart.reduce((s, c) => s + c.qty * c.kbobPrice * (tierForVolume(c.qty).discount / 100), 0);
 
   return (
-    <div className={cn(PANEL, "p-4")}>
+    <div className="border-t border-white/[0.08] pt-5">
       <div className="flex items-center justify-between">
         <h3 className="text-[13px] font-semibold uppercase tracking-wider text-white/55">Warenkorb</h3>
         {cart.length > 0 && <span className="grid h-5 min-w-5 place-items-center rounded-full bg-brand px-1.5 text-[10.5px] font-bold tabular-nums text-navy-950">{cart.length}</span>}
@@ -932,7 +931,7 @@ function CartPanel({
       {cart.length > 0 ? (
         <Link
           href={href}
-          className="mt-4 flex w-full items-center justify-center gap-1.5 rounded-md bg-brand px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-brand-600"
+          className="mt-4 flex w-full items-center justify-center gap-1.5 rounded-xl bg-brand px-4 py-2.5 text-sm font-semibold text-navy-950 transition-colors hover:bg-brand-600"
         >
           Bedarf einreichen
         </Link>
@@ -966,7 +965,7 @@ function QuickToolsPanel() {
 
   return (
     <div className="space-y-4">
-      <div className={cn(PANEL, "p-4")}>
+      <div className="border-t border-white/[0.08] pt-5">
         <h3 className="flex items-center gap-1.5 text-[13px] font-semibold uppercase tracking-wider text-white/55">
           <Calculator className="h-3.5 w-3.5" /> Mengen-/Verschnittrechner
         </h3>
@@ -1001,7 +1000,7 @@ function QuickToolsPanel() {
         </div>
       </div>
 
-      <div className={cn(PANEL, "p-4")}>
+      <div className="border-t border-white/[0.08] pt-5">
         <div className="flex items-center justify-between">
           <h3 className="flex items-center gap-1.5 text-[13px] font-semibold uppercase tracking-wider text-white/55">
             <Coins className="h-3.5 w-3.5" /> KBOB-Index
@@ -1117,7 +1116,7 @@ export default function DashboardShell({ company }: { company: Company }) {
     <div className="grid grid-cols-1 gap-4 lg:grid-cols-[240px_minmax(0,1fr)] xl:grid-cols-[240px_minmax(0,1fr)_300px]">
       {/* Handy: kompakte Kopfzeile + waagrechte Tab-Leiste statt der Seitenspalte.
           Damit steht der Inhalt sofort oben und nicht erst nach einem Bildschirm Navigation. */}
-      <div className="relative overflow-hidden rounded-xl border border-white/10 bg-navy-900 text-white lg:hidden">
+      <div className="relative border-b border-white/[0.08] pb-5 text-white lg:hidden">
         <div className="relative flex items-center gap-2.5 px-3 py-2.5">
           <span className="grid h-8 w-8 shrink-0 place-items-center overflow-hidden rounded-lg bg-gradient-to-br from-brand to-brand-600 text-[11px] font-bold text-white">
             {company.logo_url ? (
@@ -1190,7 +1189,7 @@ export default function DashboardShell({ company }: { company: Company }) {
       </div>
 
       {/* Linke Spalte: Navigation & Projekt-Auswahl (ab lg) */}
-      <aside className="relative hidden h-fit overflow-hidden rounded-xl border border-white/10 bg-navy-900 text-white lg:block">
+      <aside className="relative hidden h-fit border-r border-white/[0.08] pr-6 text-white lg:block">
         <div className="relative flex items-center gap-2.5 border-b border-white/10 px-3 py-3">
           <span className="grid h-9 w-9 shrink-0 place-items-center overflow-hidden rounded-lg bg-gradient-to-br from-brand to-brand-600 text-sm font-bold text-white">
             {company.logo_url ? (
@@ -1280,7 +1279,7 @@ export default function DashboardShell({ company }: { company: Company }) {
       </aside>
 
       {/* Mittlere Spalte: Arbeitsbereich */}
-      <div className={cn(PANEL, "min-w-0 overflow-hidden")}>
+      <div className="min-w-0 border-t border-white/[0.08]">
         <div className="relative flex flex-wrap items-center justify-between gap-2 border-b border-white/10 bg-navy-900 px-4 py-3 text-white sm:px-6">
           <h2 className="relative text-lg font-bold tracking-tight">{title}</h2>
           <Link
@@ -1330,7 +1329,7 @@ export default function DashboardShell({ company }: { company: Company }) {
               {view === "contracts" && <ContractsPanel />}
               {view === "reports" && <ReportsPanel role={role} />}
               {view === "settings" && (
-                <div className={cn(PANEL, "p-6 text-sm text-white/55")}>
+                <div className="border-t border-white/[0.08] py-8 text-sm text-white/55">
                   <div className="flex items-center gap-2 font-semibold text-white">
                     <Settings className="h-4 w-4" /> Einstellungen
                   </div>
@@ -1341,7 +1340,7 @@ export default function DashboardShell({ company }: { company: Company }) {
                   <div className="mt-3 flex flex-wrap gap-2">
                     <Link
                       href="/profile/edit"
-                      className="inline-flex items-center gap-1.5 rounded-md bg-brand px-4 py-2 text-[13px] font-semibold text-navy-900 transition-colors hover:bg-brand/100"
+                      className="inline-flex items-center gap-1.5 rounded-xl bg-brand px-4 py-2.5 text-[13px] font-semibold text-navy-950 transition-colors hover:bg-brand-600"
                     >
                       Profil bearbeiten
                     </Link>

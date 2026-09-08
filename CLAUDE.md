@@ -378,11 +378,14 @@ stanzt ihn aus, und der Rest bleibt als heller Rahmen stehen.
 
 ## OFFEN / als Nächstes
 - Branding einheitlich auf Obtanet umgestellt.
-- **Kästchen-Abbau:** Startseite, Feed, Netzwerk, Smart Pools und
-  Referenzpreise sind auf Haarlinien statt Rahmen umgestellt. Noch offen:
-  `/beschaffung`, `/messages`, `/termine`, `/profile/edit`, `/map`,
-  `/company/[id]`, `/network/entdecken`, `/notifications`. Wer eine davon
-  anfasst, zieht sie gleich mit nach.
+- **Kästchen-Abbau: abgeschlossen.** Alle Seiten sind auf Haarlinien
+  statt Rahmen umgestellt. Wer eine neue Seite baut, fängt gar nicht
+  erst mit `PANEL` an — `PANEL` bleibt nur für das, was wirklich ein
+  eigenes Objekt ist.
+- **Gold ist die knappste Ressource.** Höchstens EIN gefüllter
+  Gold-Knopf pro Bildschirm. In Listen und Tabellen trägt der Knopf
+  Goldschrift auf einem Goldrand und füllt sich erst beim Zeigen —
+  vierundzwanzig „Vernetzen" untereinander waren sonst eine Goldwand.
 - **`text-accent` nie auf dunklem Grund.** `accent` ist `#1B3A5C` — ein
   Navy für helle Flächen. Auf `#060B12` ist es praktisch unsichtbar; die
   Verifizierungshaken im Feed waren so lange schlicht nicht zu sehen.

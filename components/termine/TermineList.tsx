@@ -13,7 +13,6 @@ import {
   Clock,
 } from "lucide-react";
 import { useBundles, type Bundle } from "@/lib/bundles";
-import { PANEL } from "@/lib/ui";
 import { cn } from "@/lib/utils";
 
 /**
@@ -127,7 +126,7 @@ function TerminCard({ t }: { t: Termin }) {
   const past = t.at.getTime() < Date.now();
 
   return (
-    <div className={cn(PANEL, "flex flex-col gap-4 p-5 sm:flex-row sm:items-start")}>
+    <div className="flex flex-col gap-4 border-t border-white/[0.08] py-6 transition-colors hover:bg-white/[0.02] sm:flex-row sm:items-start">
       <div className="flex shrink-0 flex-col items-center justify-center rounded-lg border border-white/[0.08] bg-white/[0.03] px-4 py-2.5 text-center sm:w-20">
         <span className="text-[11px] font-semibold uppercase tracking-wider text-brand">
           {t.at.toLocaleDateString("de-CH", { month: "short" })}
@@ -195,7 +194,7 @@ export default function TermineList() {
 
   if (loading) {
     return (
-      <div className={cn(PANEL, "grid place-items-center py-16 text-white/40")}>
+      <div className="grid place-items-center py-20 text-white/40">
         <Loader2 className="h-5 w-5 animate-spin" />
       </div>
     );
@@ -203,7 +202,7 @@ export default function TermineList() {
 
   if (termine.length === 0) {
     return (
-      <div className={cn(PANEL, "px-6 py-14 text-center")}>
+      <div className="border-t border-white/[0.08] py-20 text-center">
         <CalendarDays className="mx-auto h-8 w-8 text-white/25" />
         <p className="mt-3 text-[15px] font-semibold text-white/90">Keine anstehenden Fristen</p>
         <p className="mx-auto mt-1 max-w-md text-[13px] leading-relaxed text-white/55">
@@ -221,7 +220,7 @@ export default function TermineList() {
   }
 
   return (
-    <div className="space-y-3">
+    <div className="border-b border-white/[0.08]">
       {termine.map((t) => <TerminCard key={t.id} t={t} />)}
     </div>
   );
