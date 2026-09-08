@@ -1,5 +1,5 @@
-import { Gauge, Construction } from "lucide-react";
-import { COLUMN, SHELL_NARROW } from "@/lib/ui";
+import { Construction } from "lucide-react";
+import { D_MD, EYEBROW, COLUMN, SHELL_NARROW } from "@/lib/ui";
 import { cn } from "@/lib/utils";
 
 export const metadata = {
@@ -31,19 +31,12 @@ export default function AdminControlPage() {
   return (
     <main className={cn(SHELL_NARROW, "py-6 sm:py-8")}>
       <div className={COLUMN}>
-      <header className="mb-6 flex items-start gap-3">
-        <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-brand/15 text-brand">
-          <Gauge className="h-6 w-6" />
-        </span>
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight text-white">
-            Gap-Closer Control Center
-          </h1>
-          <p className="mt-2 max-w-2xl text-white/[0.72]">
-            Interner Admin-Bereich — Pools nahe der nächsten Rabattschwelle
-            überwachen und gezielt aktivieren.
-          </p>
-        </div>
+      <header className="mb-8 border-b border-white/[0.12] pb-8">
+        <span className={cn(EYEBROW, "block")}>Intern</span>
+        <h1 className={cn(D_MD, "mt-3 text-white")}>Gap-Closer Control Center</h1>
+        <p className="mt-5 max-w-xl text-[15px] leading-relaxed text-white/[0.56]">
+          Pools nahe der nächsten Rabattschwelle überwachen und gezielt aktivieren.
+        </p>
       </header>
 
       <div className="mb-6 flex items-center gap-2 rounded-lg border border-brand/20 bg-brand/5 px-4 py-3 text-sm text-brand/90">

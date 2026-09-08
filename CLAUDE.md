@@ -853,18 +853,23 @@ eine eigene Absenderdomain gewünscht ist, braucht es dort zusätzlich
 die DNS-Einträge. Ebenfalls prüfen: Projektname in Supabase und in
 Vercel, die tauchen in Systemmails auf.
 
-## 4. Das KI-Oval um Aktivitäts- und Statuszeichen
-Gemeint ist `badge()` in `lib/ui.ts`: `rounded-full` + Rand + gefüllte
-Fläche — ein Oval um zwei Wörter. Noch an 12 Stellen in fünf Dateien:
-`app/company/[id]/page.tsx`, `components/termine/TermineList.tsx`,
-`components/procurement/BeschaffungFlow.tsx`,
-`components/dashboard/DashboardShell.tsx`,
-`components/pools/SavedPools.tsx`.
+## 4. Das KI-Oval um Aktivitäts- und Statuszeichen — ERLEDIGT
+`badge()` ist aus `lib/ui.ts` entfernt und hat keine Aufrufer mehr. Der
+Status steht überall als Wort in Grossbuchstaben in der Kennzeile, ohne
+Fläche und ohne Rand.
 
-Im Feed und in der Bündelliste ist es bereits ersetzt: der Status steht
-dort als Wort in Grossbuchstaben in der Kennzeile, ohne Fläche und ohne
-Rand. Dasselbe Muster auf die fünf Dateien anwenden und `badge()`
-danach entfernen.
+Übrig geblieben sind nur runde Zähler mit einer **Zahl** darin
+(ungelesene Nachrichten, Warenkorb) — das ist die richtige Form dafür
+und kein Oval um Wörter.
+
+Beim Nachziehen kam die eigentliche Ursache heraus: nicht das Oval,
+sondern der **goldene Symbolkasten im Seitenkopf** — ein gerundetes
+Farbquadrat mit einem Piktogramm, das wiederholt, was die Überschrift
+danebensagt. Der stand auf `/termine`, `/network/requests`,
+`/delivery-notes` und `/admin-control`, dazu im Kopf der
+Bündel-Rechnung, im Handels-Banner des Chats und im Abschlussbild der
+Beschaffung. Alle sieben sind weg; die vier Seitenköpfe tragen jetzt
+dieselbe Form wie `/pools`: Zeile, Überschrift, Satz, Haarlinie.
 
 ## 5. Farben: mehr Weiss und Schwarz, dazu Gold und Navy
 **Angefangen — die Nachrichtenseite ist der erste Versuch.**
@@ -925,16 +930,19 @@ Zwei mögliche Lesarten, und sie führen zu völlig verschiedenen Seiten:
 
 Ohne Antwort wird hier nichts angefasst.
 
-## 6. „Profil bearbeiten" — typische KI-Kästchen
-`/profile/edit`. Steht ohnehin auf der Liste der Seiten, auf denen der
-Kästchen-Abbau noch aussteht.
+## 6. „Profil bearbeiten" — typische KI-Kästchen — ERLEDIGT
+Die Seite ist beim Umbau auf das Register B (Papier) mitgezogen worden:
+echte Formularfelder auf weissem Grund, Navy-Kopfband, keine gerundeten
+Farbkästen mehr. Die goldenen Symbole vor „Firma", „Standort" und
+„Kontakt" sind flache Icons ohne Fläche und bleiben.
 
-## 7. Logo ersetzen
-Der Nutzer hat selbst eines entworfen. Kommt später von ihm — bis dahin
-bleibt das jetzige (Bauhelm-Symbol in Gold, `components/AppShell.tsx`
-und Fussbereich). Beim Austausch mitziehen: Favicon, das „O" im
-Beispiel-Zuschlag (`components/home/OfferSheet.tsx`) und alle Stellen
-mit dem Wortbild „Obta**net**".
+## 7. Logo ersetzen — ERLEDIGT
+Die Wortmarke des Nutzers ist eingebaut, freigestellt und auf die
+CI-Werte umgefärbt. Einzelheiten stehen oben im Abschnitt „Logo". Der
+Bauhelm ist weg, der Name wird nirgends mehr als Text gesetzt, das
+Favicon trägt „on" in zwei Fassungen.
+
+**Noch offen dazu:** ein SVG für Druck und Beschriftung.
 
 ## 8. Grafik bei Smart Pools ändern
 Der Abschnitt „Mengenrabatte, die alleine niemand bekommt" auf `/`
@@ -952,9 +960,10 @@ Steht ausführlich weiter oben in dieser Datei:
 - Vorstart-Sperre entfernen, Web-Push, Ratenbegrenzung über einen
   gemeinsamen Speicher, Lieferschein-Abgleich.
 - KI-Materialabgleich Stufe 3 — wartet auf `ANTHROPIC_API_KEY`.
-- Kästchen-Abbau auf `/beschaffung`, `/messages`, `/termine`,
-  `/profile/edit`, `/map`, `/company/[id]`, `/network/entdecken`,
-  `/notifications`.
+- Kästchen-Abbau: erledigt auf `/termine`, `/profile/edit`,
+  `/network/requests`, `/delivery-notes`, `/admin-control`,
+  `/notifications`, `/pools/saved`. Noch anzusehen: `/map`,
+  `/network/entdecken`, `/company/[id]`.
 - Aus dem Master-Briefing: KYB-Prüfung (UID/DUNS), Geofencing,
   dynamischer Kontextwechsel (Währung/Einheit/Normwerk) — letzterer
   gehört technisch früh, sonst wird er später zum Umbau von allem.

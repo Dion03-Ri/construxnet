@@ -183,9 +183,8 @@ export default function BundleEngine() {
       {/* Header */}
       <div className="flex flex-col gap-3 border-b border-white/[0.12] px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-7">
         <div className="flex items-center gap-2.5">
-          <span className="grid h-9 w-9 place-items-center rounded-md bg-brand/15 text-brand">
-            <Layers className="h-5 w-5" />
-          </span>
+          {/* Ein Schichten-Symbol neben „Smart Bündel" sagt nichts, was die
+              Überschrift nicht schon sagt. */}
           <div>
             <h2 className="text-[15px] font-semibold tracking-tight">Smart Bündel · {material.label}</h2>
             <p className="text-[12px] text-white/[0.56]">Raum Zürich / Limmattal · ≤ 25 km · Einbau Q4 2026</p>
