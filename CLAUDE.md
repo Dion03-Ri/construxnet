@@ -367,18 +367,32 @@ einzelnen Buchstaben — im Kopf des Handys, auf der Onboarding-Seite und
 als Favicon. Ein heller Ring bei 28 px sieht aus wie ein Ladekreis.
 Überall auf der Seite steht die ganze Wortmarke.
 
-**Das Favicon trägt „on", freigestellt und einfarbig gold.** Der ganze
-Schriftzug war dort bei 32 px nur noch ein Schimmer — ein Favicon ist 16
-bis 32 px gross, ein Wort aus sieben Buchstaben passt da nicht hinein.
-„on" sind die Anfangsbuchstaben der zwei Hälften (**o**bta / **n**et).
+**Das Favicon trägt „on", freigestellt, ohne Kachel — und es gibt zwei
+davon.** Der ganze Schriftzug war dort bei 32 px nur noch ein Schimmer;
+ein Favicon ist 16 bis 32 px gross, ein Wort aus sieben Buchstaben passt
+da nicht hinein. „on" sind die Anfangsbuchstaben der zwei Hälften
+(**o**bta / **n**et).
 
-Ohne Kachel muss das Zeichen **einfarbig** sein: bliebe das „o" weiss,
-wäre es auf einer hellen Tab-Leiste unsichtbar und man sähe nur das „n".
-Gold sitzt auf beiden Gründen — gegen Weiss rund 2,6:1, gegen das
-Dunkelgrau von Chrome rund 5,6:1.
+Zwei Fassungen, weil keine Farbe auf beiden Tab-Leisten sitzt (gemessene
+Kontraste):
 
-`app/apple-icon.png` bleibt dagegen **deckend** (Navy-Kachel, „o" weiss,
-„n" gold): iOS legt den Startbildschirm-Knopf auf keinen durchsichtigen
+| | Weiss | Chrome hell | Chrome dunkel | Safari dunkel |
+|---|---|---|---|---|
+| Navy `#1B3A5C` | 11,6 | 10,4 | **1,4** | **1,2** |
+| Weiss | **1,0** | **1,1** | 16,1 | 13,9 |
+| Gold `#D99000` | 2,6 | 2,4 | 6,1 | 5,3 |
+
+- `public/icon-hell.png` — „o" Navy, „n" Gold → `prefers-color-scheme: light`
+- `public/icon-dunkel.png` — „o" Weiss, „n" Gold → `prefers-color-scheme: dark`
+
+Beide stehen in `metadata.icons` in `app/layout.tsx`, die helle zuerst:
+wer `media` nicht auswertet, nimmt sie, und eine helle Tab-Leiste ist der
+häufigere Fall. **Es darf kein `app/icon.png` geben** — die
+Dateikonvention von Next würde eine dritte Verknüpfung ohne `media`
+erzeugen und die Auswahl kaputtmachen.
+
+`app/apple-icon.png` bleibt **deckend** (Navy-Kachel, „o" weiss, „n"
+gold): iOS legt den Startbildschirm-Knopf auf keinen durchsichtigen
 Grund, sondern macht daraus Schwarz.
 
 Die zwei Buchstaben sind **aus der Wortmarke geschnitten, nicht
@@ -390,7 +404,7 @@ o→b sind dort 41 px, n→e 26 px; rund gefolgt von gerade liegt dazwischen.
 Es gibt genau zwei Dateien:
 - `public/logo-hell.png` — Weiss + Gold, für dunklen Grund
 - `public/logo-dunkel.png` — Navy + Gold, für hellen Grund
-- `app/icon.png` — „on" in Gold, freigestellt, ohne Kachel
+- `public/icon-hell.png` / `icon-dunkel.png` — „on", freigestellt
 - `app/apple-icon.png` — Navy-Kachel mit „on" (iOS braucht deckend)
 
 **Nirgends den Namen als Text setzen.** `Obta<span>net</span>` stand im
