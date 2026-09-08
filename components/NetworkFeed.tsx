@@ -716,11 +716,15 @@ export default function NetworkFeed() {
     <div className="space-y-3">
       <Composer onCreated={load} />
 
+<<<<<<< HEAD
       {/* Vorher zwei Reihen mit zusammen zehn Woertern, bevor der erste
           Beitrag kam. Die Art bleibt als Reihe — man waehlt sie oft —, die
           Region wird ein Auswahlfeld: sechsundzwanzig Kantone gehoeren
           nicht als Woerterband auf die Seite. */}
       <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-3 pt-4">
+=======
+      <div className="space-y-2.5 pt-4">
+>>>>>>> origin/claude/construxnet-platform-rebuild-jll7j9
         <ChipRow options={typeOptions} value={type} onChange={setType} />
         <select
           value={region}
