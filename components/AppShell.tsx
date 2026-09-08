@@ -49,7 +49,7 @@ function Logo({ href = "/", dark = false }: { href?: string; dark?: boolean }) {
 function TopBar() {
   const isActive = useActive();
   return (
-    <header className="sticky top-0 z-50 border-b border-white/10 bg-navy-900">
+    <header className="sticky top-0 z-50 border-b border-white/[0.12] bg-navy-900">
       <div className={cn(SHELL, "flex h-14 items-center gap-3")}>
         <Logo dark />
 
@@ -64,7 +64,7 @@ function TopBar() {
                 href={item.href}
                 className={cn(
                   "group relative flex w-[68px] flex-col items-center justify-center gap-0.5 pt-1 text-[11px] transition-colors",
-                  active ? "font-semibold text-white" : "font-medium text-white/55 hover:text-white",
+                  active ? "font-semibold text-white" : "font-medium text-white/[0.72] hover:text-white",
                 )}
               >
                 <item.icon className="h-5 w-5" />
@@ -93,8 +93,8 @@ function TopBar() {
 /** Schmale Rechtszeile unter dem Inhalt — auf dem Handy ueber der Navigation. */
 function LegalBar() {
   return (
-    <div className="border-t border-white/[0.08] bg-[#0B1522]">
-      <div className={cn(SHELL, "flex flex-wrap items-center justify-center gap-x-3 gap-y-1 py-4 text-[12px] text-white/40")}>
+    <div className="border-t border-white/[0.12] bg-[#16181a]">
+      <div className={cn(SHELL, "flex flex-wrap items-center justify-center gap-x-3 gap-y-1 py-4 text-[12px] text-white/[0.56]")}>
         <span>© {new Date().getFullYear()} Obtanet</span>
         <span aria-hidden>·</span>
         <Link href="/impressum" className="transition-colors hover:text-brand">Impressum</Link>
@@ -108,7 +108,7 @@ function LegalBar() {
 function MobileNav() {
   const isActive = useActive();
   return (
-    <nav className="fixed inset-x-0 bottom-0 z-50 grid grid-cols-5 border-t border-white/[0.08] glass pb-[env(safe-area-inset-bottom)] md:hidden">
+    <nav className="fixed inset-x-0 bottom-0 z-50 grid grid-cols-5 border-t border-white/[0.12] glass pb-[env(safe-area-inset-bottom)] md:hidden">
       {NAV.map((item) => {
         const active = isActive(item.href);
         return (
@@ -117,7 +117,7 @@ function MobileNav() {
             href={item.href}
             className={cn(
               "flex min-w-0 flex-col items-center gap-1 px-1 py-2.5 text-[10px] font-medium leading-tight transition-colors",
-              active ? "text-brand" : "text-white/55 hover:text-white",
+              active ? "text-brand" : "text-white/[0.72] hover:text-white",
             )}
           >
             <item.icon className="h-5 w-5 shrink-0" />
@@ -131,13 +131,13 @@ function MobileNav() {
 
 function MarketingHeader() {
   return (
-    <header className="sticky top-0 z-50 border-b border-white/10 bg-navy-900/95 backdrop-blur">
+    <header className="sticky top-0 z-50 border-b border-white/[0.12] bg-navy-900/95 backdrop-blur">
       <div className={cn(SHELL, "flex h-16 items-center justify-between")}>
         <Logo href="/" dark />
         <div className="flex items-center gap-2">
           <Link
             href="/sign-in"
-            className="rounded-md px-4 py-2 text-sm font-medium text-white/70 transition-colors hover:text-white"
+            className="rounded-md px-4 py-2 text-sm font-medium text-white/[0.72] transition-colors hover:text-white"
           >
             Login
           </Link>

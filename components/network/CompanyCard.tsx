@@ -57,13 +57,13 @@ export default function CompanyCard({
        lief ueber die ganze Breite, weil er in einer schmalen Spalte
        entworfen war. Jetzt: links wer, rechts was man tun kann,
        dazwischen Luft. Getrennt nur durch eine Haarlinie. */
-    <div className="group relative flex flex-col gap-4 border-t border-white/[0.08] py-5 transition-colors hover:bg-white/[0.02] sm:flex-row sm:items-center">
+    <div className="group relative flex flex-col gap-4 border-t border-white/[0.12] py-5 transition-colors hover:bg-white/[0.02] sm:flex-row sm:items-center">
       {onDismiss && !conn && (
         <button
           type="button"
           onClick={() => onDismiss(company.id)}
           aria-label="Vorschlag ausblenden"
-          className="absolute right-0 top-4 grid h-7 w-7 place-items-center rounded-lg text-white/25 transition-colors hover:bg-white/[0.07] hover:text-white/55"
+          className="absolute right-0 top-4 grid h-7 w-7 place-items-center rounded-lg text-white/[0.4] transition-colors hover:bg-white/[0.07] hover:text-white/[0.72]"
         >
           <X className="h-4 w-4" />
         </button>
@@ -74,7 +74,7 @@ export default function CompanyCard({
           href={`/company/${company.id}`}
           className={cn(
             "grid h-11 w-11 shrink-0 place-items-center overflow-hidden rounded-full text-[13px] font-bold",
-            isSupplier ? "bg-brand/15 text-brand" : "bg-white/[0.08] text-white/70",
+            isSupplier ? "bg-brand/15 text-brand" : "bg-white/[0.08] text-white/[0.72]",
           )}
         >
           {company.logo_url ? (
@@ -93,7 +93,7 @@ export default function CompanyCard({
             <span className="truncate">{company.company_name}</span>
             {company.verified && <BadgeCheck className="h-4 w-4 shrink-0 text-brand" />}
           </Link>
-          <p className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-0.5 text-[12.5px] text-white/40">
+          <p className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-0.5 text-[12.5px] text-white/[0.56]">
             <span className="inline-flex items-center gap-1">
               <RoleIcon className="h-3.5 w-3.5 shrink-0" />
               {ROLE_LABEL[company.role] ?? company.role}
@@ -112,7 +112,7 @@ export default function CompanyCard({
       <span
         className={cn(
           "inline-flex shrink-0 items-center gap-1.5 text-[10.5px] font-semibold uppercase tracking-[0.12em]",
-          connected || pendingIn ? "text-brand" : "text-white/30",
+          connected || pendingIn ? "text-brand" : "text-white/[0.5]",
         )}
       >
         {connected ? (
@@ -133,7 +133,7 @@ export default function CompanyCard({
           <>
             <Link
               href={`/messages?to=${company.id}`}
-              className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-white/[0.10] px-3.5 py-2 text-[13px] font-semibold text-white/70 transition-colors hover:border-brand/40 hover:text-brand"
+              className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-white/[0.12] px-3.5 py-2 text-[13px] font-semibold text-white/[0.72] transition-colors hover:border-brand/40 hover:text-brand"
             >
               <MessageSquare className="h-4 w-4" /> Nachricht
             </Link>
@@ -161,7 +161,7 @@ export default function CompanyCard({
             <button
               type="button"
               onClick={() => onRemove(conn!.id)}
-              className="rounded-lg border border-white/[0.10] px-3.5 py-2 text-[13px] font-semibold text-white/55 transition-colors hover:bg-white/[0.05]"
+              className="rounded-lg border border-white/[0.12] px-3.5 py-2 text-[13px] font-semibold text-white/[0.72] transition-colors hover:bg-white/[0.05]"
             >
               Ignorieren
             </button>
@@ -170,7 +170,7 @@ export default function CompanyCard({
           <button
             type="button"
             onClick={() => onRemove?.(conn!.id)}
-            className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-white/[0.10] px-3.5 py-2 text-[13px] font-semibold text-white/55 transition-colors hover:border-white/[0.16] hover:text-white/75"
+            className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-white/[0.12] px-3.5 py-2 text-[13px] font-semibold text-white/[0.72] transition-colors hover:border-white/[0.16] hover:text-white/[0.72]"
           >
             Einladung zurückziehen
           </button>
@@ -192,7 +192,7 @@ export default function CompanyCard({
                 disabled={!canAct}
                 title="Direkt anfragen"
                 aria-label={`${company.company_name} direkt anfragen`}
-                className="inline-flex items-center justify-center rounded-lg border border-white/[0.10] px-3 py-2 text-[13px] font-semibold text-white/70 transition-colors hover:border-brand/40 hover:text-brand disabled:cursor-not-allowed disabled:opacity-50"
+                className="inline-flex items-center justify-center rounded-lg border border-white/[0.12] px-3 py-2 text-[13px] font-semibold text-white/[0.72] transition-colors hover:border-brand/40 hover:text-brand disabled:cursor-not-allowed disabled:opacity-50"
               >
                 <Handshake className="h-4 w-4" />
               </button>

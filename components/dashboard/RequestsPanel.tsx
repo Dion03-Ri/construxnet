@@ -31,11 +31,11 @@ import {
 import { cn } from "@/lib/utils";
 
 const STATUS_STYLE: Record<RequestStatus, string> = {
-  OPEN: "bg-white/10 text-white/70",
+  OPEN: "bg-white/10 text-white/[0.72]",
   OFFERED: "bg-brand/15 text-brand-700",
   ACCEPTED: "bg-navy-100 text-navy-700",
-  DECLINED: "bg-white/10 text-white/40",
-  WITHDRAWN: "bg-white/10 text-white/40",
+  DECLINED: "bg-white/10 text-white/[0.56]",
+  WITHDRAWN: "bg-white/10 text-white/[0.56]",
 };
 
 function chf(v: number, d = 0) {
@@ -66,9 +66,9 @@ function untilLabel(date: string | null): { text: string; late: boolean } | null
 /* -------------------------------------------------------------------------- */
 
 const FIELD =
-  "w-full rounded-md border border-white/[0.16] bg-white/[0.03] px-3 py-2 text-sm text-white placeholder:text-white/40 outline-none focus:border-brand focus:bg-[#0B1522]";
+  "w-full rounded-md border border-white/[0.16] bg-white/[0.03] px-3 py-2 text-sm text-white placeholder:text-white/[0.56] outline-none focus:border-brand focus:bg-[#16181a]";
 const LABEL =
-  "mb-1 block text-[11px] font-semibold uppercase tracking-wider text-white/40";
+  "mb-1 block text-[11px] font-semibold uppercase tracking-wider text-white/[0.56]";
 
 function OfferModal({
   request,
@@ -124,20 +124,20 @@ function OfferModal({
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-      <div className="absolute inset-0 bg-navy-950/60 backdrop-blur-sm" onClick={onClose} />
+      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
       <motion.div
         initial={{ opacity: 0, scale: 0.97, y: 8 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         transition={{ duration: 0.16 }}
-        className="relative max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-xl border border-white/[0.08] bg-[#0B1522] shadow-2xl"
+        className="relative max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-xl border border-white/[0.12] bg-[#16181a] shadow-2xl"
       >
-        <div className="flex items-start justify-between gap-3 border-b border-white/[0.08] px-5 py-3.5">
+        <div className="flex items-start justify-between gap-3 border-b border-white/[0.12] px-5 py-3.5">
           <div className="min-w-0">
             <h3 className="flex items-center gap-2 text-[15px] font-bold text-white">
               <Handshake className="h-4 w-4 text-brand" />
               {previous ? "Angebot nachbessern" : "Angebot abgeben"}
             </h3>
-            <p className="mt-0.5 truncate text-[12.5px] text-white/55">
+            <p className="mt-0.5 truncate text-[12.5px] text-white/[0.72]">
               {request.material_label} · {chf(request.quantity)} {request.unit} für{" "}
               {request.buyer?.company_name ?? "den Besteller"}
             </p>
@@ -145,7 +145,7 @@ function OfferModal({
           <button
             type="button"
             onClick={onClose}
-            className="rounded-md p-1.5 text-white/40 transition-colors hover:bg-white/[0.07] hover:text-white/75"
+            className="rounded-md p-1.5 text-white/[0.56] transition-colors hover:bg-white/[0.07] hover:text-white/[0.72]"
             aria-label="Schliessen"
           >
             <X className="h-4 w-4" />
@@ -166,18 +166,18 @@ function OfferModal({
           </div>
 
           {valid && (
-            <div className="rounded-md border border-white/[0.08] bg-white/[0.03] px-3 py-2.5 text-[13px]">
+            <div className="rounded-md border border-white/[0.12] bg-white/[0.03] px-3 py-2.5 text-[13px]">
               <div className="flex items-center justify-between">
-                <span className="text-white/55">Auftragswert</span>
+                <span className="text-white/[0.72]">Auftragswert</span>
                 <b className="text-white">CHF {chf(total)}</b>
               </div>
               {delta !== null && (
                 <div className="mt-1 flex items-center justify-between">
-                  <span className="text-white/55">gegenüber KBOB-Referenz</span>
+                  <span className="text-white/[0.72]">gegenüber KBOB-Referenz</span>
                   <span
                     className={cn(
                       "inline-flex items-center gap-1 font-semibold",
-                      delta <= 0 ? "text-brand-700" : "text-white/55",
+                      delta <= 0 ? "text-brand-700" : "text-white/[0.72]",
                     )}
                   >
                     {delta <= 0 ? (
@@ -225,8 +225,8 @@ function OfferModal({
             />
           </div>
 
-          <p className="flex items-start gap-2 rounded-md bg-white/[0.03] px-3 py-2.5 text-[11.5px] leading-relaxed text-white/55">
-            <Info className="mt-px h-3.5 w-3.5 shrink-0 text-white/40" />
+          <p className="flex items-start gap-2 rounded-md bg-white/[0.03] px-3 py-2.5 text-[11.5px] leading-relaxed text-white/[0.72]">
+            <Info className="mt-px h-3.5 w-3.5 shrink-0 text-white/[0.56]" />
             Ein nachgebessertes Angebot ersetzt das vorige nicht, sondern kommt
             dazu. Beide Seiten sehen den Verlauf.
           </p>
@@ -234,11 +234,11 @@ function OfferModal({
           {error && <p className="text-[12.5px] font-medium text-rose-300">{error}</p>}
         </div>
 
-        <div className="flex items-center justify-end gap-2 border-t border-white/[0.08] bg-white/[0.03] px-5 py-3">
+        <div className="flex items-center justify-end gap-2 border-t border-white/[0.12] bg-white/[0.03] px-5 py-3">
           <button
             type="button"
             onClick={onClose}
-            className="rounded-md px-3.5 py-2 text-sm font-semibold text-white/55 transition-colors hover:bg-slate-200"
+            className="rounded-md px-3.5 py-2 text-sm font-semibold text-white/[0.72] transition-colors hover:bg-slate-200"
           >
             Abbrechen
           </button>
@@ -281,16 +281,16 @@ function OfferBox({
     <div
       className={cn(
         "mt-3 rounded-md border px-3 py-2.5",
-        best ? "border-brand/40 bg-brand/[0.05]" : "border-white/[0.08] bg-white/[0.03]",
+        best ? "border-brand/40 bg-brand/[0.05]" : "border-white/[0.12] bg-white/[0.03]",
         expired && "opacity-60",
       )}
     >
       <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
-        <span className="text-[13px] text-white/55">
+        <span className="text-[13px] text-white/[0.72]">
           CHF <b className="text-[15px] text-white">{chf(offer.unit_price, 2)}</b> /{" "}
           {request.unit}
         </span>
-        <span className="text-[13px] text-white/55">
+        <span className="text-[13px] text-white/[0.72]">
           Auftragswert <b className="text-white">CHF {chf(total)}</b>
         </span>
       </div>
@@ -300,7 +300,7 @@ function OfferBox({
           <span
             className={cn(
               "inline-flex items-center gap-1 font-semibold",
-              delta <= 0 ? "text-brand-700" : "text-white/55",
+              delta <= 0 ? "text-brand-700" : "text-white/[0.72]",
             )}
           >
             {delta <= 0 ? (
@@ -318,17 +318,17 @@ function OfferBox({
           </span>
         )}
         {offer.valid_until && (
-          <span className={cn("text-white/40", expired && "font-semibold text-rose-500")}>
+          <span className={cn("text-white/[0.56]", expired && "font-semibold text-rose-500")}>
             {expired ? "abgelaufen am" : "gültig bis"} {dateCH(offer.valid_until)}
           </span>
         )}
         {offer.delivery_promise && (
-          <span className="text-white/40">Lieferung {offer.delivery_promise}</span>
+          <span className="text-white/[0.56]">Lieferung {offer.delivery_promise}</span>
         )}
       </div>
 
       {offer.note && (
-        <p className="mt-1.5 text-[12px] leading-relaxed text-white/55">{offer.note}</p>
+        <p className="mt-1.5 text-[12px] leading-relaxed text-white/[0.72]">{offer.note}</p>
       )}
     </div>
   );
@@ -412,13 +412,13 @@ export default function RequestsPanel({
           <h2 className="text-lg font-bold text-white">
             {isSupplier ? "Direktanfragen" : "Meine Anfragen"}
           </h2>
-          <p className="mt-0.5 max-w-2xl text-sm text-white/55">
+          <p className="mt-0.5 max-w-2xl text-sm text-white/[0.72]">
             {isSupplier
               ? "Anfragen, die ohne Bündelung direkt an dich gehen. Ein Angebot mit Preis und Gültigkeit macht daraus etwas Verbindliches."
               : "Anfragen, die du direkt an einen Lieferanten gestellt hast. Kommt ein Angebot zurück, siehst du hier den Auftragswert und den Abstand zum KBOB-Referenzpreis."}
           </p>
         </div>
-        <div className="flex shrink-0 rounded-md border border-white/[0.08] p-0.5">
+        <div className="flex shrink-0 rounded-md border border-white/[0.12] p-0.5">
           {[
             { k: false, label: `Offen (${live.length})` },
             { k: true, label: `Erledigt (${done.length})` },
@@ -431,7 +431,7 @@ export default function RequestsPanel({
                 "rounded px-3 py-1.5 text-[12.5px] font-semibold transition-colors",
                 showDone === t.k
                   ? "bg-navy-900 text-white"
-                  : "text-white/55 hover:bg-white/[0.07]",
+                  : "text-white/[0.72] hover:bg-white/[0.07]",
               )}
             >
               {t.label}
@@ -450,12 +450,12 @@ export default function RequestsPanel({
       )}
 
       {loading ? (
-        <div className={"grid place-items-center py-20 text-white/40"}>
+        <div className={"grid place-items-center py-20 text-white/[0.56]"}>
           <Loader2 className="h-5 w-5 animate-spin" />
         </div>
       ) : shown.length === 0 ? (
-        <div className={"border-t border-white/[0.08] py-16 text-center"}>
-          <Handshake className="mx-auto h-8 w-8 text-white/25" />
+        <div className={"border-t border-white/[0.12] py-16 text-center"}>
+          <Handshake className="mx-auto h-8 w-8 text-white/[0.4]" />
           <p className="mt-3 text-[15px] font-semibold text-white/90">
             {showDone
               ? "Noch nichts abgeschlossen"
@@ -463,7 +463,7 @@ export default function RequestsPanel({
                 ? "Keine offenen Anfragen"
                 : "Keine offenen Anfragen"}
           </p>
-          <p className="mx-auto mt-1 max-w-md text-[13px] leading-relaxed text-white/55">
+          <p className="mx-auto mt-1 max-w-md text-[13px] leading-relaxed text-white/[0.72]">
             {isSupplier
               ? "Sobald dich ein Bauunternehmen direkt anfragt, steht die Anfrage hier — mit Material, Menge und Frist."
               : "Im Netzwerk kannst du einen Lieferanten direkt anfragen, ohne auf ein Bündel zu warten."}
@@ -486,24 +486,24 @@ export default function RequestsPanel({
             const working = busy === r.id;
 
             return (
-              <div key={r.id} className={"border-t border-white/[0.08] py-5 transition-colors hover:bg-white/[0.02]"}>
+              <div key={r.id} className={"border-t border-white/[0.12] py-5 transition-colors hover:bg-white/[0.02]"}>
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <div className="min-w-0">
                     <h3 className="text-[14.5px] font-bold text-white">
                       {r.material_label}
-                      <span className="ml-2 font-semibold text-white/55">
+                      <span className="ml-2 font-semibold text-white/[0.72]">
                         {chf(r.quantity)} {r.unit}
                       </span>
                     </h3>
-                    <p className="mt-0.5 flex flex-wrap items-center gap-x-2.5 gap-y-1 text-[12.5px] text-white/55">
+                    <p className="mt-0.5 flex flex-wrap items-center gap-x-2.5 gap-y-1 text-[12.5px] text-white/[0.72]">
                       <span>
                         {isSupplier ? "von" : "an"}{" "}
-                        <b className="text-white/75">
+                        <b className="text-white/[0.72]">
                           {other?.company_name ?? "Unbekannte Firma"}
                         </b>
                       </span>
                       {other?.city && (
-                        <span className="inline-flex items-center gap-1 text-white/40">
+                        <span className="inline-flex items-center gap-1 text-white/[0.56]">
                           <MapPin className="h-3.5 w-3.5" />
                           {other.city}
                         </span>
@@ -513,7 +513,7 @@ export default function RequestsPanel({
                           {r.material_id}
                         </span>
                       )}
-                      {r.spec && <span className="text-white/40">{r.spec}</span>}
+                      {r.spec && <span className="text-white/[0.56]">{r.spec}</span>}
                     </p>
                   </div>
                   <span
@@ -526,13 +526,13 @@ export default function RequestsPanel({
                   </span>
                 </div>
 
-                <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-[12.5px] text-white/55">
+                <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-[12.5px] text-white/[0.72]">
                   {r.delivery_window && <span>Lieferung {r.delivery_window}</span>}
                   {until && isLive(r.status) && (
                     <span
                       className={cn(
                         "inline-flex items-center gap-1",
-                        until.late ? "font-semibold text-rose-300" : "text-white/55",
+                        until.late ? "font-semibold text-rose-300" : "text-white/[0.72]",
                       )}
                     >
                       <Clock className="h-3.5 w-3.5" />
@@ -540,14 +540,14 @@ export default function RequestsPanel({
                     </span>
                   )}
                   {r.kbob_reference_price != null && (
-                    <span className="text-white/40">
+                    <span className="text-white/[0.56]">
                       KBOB-Referenz CHF {chf(r.kbob_reference_price, 2)}/{r.unit}
                     </span>
                   )}
                 </div>
 
                 {r.note && (
-                  <p className="mt-2 text-[12.5px] leading-relaxed text-white/55">{r.note}</p>
+                  <p className="mt-2 text-[12.5px] leading-relaxed text-white/[0.72]">{r.note}</p>
                 )}
 
                 {offer && (
@@ -555,7 +555,7 @@ export default function RequestsPanel({
                 )}
 
                 {r.offers.length > 1 && (
-                  <p className="mt-1.5 text-[11.5px] text-white/40">
+                  <p className="mt-1.5 text-[11.5px] text-white/[0.56]">
                     {r.offers.length} Angebote im Verlauf — das jüngste ist oben.
                   </p>
                 )}
@@ -564,7 +564,7 @@ export default function RequestsPanel({
                   {other && (
                     <Link
                       href={`/messages?to=${other.id}`}
-                      className="inline-flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-[12.5px] font-semibold text-white/70 transition-colors hover:bg-white/[0.07]"
+                      className="inline-flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-[12.5px] font-semibold text-white/[0.72] transition-colors hover:bg-white/[0.07]"
                     >
                       <MessageSquare className="h-3.5 w-3.5" /> Im Chat besprechen
                     </Link>
@@ -584,7 +584,7 @@ export default function RequestsPanel({
                         type="button"
                         onClick={() => setRequestStatus(r, "DECLINED")}
                         disabled={working}
-                        className="inline-flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-[12.5px] font-semibold text-white/40 transition-colors hover:bg-rose-500/10 hover:text-rose-300 disabled:opacity-50"
+                        className="inline-flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-[12.5px] font-semibold text-white/[0.56] transition-colors hover:bg-rose-500/10 hover:text-rose-300 disabled:opacity-50"
                       >
                         {working ? (
                           <Loader2 className="h-3.5 w-3.5 animate-spin" />
@@ -617,7 +617,7 @@ export default function RequestsPanel({
                         type="button"
                         onClick={() => setRequestStatus(r, "WITHDRAWN")}
                         disabled={working}
-                        className="inline-flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-[12.5px] font-semibold text-white/40 transition-colors hover:bg-white/[0.07] hover:text-white/75 disabled:opacity-50"
+                        className="inline-flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-[12.5px] font-semibold text-white/[0.56] transition-colors hover:bg-white/[0.07] hover:text-white/[0.72] disabled:opacity-50"
                       >
                         Anfrage zurückziehen
                       </button>

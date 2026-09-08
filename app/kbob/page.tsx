@@ -22,11 +22,11 @@ export default async function KbobPage({
     <main className={cn(SHELL, "py-6")}>
       {/* Kopf über die volle Breite, ohne Kasten — wie auf Netzwerk und
           Smart Pools. Darunter eine Haarlinie, dann der Verlauf. */}
-      <header className="border-b border-white/[0.08]">
+      <header className="border-b border-white/[0.12]">
         <div className="py-8">
           <span className={EYEBROW}>Marktdaten</span>
           <h1 className={cn(D_MD, "mt-4 text-white")}>Referenzpreise</h1>
-          <p className="mt-6 max-w-xl text-[16px] leading-relaxed text-white/55">
+          <p className="mt-6 max-w-xl text-[16px] leading-relaxed text-white/[0.72]">
             Wo der Markt steht — und was du selbst bezahlt hast. Jeder Abschluss
             wird gegen den Referenzpreis gemessen, der zum Zeitpunkt deiner
             Anfrage galt.
@@ -38,8 +38,8 @@ export default async function KbobPage({
           eine Fussnote — sonst liest sich eine Modellreihe wie ein amtlicher
           Index. Kein Warnkasten mehr, sondern eine Notiz an einer Goldkante:
           sie soll gelesen, nicht weggeklickt werden. */}
-      <div className="border-b border-white/[0.08] py-6">
-        <p className="border-l-2 border-brand pl-4 text-[12.5px] leading-relaxed text-white/50">
+      <div className="border-b border-white/[0.12] py-6">
+        <p className="border-l-2 border-brand pl-4 text-[12.5px] leading-relaxed text-white/[0.56]">
           <b className="font-semibold text-white/80">Zur Datenlage:</b> Die
           Referenzkurve ist derzeit eine nachgebildete Reihe am KBOB-Preisindex,
           keine amtliche Publikation. Sie taugt für Grössenordnung und Verlauf,

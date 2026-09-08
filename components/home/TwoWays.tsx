@@ -41,12 +41,12 @@ function Card({
   alt: string;
 }) {
   return (
-    <div className="group relative flex flex-col overflow-hidden rounded-[28px] border border-white/[0.22] bg-black sm:rounded-[32px]">
+    <div className="group relative flex flex-col overflow-hidden rounded-[20px] border border-white/[0.22] bg-black sm:rounded-[20px]">
       <div className="px-6 pb-2 pt-10 text-center sm:px-10 sm:pt-14">
         <h3 className="font-display text-[26px] font-bold leading-[1.15] tracking-[-0.02em] text-white sm:text-[30px]">
           {title}
         </h3>
-        <p className="mx-auto mt-4 max-w-[26rem] text-[14.5px] font-medium leading-relaxed text-white/60 sm:text-[15.5px]">
+        <p className="mx-auto mt-4 max-w-[26rem] text-[14.5px] font-medium leading-relaxed text-white/[0.72] sm:text-[15.5px]">
           {lead}
         </p>
         <Link href={href} className={cn(BTN_LIGHT, "mt-7 sm:mt-8")}>
@@ -73,7 +73,7 @@ function Card({
 
 export default function TwoWays() {
   return (
-    <section className="bg-[#060B12]">
+    <section className="bg-black">
       <div className={cn(SHELL, SECTION)}>
         <div className="mb-12 max-w-2xl sm:mb-16">
           <span className={EYEBROW}>

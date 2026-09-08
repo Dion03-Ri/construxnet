@@ -114,7 +114,7 @@ function PoolRow({
   const sealed = b.status === "SEALED_BIDDING";
 
   return (
-    <li className="border-t border-white/[0.08] transition-colors hover:bg-white/[0.02]">
+    <li className="border-t border-white/[0.12] transition-colors hover:bg-white/[0.02]">
       <div className={cn(ROW_GRID, "gap-y-5 py-6")}>
         {/* ---------- Was und wo ---------- */}
         <div className="min-w-0">
@@ -128,7 +128,7 @@ function PoolRow({
               aria-label={saved ? "Aus Merkliste entfernen" : "Bündel speichern"}
               className={cn(
                 "mt-0.5 shrink-0 transition-colors lg:hidden",
-                saved ? "text-brand" : "text-white/30 hover:text-white/70",
+                saved ? "text-brand" : "text-white/[0.5] hover:text-white/[0.72]",
               )}
             >
               <Bookmark className={cn("h-4 w-4", saved && "fill-current")} />
@@ -138,11 +138,11 @@ function PoolRow({
           {/* Phase, Ort, Firmen, Frist in einer Zeile. Die Phase steht als
               Wort da, nicht als gefülltes Etikett — ein Kästchen pro Zeile
               ergäbe wieder eine Kästchenwand. */}
-          <p className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-[12.5px] text-white/40">
+          <p className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-[12.5px] text-white/[0.56]">
             <span
               className={cn(
                 "inline-flex items-center gap-1.5 text-[10.5px] font-semibold uppercase tracking-[0.12em]",
-                sealed ? "text-white/45" : "text-brand",
+                sealed ? "text-white/[0.56]" : "text-brand",
               )}
             >
               {sealed ? <Gavel className="h-3 w-3" /> : <Layers className="h-3 w-3" />}
@@ -158,7 +158,7 @@ function PoolRow({
             <span
               className={cn(
                 "inline-flex items-center gap-1 font-medium",
-                cd.urgent ? "text-rose-300" : "text-white/40",
+                cd.urgent ? "text-rose-300" : "text-white/[0.56]",
               )}
             >
               {cd.urgent ? <Flame className="h-3.5 w-3.5" /> : <Clock className="h-3.5 w-3.5" />}
@@ -167,7 +167,7 @@ function PoolRow({
           </p>
 
           {b.participant_count < b.min_participants_for_bidding && (
-            <p className="mt-2.5 flex items-start gap-1.5 text-[11.5px] leading-relaxed text-white/35">
+            <p className="mt-2.5 flex items-start gap-1.5 text-[11.5px] leading-relaxed text-white/[0.5]">
               <Info className="mt-px h-3.5 w-3.5 shrink-0" />
               Ausschreibung startet ab {b.min_participants_for_bidding} Firmen — so kann kein
               Lieferant aus dem Bündel auf einzelne Bauunternehmen zurückrechnen.
@@ -178,11 +178,11 @@ function PoolRow({
         {/* ---------- Wie voll ---------- */}
         <div>
           <div className="flex items-baseline justify-between gap-3 text-[12.5px]">
-            <span className="tabular-nums text-white/70">
+            <span className="tabular-nums text-white/[0.72]">
               {chf(b.current_volume)} {b.unit}
             </span>
             {step && (
-              <span className="tabular-nums text-white/30">
+              <span className="tabular-nums text-white/[0.5]">
                 Stufe {step.tier} bei {chf(step.at)} {b.unit}
               </span>
             )}
@@ -191,9 +191,9 @@ function PoolRow({
             <div className="h-full rounded-full bg-brand" style={{ width: `${pct}%` }} />
           </div>
           {step && (
-            <p className="mt-2 text-[11.5px] text-white/40">
+            <p className="mt-2 text-[11.5px] text-white/[0.56]">
               Noch{" "}
-              <b className="font-semibold tabular-nums text-white/75">
+              <b className="font-semibold tabular-nums text-white/[0.72]">
                 {chf(step.at - b.current_volume)} {b.unit}
               </b>{" "}
               bis mind. {step.discount} %.
@@ -207,7 +207,7 @@ function PoolRow({
             {b.current_discount_pct}
             <span className="text-[17px]"> %</span>
           </div>
-          <div className="mt-1.5 whitespace-nowrap text-[10.5px] font-semibold uppercase tracking-[0.1em] text-white/30">
+          <div className="mt-1.5 whitespace-nowrap text-[10.5px] font-semibold uppercase tracking-[0.1em] text-white/[0.5]">
             Stufe {b.current_tier}
           </div>
         </div>
@@ -231,7 +231,7 @@ function PoolRow({
                   type="button"
                   onClick={onWithdraw}
                   disabled={busy}
-                  className="font-semibold text-white/35 transition-colors hover:text-rose-300 disabled:opacity-50"
+                  className="font-semibold text-white/[0.5] transition-colors hover:text-rose-300 disabled:opacity-50"
                 >
                   {busy ? "…" : "zurückziehen"}
                 </button>
@@ -254,7 +254,7 @@ function PoolRow({
           aria-label={saved ? "Aus Merkliste entfernen" : "Bündel speichern"}
           className={cn(
             "hidden self-start justify-self-end pt-1 transition-colors lg:block",
-            saved ? "text-brand" : "text-white/25 hover:text-white/70",
+            saved ? "text-brand" : "text-white/[0.4] hover:text-white/[0.72]",
           )}
         >
           <Bookmark className={cn("h-4 w-4", saved && "fill-current")} />
@@ -310,7 +310,7 @@ export default function OpenPools() {
           Der aktive Filter trägt eine Goldkante unten. Ein gefülltes
           Kästchen in einem umrandeten Kästchen wären zwei Ränder für eine
           Auswahl aus vier Möglichkeiten. */}
-      <div className="flex flex-col gap-4 border-b border-white/[0.08] sm:flex-row sm:items-end sm:justify-between">
+      <div className="flex flex-col gap-4 border-b border-white/[0.12] sm:flex-row sm:items-end sm:justify-between">
         <div className="-mb-px flex gap-6 overflow-x-auto">
           {FILTERS.map((f) => (
             <button
@@ -324,7 +324,7 @@ export default function OpenPools() {
                 "shrink-0 whitespace-nowrap border-b-2 pb-3 text-[13.5px] font-semibold transition-colors",
                 phase === f.key && !onlyMine
                   ? "border-brand text-white"
-                  : "border-transparent text-white/45 hover:text-white",
+                  : "border-transparent text-white/[0.56] hover:text-white",
               )}
             >
               {f.label}
@@ -335,7 +335,7 @@ export default function OpenPools() {
             onClick={() => setOnlyMine((v) => !v)}
             className={cn(
               "shrink-0 whitespace-nowrap border-b-2 pb-3 text-[13.5px] font-semibold transition-colors",
-              onlyMine ? "border-brand text-white" : "border-transparent text-white/45 hover:text-white",
+              onlyMine ? "border-brand text-white" : "border-transparent text-white/[0.56] hover:text-white",
             )}
           >
             Meine
@@ -365,17 +365,17 @@ export default function OpenPools() {
       )}
 
       {loading ? (
-        <div className="grid place-items-center py-24 text-white/40">
+        <div className="grid place-items-center py-24 text-white/[0.56]">
           <Loader2 className="h-5 w-5 animate-spin" />
         </div>
       ) : list.length === 0 ? (
-        <div className="border-t border-white/[0.08] py-20 text-center">
+        <div className="border-t border-white/[0.12] py-20 text-center">
           <p className="text-[17px] font-bold tracking-tight text-white">
             {bundles.length === 0
               ? "Noch läuft kein Bündel"
               : "Keine Bündel in dieser Auswahl"}
           </p>
-          <p className="mx-auto mt-2 max-w-md text-[13.5px] leading-relaxed text-white/45">
+          <p className="mx-auto mt-2 max-w-md text-[13.5px] leading-relaxed text-white/[0.56]">
             {bundles.length === 0
               ? "Bündel entstehen aus gemeldetem Bedarf. Meldest du deinen, ist das erste da — und andere mit demselben Material in derselben Region kommen dazu."
               : "Andere Region oder Phase wählen."}
@@ -396,7 +396,7 @@ export default function OpenPools() {
           <div
             className={cn(
               ROW_GRID,
-              "hidden pb-2.5 pt-7 text-[10.5px] font-semibold uppercase tracking-[0.12em] text-white/25 lg:grid",
+              "hidden pb-2.5 pt-7 text-[10.5px] font-semibold uppercase tracking-[0.12em] text-white/[0.4] lg:grid",
             )}
           >
             <span>Bündel</span>
@@ -406,7 +406,7 @@ export default function OpenPools() {
             <span />
           </div>
 
-          <ul className="border-b border-white/[0.08]">
+          <ul className="border-b border-white/[0.12]">
             {list.map((b) => (
               <PoolRow
                 key={b.id}

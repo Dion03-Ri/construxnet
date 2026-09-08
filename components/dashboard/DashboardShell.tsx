@@ -167,8 +167,8 @@ type CartItem = { key: string; id: string; label: string; unit: string; kbobPric
 function KpiCard({ k }: { k: Kpi }) {
   const up = k.delta >= 0;
   return (
-    <div className="border-t border-white/[0.08] pt-5">
-      <div className="text-[13px] font-medium text-white/55">{k.label}</div>
+    <div className="border-t border-white/[0.12] pt-5">
+      <div className="text-[13px] font-medium text-white/[0.72]">{k.label}</div>
       <div className="mt-1.5 flex items-end justify-between gap-2">
         <div className="text-2xl font-bold tracking-tight text-white">{k.value}</div>
         <span className={cn("inline-flex items-center gap-0.5 text-[11px] font-semibold", up ? "text-brand" : "text-rose-500")}>
@@ -176,7 +176,7 @@ function KpiCard({ k }: { k: Kpi }) {
           {Math.abs(k.delta)}%
         </span>
       </div>
-      <div className="mt-1 text-[11px] text-white/40">ggü. Vorjahr</div>
+      <div className="mt-1 text-[11px] text-white/[0.56]">ggü. Vorjahr</div>
     </div>
   );
 }
@@ -193,13 +193,13 @@ function PoolRow({ b, myVolume }: { b: Bundle; myVolume: number }) {
   const pct = Math.min(100, Math.round((b.current_volume / (goal || 1)) * 100));
 
   return (
-    <Link href="/pools" className="block rounded-lg border border-white/[0.08] p-4 transition-colors hover:border-brand/40">
+    <Link href="/pools" className="block rounded-lg border border-white/[0.12] p-4 transition-colors hover:border-brand/40">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div className="flex flex-wrap items-center gap-2">
           <span className="font-medium text-white">{b.material_label ?? b.title}</span>
-          <span className="rounded-md bg-white/10 px-2 py-0.5 text-[11px] text-white/55">{b.region}</span>
+          <span className="rounded-md bg-white/10 px-2 py-0.5 text-[11px] text-white/[0.72]">{b.region}</span>
           {b.status === "SEALED_BIDDING" && (
-            <span className="inline-flex items-center gap-1.5 text-[10.5px] font-semibold uppercase tracking-[0.12em] text-white/45">
+            <span className="inline-flex items-center gap-1.5 text-[10.5px] font-semibold uppercase tracking-[0.12em] text-white/[0.56]">
               <Gavel className="h-3 w-3" /> Ausschreibung läuft
             </span>
           )}
@@ -209,7 +209,7 @@ function PoolRow({ b, myVolume }: { b: Bundle; myVolume: number }) {
             </span>
           )}
         </div>
-        <span className="inline-flex items-center gap-1 text-xs text-white/55">
+        <span className="inline-flex items-center gap-1 text-xs text-white/[0.72]">
           <Clock className="h-3.5 w-3.5" /> {deadlineLabel(b.bid_deadline ?? b.deadline)}
         </span>
       </div>
@@ -221,7 +221,7 @@ function PoolRow({ b, myVolume }: { b: Bundle; myVolume: number }) {
         <span className="inline-flex items-center gap-1.5 text-[10.5px] font-semibold uppercase tracking-[0.12em] text-brand">Stufe {b.current_tier} · mind. {b.current_discount_pct}%</span>
       </div>
 
-      <div className="mt-1.5 flex flex-wrap items-center justify-between gap-x-3 text-[11px] text-white/55">
+      <div className="mt-1.5 flex flex-wrap items-center justify-between gap-x-3 text-[11px] text-white/[0.72]">
         <span>
           {chf(b.current_volume)} {b.unit} gesamt · davon deine {chf(myVolume)} {b.unit}
         </span>
@@ -255,16 +255,16 @@ function MyBundles({ limit }: { limit?: number }) {
 
   if (loading) {
     return (
-      <div className="grid place-items-center py-10 text-white/40">
+      <div className="grid place-items-center py-10 text-white/[0.56]">
         <Loader2 className="h-5 w-5 animate-spin" />
       </div>
     );
   }
   if (list.length === 0) {
     return (
-      <div className="rounded-lg border border-dashed border-white/[0.08] px-4 py-8 text-center">
-        <p className="text-[13px] font-semibold text-white/75">Du bist noch in keinem Bündel</p>
-        <p className="mx-auto mt-1 max-w-sm text-[12px] leading-relaxed text-white/55">
+      <div className="rounded-lg border border-dashed border-white/[0.12] px-4 py-8 text-center">
+        <p className="text-[13px] font-semibold text-white/[0.72]">Du bist noch in keinem Bündel</p>
+        <p className="mx-auto mt-1 max-w-sm text-[12px] leading-relaxed text-white/[0.72]">
           Bündel entstehen aus gemeldetem Bedarf. Meldest du deinen, kommst du
           entweder einem laufenden dazu oder startest ein neues.
         </p>
@@ -328,23 +328,23 @@ function OverviewPanel({ role }: { role: "buyer" | "supplier" }) {
   return (
     <div className="space-y-4">
       {/* Offene Punkte */}
-      <div className="border-t border-white/[0.08]">
+      <div className="border-t border-white/[0.12]">
         <div className="border-b border-white/[0.06] px-5 py-3.5">
           <h3 className="text-[15px] font-bold text-white">Das braucht deine Aufmerksamkeit</h3>
-          <p className="mt-0.5 text-[12.5px] text-white/55">
+          <p className="mt-0.5 text-[12.5px] text-white/[0.72]">
             Offene Punkte aus Bündeln, Verträgen und Lieferungen.
           </p>
         </div>
-        <ul className="divide-y divide-white/[0.06]">
+        <ul className="divide-y divide-white/[0.12]">
           {openTasks.map((t) => (
             <li key={t.text} className="flex items-center gap-3 px-5 py-3">
               <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-navy-900 text-brand">
                 <t.icon className="h-4 w-4" />
               </span>
-              <span className="min-w-0 flex-1 text-[13.5px] text-white/75">{t.text}</span>
+              <span className="min-w-0 flex-1 text-[13.5px] text-white/[0.72]">{t.text}</span>
               <Link
                 href={t.href}
-                className="shrink-0 rounded-md border border-white/[0.08] px-3 py-1.5 text-[12.5px] font-semibold text-white/70 transition-colors hover:border-brand/40 hover:text-brand"
+                className="shrink-0 rounded-md border border-white/[0.12] px-3 py-1.5 text-[12.5px] font-semibold text-white/[0.72] transition-colors hover:border-brand/40 hover:text-brand"
               >
                 {t.cta}
               </Link>
@@ -354,11 +354,11 @@ function OverviewPanel({ role }: { role: "buyer" | "supplier" }) {
       </div>
 
       {/* Laufende Bündel — hier kann man noch Menge einbringen */}
-      <div className="border-t border-white/[0.08] pt-6">
+      <div className="border-t border-white/[0.12] pt-6">
         <div className="mb-3 flex items-center justify-between">
           <div>
             <h3 className="text-[15px] font-bold text-white">Deine laufenden Bündel</h3>
-            <p className="mt-0.5 text-[12.5px] text-white/55">
+            <p className="mt-0.5 text-[12.5px] text-white/[0.72]">
               Solange die Sammelphase läuft, zählt jede zusätzliche Menge.
             </p>
           </div>
@@ -370,14 +370,14 @@ function OverviewPanel({ role }: { role: "buyer" | "supplier" }) {
       </div>
 
       {isSupplier && (
-        <div className="flex items-center gap-3 border-t border-white/[0.08] pt-6">
+        <div className="flex items-center gap-3 border-t border-white/[0.12] pt-6">
           <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-navy-900 text-brand">
             <Gavel className="h-4 w-4" />
           </span>
-          <p className="flex-1 text-[13.5px] text-white/75">
+          <p className="flex-1 text-[13.5px] text-white/[0.72]">
             Offene Ausschreibungen warten auf dein Gebot.
           </p>
-          <span className="text-[12.5px] text-white/40">Reiter „Ausschreibungen"</span>
+          <span className="text-[12.5px] text-white/[0.56]">Reiter „Ausschreibungen"</span>
         </div>
       )}
     </div>
@@ -445,15 +445,15 @@ ${o.contract ? `<div class="box"><div class="lbl">Vertrag</div><table>${row("SIA
 
 function OrdersPanel({ companyName }: { companyName: string }) {
   return (
-    <div className="border-t border-white/[0.08] pt-6">
+    <div className="border-t border-white/[0.12] pt-6">
       <div className="mb-3 flex items-center justify-between">
         <h3 className="text-[15px] font-bold text-white">Bestellungen</h3>
-        <span className="rounded-md border border-white/[0.08] px-2.5 py-1 text-xs text-white/55">letzte 60 Tage</span>
+        <span className="rounded-md border border-white/[0.12] px-2.5 py-1 text-xs text-white/[0.72]">letzte 60 Tage</span>
       </div>
       <div className="overflow-x-auto">
         <table className="w-full text-left text-[13px]">
           <thead>
-            <tr className="text-[11px] uppercase tracking-wider text-white/40">
+            <tr className="text-[11px] uppercase tracking-wider text-white/[0.56]">
               <th className="pb-2 font-medium">Nummer</th>
               <th className="pb-2 font-medium">Material</th>
               <th className="pb-2 text-right font-medium">Betrag</th>
@@ -462,26 +462,26 @@ function OrdersPanel({ companyName }: { companyName: string }) {
               <th className="pb-2 text-right font-medium">Beleg</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-white/[0.06]">
+          <tbody className="divide-y divide-white/[0.12]">
             {ORDERS.map((o) => (
               <tr key={o.id}>
                 <td className="py-2.5 font-semibold text-white/90">{o.id}</td>
-                <td className="py-2.5 text-white/70">
+                <td className="py-2.5 text-white/[0.72]">
                   {o.material}
                   <div className="font-mono text-[10.5px] tracking-tight text-brand-700">{o.materialId}</div>
-                  <div className="text-[11px] text-white/40">{chf(o.qty)} {o.unit}</div>
+                  <div className="text-[11px] text-white/[0.56]">{chf(o.qty)} {o.unit}</div>
                 </td>
-                <td className="py-2.5 text-right tabular-nums text-white/75">CHF {chf(o.amount)}</td>
-                <td className="hidden py-2.5 text-white/55 sm:table-cell">{o.date}</td>
+                <td className="py-2.5 text-right tabular-nums text-white/[0.72]">CHF {chf(o.amount)}</td>
+                <td className="hidden py-2.5 text-white/[0.72] sm:table-cell">{o.date}</td>
                 <td className="py-2.5">
-                  <span className={cn("inline-flex items-center gap-1.5 text-[10.5px] font-semibold uppercase tracking-[0.12em]", o.status === "Abgeschlossen" ? "text-white/35" : "text-brand")}>{o.status}</span>
+                  <span className={cn("inline-flex items-center gap-1.5 text-[10.5px] font-semibold uppercase tracking-[0.12em]", o.status === "Abgeschlossen" ? "text-white/[0.5]" : "text-brand")}>{o.status}</span>
                 </td>
                 <td className="py-2.5 text-right">
                   <button
                     type="button"
                     onClick={() => printOrder(o, companyName)}
                     title="Als PDF speichern"
-                    className="inline-flex items-center gap-1 rounded-md border border-white/[0.08] px-2.5 py-1.5 text-[12px] font-semibold text-white/70 transition-colors hover:border-brand/40 hover:text-brand"
+                    className="inline-flex items-center gap-1 rounded-md border border-white/[0.12] px-2.5 py-1.5 text-[12px] font-semibold text-white/[0.72] transition-colors hover:border-brand/40 hover:text-brand"
                   >
                     <Download className="h-3.5 w-3.5" /> PDF
                   </button>
@@ -504,10 +504,10 @@ function SpendByCategory() {
 
   return (
     <>
-      <div className="border-t border-white/[0.08] pt-6">
+      <div className="border-t border-white/[0.12] pt-6">
         <div className="flex items-center justify-between">
           <h3 className="text-[14px] font-bold text-white">Ausgaben nach Kategorie</h3>
-          <span className="text-[11.5px] text-white/40">letzte 12 Monate</span>
+          <span className="text-[11.5px] text-white/[0.56]">letzte 12 Monate</span>
         </div>
         <ul className="mt-3 space-y-2">
           {rows.map((r) => {
@@ -515,11 +515,11 @@ function SpendByCategory() {
             const body = (
               <>
                 <div className="flex items-baseline justify-between text-[13px]">
-                  <span className={cn("font-medium", isRest ? "text-white/55" : "text-white/75")}>
+                  <span className={cn("font-medium", isRest ? "text-white/[0.72]" : "text-white/[0.72]")}>
                     {r.name}
-                    {isRest && <span className="ml-1 text-[11px] text-white/40">({SPEND_REST.length} Kategorien)</span>}
+                    {isRest && <span className="ml-1 text-[11px] text-white/[0.56]">({SPEND_REST.length} Kategorien)</span>}
                   </span>
-                  <span className="tabular-nums text-white/55">CHF {chf(r.amount)}</span>
+                  <span className="tabular-nums text-white/[0.72]">CHF {chf(r.amount)}</span>
                 </div>
                 <div className="mt-1 h-1.5 w-full overflow-hidden rounded-full bg-white/10">
                   <div
@@ -551,35 +551,35 @@ function SpendByCategory() {
 
       {showAll && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-navy-950/60 backdrop-blur-sm" onClick={() => setShowAll(false)} />
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setShowAll(false)} />
           <motion.div
             initial={{ opacity: 0, scale: 0.97, y: 8 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             transition={{ duration: 0.16 }}
-            className="relative w-full max-w-md overflow-hidden rounded-xl border border-white/[0.08] bg-[#0B1522] shadow-2xl"
+            className="relative w-full max-w-md overflow-hidden rounded-xl border border-white/[0.12] bg-[#16181a] shadow-2xl"
           >
-            <div className="flex items-center justify-between border-b border-white/[0.08] px-5 py-3.5">
+            <div className="flex items-center justify-between border-b border-white/[0.12] px-5 py-3.5">
               <h3 className="text-[15px] font-bold text-white">Alle Kategorien</h3>
               <button
                 type="button"
                 onClick={() => setShowAll(false)}
-                className="rounded-md p-1.5 text-white/40 transition-colors hover:bg-white/[0.07] hover:text-white/75"
+                className="rounded-md p-1.5 text-white/[0.56] transition-colors hover:bg-white/[0.07] hover:text-white/[0.72]"
                 aria-label="Schliessen"
               >
                 <X className="h-4 w-4" />
               </button>
             </div>
-            <ul className="max-h-[60vh] divide-y divide-white/[0.06] overflow-y-auto">
+            <ul className="max-h-[60vh] divide-y divide-white/[0.12] overflow-y-auto">
               {[...SPEND_TOP, ...SPEND_REST]
                 .sort((a, b) => b.amount - a.amount)
                 .map((r) => (
                   <li key={r.name} className="flex items-center justify-between px-5 py-2.5 text-[13px]">
-                    <span className="text-white/75">{r.name}</span>
+                    <span className="text-white/[0.72]">{r.name}</span>
                     <span className="tabular-nums font-medium text-white">CHF {chf(r.amount)}</span>
                   </li>
                 ))}
             </ul>
-            <div className="flex items-center justify-between border-t border-white/[0.08] bg-white/[0.03] px-5 py-3 text-[13px]">
+            <div className="flex items-center justify-between border-t border-white/[0.12] bg-white/[0.03] px-5 py-3 text-[13px]">
               <span className="font-semibold text-white">Total</span>
               <span className="font-bold tabular-nums text-white">
                 CHF {chf([...SPEND_TOP, ...SPEND_REST].reduce((a, b) => a + b.amount, 0))}
@@ -595,10 +595,10 @@ function SpendByCategory() {
 /** Kennzahlen — schlichte Zahlen statt weiterer Diagramme. */
 function ReportStat({ label, value, hint }: { label: string; value: string; hint: string }) {
   return (
-    <div className="border-t border-white/[0.08] pt-5">
-      <div className="text-[12.5px] text-white/55">{label}</div>
+    <div className="border-t border-white/[0.12] pt-5">
+      <div className="text-[12.5px] text-white/[0.72]">{label}</div>
       <div className="mt-1 text-2xl font-bold tracking-tight text-white">{value}</div>
-      <div className="mt-0.5 text-[11.5px] text-white/40">{hint}</div>
+      <div className="mt-0.5 text-[11.5px] text-white/[0.56]">{hint}</div>
     </div>
   );
 }
@@ -621,13 +621,13 @@ function ReportsPanel({ role }: { role: "buyer" | "supplier" }) {
       </div>
 
       {/* Das einzige grosse Diagramm */}
-      <div className="border-t border-white/[0.08] pt-6">
+      <div className="border-t border-white/[0.12] pt-6">
         <div className="flex items-center justify-between">
           <div>
             <h3 className="text-[15px] font-bold text-white">Beschaffungsvolumen</h3>
-            <p className="mt-0.5 text-[12.5px] text-white/55">Monatlich, letzte 12 Monate</p>
+            <p className="mt-0.5 text-[12.5px] text-white/[0.72]">Monatlich, letzte 12 Monate</p>
           </div>
-          <span className="rounded-md border border-white/[0.08] px-2.5 py-1 text-xs text-white/55">12 Monate</span>
+          <span className="rounded-md border border-white/[0.12] px-2.5 py-1 text-xs text-white/[0.72]">12 Monate</span>
         </div>
         <div className="mt-4 h-60">
           <ResponsiveContainer width="100%" height="100%">
@@ -655,18 +655,18 @@ function ReportsPanel({ role }: { role: "buyer" | "supplier" }) {
 function ContractsPanel() {
   return (
     <div className="space-y-4">
-      <div className="border-t border-white/[0.08] pt-6">
+      <div className="border-t border-white/[0.12] pt-6">
         <h3 className="text-[15px] font-semibold text-white">Aktive Pool-Teilnahmen</h3>
         <div className="mt-4 space-y-3">
           <MyBundles />
         </div>
       </div>
 
-      <div className="border-t border-white/[0.08] pt-6">
+      <div className="border-t border-white/[0.12] pt-6">
         <h3 className="text-[15px] font-bold text-white">SIA-118 Verträge</h3>
-        <div className="mt-2 flex items-start gap-2.5 rounded-lg border border-white/[0.08] bg-white/[0.03] p-3.5">
-          <Info className="mt-0.5 h-4 w-4 shrink-0 text-white/40" />
-          <p className="text-[12.5px] leading-relaxed text-white/70">
+        <div className="mt-2 flex items-start gap-2.5 rounded-lg border border-white/[0.12] bg-white/[0.03] p-3.5">
+          <Info className="mt-0.5 h-4 w-4 shrink-0 text-white/[0.56]" />
+          <p className="text-[12.5px] leading-relaxed text-white/[0.72]">
             <b className="text-white/90">Wofür das gut ist:</b> SIA-118 ist die Schweizer Norm für
             Bauverträge. Sie regelt Fristen, Mängelhaftung, Zahlungspläne und Verzug einheitlich,
             damit nicht jede Firma eigene Verträge aufsetzen muss. Kommt über Obtanet ein Zuschlag
@@ -677,7 +677,7 @@ function ContractsPanel() {
         <div className="mt-3 overflow-x-auto">
           <table className="w-full text-left text-[13px]">
             <thead>
-              <tr className="text-[11px] uppercase tracking-wider text-white/40">
+              <tr className="text-[11px] uppercase tracking-wider text-white/[0.56]">
                 <th className="pb-2 font-medium">Vertrag</th>
                 <th className="pb-2 font-medium">Material</th>
                 <th className="hidden pb-2 font-medium sm:table-cell">Menge</th>
@@ -685,15 +685,15 @@ function ContractsPanel() {
                 <th className="pb-2 text-right font-medium">Status</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-white/[0.06]">
+            <tbody className="divide-y divide-white/[0.12]">
               {CONTRACTS.map((c) => (
                 <tr key={c.no}>
                   <td className="py-2.5 font-medium text-white/90">{c.no}</td>
-                  <td className="py-2.5 text-white/70">{c.material}</td>
-                  <td className="hidden py-2.5 text-white/55 sm:table-cell">{c.vol}</td>
-                  <td className="py-2.5 tabular-nums text-white/70">{c.price}</td>
+                  <td className="py-2.5 text-white/[0.72]">{c.material}</td>
+                  <td className="hidden py-2.5 text-white/[0.72] sm:table-cell">{c.vol}</td>
+                  <td className="py-2.5 tabular-nums text-white/[0.72]">{c.price}</td>
                   <td className="py-2.5 text-right">
-                    <span className={cn("inline-flex items-center gap-1.5 text-[10.5px] font-semibold uppercase tracking-[0.12em]", c.status === "Aktiv" ? "text-brand" : "text-white/35")}>{c.status}</span>
+                    <span className={cn("inline-flex items-center gap-1.5 text-[10.5px] font-semibold uppercase tracking-[0.12em]", c.status === "Aktiv" ? "text-brand" : "text-white/[0.5]")}>{c.status}</span>
                   </td>
                 </tr>
               ))}
@@ -742,22 +742,22 @@ function WorkspacePanel({
   return (
     <div className="space-y-4">
       {/* Suche + Ausschreibung hochladen */}
-      <div className="border-t border-white/[0.08] pt-5">
+      <div className="border-t border-white/[0.12] pt-5">
         <div className="flex flex-col gap-3 sm:flex-row">
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-white/40" />
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-white/[0.56]" />
             <input
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Material, Nummer (OB-BET-001) oder SIA-Norm …"
-              className="w-full rounded-md border border-white/[0.16] bg-white/[0.03] py-2.5 pl-9 pr-3 text-sm text-white placeholder:text-white/40 outline-none focus:border-brand focus:bg-[#0B1522] focus:ring-1 focus:ring-brand/30"
+              className="w-full rounded-md border border-white/[0.16] bg-white/[0.03] py-2.5 pl-9 pr-3 text-sm text-white placeholder:text-white/[0.56] outline-none focus:border-brand focus:bg-[#16181a] focus:ring-1 focus:ring-brand/30"
             />
           </div>
           <select
             value={cat}
             onChange={(e) => setCat(e.target.value as "ALL" | ProcCategory)}
-            className="rounded-md border border-white/[0.16] bg-white/[0.03] px-3 py-2.5 text-sm text-white/75 outline-none focus:border-brand"
+            className="rounded-md border border-white/[0.16] bg-white/[0.03] px-3 py-2.5 text-sm text-white/[0.72] outline-none focus:border-brand"
           >
             <option value="ALL">Alle Kategorien</option>
             {PROC_CATEGORIES.map((c) => (
@@ -772,14 +772,14 @@ function WorkspacePanel({
           onDrop={(e) => { e.preventDefault(); setDragOver(false); handleFiles(e.dataTransfer.files); }}
           className={cn(
             "mt-3 flex cursor-pointer items-center justify-center gap-2.5 rounded-md border border-dashed px-4 py-4 text-center text-[13px] transition-colors",
-            dragOver ? "border-brand bg-brand/5 text-brand" : "border-white/[0.16] text-white/55 hover:border-brand/40 hover:text-brand",
+            dragOver ? "border-brand bg-brand/5 text-brand" : "border-white/[0.16] text-white/[0.72] hover:border-brand/40 hover:text-brand",
           )}
         >
           <UploadCloud className="h-4 w-4 shrink-0" />
           {fileName ? (
-            <span className="flex items-center gap-2 truncate font-medium text-white/75">
+            <span className="flex items-center gap-2 truncate font-medium text-white/[0.72]">
               {fileName}
-              <button type="button" onClick={(e) => { e.preventDefault(); setFileName(null); }} className="text-white/40 hover:text-rose-500">
+              <button type="button" onClick={(e) => { e.preventDefault(); setFileName(null); }} className="text-white/[0.56] hover:text-rose-500">
                 ✕
               </button>
             </span>
@@ -791,15 +791,15 @@ function WorkspacePanel({
       </div>
 
       {/* Material-Tabelle */}
-      <div className="border-t border-white/[0.08]">
+      <div className="border-t border-white/[0.12]">
         <div className="flex items-center justify-between border-b border-white/[0.06] px-4 py-3">
           <h3 className="text-[15px] font-semibold text-white">Material-Katalog</h3>
-          <span className="text-[11px] text-white/40">{results.length} von {catalog.length}</span>
+          <span className="text-[11px] text-white/[0.56]">{results.length} von {catalog.length}</span>
         </div>
         <div className="max-h-[440px] overflow-y-auto overflow-x-auto">
           <table className="w-full text-left text-[13px]">
-            <thead className="sticky top-0 bg-[#0B1522]">
-              <tr className="text-[11px] uppercase tracking-wider text-white/40">
+            <thead className="sticky top-0 bg-[#16181a]">
+              <tr className="text-[11px] uppercase tracking-wider text-white/[0.56]">
                 <th className="px-4 pb-2 pt-3 font-medium">Material</th>
                 <th className="hidden px-2 pb-2 pt-3 font-medium sm:table-cell">Spezifikation</th>
                 <th className="px-2 pb-2 pt-3 font-medium">
@@ -809,15 +809,15 @@ function WorkspacePanel({
                 <th className="px-4 pb-2 pt-3 text-right font-medium">Aktion</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-white/[0.06]">
+            <tbody className="divide-y divide-white/[0.12]">
               {results.map((m) => (
                 <tr key={m.key}>
                   <td className="px-4 py-2.5">
                     <div className="font-medium text-white/90">{m.label}</div>
-                    <div className="text-[11px] text-white/40">{m.category}</div>
+                    <div className="text-[11px] text-white/[0.56]">{m.category}</div>
                   </td>
-                  <td className="hidden px-2 py-2.5 text-[12px] text-white/55 sm:table-cell">{m.sia}</td>
-                  <td className="px-2 py-2.5 tabular-nums text-white/75">{chf(m.kbobPrice, m.kbobPrice % 1 ? 2 : 0)} / {m.unit}</td>
+                  <td className="hidden px-2 py-2.5 text-[12px] text-white/[0.72] sm:table-cell">{m.sia}</td>
+                  <td className="px-2 py-2.5 tabular-nums text-white/[0.72]">{chf(m.kbobPrice, m.kbobPrice % 1 ? 2 : 0)} / {m.unit}</td>
                   <td className="px-4 py-2.5 text-right">
                     <button
                       type="button"
@@ -833,7 +833,7 @@ function WorkspacePanel({
               ))}
               {results.length === 0 && (
                 <tr>
-                  <td colSpan={4} className="px-4 py-8 text-center text-white/40">Keine Treffer.</td>
+                  <td colSpan={4} className="px-4 py-8 text-center text-white/[0.56]">Keine Treffer.</td>
                 </tr>
               )}
             </tbody>
@@ -875,38 +875,38 @@ function CartPanel({
   const savings = cart.reduce((s, c) => s + c.qty * c.kbobPrice * (tierForVolume(c.qty).discount / 100), 0);
 
   return (
-    <div className="border-t border-white/[0.08] pt-5">
+    <div className="border-t border-white/[0.12] pt-5">
       <div className="flex items-center justify-between">
-        <h3 className="text-[13px] font-semibold uppercase tracking-wider text-white/55">Warenkorb</h3>
+        <h3 className="text-[13px] font-semibold uppercase tracking-wider text-white/[0.72]">Warenkorb</h3>
         {cart.length > 0 && <span className="grid h-5 min-w-5 place-items-center rounded-full bg-brand px-1.5 text-[10.5px] font-bold tabular-nums text-navy-950">{cart.length}</span>}
       </div>
       {projectName && (
-        <p className="mt-1 truncate text-[11.5px] text-white/40">für {projectName}</p>
+        <p className="mt-1 truncate text-[11.5px] text-white/[0.56]">für {projectName}</p>
       )}
 
       {cart.length === 0 ? (
-        <p className="mt-3 text-[13px] text-white/40">Noch keine Materialien gewählt.</p>
+        <p className="mt-3 text-[13px] text-white/[0.56]">Noch keine Materialien gewählt.</p>
       ) : (
         <div className="mt-3 space-y-3">
           {cart.map((c) => (
-            <div key={c.key} className="rounded-md border border-white/[0.08] p-2.5">
+            <div key={c.key} className="rounded-md border border-white/[0.12] p-2.5">
               <div className="flex items-start justify-between gap-2">
                 <span className="text-[13px] font-medium leading-tight text-white/90">{c.label}</span>
-                <button type="button" onClick={() => onRemove(c.key)} className="shrink-0 text-white/25 hover:text-rose-500">
+                <button type="button" onClick={() => onRemove(c.key)} className="shrink-0 text-white/[0.4] hover:text-rose-500">
                   <Trash2 className="h-3.5 w-3.5" />
                 </button>
               </div>
               <div className="mt-2 flex items-center justify-between">
-                <div className="inline-flex items-center gap-1.5 rounded-md border border-white/[0.08] px-1.5 py-1">
-                  <button type="button" onClick={() => onQty(c.key, Math.max(1, c.qty - 1))} className="text-white/40 hover:text-white/75">
+                <div className="inline-flex items-center gap-1.5 rounded-md border border-white/[0.12] px-1.5 py-1">
+                  <button type="button" onClick={() => onQty(c.key, Math.max(1, c.qty - 1))} className="text-white/[0.56] hover:text-white/[0.72]">
                     <Minus className="h-3 w-3" />
                   </button>
-                  <span className="w-12 text-center text-[12px] tabular-nums text-white/75">{c.qty} {c.unit}</span>
-                  <button type="button" onClick={() => onQty(c.key, c.qty + 1)} className="text-white/40 hover:text-white/75">
+                  <span className="w-12 text-center text-[12px] tabular-nums text-white/[0.72]">{c.qty} {c.unit}</span>
+                  <button type="button" onClick={() => onQty(c.key, c.qty + 1)} className="text-white/[0.56] hover:text-white/[0.72]">
                     <Plus className="h-3 w-3" />
                   </button>
                 </div>
-                <span className="text-[12px] font-semibold tabular-nums text-white/75">CHF {chf(c.qty * c.kbobPrice)}</span>
+                <span className="text-[12px] font-semibold tabular-nums text-white/[0.72]">CHF {chf(c.qty * c.kbobPrice)}</span>
               </div>
             </div>
           ))}
@@ -914,7 +914,7 @@ function CartPanel({
       )}
 
       <div className="mt-4 space-y-1.5 border-t border-white/[0.06] pt-3">
-        <div className="flex items-center justify-between text-[13px] text-white/55">
+        <div className="flex items-center justify-between text-[13px] text-white/[0.72]">
           <span>Zwischensumme (KBOB)</span>
           <span className="font-medium text-white/90">CHF {chf(subtotal)}</span>
         </div>
@@ -936,7 +936,7 @@ function CartPanel({
           Bedarf einreichen
         </Link>
       ) : (
-        <span className="mt-4 flex w-full cursor-not-allowed items-center justify-center gap-1.5 rounded-md bg-white/10 px-4 py-2 text-sm font-semibold text-white/40">
+        <span className="mt-4 flex w-full cursor-not-allowed items-center justify-center gap-1.5 rounded-md bg-white/10 px-4 py-2 text-sm font-semibold text-white/[0.56]">
           Bedarf einreichen
         </span>
       )}
@@ -965,13 +965,13 @@ function QuickToolsPanel() {
 
   return (
     <div className="space-y-4">
-      <div className="border-t border-white/[0.08] pt-5">
-        <h3 className="flex items-center gap-1.5 text-[13px] font-semibold uppercase tracking-wider text-white/55">
+      <div className="border-t border-white/[0.12] pt-5">
+        <h3 className="flex items-center gap-1.5 text-[13px] font-semibold uppercase tracking-wider text-white/[0.72]">
           <Calculator className="h-3.5 w-3.5" /> Mengen-/Verschnittrechner
         </h3>
         <div className="mt-3 grid grid-cols-2 gap-2">
           <div>
-            <label className="text-[11px] text-white/40">Menge / Fläche</label>
+            <label className="text-[11px] text-white/[0.56]">Menge / Fläche</label>
             <input
               value={area}
               onChange={(e) => setArea(e.target.value)}
@@ -982,7 +982,7 @@ function QuickToolsPanel() {
             />
           </div>
           <div>
-            <label className="text-[11px] text-white/40">Verschnitt %</label>
+            <label className="text-[11px] text-white/[0.56]">Verschnitt %</label>
             <input
               value={waste}
               onChange={(e) => setWaste(e.target.value)}
@@ -993,16 +993,16 @@ function QuickToolsPanel() {
           </div>
         </div>
         <div className="mt-2.5 flex items-center justify-between rounded-md bg-white/[0.03] px-3 py-2 text-[13px]">
-          <span className="text-white/55">Bestellmenge</span>
+          <span className="text-white/[0.72]">Bestellmenge</span>
           <span className="font-semibold text-white">
             {result !== null ? result.toLocaleString("de-CH", { maximumFractionDigits: 2 }) : "–"}
           </span>
         </div>
       </div>
 
-      <div className="border-t border-white/[0.08] pt-5">
+      <div className="border-t border-white/[0.12] pt-5">
         <div className="flex items-center justify-between">
-          <h3 className="flex items-center gap-1.5 text-[13px] font-semibold uppercase tracking-wider text-white/55">
+          <h3 className="flex items-center gap-1.5 text-[13px] font-semibold uppercase tracking-wider text-white/[0.72]">
             <Coins className="h-3.5 w-3.5" /> KBOB-Index
           </h3>
           <Link href="/kbob" className="text-[11px] font-semibold text-brand hover:underline">Details →</Link>
@@ -1010,7 +1010,7 @@ function QuickToolsPanel() {
         {last ? (
           <div className="mt-2 flex items-end justify-between">
             <div>
-              <div className="text-[11px] text-white/40">{beton.label} · Zürich</div>
+              <div className="text-[11px] text-white/[0.56]">{beton.label} · Zürich</div>
               <div className="text-xl font-bold tabular-nums text-white">CHF {chf(last.kbob, 2)}</div>
             </div>
             <span className={cn("inline-flex items-center gap-0.5 text-[12px] font-semibold", delta >= 0 ? "text-brand" : "text-rose-500")}>
@@ -1019,7 +1019,7 @@ function QuickToolsPanel() {
             </span>
           </div>
         ) : (
-          <p className="mt-2 text-[13px] text-white/40">Keine Daten.</p>
+          <p className="mt-2 text-[13px] text-white/[0.56]">Keine Daten.</p>
         )}
       </div>
     </div>
@@ -1116,7 +1116,7 @@ export default function DashboardShell({ company }: { company: Company }) {
     <div className="grid grid-cols-1 gap-4 lg:grid-cols-[240px_minmax(0,1fr)] xl:grid-cols-[240px_minmax(0,1fr)_300px]">
       {/* Handy: kompakte Kopfzeile + waagrechte Tab-Leiste statt der Seitenspalte.
           Damit steht der Inhalt sofort oben und nicht erst nach einem Bildschirm Navigation. */}
-      <div className="relative border-b border-white/[0.08] pb-5 text-white lg:hidden">
+      <div className="relative border-b border-white/[0.12] pb-5 text-white lg:hidden">
         <div className="relative flex items-center gap-2.5 px-3 py-2.5">
           <span className="grid h-8 w-8 shrink-0 place-items-center overflow-hidden rounded-lg bg-gradient-to-br from-brand to-brand-600 text-[11px] font-bold text-white">
             {company.logo_url ? (
@@ -1128,7 +1128,7 @@ export default function DashboardShell({ company }: { company: Company }) {
           </span>
           <div className="min-w-0 flex-1">
             <div className="truncate text-[13px] font-semibold">{company.company_name}</div>
-            <div className="truncate text-[11px] text-white/40">
+            <div className="truncate text-[11px] text-white/[0.56]">
               {isSupplier ? "Baustoffwerk / Lieferant" : "Bauunternehmen"}
             </div>
           </div>
@@ -1137,7 +1137,7 @@ export default function DashboardShell({ company }: { company: Company }) {
               <button
                 type="button"
                 onClick={() => setView("projects")}
-                className="flex shrink-0 items-center gap-1 rounded-md border border-dashed border-white/20 px-2 py-1.5 text-[11.5px] font-medium text-white/60"
+                className="flex shrink-0 items-center gap-1 rounded-md border border-dashed border-white/20 px-2 py-1.5 text-[11.5px] font-medium text-white/[0.72]"
               >
                 <Plus className="h-3.5 w-3.5" /> Baustelle
               </button>
@@ -1155,7 +1155,7 @@ export default function DashboardShell({ company }: { company: Company }) {
               </select>
             ))}
         </div>
-        <div className="no-scrollbar relative flex gap-1.5 overflow-x-auto border-t border-white/10 px-3 py-2">
+        <div className="no-scrollbar relative flex gap-1.5 overflow-x-auto border-t border-white/[0.12] px-3 py-2">
           {nav.map((n) => {
             const active = view === n.key;
             const count = n.key === "requests" ? openRequests : n.badge;
@@ -1167,7 +1167,7 @@ export default function DashboardShell({ company }: { company: Company }) {
                 aria-current={active ? "page" : undefined}
                 className={cn(
                   "flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-md px-2.5 py-1.5 text-[12.5px] font-medium transition-colors",
-                  active ? "bg-brand text-navy-900" : "bg-white/[0.06] text-white/70",
+                  active ? "bg-brand text-navy-900" : "bg-white/[0.06] text-white/[0.72]",
                 )}
               >
                 <n.icon className="h-3.5 w-3.5 shrink-0" />
@@ -1189,8 +1189,8 @@ export default function DashboardShell({ company }: { company: Company }) {
       </div>
 
       {/* Linke Spalte: Navigation & Projekt-Auswahl (ab lg) */}
-      <aside className="relative hidden h-fit border-r border-white/[0.08] pr-6 text-white lg:block">
-        <div className="relative flex items-center gap-2.5 border-b border-white/10 px-3 py-3">
+      <aside className="relative hidden h-fit border-r border-white/[0.12] pr-6 text-white lg:block">
+        <div className="relative flex items-center gap-2.5 border-b border-white/[0.12] px-3 py-3">
           <span className="grid h-9 w-9 shrink-0 place-items-center overflow-hidden rounded-lg bg-gradient-to-br from-brand to-brand-600 text-sm font-bold text-white">
             {company.logo_url ? (
               // eslint-disable-next-line @next/next/no-img-element
@@ -1201,14 +1201,14 @@ export default function DashboardShell({ company }: { company: Company }) {
           </span>
           <div className="min-w-0 flex-1">
             <div className="truncate text-[13px] font-semibold">{company.company_name}</div>
-            <div className="truncate text-[11px] text-white/40">{isSupplier ? "Baustoffwerk / Lieferant" : "Bauunternehmen"}</div>
+            <div className="truncate text-[11px] text-white/[0.56]">{isSupplier ? "Baustoffwerk / Lieferant" : "Bauunternehmen"}</div>
           </div>
         </div>
 
         {!isSupplier && (
-          <div className="relative border-b border-white/10 px-3 py-3">
+          <div className="relative border-b border-white/[0.12] px-3 py-3">
             <div className="flex items-center justify-between gap-2">
-              <label className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-white/40">
+              <label className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-white/[0.56]">
                 <Building2 className="h-3 w-3" /> Baustelle / Projekt
               </label>
               <button
@@ -1223,7 +1223,7 @@ export default function DashboardShell({ company }: { company: Company }) {
               <button
                 type="button"
                 onClick={() => setView("projects")}
-                className="mt-1.5 flex w-full items-center gap-1.5 rounded-md border border-dashed border-white/20 px-2.5 py-2 text-[12.5px] text-white/50 transition-colors hover:border-brand/50 hover:text-white"
+                className="mt-1.5 flex w-full items-center gap-1.5 rounded-md border border-dashed border-white/20 px-2.5 py-2 text-[12.5px] text-white/[0.56] transition-colors hover:border-brand/50 hover:text-white"
               >
                 <Plus className="h-3.5 w-3.5" />
                 {projectsLoading ? "Wird geladen …" : "Erste Baustelle anlegen"}
@@ -1253,13 +1253,13 @@ export default function DashboardShell({ company }: { company: Company }) {
                 onClick={() => setView(n.key)}
                 className={cn(
                   "flex w-full items-center gap-2.5 rounded-md px-2.5 py-2 text-[13px] font-medium transition-colors",
-                  active ? "bg-brand/15 text-brand" : "text-white/60 hover:bg-white/5 hover:text-white",
+                  active ? "bg-brand/15 text-brand" : "text-white/[0.72] hover:bg-white/5 hover:text-white",
                 )}
               >
                 <n.icon className="h-4 w-4 shrink-0" />
                 <span className="flex-1 text-left">{n.label}</span>
                 {(n.key === "requests" ? openRequests > 0 : !!n.badge) && (
-                  <span className={cn("rounded-md px-1.5 py-0.5 text-[10px] font-semibold", active ? "bg-brand text-navy-900" : "bg-white/10 text-white/70")}>
+                  <span className={cn("rounded-md px-1.5 py-0.5 text-[10px] font-semibold", active ? "bg-brand text-navy-900" : "bg-white/10 text-white/[0.72]")}>
                     {n.key === "requests" ? openRequests : n.badge}
                   </span>
                 )}
@@ -1269,9 +1269,9 @@ export default function DashboardShell({ company }: { company: Company }) {
         </nav>
 
         {!isSupplier && (
-          <div className="relative border-t border-white/10 px-3 py-3">
-            <div className="flex items-start gap-2 rounded-md bg-white/[0.04] p-2.5 text-[11px] text-white/50">
-              <Lock className="mt-0.5 h-3.5 w-3.5 shrink-0 text-white/40" />
+          <div className="relative border-t border-white/[0.12] px-3 py-3">
+            <div className="flex items-start gap-2 rounded-md bg-white/[0.04] p-2.5 text-[11px] text-white/[0.56]">
+              <Lock className="mt-0.5 h-3.5 w-3.5 shrink-0 text-white/[0.56]" />
               <span>Als Bauunternehmen beschaffst du. Gebote auf Ausschreibungen sind Baustoffwerken vorbehalten.</span>
             </div>
           </div>
@@ -1279,8 +1279,8 @@ export default function DashboardShell({ company }: { company: Company }) {
       </aside>
 
       {/* Mittlere Spalte: Arbeitsbereich */}
-      <div className="min-w-0 border-t border-white/[0.08]">
-        <div className="relative flex flex-wrap items-center justify-between gap-2 border-b border-white/10 bg-navy-900 px-4 py-3 text-white sm:px-6">
+      <div className="min-w-0 border-t border-white/[0.12]">
+        <div className="relative flex flex-wrap items-center justify-between gap-2 border-b border-white/[0.12] bg-navy-900 px-4 py-3 text-white sm:px-6">
           <h2 className="relative text-lg font-bold tracking-tight">{title}</h2>
           <Link
             href="/kbob"
@@ -1329,7 +1329,7 @@ export default function DashboardShell({ company }: { company: Company }) {
               {view === "contracts" && <ContractsPanel />}
               {view === "reports" && <ReportsPanel role={role} />}
               {view === "settings" && (
-                <div className="border-t border-white/[0.08] py-8 text-sm text-white/55">
+                <div className="border-t border-white/[0.12] py-8 text-sm text-white/[0.72]">
                   <div className="flex items-center gap-2 font-semibold text-white">
                     <Settings className="h-4 w-4" /> Einstellungen
                   </div>
@@ -1346,7 +1346,7 @@ export default function DashboardShell({ company }: { company: Company }) {
                     </Link>
                     <Link
                       href={`/company/${company.id}`}
-                      className="inline-flex items-center gap-1.5 rounded-md border border-white/[0.08] px-4 py-2 text-[13px] font-semibold text-white/70 transition-colors hover:border-brand/40 hover:text-brand"
+                      className="inline-flex items-center gap-1.5 rounded-md border border-white/[0.12] px-4 py-2 text-[13px] font-semibold text-white/[0.72] transition-colors hover:border-brand/40 hover:text-brand"
                     >
                       Profil ansehen
                     </Link>

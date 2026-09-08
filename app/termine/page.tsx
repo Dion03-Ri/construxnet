@@ -21,7 +21,7 @@ export default async function TerminePage() {
         </span>
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-white">Fristen</h1>
-          <p className="text-sm text-white/55">
+          <p className="text-sm text-white/[0.72]">
             Sammel- und Angebotsfristen der Bündel, an denen du beteiligt bist —
             mit einem Klick in deinen Kalender.
           </p>

@@ -16,7 +16,7 @@ import { cn } from "@/lib/utils";
 const LeafletMap = dynamic(() => import("@/components/map/LeafletMap"), {
   ssr: false,
   loading: () => (
-    <div className="grid h-[420px] place-items-center bg-white/10 text-white/40">
+    <div className="grid h-[420px] place-items-center bg-white/10 text-white/[0.56]">
       <Loader2 className="h-5 w-5 animate-spin" />
     </div>
   ),
@@ -181,12 +181,12 @@ export default function SupplierMap({
     // kein gruppierter Textblock. Sie braucht einen Rahmen, damit die
     // Kacheln an den weichen Ecken beschnitten werden.
     <div className={cn(PANEL, "overflow-hidden")}>
-      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-white/[0.08] px-4 py-3 sm:px-5">
+      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-white/[0.12] px-4 py-3 sm:px-5">
         <div className="min-w-0">
           <h3 className="flex items-center gap-2 text-[15px] font-semibold text-white">
             <MapPin className="h-4 w-4 text-brand" /> Firmen in der Schweiz
           </h3>
-          <p className="mt-0.5 text-[12px] text-white/55">
+          <p className="mt-0.5 text-[12px] text-white/[0.72]">
             {loaded
               ? points.length === 0
                 ? "Noch niemand auf der Karte"
@@ -203,7 +203,7 @@ export default function SupplierMap({
             "inline-flex shrink-0 items-center gap-1.5 rounded-md px-3 py-1.5 text-[12.5px] font-semibold transition-colors disabled:opacity-60",
             consent
               ? "bg-brand/10 text-brand-700 hover:bg-brand/15"
-              : "border border-white/[0.16] text-white/70 hover:bg-white/[0.05]",
+              : "border border-white/[0.16] text-white/[0.72] hover:bg-white/[0.05]",
           )}
         >
           {pending ? (
@@ -220,10 +220,10 @@ export default function SupplierMap({
       {/* Eigener Stand: was steht wo, und wie korrigiert man es */}
       {consent && (
         <div className="flex flex-wrap items-center gap-2 border-b border-white/[0.06] bg-white/[0.02] px-4 py-2.5 sm:px-5">
-          <p className="min-w-0 flex-1 text-[12px] text-white/55">
+          <p className="min-w-0 flex-1 text-[12px] text-white/[0.72]">
             {location.lat !== null ? (
               <>
-                Dein Standort: <span className="font-medium text-white/75">{location.label}</span>
+                Dein Standort: <span className="font-medium text-white/[0.72]">{location.label}</span>
               </>
             ) : (
               "Für deine Firma wurde noch kein genauer Punkt gefunden — sie steht grob bei Ort bzw. Kanton."
@@ -233,7 +233,7 @@ export default function SupplierMap({
             type="button"
             onClick={refresh}
             disabled={pending}
-            className="inline-flex shrink-0 items-center gap-1.5 rounded-md border border-white/[0.08] bg-[#0B1522] px-2.5 py-1.5 text-[12px] font-semibold text-white/70 transition-colors hover:border-brand/40 hover:text-brand disabled:opacity-60"
+            className="inline-flex shrink-0 items-center gap-1.5 rounded-md border border-white/[0.12] bg-[#16181a] px-2.5 py-1.5 text-[12px] font-semibold text-white/[0.72] transition-colors hover:border-brand/40 hover:text-brand disabled:opacity-60"
           >
             <RefreshCw className={cn("h-3.5 w-3.5", pending && "animate-spin")} />
             Standort neu ermitteln
@@ -260,7 +260,7 @@ export default function SupplierMap({
                 "inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-md px-3 py-1.5 text-[12.5px] font-semibold transition-colors",
                 role === t.key
                   ? "bg-navy-900 text-white"
-                  : "border border-white/[0.08] bg-[#0B1522] text-white/55 hover:border-white/[0.16] hover:text-white",
+                  : "border border-white/[0.12] bg-[#16181a] text-white/[0.72] hover:border-white/[0.16] hover:text-white",
               )}
             >
               <t.icon className="h-3.5 w-3.5" />
@@ -268,7 +268,7 @@ export default function SupplierMap({
               <span
                 className={cn(
                   "rounded px-1.5 py-0.5 text-[10.5px] font-bold",
-                  role === t.key ? "bg-white/15 text-white" : "bg-white/10 text-white/55",
+                  role === t.key ? "bg-white/15 text-white" : "bg-white/10 text-white/[0.72]",
                 )}
               >
                 {count}
@@ -281,8 +281,8 @@ export default function SupplierMap({
       {/* Statt eines Deckels auf der Karte nur eine schmale Zeile: die Karte
           bleibt sichtbar und bedienbar, auch wenn noch niemand darauf steht. */}
       {empty && (
-        <p className="flex items-start gap-1.5 border-b border-white/[0.06] bg-white/[0.03] px-4 py-2 text-[12px] leading-relaxed text-white/55 sm:px-5">
-          <Info className="mt-px h-3.5 w-3.5 shrink-0 text-white/40" />
+        <p className="flex items-start gap-1.5 border-b border-white/[0.06] bg-white/[0.03] px-4 py-2 text-[12px] leading-relaxed text-white/[0.72] sm:px-5">
+          <Info className="mt-px h-3.5 w-3.5 shrink-0 text-white/[0.56]" />
           {rows.length === 0
             ? "Noch keine Standorte freigegeben. Wer zustimmt, erscheint hier automatisch."
             : "Keine Firma in dieser Auswahl."}
@@ -296,7 +296,7 @@ export default function SupplierMap({
         <LeafletMap points={points} />
       </div>
 
-      <p className="flex items-start gap-1.5 px-4 py-2.5 text-[11px] leading-relaxed text-white/40 sm:px-5">
+      <p className="flex items-start gap-1.5 px-4 py-2.5 text-[11px] leading-relaxed text-white/[0.56] sm:px-5">
         {exact > 0 ? (
           <>
             <ShieldCheck className="mt-px h-3.5 w-3.5 shrink-0 text-brand" />

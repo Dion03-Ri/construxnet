@@ -705,7 +705,7 @@ export default function BeschaffungFlow({
                           {pool && <th className="px-3.5 py-2 text-right font-medium">Mindestvorteil</th>}
                         </tr>
                       </thead>
-                      <tbody className="divide-y divide-white/[0.06]">
+                      <tbody className="divide-y divide-white/[0.12]">
                         {lines.map((l) => (
                           <tr key={l.pos.key}>
                             <td className="px-3.5 py-2.5">
@@ -727,7 +727,7 @@ export default function BeschaffungFlow({
                     </table>
                   </div>
 
-                  <dl className="mt-3 divide-y divide-white/[0.06] rounded-lg border border-slate-200">
+                  <dl className="mt-3 divide-y divide-white/[0.12] rounded-lg border border-slate-200">
                     {[
                       ["Lieferzeitraum", deliveryWindow],
                       ["Region", region],

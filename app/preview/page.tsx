@@ -16,12 +16,12 @@ export default async function PreviewPage({
   const configured = getBypassPassword() !== null;
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-navy-950 px-4">
+    <main className="flex min-h-screen items-center justify-center bg-black px-4">
       <div className="w-full max-w-sm text-center">
         <div className="text-2xl font-extrabold tracking-tight text-white">
           Obta<span className="text-brand">net</span>
         </div>
-        <p className="mt-6 text-[13px] leading-relaxed text-white/55">
+        <p className="mt-6 text-[13px] leading-relaxed text-white/[0.72]">
           Diese Umgebung befindet sich im Aufbau und ist noch nicht öffentlich.
           Bitte gib das Zugangs-Passwort ein.
         </p>
@@ -42,7 +42,7 @@ export default async function PreviewPage({
             autoFocus
             required
             placeholder="Passwort"
-            className="w-full rounded-lg border border-white/12 bg-white/5 px-4 py-3 text-sm text-white outline-none placeholder:text-white/40 focus:border-brand/60"
+            className="w-full rounded-lg border border-white/12 bg-white/5 px-4 py-3 text-sm text-white outline-none placeholder:text-white/[0.56] focus:border-brand/60"
           />
           <button
             type="submit"

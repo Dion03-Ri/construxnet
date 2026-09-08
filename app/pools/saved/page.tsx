@@ -16,7 +16,7 @@ export default async function SavedPoolsPage() {
   await requireCompanyOrOnboard();
   return (
     <main className={cn(SHELL, "py-6 sm:py-8")}>
-      <Link href="/pools" className="mb-4 inline-flex items-center gap-1.5 text-[13px] font-medium text-white/55 transition-colors hover:text-brand">
+      <Link href="/pools" className="mb-4 inline-flex items-center gap-1.5 text-[13px] font-medium text-white/[0.72] transition-colors hover:text-brand">
         <ArrowLeft className="h-4 w-4" /> Zurück zu Smart Pools
       </Link>
       <header className="mb-6 flex items-center gap-3">
@@ -25,7 +25,7 @@ export default async function SavedPoolsPage() {
         </span>
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-white">Gespeicherte Pools</h1>
-          <p className="text-sm text-white/55">Deine gemerkten Bündel — jederzeit schnell wiederfinden und beitreten.</p>
+          <p className="text-sm text-white/[0.72]">Deine gemerkten Bündel — jederzeit schnell wiederfinden und beitreten.</p>
         </div>
       </header>
       <SavedPools />

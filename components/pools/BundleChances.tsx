@@ -40,12 +40,12 @@ export default function BundleChances({
   className?: string;
 }) {
   return (
-    <div className={cn("border-t border-white/[0.08]", className)}>
+    <div className={cn("border-t border-white/[0.12]", className)}>
       <div className="flex items-baseline justify-between pb-3 pt-5">
         <h3 className="text-[14px] font-bold tracking-tight text-white">Bündel-Chancen</h3>
-        <span className="text-[11px] text-white/40">deine Region</span>
+        <span className="text-[11px] text-white/[0.56]">deine Region</span>
       </div>
-      <ul className="divide-y divide-white/[0.07] border-t border-white/[0.08]">
+      <ul className="divide-y divide-white/[0.12] border-t border-white/[0.12]">
         {pools.map((p) => (
           <li key={p.material}>
             <Link href="/pools" className="-mx-2 block rounded-lg px-2 py-3.5 transition-colors hover:bg-white/[0.05]">
@@ -55,7 +55,7 @@ export default function BundleChances({
                   −{p.disc} %
                 </span>
               </div>
-              <div className="mt-1 text-[11.5px] text-white/40">
+              <div className="mt-1 text-[11.5px] text-white/[0.56]">
                 {p.region} · {p.vol}
               </div>
               <div className="mt-2.5 h-[3px] w-full overflow-hidden rounded-full bg-white/10">
@@ -67,7 +67,7 @@ export default function BundleChances({
       </ul>
       <Link
         href="/pools"
-        className="flex items-center justify-center gap-1 border-t border-white/[0.08] py-3.5 text-[12.5px] font-semibold text-white/55 transition-colors hover:text-brand"
+        className="flex items-center justify-center gap-1 border-t border-white/[0.12] py-3.5 text-[12.5px] font-semibold text-white/[0.72] transition-colors hover:text-brand"
       >
         Alle Smart Pools <ChevronRight className="h-3.5 w-3.5" />
       </Link>

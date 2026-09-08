@@ -28,7 +28,7 @@ const ANCHORS = [
 
 export default function TrustBar() {
   return (
-    <section className="border-b border-white/[0.07] bg-navy-950 text-white">
+    <section className="border-b border-white/[0.12] bg-black text-white">
       <div className={cn(SHELL, "py-8 sm:py-10")}>
         <dl className="grid grid-cols-2 gap-y-7 sm:grid-cols-4 sm:gap-y-0">
           {ANCHORS.map((a, i) => (
@@ -44,7 +44,7 @@ export default function TrustBar() {
               <dt className="font-display text-[19px] font-bold leading-none tracking-tight text-brand sm:text-[21px]">
                 {a.k}
               </dt>
-              <dd className="mt-2 text-[12.5px] leading-snug text-white/45">{a.t}</dd>
+              <dd className="mt-2 text-[12.5px] leading-snug text-white/[0.56]">{a.t}</dd>
             </div>
           ))}
         </dl>

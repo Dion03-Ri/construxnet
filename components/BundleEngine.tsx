@@ -87,7 +87,7 @@ function CurveTooltip({ active, payload, unit }: TooltipProps<number, string> & 
   if (!active || !payload?.length) return null;
   const p = payload[0].payload as { v: number; d: number };
   return (
-    <div className="rounded-md border border-white/15 bg-navy-950 px-3 py-2 text-xs text-white shadow-lg">
+    <div className="rounded-md border border-white/15 bg-black px-3 py-2 text-xs text-white shadow-lg">
       <div className="font-semibold">{p.v} {unit} im Pool</div>
       <div className="text-brand">{p.d}% Rabatt</div>
     </div>
@@ -100,8 +100,8 @@ function CurveTooltip({ active, payload, unit }: TooltipProps<number, string> & 
 
 function SpecPill({ icon: Icon, children }: { icon: typeof MapPin; children: React.ReactNode }) {
   return (
-    <span className="inline-flex items-center gap-1.5 rounded-md border border-white/10 bg-white/5 px-2.5 py-1 text-xs text-white/70">
-      <Icon className="h-3.5 w-3.5 text-white/40" />
+    <span className="inline-flex items-center gap-1.5 rounded-md border border-white/[0.12] bg-white/5 px-2.5 py-1 text-xs text-white/[0.72]">
+      <Icon className="h-3.5 w-3.5 text-white/[0.56]" />
       {children}
     </span>
   );
@@ -109,10 +109,10 @@ function SpecPill({ icon: Icon, children }: { icon: typeof MapPin; children: Rea
 
 function Metric({ label, value, sub, tone }: { label: string; value: React.ReactNode; sub?: string; tone?: "gold" | "white" }) {
   return (
-    <div className="rounded-md border border-white/10 bg-white/[0.03] p-3.5">
-      <div className="text-[10px] font-semibold uppercase tracking-wider text-white/40">{label}</div>
+    <div className="rounded-md border border-white/[0.12] bg-white/[0.03] p-3.5">
+      <div className="text-[10px] font-semibold uppercase tracking-wider text-white/[0.56]">{label}</div>
       <div className={cn("mt-1 text-lg font-bold tabular-nums", tone === "gold" ? "text-brand" : "text-white")}>{value}</div>
-      {sub && <div className="mt-0.5 text-[11px] text-white/40">{sub}</div>}
+      {sub && <div className="mt-0.5 text-[11px] text-white/[0.56]">{sub}</div>}
     </div>
   );
 }
@@ -136,8 +136,8 @@ function PhaseStepper({ current }: { current: string }) {
               className={cn(
                 "inline-flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs font-medium",
                 active && "bg-brand/15 text-brand",
-                done && "bg-white/10 text-white/70",
-                !active && !done && "text-white/35",
+                done && "bg-white/10 text-white/[0.72]",
+                !active && !done && "text-white/[0.5]",
               )}
             >
               <p.icon className="h-3.5 w-3.5" />
@@ -179,16 +179,16 @@ export default function BundleEngine() {
   }, [total, listPrice, kbobPrice]);
 
   return (
-    <section className="overflow-hidden rounded-lg border border-white/10 bg-navy-900 text-white shadow-card">
+    <section className="overflow-hidden rounded-lg border border-white/[0.12] bg-navy-900 text-white shadow-card">
       {/* Header */}
-      <div className="flex flex-col gap-3 border-b border-white/10 px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-7">
+      <div className="flex flex-col gap-3 border-b border-white/[0.12] px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-7">
         <div className="flex items-center gap-2.5">
           <span className="grid h-9 w-9 place-items-center rounded-md bg-brand/15 text-brand">
             <Layers className="h-5 w-5" />
           </span>
           <div>
             <h2 className="text-[15px] font-semibold tracking-tight">Smart Bündel · {material.label}</h2>
-            <p className="text-[12px] text-white/45">Raum Zürich / Limmattal · ≤ 25 km · Einbau Q4 2026</p>
+            <p className="text-[12px] text-white/[0.56]">Raum Zürich / Limmattal · ≤ 25 km · Einbau Q4 2026</p>
           </div>
         </div>
         <PhaseStepper current="OPEN" />
@@ -198,8 +198,8 @@ export default function BundleEngine() {
         {/* Steuerung */}
         <div>
           {/* Material */}
-          <div className="text-[10px] font-semibold uppercase tracking-wider text-white/40">Material</div>
-          <div className="mt-2 inline-flex flex-wrap gap-1 rounded-md border border-white/10 bg-white/5 p-1">
+          <div className="text-[10px] font-semibold uppercase tracking-wider text-white/[0.56]">Material</div>
+          <div className="mt-2 inline-flex flex-wrap gap-1 rounded-md border border-white/[0.12] bg-white/5 p-1">
             {MATERIALS.map((m) => (
               <button
                 key={m.key}
@@ -207,7 +207,7 @@ export default function BundleEngine() {
                 onClick={() => setMaterialKey(m.key)}
                 className={cn(
                   "rounded-[5px] px-3 py-1.5 text-xs font-medium transition-colors",
-                  m.key === materialKey ? "bg-brand text-navy-900" : "text-white/60 hover:text-white",
+                  m.key === materialKey ? "bg-brand text-navy-900" : "text-white/[0.72] hover:text-white",
                 )}
               >
                 {m.label}
@@ -218,9 +218,9 @@ export default function BundleEngine() {
           {/* Menge + Volumen */}
           <div className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2">
             <div>
-              <div className="text-[10px] font-semibold uppercase tracking-wider text-white/40">Deine Menge ({unit})</div>
+              <div className="text-[10px] font-semibold uppercase tracking-wider text-white/[0.56]">Deine Menge ({unit})</div>
               <div className="mt-2 inline-flex items-center rounded-md border border-white/15 bg-white/[0.04]">
-                <button type="button" onClick={() => setQty((q) => Math.max(0, q - 10))} className="grid h-10 w-10 place-items-center text-white/60 transition-colors hover:bg-white/5" aria-label="weniger">
+                <button type="button" onClick={() => setQty((q) => Math.max(0, q - 10))} className="grid h-10 w-10 place-items-center text-white/[0.72] transition-colors hover:bg-white/5" aria-label="weniger">
                   <Minus className="h-4 w-4" />
                 </button>
                 <input
@@ -230,30 +230,30 @@ export default function BundleEngine() {
                   onChange={(e) => setQty(Math.max(0, Number(e.target.value) || 0))}
                   className="w-20 border-x border-white/15 bg-transparent px-2 py-2 text-center text-lg font-bold text-white outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none"
                 />
-                <button type="button" onClick={() => setQty((q) => q + 10)} className="grid h-10 w-10 place-items-center text-white/60 transition-colors hover:bg-white/5" aria-label="mehr">
+                <button type="button" onClick={() => setQty((q) => q + 10)} className="grid h-10 w-10 place-items-center text-white/[0.72] transition-colors hover:bg-white/5" aria-label="mehr">
                   <Plus className="h-4 w-4" />
                 </button>
               </div>
             </div>
             <div>
-              <div className="text-[10px] font-semibold uppercase tracking-wider text-white/40">Poolvolumen (neu)</div>
+              <div className="text-[10px] font-semibold uppercase tracking-wider text-white/[0.56]">Poolvolumen (neu)</div>
               <div className="mt-2 flex items-baseline gap-1.5">
                 <motion.span key={total} initial={{ opacity: 0.4, y: -2 }} animate={{ opacity: 1, y: 0 }} className="text-3xl font-bold tabular-nums text-white">
                   {chf(total, 0)}
                 </motion.span>
-                <span className="text-sm text-white/45">{unit}</span>
+                <span className="text-sm text-white/[0.56]">{unit}</span>
               </div>
-              <div className="mt-0.5 text-[11px] text-white/40">{chf(base, 0)} bereits im Pool + {chf(Math.max(0, qty), 0)} von dir</div>
+              <div className="mt-0.5 text-[11px] text-white/[0.56]">{chf(base, 0)} bereits im Pool + {chf(Math.max(0, qty), 0)} von dir</div>
             </div>
           </div>
 
           {/* Rabatt-Kurve */}
           <div className="mt-6">
             <div className="mb-1 flex items-center justify-between">
-              <div className="text-[10px] font-semibold uppercase tracking-wider text-white/40">Rabatt über Poolvolumen</div>
-              <div className="text-[11px] text-white/40">aktuell <span className="font-bold text-brand">{calc.customerDiscount}%</span></div>
+              <div className="text-[10px] font-semibold uppercase tracking-wider text-white/[0.56]">Rabatt über Poolvolumen</div>
+              <div className="text-[11px] text-white/[0.56]">aktuell <span className="font-bold text-brand">{calc.customerDiscount}%</span></div>
             </div>
-            <div className="h-36 rounded-md border border-white/10 bg-white/[0.02] p-2">
+            <div className="h-36 rounded-md border border-white/[0.12] bg-white/[0.02] p-2">
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart data={CURVE} margin={{ top: 6, right: 8, bottom: 0, left: -22 }}>
                   <defs>
@@ -273,7 +273,7 @@ export default function BundleEngine() {
               </ResponsiveContainer>
             </div>
             {calc.toNext ? (
-              <p className="mt-2 text-[12px] text-white/55">
+              <p className="mt-2 text-[12px] text-white/[0.72]">
                 Noch <span className="font-semibold text-white">{chf(calc.toNext.needed, 0)} {unit}</span> bis {calc.toNext.disc}% — der erreichte Rabatt gilt garantiert für alle Teilnehmer.
               </p>
             ) : (
@@ -283,15 +283,15 @@ export default function BundleEngine() {
         </div>
 
         {/* Ergebnis */}
-        <div className="lg:border-l lg:border-white/10 lg:pl-6">
-          <div className="text-[10px] font-semibold uppercase tracking-wider text-white/40">Dein aktueller Vorteil</div>
+        <div className="lg:border-l lg:border-white/[0.12] lg:pl-6">
+          <div className="text-[10px] font-semibold uppercase tracking-wider text-white/[0.56]">Dein aktueller Vorteil</div>
           <div className="mt-1 flex items-baseline gap-2">
             <motion.span key={calc.customerDiscount} initial={{ scale: 0.85, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="text-5xl font-bold tabular-nums text-brand">
               {calc.customerDiscount}%
             </motion.span>
-            <span className="text-sm text-white/45">Rabatt</span>
+            <span className="text-sm text-white/[0.56]">Rabatt</span>
           </div>
-          <div className="mt-1 inline-flex items-center gap-1.5 text-[12px] text-white/60">
+          <div className="mt-1 inline-flex items-center gap-1.5 text-[12px] text-white/[0.72]">
             <ShieldCheck className="h-3.5 w-3.5 text-brand" /> garantiert für alle im Pool
           </div>
 
@@ -300,13 +300,13 @@ export default function BundleEngine() {
             <Metric label="Ersparnis / Einheit" value={`CHF ${chf(calc.savingsUnit)}`} sub={`vs. KBOB ${chf(kbobPrice)}`} tone="gold" />
           </div>
           <div className="mt-2.5 rounded-md border border-brand/25 bg-brand/[0.06] p-3.5">
-            <div className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-wider text-white/50">
+            <div className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-wider text-white/[0.56]">
               <TrendingDown className="h-3.5 w-3.5 text-brand" /> Deine Ersparnis
             </div>
             <motion.div key={Math.round(calc.yourSavings)} initial={{ opacity: 0.4 }} animate={{ opacity: 1 }} className="mt-1 text-2xl font-bold tabular-nums text-brand">
               CHF {chf(calc.yourSavings, 0)}
             </motion.div>
-            <div className="text-[11px] text-white/40">auf {chf(Math.max(0, qty), 0)} {unit} · Pool spart total CHF {chf(calc.totalSavings, 0)}</div>
+            <div className="text-[11px] text-white/[0.56]">auf {chf(Math.max(0, qty), 0)} {unit} · Pool spart total CHF {chf(calc.totalSavings, 0)}</div>
           </div>
 
           <div className="mt-4 flex flex-wrap gap-1.5">
@@ -319,14 +319,14 @@ export default function BundleEngine() {
             <Link href="/beschaffung" className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-md bg-brand px-4 py-2.5 text-sm font-semibold text-navy-900 transition-colors hover:bg-brand/100">
               <Layers className="h-4 w-4" /> Diesem Pool beitreten
             </Link>
-            <Link href={`/kbob?material=${material.material}`} className="inline-flex items-center justify-center gap-1.5 rounded-md border border-white/15 px-3 py-2.5 text-sm font-semibold text-white/75 transition-colors hover:bg-white/5">
+            <Link href={`/kbob?material=${material.material}`} className="inline-flex items-center justify-center gap-1.5 rounded-md border border-white/15 px-3 py-2.5 text-sm font-semibold text-white/[0.72] transition-colors hover:bg-white/5">
               <LineChart className="h-4 w-4" /> KBOB
             </Link>
           </div>
         </div>
       </div>
 
-      <p className="border-t border-white/10 px-5 py-3 text-[11px] text-white/35 sm:px-7">
+      <p className="border-t border-white/[0.12] px-5 py-3 text-[11px] text-white/[0.5] sm:px-7">
         Monetarisierung: {PLATFORM_FEE_PCT}% Plattform-Marge im Lieferanten-Bid ({calc.supplierDiscount.toFixed(2)}% = Kundenrabatt + Marge).
         Nach der Sammelphase bieten Lieferanten im Sealed-Bid auf das gesamte Poolvolumen; der günstigste Bid gegenüber dem KBOB-Referenzpreis erhält den Zuschlag.
       </p>

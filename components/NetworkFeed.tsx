@@ -224,20 +224,20 @@ function Composer({ onCreated }: { onCreated: () => void }) {
   }
 
   const avatar = (
-    <span className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full bg-white/10 text-sm font-semibold text-white/75">
+    <span className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full bg-white/10 text-sm font-semibold text-white/[0.72]">
       {company?.logo_url ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img src={company.logo_url} alt="" className="h-full w-full object-cover" />
       ) : company ? (
         initials(company.company_name)
       ) : (
-        <ImageIcon className="h-5 w-5 text-white/40" />
+        <ImageIcon className="h-5 w-5 text-white/[0.56]" />
       )}
     </span>
   );
 
   return (
-    <div className="border-t border-white/[0.08] pt-5">
+    <div className="border-t border-white/[0.12] pt-5">
       {!open ? (
         <div>
           <div className="flex items-center gap-3">
@@ -246,7 +246,7 @@ function Composer({ onCreated }: { onCreated: () => void }) {
               type="button"
               onClick={() => setOpen(true)}
               disabled={!company}
-              className="h-11 flex-1 rounded-xl border border-white/[0.10] px-4 text-left text-sm text-white/50 transition-colors hover:border-brand/40 hover:text-white/75 disabled:opacity-60"
+              className="h-11 flex-1 rounded-xl border border-white/[0.12] px-4 text-left text-sm text-white/[0.56] transition-colors hover:border-brand/40 hover:text-white/[0.72] disabled:opacity-60"
             >
               {company ? "Beitrag hinzufügen …" : "Firmenprofil nötig, um zu posten"}
             </button>
@@ -259,7 +259,7 @@ function Composer({ onCreated }: { onCreated: () => void }) {
                 type="button"
                 onClick={() => start(t.key)}
                 disabled={!company}
-                className="inline-flex items-center gap-2 text-[13px] font-semibold text-white/60 transition-colors hover:text-white disabled:opacity-50"
+                className="inline-flex items-center gap-2 text-[13px] font-semibold text-white/[0.72] transition-colors hover:text-white disabled:opacity-50"
               >
                 <t.icon className="h-4 w-4 text-brand" />
                 {t.label}
@@ -274,12 +274,12 @@ function Composer({ onCreated }: { onCreated: () => void }) {
             {avatar}
             <div className="min-w-0 flex-1">
               <div className="truncate text-sm font-semibold text-white">{company?.company_name}</div>
-              <div className="text-[11.5px] text-white/40">Beitrag hinzufügen</div>
+              <div className="text-[11.5px] text-white/[0.56]">Beitrag hinzufügen</div>
             </div>
             <button
               type="button"
               onClick={() => setOpen(false)}
-              className="rounded-md p-1.5 text-white/40 transition-colors hover:bg-white/[0.07] hover:text-white/75"
+              className="rounded-md p-1.5 text-white/[0.56] transition-colors hover:bg-white/[0.07] hover:text-white/[0.72]"
               aria-label="Schliessen"
             >
               <X className="h-4 w-4" />
@@ -297,7 +297,7 @@ function Composer({ onCreated }: { onCreated: () => void }) {
                     "inline-flex items-center gap-1.5 border-b-2 pb-1 text-[13px] font-semibold transition-colors",
                     postType === t.key
                       ? "border-brand text-white"
-                      : "border-transparent text-white/45 hover:text-white",
+                      : "border-transparent text-white/[0.56] hover:text-white",
                   )}
                 >
                   <t.icon className="h-3.5 w-3.5" />
@@ -313,7 +313,7 @@ function Composer({ onCreated }: { onCreated: () => void }) {
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="Titel (optional)"
-              className="w-full rounded-md border border-white/[0.08] bg-[#0B1522] px-3 py-2 text-sm font-semibold text-white placeholder:font-normal placeholder:text-white/40 outline-none focus:border-brand/50"
+              className="w-full rounded-md border border-white/[0.12] bg-[#16181a] px-3 py-2 text-sm font-semibold text-white placeholder:font-normal placeholder:text-white/[0.56] outline-none focus:border-brand/50"
             />
             <textarea
               value={content}
@@ -321,7 +321,7 @@ function Composer({ onCreated }: { onCreated: () => void }) {
               placeholder={activeType.placeholder}
               rows={5}
               autoFocus
-              className="mt-2 w-full resize-none rounded-md border border-white/[0.08] bg-[#0B1522] px-3 py-2 text-sm text-white placeholder:text-white/40 outline-none focus:border-brand/50"
+              className="mt-2 w-full resize-none rounded-md border border-white/[0.12] bg-[#16181a] px-3 py-2 text-sm text-white placeholder:text-white/[0.56] outline-none focus:border-brand/50"
             />
 
             {imageError && (
@@ -329,7 +329,7 @@ function Composer({ onCreated }: { onCreated: () => void }) {
             )}
 
             {image ? (
-              <div className="relative mt-3 overflow-hidden rounded-lg border border-white/[0.08]">
+              <div className="relative mt-3 overflow-hidden rounded-lg border border-white/[0.12]">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={image} alt="Vorschau" className="max-h-80 w-full object-cover" />
                 <button
@@ -345,7 +345,7 @@ function Composer({ onCreated }: { onCreated: () => void }) {
               <button
                 type="button"
                 onClick={() => imgRef.current?.click()}
-                className="mt-3 flex w-full items-center justify-center gap-2 rounded-lg border border-dashed border-white/[0.16] bg-white/[0.03] py-3 text-[13px] font-medium text-white/55 transition-colors hover:border-brand hover:text-brand"
+                className="mt-3 flex w-full items-center justify-center gap-2 rounded-lg border border-dashed border-white/[0.16] bg-white/[0.03] py-3 text-[13px] font-medium text-white/[0.72] transition-colors hover:border-brand hover:text-brand"
               >
                 <ImageIcon className="h-4 w-4" /> Bild hinzufügen
               </button>
@@ -357,7 +357,7 @@ function Composer({ onCreated }: { onCreated: () => void }) {
             <select
               value={region}
               onChange={(e) => setRegion(e.target.value)}
-              className="rounded-md border border-white/[0.08] bg-[#0B1522] px-2.5 py-1.5 text-xs text-white/75 outline-none focus:border-brand/50"
+              className="rounded-md border border-white/[0.12] bg-[#16181a] px-2.5 py-1.5 text-xs text-white/[0.72] outline-none focus:border-brand/50"
             >
               <option value="">Region / Kanton (optional)</option>
               {CANTON_GROUPS.map((g) => (
@@ -406,7 +406,7 @@ function EngagementButton({
 }) {
   const cls = cn(
     "inline-flex flex-1 items-center justify-center gap-2 rounded-lg py-2 text-[13px] font-medium transition-colors hover:bg-white/[0.07]",
-    active ? accent : "text-white/55",
+    active ? accent : "text-white/[0.72]",
   );
   const inner = (
     <>
@@ -444,7 +444,7 @@ function PostCard({ post, index }: { post: Post; index: number }) {
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.25, delay: Math.min(index * 0.04, 0.24), ease: "easeOut" }}
-      className="border-t border-white/[0.08] py-6"
+      className="border-t border-white/[0.12] py-6"
     >
       {/* Kopfzeile eines Beitrags.
 
@@ -456,7 +456,7 @@ function PostCard({ post, index }: { post: Post; index: number }) {
       <div className="flex items-start gap-3">
         <Link
           href={`/company/${post.company_id}`}
-          className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full bg-white/10 text-sm font-semibold text-white/75"
+          className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full bg-white/10 text-sm font-semibold text-white/[0.72]"
         >
           {c?.logo_url ? (
             // eslint-disable-next-line @next/next/no-img-element
@@ -472,8 +472,8 @@ function PostCard({ post, index }: { post: Post; index: number }) {
             </Link>
             {c?.verified && <BadgeCheck className="h-4 w-4 shrink-0 text-brand" />}
           </div>
-          <div className="mt-0.5 flex flex-wrap items-center gap-x-2.5 gap-y-0.5 text-xs text-white/40">
-            <span className="text-[10.5px] font-semibold uppercase tracking-[0.12em] text-white/30">
+          <div className="mt-0.5 flex flex-wrap items-center gap-x-2.5 gap-y-0.5 text-xs text-white/[0.56]">
+            <span className="text-[10.5px] font-semibold uppercase tracking-[0.12em] text-white/[0.5]">
               {POST_TYPES[post.post_type]?.label ?? post.post_type}
             </span>
             {c?.city && (
@@ -486,13 +486,13 @@ function PostCard({ post, index }: { post: Post; index: number }) {
             {post.region && post.region !== c?.city && <span>{post.region}</span>}
           </div>
         </div>
-        <button type="button" className="shrink-0 rounded-lg p-1 text-white/30 hover:text-white/70" aria-label="Optionen">
+        <button type="button" className="shrink-0 rounded-lg p-1 text-white/[0.5] hover:text-white/[0.72]" aria-label="Optionen">
           <MoreHorizontal className="h-4 w-4" />
         </button>
       </div>
 
       {post.title && <h3 className="mt-3 font-semibold text-white">{post.title}</h3>}
-      <p className="mt-1.5 whitespace-pre-wrap text-[15px] leading-relaxed text-white/75">
+      <p className="mt-1.5 whitespace-pre-wrap text-[15px] leading-relaxed text-white/[0.72]">
         {shown}
         {isLong && (
           <button
@@ -516,7 +516,7 @@ function PostCard({ post, index }: { post: Post; index: number }) {
         </div>
       )}
 
-      <div className="mt-3 flex items-center justify-between text-[11px] text-white/40">
+      <div className="mt-3 flex items-center justify-between text-[11px] text-white/[0.56]">
         <span>{likeCount} Reaktionen</span>
         <span>{post.comments_count} Kommentare</span>
       </div>
@@ -561,7 +561,7 @@ function ChipRow({
             "border-b-2 pb-0.5 text-[12.5px] font-semibold transition-colors",
             value === o.key
               ? "border-brand text-white"
-              : "border-transparent text-white/40 hover:text-white",
+              : "border-transparent text-white/[0.56] hover:text-white",
           )}
         >
           {o.label}
@@ -573,7 +573,7 @@ function ChipRow({
 
 function SkeletonCard() {
   return (
-    <div className="animate-pulse border-t border-white/[0.08] py-6">
+    <div className="animate-pulse border-t border-white/[0.12] py-6">
       <div className="flex items-center gap-3">
         <div className="h-11 w-11 rounded-full bg-white/10" />
         <div className="space-y-2">
@@ -715,13 +715,13 @@ export default function NetworkFeed() {
       {/* Empfohlene Partner für die Beschaffung */}
       <RecommendedPartners />
 
-      <div className="space-y-2.5 border-t border-white/[0.08] pt-5">
+      <div className="space-y-2.5 border-t border-white/[0.12] pt-5">
         <ChipRow options={typeOptions} value={type} onChange={setType} />
         <ChipRow options={regionOptions} value={region} onChange={setRegion} />
       </div>
 
       {isDemo && (
-        <p className="px-1 text-[11px] text-white/40">
+        <p className="px-1 text-[11px] text-white/[0.56]">
           Beispiel-Beiträge — dein erster eigener Beitrag ersetzt diese Vorschau.
         </p>
       )}
@@ -740,7 +740,7 @@ export default function NetworkFeed() {
           </div>
         </div>
       ) : posts.length === 0 ? (
-        <div className="border-t border-white/[0.08] py-14 text-center text-sm text-white/40">
+        <div className="border-t border-white/[0.12] py-14 text-center text-sm text-white/[0.56]">
           Keine Beiträge in dieser Auswahl.
         </div>
       ) : (
@@ -753,7 +753,7 @@ export default function NetworkFeed() {
           <div ref={sentinelRef} aria-hidden className="h-px" />
           {loadingMore && <SkeletonCard />}
           {!hasMore && (
-            <p className="py-6 text-center text-[12.5px] text-white/40">
+            <p className="py-6 text-center text-[12.5px] text-white/[0.56]">
               Du bist auf dem neuesten Stand.
             </p>
           )}

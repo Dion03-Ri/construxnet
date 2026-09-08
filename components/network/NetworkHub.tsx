@@ -34,7 +34,7 @@ import { cn } from "@/lib/utils";
 /** Kleine Überschrift über einem Panel-Titel. */
 function Eyebrow({ children, dark }: { children: React.ReactNode; dark?: boolean }) {
   return (
-    <div className={cn("text-[11px] font-semibold uppercase tracking-[0.12em]", dark ? "text-white/40" : "text-white/40")}>
+    <div className={cn("text-[11px] font-semibold uppercase tracking-[0.12em]", dark ? "text-white/[0.56]" : "text-white/[0.56]")}>
       {children}
     </div>
   );
@@ -49,7 +49,7 @@ function Eyebrow({ children, dark }: { children: React.ReactNode; dark?: boolean
  * nichts. Der Inhalt steht direkt auf der Seite.
  */
 function DarkPanel({ children, className }: { children: React.ReactNode; className?: string }) {
-  return <div className={cn("border-t border-white/[0.08] text-white", className)}>{children}</div>;
+  return <div className={cn("border-t border-white/[0.12] text-white", className)}>{children}</div>;
 }
 
 /** Zeile einer Firma in den Listen des Netzwerks. */
@@ -64,7 +64,7 @@ function CompanyRow({
     <li className="flex flex-wrap items-center gap-3 px-4 py-3 transition-colors hover:bg-white/[0.05]/70">
       <Link
         href={`/company/${company.id}`}
-        className="grid h-10 w-10 shrink-0 place-items-center overflow-hidden rounded-full bg-white/10 text-[12px] font-bold text-white/75"
+        className="grid h-10 w-10 shrink-0 place-items-center overflow-hidden rounded-full bg-white/10 text-[12px] font-bold text-white/[0.72]"
       >
         {company.logo_url ? (
           // eslint-disable-next-line @next/next/no-img-element
@@ -81,7 +81,7 @@ function CompanyRow({
           <span className="truncate">{company.company_name}</span>
           {company.verified && <BadgeCheck className="h-4 w-4 shrink-0 text-brand" />}
         </Link>
-        <p className="truncate text-[12px] text-white/55">
+        <p className="truncate text-[12px] text-white/[0.72]">
           {ROLE_LABEL[company.role] ?? company.role}
           {company.city ? ` · ${company.city}` : company.canton ? ` · ${company.canton}` : ""}
         </p>
@@ -172,14 +172,14 @@ export default function NetworkHub() {
           gequetscht. Ein Seitenkopf gehoert ueber die volle Breite, mit Luft
           darum — so machen es Linear und Stripe. Erst darunter beginnt die
           Arbeitsflaeche. */}
-      <header className="border-b border-white/[0.08]">
+      <header className="border-b border-white/[0.12]">
           <div className="flex flex-col gap-8 py-8 lg:flex-row lg:items-center lg:justify-between">
             <div className="max-w-2xl">
               <span className={EYEBROW}>Dein Netzwerk</span>
               <h1 className={cn(D_MD, "mt-4 text-white")}>
                 Mit wem du baust{region ? ` — und wer in ${region} dazupasst` : ""}
               </h1>
-              <p className="mt-6 max-w-xl text-[16px] leading-relaxed text-white/55">
+              <p className="mt-6 max-w-xl text-[16px] leading-relaxed text-white/[0.72]">
                 Verbindungen verwalten, Anfragen beantworten und neue Partner finden.
                 <span className="hidden sm:inline">
                   {" "}Jede Verbindung ist ein möglicher Bündel-Partner, Lieferant oder Abnehmer.
@@ -234,8 +234,8 @@ export default function NetworkHub() {
       <div className="grid grid-cols-1 gap-x-16 gap-y-14 pt-12 lg:grid-cols-[minmax(0,1fr)_270px]">
         <div className="min-w-0 space-y-12">
         {/* Verbindungen verwalten */}
-        <div className="border-t border-white/[0.08]">
-          <div className="no-scrollbar flex gap-7 overflow-x-auto border-b border-white/[0.08]">
+        <div className="border-t border-white/[0.12]">
+          <div className="no-scrollbar flex gap-7 overflow-x-auto border-b border-white/[0.12]">
             {TABS.map((t) => (
               <button
                 key={t.key}
@@ -248,7 +248,7 @@ export default function NetworkHub() {
                   "-mb-px flex shrink-0 items-center gap-2 whitespace-nowrap border-b-2 pb-3 pt-1 text-[13.5px] font-semibold transition-colors",
                   tab === t.key
                     ? "border-brand text-white"
-                    : "border-transparent text-white/45 hover:text-white",
+                    : "border-transparent text-white/[0.56] hover:text-white",
                 )}
               >
                 <t.icon className="h-3.5 w-3.5" />
@@ -260,7 +260,7 @@ export default function NetworkHub() {
                       ? "bg-white/15 text-white"
                       : counts[t.key] > 0 && t.key === "incoming"
                         ? "bg-brand/15 text-brand-700"
-                        : "bg-white/10 text-white/55",
+                        : "bg-white/10 text-white/[0.72]",
                   )}
                 >
                   {counts[t.key]}
@@ -270,13 +270,13 @@ export default function NetworkHub() {
           </div>
 
           {loading ? (
-            <div className="flex items-center justify-center gap-2 py-12 text-sm text-white/55">
+            <div className="flex items-center justify-center gap-2 py-12 text-sm text-white/[0.72]">
               <Loader2 className="h-4 w-4 animate-spin" /> Netzwerk wird geladen …
             </div>
           ) : tab === "connected" ? (
             connected.length === 0 ? (
               <div className="px-6 py-12 text-center">
-                <p className="text-sm text-white/55">
+                <p className="text-sm text-white/[0.72]">
                   Noch keine Verbindungen. Firmen, mit denen du dich vernetzt, erscheinen hier —
                   mit Chat und Direktanfrage.
                 </p>
@@ -291,22 +291,22 @@ export default function NetworkHub() {
               <>
                 {connected.length > 6 && (
                   <div className="relative border-b border-white/[0.06] px-4 py-3">
-                    <Search className="pointer-events-none absolute left-7 top-1/2 h-4 w-4 -translate-y-1/2 text-white/40" />
+                    <Search className="pointer-events-none absolute left-7 top-1/2 h-4 w-4 -translate-y-1/2 text-white/[0.56]" />
                     <input
                       type="search"
                       value={query}
                       onChange={(e) => setQuery(e.target.value)}
                       placeholder="In deinen Verbindungen suchen …"
-                      className="w-full rounded-md border border-white/[0.08] bg-white/[0.03] py-2 pl-9 pr-3 text-[13px] text-white placeholder:text-white/40 outline-none focus:border-brand focus:bg-[#0B1522]"
+                      className="w-full rounded-md border border-white/[0.12] bg-white/[0.03] py-2 pl-9 pr-3 text-[13px] text-white placeholder:text-white/[0.56] outline-none focus:border-brand focus:bg-[#16181a]"
                     />
                   </div>
                 )}
-                <ul className="divide-y divide-white/[0.06]">
+                <ul className="divide-y divide-white/[0.12]">
                   {filteredConnected.map((c) => (
                     <CompanyRow key={c.id} company={c}>
                       <Link
                         href={`/messages?to=${c.id}`}
-                        className="inline-flex items-center gap-1.5 rounded-md border border-white/[0.08] px-3 py-1.5 text-[12.5px] font-semibold text-white/70 transition-colors hover:border-brand/40 hover:text-brand"
+                        className="inline-flex items-center gap-1.5 rounded-md border border-white/[0.12] px-3 py-1.5 text-[12.5px] font-semibold text-white/[0.72] transition-colors hover:border-brand/40 hover:text-brand"
                       >
                         <MessageSquare className="h-3.5 w-3.5" /> Nachricht
                       </Link>
@@ -322,7 +322,7 @@ export default function NetworkHub() {
                     </CompanyRow>
                   ))}
                   {filteredConnected.length === 0 && (
-                    <li className="px-4 py-10 text-center text-sm text-white/40">
+                    <li className="px-4 py-10 text-center text-sm text-white/[0.56]">
                       Keine Verbindung passt zur Suche.
                     </li>
                   )}
@@ -331,11 +331,11 @@ export default function NetworkHub() {
             )
           ) : tab === "incoming" ? (
             incoming.length === 0 ? (
-              <p className="px-6 py-12 text-center text-sm text-white/55">
+              <p className="px-6 py-12 text-center text-sm text-white/[0.72]">
                 Keine offenen Anfragen. Sobald dich eine Firma vernetzen möchte, erscheint sie hier.
               </p>
             ) : (
-              <ul className="divide-y divide-white/[0.06]">
+              <ul className="divide-y divide-white/[0.12]">
                 {incoming.map(({ company, conn }) => (
                   <CompanyRow key={conn.id} company={company}>
                     <button
@@ -348,7 +348,7 @@ export default function NetworkHub() {
                     <button
                       type="button"
                       onClick={() => remove(conn.id)}
-                      className="rounded-md border border-white/[0.08] px-3 py-1.5 text-[12.5px] font-semibold text-white/55 transition-colors hover:bg-white/[0.05]"
+                      className="rounded-md border border-white/[0.12] px-3 py-1.5 text-[12.5px] font-semibold text-white/[0.72] transition-colors hover:bg-white/[0.05]"
                     >
                       Ignorieren
                     </button>
@@ -357,20 +357,20 @@ export default function NetworkHub() {
               </ul>
             )
           ) : outgoing.length === 0 ? (
-            <p className="px-6 py-12 text-center text-sm text-white/55">
+            <p className="px-6 py-12 text-center text-sm text-white/[0.72]">
               Keine offenen Einladungen. Was du versendest, steht hier, bis es beantwortet ist.
             </p>
           ) : (
-            <ul className="divide-y divide-white/[0.06]">
+            <ul className="divide-y divide-white/[0.12]">
               {outgoing.map(({ company, conn }) => (
                 <CompanyRow key={conn.id} company={company}>
-                  <span className="inline-flex items-center gap-1.5 rounded-md bg-white/10 px-3 py-1.5 text-[12.5px] font-semibold text-white/55">
+                  <span className="inline-flex items-center gap-1.5 rounded-md bg-white/10 px-3 py-1.5 text-[12.5px] font-semibold text-white/[0.72]">
                     <Clock className="h-3.5 w-3.5" /> Wartet
                   </span>
                   <button
                     type="button"
                     onClick={() => remove(conn.id)}
-                    className="rounded-md border border-white/[0.08] px-3 py-1.5 text-[12.5px] font-semibold text-white/55 transition-colors hover:bg-white/[0.05]"
+                    className="rounded-md border border-white/[0.12] px-3 py-1.5 text-[12.5px] font-semibold text-white/[0.72] transition-colors hover:bg-white/[0.05]"
                   >
                     Zurückziehen
                   </button>
@@ -382,7 +382,7 @@ export default function NetworkHub() {
 
         {/* Vorschläge — die Vollansicht liegt auf /network/entdecken */}
         {suggestions.length > 0 && (
-          <div className="border-t border-white/[0.08]">
+          <div className="border-t border-white/[0.12]">
             <div className="flex flex-wrap items-center justify-between gap-2 border-b border-white/[0.06] px-5 py-3.5">
               <div>
                 <Eyebrow>Empfohlen für dich</Eyebrow>
@@ -418,7 +418,7 @@ export default function NetworkHub() {
         )}
 
         {isSignedIn && !myCompanyId && !loading && (
-          <p className="text-center text-xs text-white/55">
+          <p className="text-center text-xs text-white/[0.72]">
             Lege ein Firmenprofil an, um dich mit anderen Firmen zu vernetzen.
           </p>
         )}
@@ -426,8 +426,8 @@ export default function NetworkHub() {
         </div>
 
         <aside className="space-y-10">
-        <div className="rounded-2xl bg-black text-white">
-          <div className="border-b border-white/[0.10] px-5 pb-3.5 pt-5">
+        <div className="rounded-[20px] bg-black text-white">
+          <div className="border-b border-white/[0.12] px-5 pb-3.5 pt-5">
             <Eyebrow dark>Dein Netzwerk</Eyebrow>
             <h2 className="mt-0.5 text-[15px] font-bold">Überblick</h2>
           </div>
@@ -435,7 +435,7 @@ export default function NetworkHub() {
           {networkEmpty ? (
             // Erster Eindruck: keine Nullen-Wand, sondern ein Weg nach vorne.
             <div className="px-5 py-4">
-              <p className="text-[13px] leading-relaxed text-white/55">
+              <p className="text-[13px] leading-relaxed text-white/[0.72]">
                 Dein Netzwerk ist noch leer. Finde Bauunternehmen und Baustoffwerke
                 {region ? ` in ${region}` : " in deiner Region"} — mehr Verbindungen heisst
                 mehr Bündel-Möglichkeiten.
@@ -449,10 +449,10 @@ export default function NetworkHub() {
             </div>
           ) : (
             <>
-              <div className="divide-y divide-white/[0.07] px-5 pb-1">
+              <div className="divide-y divide-white/[0.12] px-5 pb-1">
                 {[...overview, ...(moreStats ? overviewMore : [])].map((s) => (
                   <div key={s.label} className="flex items-center justify-between py-2.5">
-                    <span className="text-[13px] text-white/55">{s.label}</span>
+                    <span className="text-[13px] text-white/[0.72]">{s.label}</span>
                     <span className="text-lg font-bold tabular-nums">{s.value}</span>
                   </div>
                 ))}
@@ -460,7 +460,7 @@ export default function NetworkHub() {
               <button
                 type="button"
                 onClick={() => setMoreStats((v) => !v)}
-                className="flex w-full items-center justify-center gap-1 border-t border-white/[0.10] py-3 text-[12px] font-semibold text-brand transition-colors hover:bg-white/5"
+                className="flex w-full items-center justify-center gap-1 border-t border-white/[0.12] py-3 text-[12px] font-semibold text-brand transition-colors hover:bg-white/5"
               >
                 {moreStats ? "Weniger anzeigen" : "Mehr anzeigen"}
                 <ChevronDown className={cn("h-4 w-4 transition-transform", moreStats && "rotate-180")} />
@@ -472,7 +472,7 @@ export default function NetworkHub() {
         {/* Neu im Netzwerk — echte, zuletzt beigetretene Firmen */}
         {newest.length > 0 && (
           <DarkPanel>
-            <div className="border-b border-white/10 px-5 pb-3 pt-4">
+            <div className="border-b border-white/[0.12] px-5 pb-3 pt-4">
               <Eyebrow dark>Zuletzt dazugekommen</Eyebrow>
               <h3 className="mt-0.5 flex items-center gap-1.5 text-[15px] font-bold">
                 <Sparkle className="h-4 w-4 text-brand" /> Neu im Netzwerk
@@ -497,7 +497,7 @@ export default function NetworkHub() {
                       <span className="truncate">{c.company_name}</span>
                       {c.verified && <BadgeCheck className="h-3.5 w-3.5 shrink-0 text-brand" />}
                     </Link>
-                    <div className="truncate text-[11px] text-white/40">
+                    <div className="truncate text-[11px] text-white/[0.56]">
                       {ROLE_LABEL[c.role] ?? c.role}
                       {c.city ? ` · ${c.city}` : ""}
                     </div>
@@ -507,7 +507,7 @@ export default function NetworkHub() {
                       type="button"
                       onClick={() => connect(c.id)}
                       aria-label={`${c.company_name} vernetzen`}
-                      className="grid h-7 w-7 shrink-0 place-items-center rounded-md border border-white/15 text-white/70 transition-colors hover:border-brand/50 hover:text-brand"
+                      className="grid h-7 w-7 shrink-0 place-items-center rounded-md border border-white/15 text-white/[0.72] transition-colors hover:border-brand/50 hover:text-brand"
                     >
                       <UserPlus className="h-3.5 w-3.5" />
                     </button>
@@ -535,13 +535,13 @@ export default function NetworkHub() {
           <Link
             key={l.href}
             href={l.href}
-            className="group flex items-center gap-3 border-t border-white/[0.08] py-4 transition-colors hover:bg-white/[0.03]"
+            className="group flex items-center gap-3 border-t border-white/[0.12] py-4 transition-colors hover:bg-white/[0.03]"
           >
             <div className="min-w-0 flex-1">
               <div className="text-[14px] font-bold text-white group-hover:text-brand">{l.t}</div>
-              <div className="mt-0.5 text-[12px] text-white/40">{l.d}</div>
+              <div className="mt-0.5 text-[12px] text-white/[0.56]">{l.d}</div>
             </div>
-            <ArrowRight className="h-4 w-4 shrink-0 text-white/25 transition-transform group-hover:translate-x-0.5" />
+            <ArrowRight className="h-4 w-4 shrink-0 text-white/[0.4] transition-transform group-hover:translate-x-0.5" />
           </Link>
         ))}
 
@@ -551,7 +551,7 @@ export default function NetworkHub() {
             <div className="flex items-center gap-2 text-[14px] font-bold">
               <Layers className="h-4 w-4 text-brand" /> Smart Pools
             </div>
-            <p className="mt-1.5 text-[12px] leading-relaxed text-white/55">
+            <p className="mt-1.5 text-[12px] leading-relaxed text-white/[0.72]">
               Bündle deinen Bedarf mit anderen Firmen — Sealed-Bid-Angebote gegen KBOB sichern
               einen garantierten Netto-Mindestvorteil.
             </p>

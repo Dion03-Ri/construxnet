@@ -62,7 +62,7 @@ export default function Home() {
           werden. Zwei Verlaeufe legen sich darueber: einer von links, damit die
           Schrift steht, einer von unten, damit der Uebergang zum naechsten
           Abschnitt nicht abreisst. */}
-      <section className="relative isolate overflow-hidden bg-navy-950 text-white">
+      <section className="relative isolate overflow-hidden bg-black text-white">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={HERO_IMAGE}
@@ -106,7 +106,7 @@ export default function Home() {
               Gemeinsam einkaufen,<br className="hidden sm:block" /> direkt verhandeln.
             </h1>
 
-            <p className={cn(LEAD, "mt-7 max-w-xl text-white/70")}>
+            <p className={cn(LEAD, "mt-7 max-w-xl text-white/[0.72]")}>
               Obtanet legt den Bedarf mehrerer Schweizer Baufirmen zu einem Volumen
               zusammen und setzt dich an denselben Tisch wie die Werke, die darauf
               bieten. Statt Katalogpreis ein Preis, der ausgehandelt wurde.
@@ -142,14 +142,14 @@ export default function Home() {
           Abschnitte, ein Raster. Hier steht die Überschnitt jetzt gross auf
           fünf Spalten, die drei Belege stehen daneben untereinander. Zwei
           ungleiche Hälften statt drei gleicher Drittel. */}
-      <section className="border-y border-white/[0.07] bg-[#080F19]">
+      <section className="border-y border-white/[0.12] bg-[#0a0a0a]">
         <div className={cn(SHELL, SECTION_WIDE, "grid grid-cols-1 gap-x-20 gap-y-14 lg:grid-cols-[1.15fr_1fr]")}>
           <div>
             <span className={EYEBROW}>Smart Pools</span>
             <h2 className={cn(D_LG, "mt-6 text-white")}>
               Mengenrabatte,<br />die alleine<br />niemand bekommt.
             </h2>
-            <p className={cn(LEAD, "mt-8 max-w-md text-white/55")}>
+            <p className={cn(LEAD, "mt-8 max-w-md text-white/[0.72]")}>
               Wer alleine einkauft, zahlt Einzelpreise. Obtanet legt den Bedarf
               mehrerer Baufirmen zusammen und verhandelt mit dem ganzen Volumen.
             </p>
@@ -173,7 +173,7 @@ export default function Home() {
                   </span>
                   <span className="text-[17px] font-bold leading-snug tracking-tight text-white">{t}</span>
                 </dt>
-                <dd className="mt-2.5 pl-[2.1rem] text-[13.5px] leading-relaxed text-white/45">{d}</dd>
+                <dd className="mt-2.5 pl-[2.1rem] text-[13.5px] leading-relaxed text-white/[0.56]">{d}</dd>
               </div>
             ))}
           </dl>
@@ -188,39 +188,20 @@ export default function Home() {
           Jetzt untereinander, jeder Schritt eine volle Zeile mit der Nummer
           links und dem Text rechts, und jeder rückt etwas weiter ein. Man
           sieht die Treppe. */}
-      <section className="bg-navy-950 text-white">
+      <section className="bg-black text-white">
         <div className={cn(SHELL, SECTION_TIGHT)}>
           <div className="max-w-2xl">
             <span className={EYEBROW}>Ablauf</span>
             <h2 className={cn(D_MD, "mt-5 text-white")}>Von der Anfrage zum Vertrag</h2>
-            <p className={cn(LEAD, "mt-6 text-white/55")}>
+            <p className={cn(LEAD, "mt-6 text-white/[0.72]")}>
               Vier Schritte, vollständig im Dashboard — von der ersten Meldung bis zur
               Lieferung auf die Baustelle.
             </p>
           </div>
 
-          <ol className="mt-14 lg:mt-16">
-            {STEPS.map((step, i) => (
-              <li
-                key={step.t}
-                className="grid grid-cols-[3.5rem_minmax(0,1fr)] items-baseline gap-x-4 border-t border-white/[0.12] py-8 sm:grid-cols-[5rem_minmax(0,1fr)] sm:gap-x-8 lg:py-10"
-                style={{ marginLeft: `${i * 2.5}%` }}
-              >
-                <span className="font-display text-[30px] font-bold tabular-nums leading-none text-brand sm:text-[38px]">
-                  {String(i + 1).padStart(2, "0")}
-                </span>
-                <div className="grid max-w-3xl grid-cols-1 gap-x-10 gap-y-2 sm:grid-cols-[minmax(0,13rem)_minmax(0,1fr)]">
-                  <h3 className="text-[19px] font-bold leading-snug tracking-tight text-white sm:text-[21px]">
-                    {step.t}
-                  </h3>
-                  <p className="text-[14px] leading-relaxed text-white/50">{step.d}</p>
-                </div>
-              </li>
-            ))}
-          </ol>
-
-          {/* Ablauf als Video — erscheint, sobald die Adresse in data/media.ts steht */}
-          <ProcessVideo />
+          {/* Die vier Schritte sind zugleich die Kapitel des Videos.
+              Ohne hinterlegte Videoadresse steht hier die reine Liste. */}
+          <ProcessVideo chapters={STEPS} />
         </div>
       </section>
 
@@ -328,14 +309,14 @@ export default function Home() {
             Zierrat, der Nebel ist der Farbschimmer, den jede erzeugte
             Landingpage in die Ecke setzt. Eine ruhige Fläche trägt die
             Aussage besser. */}
-        <div className="relative overflow-hidden rounded-[28px] bg-accent-600 px-6 py-14 text-white sm:rounded-[32px] sm:px-14 sm:py-20">
+        <div className="relative overflow-hidden rounded-[20px] bg-accent-600 px-6 py-14 text-white sm:rounded-[20px] sm:px-14 sm:py-20">
           <div className="relative grid grid-cols-1 items-center gap-8 lg:grid-cols-[1.3fr_1fr]">
             <div>
               <span className="text-[11.5px] font-semibold uppercase tracking-[0.16em] text-brand-100">Loslegen</span>
               <h2 className={cn(D_MD, "mt-5")}>
                 Bereit, günstiger und vernetzter zu bauen?
               </h2>
-              <p className={cn(LEAD, "mt-6 max-w-lg text-white/55")}>
+              <p className={cn(LEAD, "mt-6 max-w-lg text-white/[0.72]")}>
                 Firmenprofil erstellen, ersten Materialbedarf melden — in wenigen Minuten.
               </p>
               <div className="mt-9 flex flex-wrap gap-3">
@@ -354,11 +335,11 @@ export default function Home() {
                 { icon: Coins, t: "KBOB als Preisbasis", d: "Jedes Angebot messbar gegen den Referenzpreis." },
                 { icon: Truck, t: "Regional geliefert", d: "Werke aus deiner Region, kurze Wege." },
               ].map((f) => (
-                <div key={f.t} className="flex items-start gap-3 rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3">
+                <div key={f.t} className="flex items-start gap-3 rounded-[20px] border border-white/[0.12] bg-white/[0.04] px-4 py-3">
                   <f.icon className="mt-0.5 h-4 w-4 shrink-0 text-brand" />
                   <div>
                     <div className="text-[13px] font-semibold">{f.t}</div>
-                    <div className="text-[11.5px] text-white/45">{f.d}</div>
+                    <div className="text-[11.5px] text-white/[0.56]">{f.d}</div>
                   </div>
                 </div>
               ))}
@@ -368,7 +349,7 @@ export default function Home() {
       </section>
 
       {/* ================= Footer ================= */}
-      <footer className="border-t border-white/[0.08] bg-[#0B1522]">
+      <footer className="border-t border-white/[0.12] bg-[#16181a]">
         <div className={cn(SHELL, "grid grid-cols-2 gap-8 py-12 md:grid-cols-5")}>
           <div className="col-span-2 md:col-span-1">
             <div className="flex items-center gap-2 font-bold tracking-tight text-white">
@@ -377,7 +358,7 @@ export default function Home() {
               </span>
               Obta<span className="text-brand">net</span>
             </div>
-            <p className="mt-3 max-w-xs text-[13px] leading-relaxed text-white/55">
+            <p className="mt-3 max-w-xs text-[13px] leading-relaxed text-white/[0.72]">
               Das B2B-Netzwerk der Schweizer Baubranche — vernetzen, bündeln, sparen.
             </p>
           </div>
@@ -388,18 +369,18 @@ export default function Home() {
             { h: "Rechtliches", links: [["Impressum", "/impressum"], ["AGB", "/agb"], ["Datenschutz", "/datenschutz"]] },
           ].map((col) => (
             <div key={col.h}>
-              <div className="text-[11px] font-bold uppercase tracking-wider text-white/40">{col.h}</div>
+              <div className="text-[11px] font-bold uppercase tracking-wider text-white/[0.56]">{col.h}</div>
               <ul className="mt-3 space-y-2">
                 {col.links.map(([label, href]) => (
                   <li key={label}>
-                    <Link href={href} className="text-[13px] text-white/55 transition-colors hover:text-brand">{label}</Link>
+                    <Link href={href} className="text-[13px] text-white/[0.72] transition-colors hover:text-brand">{label}</Link>
                   </li>
                 ))}
               </ul>
             </div>
           ))}
         </div>
-        <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 border-t border-white/[0.08] py-5 text-center text-[12px] text-white/40">
+        <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 border-t border-white/[0.12] py-5 text-center text-[12px] text-white/[0.56]">
           <span>© {new Date().getFullYear()} Obtanet · Schweizer Baubranche</span>
           <span aria-hidden>·</span>
           <Link href="/impressum" className="transition-colors hover:text-brand">Impressum</Link>

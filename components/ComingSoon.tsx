@@ -33,7 +33,7 @@ export default function ComingSoon({ accessError = false }: { accessError?: bool
   }
 
   return (
-    <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-navy-950 px-4">
+    <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-black px-4">
       {/* dezentes Licht + Raster */}
       <div
         aria-hidden
@@ -66,7 +66,7 @@ export default function ComingSoon({ accessError = false }: { accessError?: bool
         <h1 className="mt-5 text-3xl font-bold leading-tight tracking-tight text-white sm:text-4xl">
           Obtanet — <span className="text-brand">Coming Soon</span>
         </h1>
-        <p className="mx-auto mt-3 max-w-sm text-[15px] leading-relaxed text-white/55">
+        <p className="mx-auto mt-3 max-w-sm text-[15px] leading-relaxed text-white/[0.72]">
           Die Plattform für die Baubranche. Sei unter den Ersten.
         </p>
 
@@ -85,7 +85,7 @@ export default function ComingSoon({ accessError = false }: { accessError?: bool
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="deine@firma.ch"
-                className="h-12 flex-1 rounded-lg border border-white/12 bg-white/5 px-4 text-sm text-white outline-none placeholder:text-white/35 focus:border-brand/60"
+                className="h-12 flex-1 rounded-lg border border-white/12 bg-white/5 px-4 text-sm text-white outline-none placeholder:text-white/[0.5] focus:border-brand/60"
               />
               <button
                 type="submit"
@@ -104,14 +104,14 @@ export default function ComingSoon({ accessError = false }: { accessError?: bool
             {state === "error" && msg ? (
               <p className="mt-2.5 text-[13px] font-medium text-rose-400">{msg}</p>
             ) : (
-              <p className="mt-2.5 text-[12px] text-white/35">Kein Spam. Nur eine Nachricht zum Launch.</p>
+              <p className="mt-2.5 text-[12px] text-white/[0.5]">Kein Spam. Nur eine Nachricht zum Launch.</p>
             )}
           </form>
         )}
 
         {/* Team-Zugang: Passwort eingeben, um die Vorschau zu sehen */}
-        <div className="mx-auto mt-10 max-w-sm border-t border-white/10 pt-6">
-          <p className="text-[12px] font-semibold uppercase tracking-[0.14em] text-white/40">
+        <div className="mx-auto mt-10 max-w-sm border-t border-white/[0.12] pt-6">
+          <p className="text-[12px] font-semibold uppercase tracking-[0.14em] text-white/[0.56]">
             Team-Zugang
           </p>
           <form action="/api/preview" method="POST" className="mt-3 flex flex-col gap-2.5 sm:flex-row">
@@ -122,7 +122,7 @@ export default function ComingSoon({ accessError = false }: { accessError?: bool
               name="password"
               required
               placeholder="Passwort"
-              className="h-11 flex-1 rounded-lg border border-white/12 bg-white/5 px-4 text-sm text-white outline-none placeholder:text-white/35 focus:border-brand/60"
+              className="h-11 flex-1 rounded-lg border border-white/12 bg-white/5 px-4 text-sm text-white outline-none placeholder:text-white/[0.5] focus:border-brand/60"
             />
             <button
               type="submit"

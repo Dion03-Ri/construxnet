@@ -42,11 +42,11 @@ export default async function MapPage() {
         <h1 className="text-2xl font-bold tracking-tight text-white sm:text-3xl">
           Firmen-Karte
         </h1>
-        <p className="mt-1 text-white/55 sm:hidden">
+        <p className="mt-1 text-white/[0.72] sm:hidden">
           Auf der Karte steht nur, wer zugestimmt hat — und wird sofort anhand
           seiner Adresse verortet.
         </p>
-        <p className="mt-1 hidden max-w-2xl text-white/55 sm:block">
+        <p className="mt-1 hidden max-w-2xl text-white/[0.72] sm:block">
           Wer wo produziert, was er führt und wie weit er liefert. Auf der
           Karte steht nur, wer ausdrücklich zugestimmt hat — wer zustimmt,
           wird sofort anhand seiner Adresse verortet.

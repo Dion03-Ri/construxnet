@@ -712,7 +712,7 @@ export default function ChatWindow({ initialTo }: { initialTo?: string }) {
                 if (m.is_negotiation_offer) {
                   return (
                     <div key={m.id} className={cn("flex", mine ? "justify-end" : "justify-start")}>
-                      <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} className="w-[85%] max-w-sm overflow-hidden rounded-2xl border border-brand/30 bg-white">
+                      <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} className="w-[85%] max-w-sm overflow-hidden rounded-[20px] border border-brand/30 bg-white">
                         <div className="flex items-center gap-1.5 border-b border-brand/15 bg-brand/[0.06] px-4 py-2 text-[11px] font-semibold uppercase tracking-wider text-brand">
                           <Tag className="h-3.5 w-3.5" /> Verhandlungs-Angebot
                         </div>
@@ -740,9 +740,9 @@ export default function ChatWindow({ initialTo }: { initialTo?: string }) {
                 }
                 return (
                   <div key={m.id} className={cn("flex", mine ? "justify-end" : "justify-start")}>
-                    <div className={cn("max-w-[80%] rounded-2xl px-4 py-2.5 text-sm", mine ? "bg-accent-600 text-white" : "border border-slate-200 bg-white text-slate-700")}>
+                    <div className={cn("max-w-[80%] rounded-[20px] px-4 py-2.5 text-sm", mine ? "bg-accent-600 text-white" : "border border-slate-200 bg-white text-slate-700")}>
                       {m.content}
-                      <div className={cn("mt-1 flex items-center justify-end gap-1 text-[10px]", mine ? "text-white/55" : "text-slate-400")}>
+                      <div className={cn("mt-1 flex items-center justify-end gap-1 text-[10px]", mine ? "text-white/[0.72]" : "text-slate-400")}>
                         {time(m.created_at)}
                         {mine && !m.id.startsWith("tmp-") && (
                           // Zwei Haken heisst gelesen, einer heisst zugestellt.

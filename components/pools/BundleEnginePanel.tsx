@@ -38,26 +38,26 @@ export default function BundleEnginePanel() {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="group flex w-full items-center gap-4 border-t border-white/[0.08] py-5 text-left transition-colors hover:bg-white/[0.02]"
+        className="group flex w-full items-center gap-4 border-t border-white/[0.12] py-5 text-left transition-colors hover:bg-white/[0.02]"
       >
-        <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl border border-white/[0.10] text-brand transition-colors group-hover:border-brand/40">
+        <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl border border-white/[0.12] text-brand transition-colors group-hover:border-brand/40">
           <Calculator className="h-4 w-4" />
         </span>
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2.5 text-[14px] font-bold tracking-tight text-white">
             Rabatt-Rechner
-            <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-white/30">
+            <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-white/[0.5]">
               Zusatztool
             </span>
           </div>
-          <p className="mt-1 truncate text-[12.5px] text-white/40">
+          <p className="mt-1 truncate text-[12.5px] text-white/[0.56]">
             Simuliere, wie dein Materialbedarf das Poolvolumen und deinen Rabatt bewegt.
           </p>
         </div>
-        <span className="hidden shrink-0 items-center gap-1.5 text-[12.5px] font-semibold text-white/55 transition-colors group-hover:text-brand sm:inline-flex">
+        <span className="hidden shrink-0 items-center gap-1.5 text-[12.5px] font-semibold text-white/[0.72] transition-colors group-hover:text-brand sm:inline-flex">
           <TrendingDown className="h-3.5 w-3.5" /> Mindestvorteil rechnen
         </span>
-        <span className="shrink-0 text-white/30 transition-colors group-hover:text-brand">
+        <span className="shrink-0 text-white/[0.5] transition-colors group-hover:text-brand">
           <Maximize2 className="h-4 w-4" />
         </span>
       </button>
@@ -66,7 +66,7 @@ export default function BundleEnginePanel() {
       <AnimatePresence>
         {open && (
           <motion.div
-            className="fixed inset-0 z-[60] flex flex-col bg-navy-950/80 p-2 backdrop-blur-sm sm:p-4"
+            className="fixed inset-0 z-[60] flex flex-col bg-black/80 p-2 backdrop-blur-sm sm:p-4"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -76,7 +76,7 @@ export default function BundleEnginePanel() {
             aria-label="Rabatt-Rechner"
           >
             <motion.div
-              className="mx-auto flex h-full w-full max-w-6xl flex-col overflow-hidden rounded-xl border border-white/10 bg-navy-950 shadow-2xl"
+              className="mx-auto flex h-full w-full max-w-6xl flex-col overflow-hidden rounded-xl border border-white/[0.12] bg-black shadow-2xl"
               initial={{ scale: 0.97, y: 8 }}
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.97, y: 8 }}
@@ -84,18 +84,18 @@ export default function BundleEnginePanel() {
               onClick={(e) => e.stopPropagation()}
             >
               {/* Overlay-Kopfzeile */}
-              <div className="flex shrink-0 items-center justify-between border-b border-white/10 px-4 py-3 sm:px-5">
+              <div className="flex shrink-0 items-center justify-between border-b border-white/[0.12] px-4 py-3 sm:px-5">
                 <div className="flex items-center gap-2 text-[13px] font-semibold text-white">
                   <Calculator className="h-4 w-4 text-brand" />
                   Rabatt-Rechner
-                  <span className="hidden text-[11px] font-normal text-white/45 sm:inline">
+                  <span className="hidden text-[11px] font-normal text-white/[0.56] sm:inline">
                     · Simulation · verlässt die Bündel-Seite nicht
                   </span>
                 </div>
                 <button
                   type="button"
                   onClick={() => setOpen(false)}
-                  className="inline-flex items-center gap-1.5 rounded-md border border-white/15 px-3 py-1.5 text-[12px] font-semibold text-white/75 transition-colors hover:border-white/30 hover:text-white"
+                  className="inline-flex items-center gap-1.5 rounded-md border border-white/15 px-3 py-1.5 text-[12px] font-semibold text-white/[0.72] transition-colors hover:border-white/30 hover:text-white"
                 >
                   <X className="h-4 w-4" /> Schliessen
                 </button>

@@ -153,19 +153,19 @@ export default function DirectRequestModal({
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-      <div className="absolute inset-0 bg-navy-950/60 backdrop-blur-sm" onClick={onClose} />
+      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
       <motion.div
         initial={{ opacity: 0, scale: 0.97, y: 8 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         transition={{ duration: 0.16 }}
-        className="relative w-full max-w-lg overflow-hidden rounded-xl border border-white/[0.08] bg-[#0B1522] shadow-2xl"
+        className="relative w-full max-w-lg overflow-hidden rounded-xl border border-white/[0.12] bg-[#16181a] shadow-2xl"
       >
-        <div className="flex items-start justify-between gap-3 border-b border-white/[0.08] px-5 py-3.5">
+        <div className="flex items-start justify-between gap-3 border-b border-white/[0.12] px-5 py-3.5">
           <div className="min-w-0">
             <h3 className="flex items-center gap-2 text-[15px] font-bold text-white">
               <Handshake className="h-4 w-4 text-brand" /> Direkt anfragen
             </h3>
-            <p className="mt-0.5 truncate text-[12.5px] text-white/55">
+            <p className="mt-0.5 truncate text-[12.5px] text-white/[0.72]">
               an {target.company_name}
               {target.city ? ` · ${target.city}` : ""}
             </p>
@@ -173,7 +173,7 @@ export default function DirectRequestModal({
           <button
             type="button"
             onClick={onClose}
-            className="rounded-md p-1.5 text-white/40 transition-colors hover:bg-white/[0.07] hover:text-white/75"
+            className="rounded-md p-1.5 text-white/[0.56] transition-colors hover:bg-white/[0.07] hover:text-white/[0.72]"
             aria-label="Schliessen"
           >
             <X className="h-4 w-4" />
@@ -183,19 +183,19 @@ export default function DirectRequestModal({
         <div className="space-y-3.5 px-5 py-4">
           {/* Material */}
           <div>
-            <label className="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-white/40">
+            <label className="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-white/[0.56]">
               Material *
             </label>
             {material ? (
               <div className="flex items-center gap-2 rounded-md border border-brand/30 bg-brand/[0.05] px-3 py-2">
                 <div className="min-w-0 flex-1">
                   <div className="truncate text-[13.5px] font-semibold text-white">{material.label}</div>
-                  <div className="truncate text-[11px] text-white/40">{material.sia}</div>
+                  <div className="truncate text-[11px] text-white/[0.56]">{material.sia}</div>
                 </div>
                 <button
                   type="button"
                   onClick={() => { setMaterialKey(""); setQuery(""); }}
-                  className="shrink-0 rounded p-1 text-white/40 hover:text-white/75"
+                  className="shrink-0 rounded p-1 text-white/[0.56] hover:text-white/[0.72]"
                   aria-label="Material ändern"
                 >
                   <X className="h-3.5 w-3.5" />
@@ -204,16 +204,16 @@ export default function DirectRequestModal({
             ) : (
               <>
                 <div className="relative">
-                  <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-white/40" />
+                  <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-white/[0.56]" />
                   <input
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
                     autoFocus
                     placeholder="Material oder Nummer suchen …"
-                    className="w-full rounded-md border border-white/[0.16] bg-white/[0.03] py-2 pl-9 pr-3 text-sm text-white placeholder:text-white/40 outline-none focus:border-brand focus:bg-[#0B1522]"
+                    className="w-full rounded-md border border-white/[0.16] bg-white/[0.03] py-2 pl-9 pr-3 text-sm text-white placeholder:text-white/[0.56] outline-none focus:border-brand focus:bg-[#16181a]"
                   />
                 </div>
-                <ul className="mt-1.5 max-h-44 overflow-y-auto rounded-md border border-white/[0.08]">
+                <ul className="mt-1.5 max-h-44 overflow-y-auto rounded-md border border-white/[0.12]">
                   {matches.map((m) => (
                     <li key={m.key}>
                       <button
@@ -223,14 +223,14 @@ export default function DirectRequestModal({
                       >
                         <span className="min-w-0">
                           <span className="block truncate text-[13px] font-medium text-white/90">{m.label}</span>
-                          <span className="block truncate text-[11px] text-white/40">{m.sia}</span>
+                          <span className="block truncate text-[11px] text-white/[0.56]">{m.sia}</span>
                         </span>
-                        <span className="shrink-0 text-[11px] text-white/40">CHF {m.kbobPrice}/{m.unit}</span>
+                        <span className="shrink-0 text-[11px] text-white/[0.56]">CHF {m.kbobPrice}/{m.unit}</span>
                       </button>
                     </li>
                   ))}
                   {matches.length === 0 && (
-                    <li className="px-3 py-4 text-center text-[12.5px] text-white/40">Kein Treffer.</li>
+                    <li className="px-3 py-4 text-center text-[12.5px] text-white/[0.56]">Kein Treffer.</li>
                   )}
                 </ul>
               </>
@@ -240,10 +240,10 @@ export default function DirectRequestModal({
           {/* Menge + Lieferung */}
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-white/40">
+              <label className="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-white/[0.56]">
                 Menge *
               </label>
-              <div className="flex items-center rounded-md border border-white/[0.16] bg-white/[0.03] focus-within:border-brand focus-within:bg-[#0B1522]">
+              <div className="flex items-center rounded-md border border-white/[0.16] bg-white/[0.03] focus-within:border-brand focus-within:bg-[#16181a]">
                 <input
                   value={qty}
                   onChange={(e) => setQty(e.target.value.replace(/[^0-9.]/g, ""))}
@@ -251,17 +251,17 @@ export default function DirectRequestModal({
                   placeholder="z. B. 120"
                   className="min-w-0 flex-1 bg-transparent px-3 py-2 text-sm text-white outline-none"
                 />
-                <span className="px-2.5 text-sm font-medium text-white/40">{material?.unit ?? "—"}</span>
+                <span className="px-2.5 text-sm font-medium text-white/[0.56]">{material?.unit ?? "—"}</span>
               </div>
             </div>
             <div>
-              <label className="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-white/40">
+              <label className="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-white/[0.56]">
                 Lieferung
               </label>
               <select
                 value={window}
                 onChange={(e) => setWindow(e.target.value)}
-                className="w-full rounded-md border border-white/[0.16] bg-white/[0.03] px-3 py-2 text-sm text-white outline-none focus:border-brand focus:bg-[#0B1522]"
+                className="w-full rounded-md border border-white/[0.16] bg-white/[0.03] px-3 py-2 text-sm text-white outline-none focus:border-brand focus:bg-[#16181a]"
               >
                 {DELIVERY_WINDOWS.map((w) => <option key={w} value={w}>{w}</option>)}
               </select>
@@ -271,25 +271,25 @@ export default function DirectRequestModal({
           {/* Frist + Baustelle */}
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-white/40">
+              <label className="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-white/[0.56]">
                 Antwort bis
               </label>
               <input
                 type="date"
                 value={respondBy}
                 onChange={(e) => setRespondBy(e.target.value)}
-                className="w-full rounded-md border border-white/[0.16] bg-white/[0.03] px-3 py-2 text-sm text-white outline-none focus:border-brand focus:bg-[#0B1522]"
+                className="w-full rounded-md border border-white/[0.16] bg-white/[0.03] px-3 py-2 text-sm text-white outline-none focus:border-brand focus:bg-[#16181a]"
               />
             </div>
             <div>
-              <label className="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-white/40">
+              <label className="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-white/[0.56]">
                 Baustelle
               </label>
               <select
                 value={projectId}
                 onChange={(e) => setProjectId(e.target.value)}
                 disabled={projects.length === 0}
-                className="w-full rounded-md border border-white/[0.16] bg-white/[0.03] px-3 py-2 text-sm text-white outline-none focus:border-brand focus:bg-[#0B1522] disabled:text-white/40"
+                className="w-full rounded-md border border-white/[0.16] bg-white/[0.03] px-3 py-2 text-sm text-white outline-none focus:border-brand focus:bg-[#16181a] disabled:text-white/[0.56]"
               >
                 <option value="">{projects.length === 0 ? "Keine angelegt" : "Keine Zuordnung"}</option>
                 {projects.map((p) => (
@@ -301,7 +301,7 @@ export default function DirectRequestModal({
 
           {/* Nachricht */}
           <div>
-            <label className="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-white/40">
+            <label className="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-white/[0.56]">
               Nachricht (optional)
             </label>
             <textarea
@@ -309,13 +309,13 @@ export default function DirectRequestModal({
               onChange={(e) => setNote(e.target.value)}
               rows={3}
               placeholder="Baustelle, Abladestelle, Besonderheiten …"
-              className="w-full resize-none rounded-md border border-white/[0.16] bg-white/[0.03] px-3 py-2 text-sm text-white placeholder:text-white/40 outline-none focus:border-brand focus:bg-[#0B1522]"
+              className="w-full resize-none rounded-md border border-white/[0.16] bg-white/[0.03] px-3 py-2 text-sm text-white placeholder:text-white/[0.56] outline-none focus:border-brand focus:bg-[#16181a]"
             />
           </div>
 
           {!alreadyConnected && (
-            <p className="flex items-start gap-2 rounded-md bg-white/[0.03] px-3 py-2.5 text-[11.5px] leading-relaxed text-white/55">
-              <Info className="mt-px h-3.5 w-3.5 shrink-0 text-white/40" />
+            <p className="flex items-start gap-2 rounded-md bg-white/[0.03] px-3 py-2.5 text-[11.5px] leading-relaxed text-white/[0.72]">
+              <Info className="mt-px h-3.5 w-3.5 shrink-0 text-white/[0.56]" />
               Ihr seid noch nicht vernetzt. Die Anfrage geht zusammen mit einer
               Verbindungsanfrage raus — {target.company_name} entscheidet über beides auf einmal.
             </p>
@@ -324,13 +324,13 @@ export default function DirectRequestModal({
           {error && <p className="text-[12.5px] font-medium text-rose-300">{error}</p>}
         </div>
 
-        <div className="flex items-center justify-between gap-2 border-t border-white/[0.08] bg-white/[0.03] px-5 py-3">
-          <span className="text-[11.5px] text-white/40">Ohne Bündelung — direkt verhandelt.</span>
+        <div className="flex items-center justify-between gap-2 border-t border-white/[0.12] bg-white/[0.03] px-5 py-3">
+          <span className="text-[11.5px] text-white/[0.56]">Ohne Bündelung — direkt verhandelt.</span>
           <div className="flex items-center gap-2">
             <button
               type="button"
               onClick={onClose}
-              className="rounded-md px-3.5 py-2 text-sm font-semibold text-white/55 transition-colors hover:bg-slate-200"
+              className="rounded-md px-3.5 py-2 text-sm font-semibold text-white/[0.72] transition-colors hover:bg-slate-200"
             >
               Abbrechen
             </button>

@@ -77,7 +77,7 @@ export default function ProfileRail({
   return (
     <div className="space-y-4">
       {/* ---------- Firmenkarte ---------- */}
-      <div className="border-t border-white/[0.08]">
+      <div className="border-t border-white/[0.12]">
         {/* Statt des lauten Goldverlaufs eine einzelne Goldkante. Sie
             markiert die Karte als „deine", ohne die Seite zu beherrschen. */}
         <div className="h-1 bg-brand" />
@@ -85,7 +85,7 @@ export default function ProfileRail({
         <div className="pt-5">
           <Link
             href={`/company/${company.id}`}
-            className="flex h-14 w-14 items-center justify-center overflow-hidden rounded-2xl bg-navy-900 text-[17px] font-bold text-white"
+            className="flex h-14 w-14 items-center justify-center overflow-hidden rounded-[20px] bg-navy-900 text-[17px] font-bold text-white"
           >
             {company.logo_url ? (
               // eslint-disable-next-line @next/next/no-img-element
@@ -111,11 +111,11 @@ export default function ProfileRail({
             )}
           </div>
 
-          <p className="mt-1.5 flex items-center gap-1 text-[12.5px] text-white/40">
+          <p className="mt-1.5 flex items-center gap-1 text-[12.5px] text-white/[0.56]">
             {ROLE_LABEL[company.role] ?? company.role}
             {company.city && (
               <>
-                <span className="text-white/25">·</span>
+                <span className="text-white/[0.4]">·</span>
                 <MapPin className="h-3 w-3" /> {company.city}
               </>
             )}
@@ -129,7 +129,7 @@ export default function ProfileRail({
                 "mt-5 inline-flex w-full items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-[13px] font-semibold transition-colors",
                 open
                   ? "bg-navy-900 text-white hover:bg-navy-800"
-                  : "border border-white/[0.16] text-white/70 hover:bg-white/[0.05]",
+                  : "border border-white/[0.16] text-white/[0.72] hover:bg-white/[0.05]",
               )}
             >
               <span
@@ -156,11 +156,11 @@ export default function ProfileRail({
               { href: "/network", n: connections, l: "Verbindungen" },
               { href: "/pools", n: pools, l: "Aktive Pools" },
             ].map((s) => (
-              <Link key={s.l} href={s.href} className="group border-t border-white/[0.08] pt-3">
+              <Link key={s.l} href={s.href} className="group border-t border-white/[0.12] pt-3">
                 <div className="font-display text-[26px] font-bold leading-none tabular-nums text-white group-hover:text-brand">
                   {s.n}
                 </div>
-                <div className="mt-1.5 text-[11.5px] text-white/40">{s.l}</div>
+                <div className="mt-1.5 text-[11.5px] text-white/[0.56]">{s.l}</div>
               </Link>
             ))}
           </div>
@@ -168,10 +168,10 @@ export default function ProfileRail({
       </div>
 
       {/* ---------- Navigation, eine Karte statt drei ---------- */}
-      <div className="border-t border-white/[0.08]">
+      <div className="border-t border-white/[0.12]">
         {NAV_GROUPS.map((g, gi) => (
-          <div key={g.head} className={gi > 0 ? "border-t border-white/[0.08]" : undefined}>
-            <div className="pb-2 pt-5 text-[10.5px] font-semibold uppercase tracking-[0.14em] text-white/40">
+          <div key={g.head} className={gi > 0 ? "border-t border-white/[0.12]" : undefined}>
+            <div className="pb-2 pt-5 text-[10.5px] font-semibold uppercase tracking-[0.14em] text-white/[0.56]">
               {g.head}
             </div>
             <div className="pb-2">
@@ -179,16 +179,16 @@ export default function ProfileRail({
                 <Link
                   key={l.label}
                   href={l.href}
-                  className="-mx-2 flex items-center gap-3 rounded-lg px-2 py-2.5 text-[13.5px] font-medium text-white/70 transition-colors hover:bg-white/[0.05] hover:text-white"
+                  className="-mx-2 flex items-center gap-3 rounded-lg px-2 py-2.5 text-[13.5px] font-medium text-white/[0.72] transition-colors hover:bg-white/[0.05] hover:text-white"
                 >
-                  <l.icon className="h-4 w-4 shrink-0 text-white/40" />
+                  <l.icon className="h-4 w-4 shrink-0 text-white/[0.56]" />
                   <span className="flex-1 truncate">{l.label}</span>
                   {l.badge ? (
                     <span className="grid h-5 min-w-5 place-items-center rounded-full bg-brand px-1.5 text-[10.5px] font-bold tabular-nums text-navy-950">
                       {l.badge}
                     </span>
                   ) : (
-                    <ChevronRight className="h-3.5 w-3.5 text-white/25" />
+                    <ChevronRight className="h-3.5 w-3.5 text-white/[0.4]" />
                   )}
                 </Link>
               ))}
@@ -198,15 +198,15 @@ export default function ProfileRail({
       </div>
 
       {/* ---------- Gewerke ---------- */}
-      <div className="border-t border-white/[0.08] pt-5">
-        <h3 className="text-[10.5px] font-semibold uppercase tracking-[0.14em] text-white/40">
+      <div className="border-t border-white/[0.12] pt-5">
+        <h3 className="text-[10.5px] font-semibold uppercase tracking-[0.14em] text-white/[0.56]">
           Deine Gewerke
         </h3>
         <div className="mt-3 flex flex-wrap gap-1.5">
           {GEWERKE.map((g) => (
             <span
               key={g}
-              className="rounded-full bg-white/[0.06] px-2.5 py-1 text-[11.5px] font-medium text-white/70"
+              className="rounded-full bg-white/[0.06] px-2.5 py-1 text-[11.5px] font-medium text-white/[0.72]"
             >
               {g}
             </span>

@@ -81,19 +81,19 @@ export default function RecommendedPartners() {
        „von der Maschine vorgeschlagen" heissen und ist genau deshalb das
        Erkennungszeichen erzeugter Oberflächen geworden. Was hier steht,
        sind Firmen aus derselben Region — das sagt die Zeile darunter. */
-    <div className="border-t border-white/[0.08] pt-5">
+    <div className="border-t border-white/[0.12] pt-5">
       <h3 className="text-[15px] font-bold tracking-tight text-white">
         Partner für deine Beschaffung
       </h3>
-      <p className="mt-1 text-[12.5px] text-white/40">
+      <p className="mt-1 text-[12.5px] text-white/[0.56]">
         Werke und Firmen aus deiner Region, mit denen du bündeln kannst.
       </p>
-      <ul className="mt-4 divide-y divide-white/[0.07] border-t border-white/[0.08]">
+      <ul className="mt-4 divide-y divide-white/[0.12] border-t border-white/[0.12]">
         {items.map((c) => (
           <li key={c.id} className="flex items-center gap-3 py-3">
             <Link
               href={`/company/${c.id}`}
-              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white/[0.08] text-xs font-semibold text-white/70"
+              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white/[0.08] text-xs font-semibold text-white/[0.72]"
             >
               {initials(c.company_name)}
             </Link>
@@ -105,7 +105,7 @@ export default function RecommendedPartners() {
                 <span className="truncate">{c.company_name}</span>
                 {c.verified && <BadgeCheck className="h-3.5 w-3.5 shrink-0 text-brand" />}
               </Link>
-              <p className="truncate text-[11px] text-white/40">
+              <p className="truncate text-[11px] text-white/[0.56]">
                 {ROLE_LABEL[c.role] ?? c.role}
                 {c.city ? ` · ${c.city}` : ""}
               </p>

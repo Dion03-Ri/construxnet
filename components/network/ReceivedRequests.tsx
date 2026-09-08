@@ -88,7 +88,7 @@ export default function ReceivedRequests() {
 
   if (loading) {
     return (
-      <div className={"flex items-center justify-center gap-2 py-16 text-sm text-white/55"}>
+      <div className={"flex items-center justify-center gap-2 py-16 text-sm text-white/[0.72]"}>
         <Loader2 className="h-4 w-4 animate-spin" /> Anfragen werden geladen …
       </div>
     );
@@ -96,12 +96,12 @@ export default function ReceivedRequests() {
 
   if (reqs.length === 0) {
     return (
-      <div className={"flex flex-col items-center gap-3 border-t border-white/[0.08] py-16 text-center"}>
-        <span className="grid h-12 w-12 place-items-center rounded-full bg-white/10 text-white/40">
+      <div className={"flex flex-col items-center gap-3 border-t border-white/[0.12] py-16 text-center"}>
+        <span className="grid h-12 w-12 place-items-center rounded-full bg-white/10 text-white/[0.56]">
           <Inbox className="h-6 w-6" />
         </span>
         <p className="text-sm font-semibold text-white">Keine offenen Anfragen</p>
-        <p className="max-w-sm text-[13px] text-white/55">
+        <p className="max-w-sm text-[13px] text-white/[0.72]">
           Wenn dir Firmen eine Vernetzungs-Anfrage senden, erscheinen sie hier zum Annehmen.
         </p>
         <Link href="/network" className="mt-1 inline-flex items-center gap-1.5 rounded-md bg-brand px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-brand-600">
@@ -112,13 +112,13 @@ export default function ReceivedRequests() {
   }
 
   return (
-    <div className={"border-t border-white/[0.08]"}>
-      <ul className="divide-y divide-white/[0.06]">
+    <div className={"border-t border-white/[0.12]"}>
+      <ul className="divide-y divide-white/[0.12]">
         {reqs.map(({ connId, company }) => (
           <li key={connId} className="flex items-center gap-3 px-4 py-3.5 sm:px-5">
             <Link
               href={`/company/${company.id}`}
-              className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full bg-white/10 text-sm font-semibold text-white/75"
+              className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full bg-white/10 text-sm font-semibold text-white/[0.72]"
             >
               {company.logo_url ? (
                 // eslint-disable-next-line @next/next/no-img-element
@@ -132,7 +132,7 @@ export default function ReceivedRequests() {
                 {company.company_name}
                 {company.verified && <BadgeCheck className="h-4 w-4 shrink-0 text-brand" />}
               </Link>
-              <p className="flex items-center gap-1 truncate text-xs text-white/40">
+              <p className="flex items-center gap-1 truncate text-xs text-white/[0.56]">
                 {ROLE_LABEL[company.role] ?? company.role}
                 {company.city && <><span>·</span><MapPin className="h-3 w-3" /> {company.city}</>}
               </p>
@@ -140,7 +140,7 @@ export default function ReceivedRequests() {
             <button
               type="button"
               onClick={() => ignore(connId)}
-              className="rounded-md border border-white/[0.08] px-3.5 py-1.5 text-sm font-semibold text-white/55 transition-colors hover:bg-white/[0.05]"
+              className="rounded-md border border-white/[0.12] px-3.5 py-1.5 text-sm font-semibold text-white/[0.72] transition-colors hover:bg-white/[0.05]"
             >
               Ignorieren
             </button>
