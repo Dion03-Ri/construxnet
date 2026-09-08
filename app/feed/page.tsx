@@ -22,7 +22,6 @@ export const metadata = {
  * — die eigene Firma und sechs Verweise, die schon im Kopf der Seite
  * stehen.
  *
-<<<<<<< HEAD
  * Jetzt: ein Kopfband, darunter die Bündel-Chancen über die ganze Breite,
  * und zuunterst die News in einer Textspalte mit einer Schiene daneben.
  *
@@ -36,15 +35,6 @@ export const metadata = {
  * Die News stehen zuletzt, weil sie beim Scrollen endlos nachladen. Was
  * darunter stünde, erreicht nie jemand — deshalb steht alles, was daneben
  * nützlich ist, in der Schiene rechts und nicht unter dem Strom.
-=======
- * Jetzt: ein Kopfband über die volle Breite, darunter die Werkbank
- * (Bündel-Chancen breit, Referenzpreis daneben), dann die Partner als
- * Zeilen bis an den rechten Rand, und zuunterst die News.
- *
- * Die Reihenfolge ist nicht frei wählbar: die News laden beim Scrollen
- * endlos nach. Was darunter stünde, erreicht nie jemand — also stehen sie
- * zuletzt.
->>>>>>> origin/claude/construxnet-platform-rebuild-jll7j9
  */
 
 /** „17 Std", „4 Tage" — die Frist so, wie man sie ausspricht. */
@@ -101,7 +91,6 @@ export default async function FeedPage() {
   ];
 
   return (
-<<<<<<< HEAD
     <main className={cn(GROUND, SHELL_WORK, "py-6")}>
       <FeedHead stats={stats} badges={{ "/network/requests": incoming }} />
 
@@ -124,21 +113,6 @@ export default async function FeedPage() {
           <KbobTile />
           <RecommendedPartners />
         </aside>
-=======
-    <main className={cn(GROUND, SHELL, "py-6")}>
-      <FeedHead stats={stats} badges={{ "/network/requests": incoming }} />
-
-      {/* Werkbank: beide beantworten dieselbe Frage — lohnt es sich gerade? */}
-      <div className="grid grid-cols-1 gap-x-14 gap-y-4 lg:grid-cols-[minmax(0,1fr)_320px]">
-        <BundleChances wide />
-        <KbobTile className="lg:mt-5" />
-      </div>
-
-      <RecommendedPartners />
-
-      <div className="mt-10">
-        <NetworkFeed />
->>>>>>> origin/claude/construxnet-platform-rebuild-jll7j9
       </div>
     </main>
   );
