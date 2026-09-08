@@ -573,6 +573,15 @@ Hero-Zeile, `D_MD` für alle Abschnittsüberschriften. Zwei Stufen, mehr
 nicht — wenn drei Überschriften gleich gross sind, gibt es keine
 Rangfolge mehr.
 
+## Zahlen immer über `lib/format.ts`
+`Intl.NumberFormat("de-CH")` liefert nicht überall dasselbe Zeichen als
+Tausendertrenner: Node schreibt `'`, Chrome `’`. Eine serverseitig
+gerenderte Zahl führt damit zu einem Hydration-Fehler — auf
+`/beschaffung` trat er bei jedem Aufruf auf („1'120" gegen „1’120").
+`lib/format.ts` schreibt den Trenner fest. Sechs Bausteine hatten je
+eine eigene Kopie der Funktion; wer eine siebte braucht, nimmt die
+geteilte. **Nie wieder `Intl.NumberFormat` direkt in einem Baustein.**
+
 ## Was ich davon nicht ohne Zuruf anfasse
 - Die CI-Farben. Sie stehen als „STRIKT" in dieser Datei.
 - Die Formensprache (weiche Ecken).
@@ -645,9 +654,16 @@ ist besser, wenn der Hintergrund weiss ist." Daraus die Regel, die in
 > Wo gelesen und geschrieben wird, ist Papier.
 > Wo Zahlen und Markt stehen, ist es dunkel.
 
-Was daraus folgt, sobald der Nutzer die Nachrichtenseite abgenommen hat:
-- **Papier (`SHEET`):** Nachrichten (gebaut), Beschaffung, Profil
-  bearbeiten, Termine, Firmenprofil, Rechtsseiten.
+Der Nutzer will ausserdem einen **Rhythmus** — „mal blau auf hell, dann
+wieder hell mit blau", aber so, dass es sich durch die ganze Seite
+zieht. Daraus wird ein drittes Register: Navy als Fläche, nicht nur als
+Linie. Es trägt Kopfbänder auf hellen Seiten (`/beschaffung`, gebaut),
+die eigenen Nachrichtenblasen und einzelne Abschnitte, die etwas
+behaupten. Wichtig: `accent-600` `#1B3A5C`, nicht `navy-900` `#08111E`.
+
+Was daraus folgt:
+- **Papier (`SHEET`):** Nachrichten (gebaut), Beschaffung (gebaut),
+  Profil bearbeiten, Termine, Firmenprofil, Rechtsseiten.
 - **Dunkel:** Feed, Smart Pools, Referenzpreise, Netzwerk, Karte,
   Startseite.
 - Der Rahmen bleibt immer dunkel — Kopfzeile, Fussbereich, der Grund

@@ -29,6 +29,8 @@ import {
   TrendingDown,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { chf as chfRaw } from "@/lib/format";
+const chf = (value: number, decimals = 2) => chfRaw(value, decimals);
 
 /* -------------------------------------------------------------------------- */
 /*  Business config                                                            */
@@ -64,9 +66,6 @@ const MATERIALS: Material[] = [
 
 const BASE_POOL: Record<string, number> = { beton: 180, stahl: 90, kies: 240 };
 
-function chf(value: number, decimals = 2) {
-  return new Intl.NumberFormat("de-CH", { minimumFractionDigits: decimals, maximumFractionDigits: decimals }).format(value);
-}
 
 function discountForVolume(volume: number) {
   let d = TIERS[0];

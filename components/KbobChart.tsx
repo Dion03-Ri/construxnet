@@ -25,6 +25,8 @@ import {
 import kbobData from "@/data/kbobData.json";
 import { useOwnPurchases, averageDelta, type Purchase } from "@/lib/kbobPurchases";
 import { cn } from "@/lib/utils";
+import { chf as chfFixed, decimalsFor as decimalsForShared } from "@/lib/format";
+const chf = (value: number, decimals?: number) => chfFixed(value, decimals ?? decimalsForShared(value));
 
 /* -------------------------------------------------------------------------- */
 /*  Daten                                                                     */
@@ -66,19 +68,6 @@ const PROCURE_LINK: Record<string, string> = {
 /*  Formatierung                                                              */
 /* -------------------------------------------------------------------------- */
 
-function decimalsFor(value: number) {
-  if (value >= 300) return 0;
-  if (value >= 10) return 2;
-  return 3;
-}
-
-function chf(value: number, decimals?: number) {
-  const d = decimals ?? decimalsFor(value);
-  return new Intl.NumberFormat("de-CH", {
-    minimumFractionDigits: d,
-    maximumFractionDigits: d,
-  }).format(value);
-}
 
 /** "2021-Q1" → "Q1 '21" */
 function shortPeriod(period: string) {

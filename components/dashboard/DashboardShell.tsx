@@ -62,6 +62,7 @@ import { PANEL, badge } from "@/lib/ui";
 import { cn } from "@/lib/utils";
 import { matchesMaterial, PROC_CATEGORIES, tierForVolume, type ProcMaterial, type ProcCategory } from "@/data/procurement";
 import kbobData from "@/data/kbobData.json";
+import { chf } from "@/lib/format";
 
 /** Feine Raster-Textur der dunklen Panels — identisch zu Feed und Startseite. */
 const GRID_BG = {
@@ -78,9 +79,6 @@ const C = {
   slateLight: "#E2E8F0",
 };
 
-function chf(v: number, d = 0) {
-  return new Intl.NumberFormat("de-CH", { minimumFractionDigits: d, maximumFractionDigits: d }).format(v);
-}
 
 /* -------------------------------------------------------------------------- */
 /*  Daten                                                                     */

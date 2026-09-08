@@ -31,6 +31,8 @@ import { useSupabaseBrowser } from "@/lib/supabase-browser";
 import { fetchMyCompanyId } from "@/lib/myCompany";
 import { SHEET } from "@/lib/ui";
 import { cn } from "@/lib/utils";
+import { chf as chfRaw } from "@/lib/format";
+const chf = (v: number) => chfRaw(v, 2);
 
 type Company = {
   id: string;
@@ -165,9 +167,6 @@ function demoMsgs(counterId: string, meId: string): Msg[] {
 
 function initials(n: string) {
   return n.split(" ").slice(0, 2).map((w) => w[0]).join("").toUpperCase();
-}
-function chf(v: number) {
-  return new Intl.NumberFormat("de-CH", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(v);
 }
 function time(iso: string) {
   return new Date(iso).toLocaleTimeString("de-CH", { hour: "2-digit", minute: "2-digit" });
