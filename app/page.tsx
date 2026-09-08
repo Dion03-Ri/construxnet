@@ -165,7 +165,7 @@ export default function Home() {
             </ul>
 
             <Link href="/pools" className={cn(BTN_LIGHT, "mt-10")}>
-              So funktioniert ein Pool <ArrowRight className="h-4 w-4" />
+              So funktioniert ein Pool
             </Link>
           </div>
 
@@ -175,10 +175,6 @@ export default function Home() {
               dunkle Liste — und es zeigt das Konkrete: den Moment, in dem
               aus einem Buendel ein Preis wird. */}
           <div className="relative mx-auto w-full max-w-[440px] lg:mx-0 lg:max-w-none">
-            <div
-              aria-hidden
-              className="pointer-events-none absolute -inset-12 rounded-[56px] bg-[radial-gradient(ellipse_at_center,rgba(217,144,0,0.13),transparent_68%)] blur-2xl"
-            />
             <div className="relative lg:rotate-[-0.6deg]">
               <OfferSheet />
             </div>
@@ -333,7 +329,7 @@ export default function Home() {
               </p>
               <div className="mt-9 flex flex-wrap gap-3">
                 <Link href="/sign-up" className={BTN_GOLD}>
-                  Kostenlos registrieren <ArrowRight className="h-4 w-4" />
+                  Kostenlos registrieren
                 </Link>
                 <Link href="/beschaffung" className={BTN_OUTLINE_DARK}>
                   Materialbedarf melden

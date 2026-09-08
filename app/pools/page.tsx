@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, Bookmark } from "lucide-react";
+import { Bookmark } from "lucide-react";
 import OpenPools from "@/components/pools/OpenPools";
 import BundleEnginePanel from "@/components/pools/BundleEnginePanel";
 import { BTN_GOLD, BTN_OUTLINE_DARK, D_MD, EYEBROW, SHELL } from "@/lib/ui";
@@ -58,7 +58,7 @@ export default function PoolsPage() {
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <Link href="/beschaffung" className={BTN_GOLD}>
-              Bedarf melden <ArrowRight className="h-4 w-4" />
+              Bedarf melden
             </Link>
             <Link href="/pools/saved" className={BTN_OUTLINE_DARK}>
               <Bookmark className="h-4 w-4" /> Merkliste

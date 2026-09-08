@@ -95,7 +95,7 @@ export default function OfferSheet() {
                   {b.werk}
                 </span>
                 {b.gewinner && (
-                  <span className="rounded-full bg-brand/15 px-2 py-0.5 text-[9.5px] font-bold uppercase tracking-wider text-brand-700">
+                  <span className="text-[9.5px] font-bold uppercase tracking-[0.12em] text-brand-700">
                     Zuschlag
                   </span>
                 )}

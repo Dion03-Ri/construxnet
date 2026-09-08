@@ -126,7 +126,7 @@ export default function ProfileRail({
               type="button"
               onClick={() => setOpen((v) => !v)}
               className={cn(
-                "mt-5 inline-flex w-full items-center justify-center gap-2 rounded-full px-4 py-2.5 text-[13px] font-semibold transition-colors",
+                "mt-5 inline-flex w-full items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-[13px] font-semibold transition-colors",
                 open
                   ? "bg-navy-900 text-white hover:bg-navy-800"
                   : "border border-white/[0.16] text-white/70 hover:bg-white/[0.05]",
@@ -143,7 +143,7 @@ export default function ProfileRail({
           ) : (
             <Link
               href="/beschaffung"
-              className="mt-5 inline-flex w-full items-center justify-center rounded-full bg-navy-900 px-4 py-2.5 text-[13px] font-semibold text-white transition-colors hover:bg-navy-800"
+              className="mt-5 inline-flex w-full items-center justify-center rounded-xl bg-brand px-4 py-2.5 text-[13px] font-semibold text-navy-950 transition-colors hover:bg-brand-600"
             >
               Materialbedarf melden
             </Link>

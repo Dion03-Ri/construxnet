@@ -17,34 +17,27 @@ export const CARD_HOVER =
 export const INPUT =
   "rounded-xl border border-white/[0.10] bg-white/[0.04] px-3 py-2 text-sm text-white placeholder:text-white/35 outline-none focus:border-brand/60 focus:bg-white/[0.07] focus:ring-1 focus:ring-brand/25";
 
-/** Umrandete Status-Badge als Pille. */
-export type BadgeTone = "gold" | "accent" | "navy" | "red" | "slate";
+/* Ovale Status-Etiketten gibt es nicht mehr.
 
-const BADGE_TONES: Record<BadgeTone, string> = {
-  gold: "border-brand/30 bg-brand/10 text-brand",
-  accent: "border-accent-500/40 bg-accent-500/15 text-accent-200",
-  navy: "border-white/15 bg-white/[0.06] text-white/75",
-  red: "border-rose-400/35 bg-rose-500/10 text-rose-300",
-  slate: "border-white/12 bg-white/[0.06] text-white/60",
-};
+   `badge()` erzeugte eine Kapsel mit Rand und gefuellter Flaeche um zwei
+   Woerter — ein Oval um einen Status. Der Nutzer hat das als typisches
+   Merkmal erzeugter Oberflaechen benannt, und er hat recht: bei zehn
+   Zeilen ergeben zehn Ovale eine Kette bunter Aufkleber, in der kein
+   Status mehr wichtiger ist als ein anderer.
 
-/** Klassen für eine scharfe Badge; `upper` = Uppercase-Kategorie-Look. */
-export function badge(tone: BadgeTone = "slate", upper = false) {
-  return cn(
-    "inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-[11px] font-semibold",
-    upper && "uppercase tracking-wider",
-    BADGE_TONES[tone],
-  );
-}
+   Ein Status steht jetzt als Wort in Grossbuchstaben, gesperrt, in der
+   Kennzeile — ohne Flaeche, ohne Rand. Farbe traegt nur, was Farbe
+   braucht: Gold fuer aktiv, Weiss/45 fuer neutral, Rosé fuer Frist
+   abgelaufen. */
 
 /** Wrapper für eine Gruppe Segmented-Tabs. */
 export const SEGMENT_GROUP =
-  "inline-flex rounded-full border border-white/[0.08] bg-white/[0.03] p-0.5";
+  "inline-flex rounded-xl border border-white/[0.08] bg-white/[0.03] p-0.5";
 
 /** Einzelner Segmented-Tab; `active` steuert den gefüllten Zustand. */
 export function segment(active: boolean) {
   return cn(
-    "inline-flex items-center justify-center gap-1.5 rounded-full px-3.5 py-1.5 text-[13px] font-medium transition-colors",
+    "inline-flex items-center justify-center gap-1.5 rounded-lg px-3.5 py-1.5 text-[13px] font-medium transition-colors",
     active
       ? "bg-white/[0.12] text-white"
       : "text-white/45 hover:text-white",
@@ -84,9 +77,17 @@ export const SECTION_WIDE = "py-24 sm:py-32 lg:py-40";
 
 /* ---- Knoepfe ----
    Gold ist die knappste Ressource der Seite: hoechstens EIN gefuellter
-   Gold-Knopf pro Bildschirm. Alles andere ist weiss, dunkel oder offen. */
+   Gold-Knopf pro Bildschirm. Alles andere ist weiss, dunkel oder offen.
+
+   Die Knoepfe waren Kapseln — `rounded-full`, sattes Gold, ein Pfeil im
+   Text. Diese Kombination ist das Erkennungszeichen jeder erzeugten
+   Landingpage; der Nutzer hat sie ausdruecklich als solche benannt.
+
+   Jetzt ein klarer, aber endlicher Radius (12 px), etwas kompakter und
+   ohne Pfeil. So machen es Linear und Stripe: der Knopf ist ein Knopf,
+   kein Aufkleber. */
 export const BTN_BASE =
-  "inline-flex items-center justify-center gap-2 rounded-full px-6 py-3.5 text-[14.5px] font-semibold transition-colors";
+  "inline-flex items-center justify-center gap-2 rounded-xl px-5 py-3 text-[14px] font-semibold transition-colors";
 
 /** Die eine Hauptaktion. Voll gefuelltes Gold auf dunklem Text. */
 export const BTN_GOLD = cn(BTN_BASE, "bg-brand text-navy-950 hover:bg-brand-500");
@@ -148,12 +149,6 @@ export const T_LOW = "text-white/40";
 export const INPUT_DARK =
   "rounded-xl border border-white/[0.10] bg-white/[0.04] px-3 py-2 text-sm text-white placeholder:text-white/35 outline-none focus:border-brand/60 focus:bg-white/[0.07]";
 
-/** Feines technisches Raster — die Hightech-Note der Seite. */
-export const GRID_TEXTURE = {
-  backgroundImage:
-    "linear-gradient(rgba(255,255,255,.7) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.7) 1px,transparent 1px)",
-  backgroundSize: "26px 26px",
-};
 
 /* ==================================================================
    BLOCK — der Ersatz für die Karte

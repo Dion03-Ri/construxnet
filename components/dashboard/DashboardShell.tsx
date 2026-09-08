@@ -58,18 +58,12 @@ import TendersPanel from "@/components/dashboard/TendersPanel";
 import { useCustomMaterials } from "@/lib/customMaterials";
 import { useBundles, nextStep, deadlineLabel, hoursLeft, type Bundle } from "@/lib/bundles";
 import { useDirectRequests, isLive } from "@/lib/directRequests";
-import { PANEL, badge } from "@/lib/ui";
+import { PANEL } from "@/lib/ui";
 import { cn } from "@/lib/utils";
 import { matchesMaterial, PROC_CATEGORIES, tierForVolume, type ProcMaterial, type ProcCategory } from "@/data/procurement";
 import kbobData from "@/data/kbobData.json";
 import { chf } from "@/lib/format";
 
-/** Feine Raster-Textur der dunklen Panels — identisch zu Feed und Startseite. */
-const GRID_BG = {
-  backgroundImage:
-    "linear-gradient(rgba(255,255,255,.7) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.7) 1px,transparent 1px)",
-  backgroundSize: "26px 26px",
-};
 
 const C = {
   brand: "#D99000",
@@ -206,12 +200,12 @@ function PoolRow({ b, myVolume }: { b: Bundle; myVolume: number }) {
           <span className="font-medium text-white">{b.material_label ?? b.title}</span>
           <span className="rounded-md bg-white/10 px-2 py-0.5 text-[11px] text-white/55">{b.region}</span>
           {b.status === "SEALED_BIDDING" && (
-            <span className={badge("navy", true)}>
+            <span className="inline-flex items-center gap-1.5 text-[10.5px] font-semibold uppercase tracking-[0.12em] text-white/45">
               <Gavel className="h-3 w-3" /> Ausschreibung läuft
             </span>
           )}
           {b.status === "AWARDED" && (
-            <span className={badge("gold", true)}>
+            <span className="inline-flex items-center gap-1.5 text-[10.5px] font-semibold uppercase tracking-[0.12em] text-brand">
               <Check className="h-3 w-3" /> vergeben
             </span>
           )}
@@ -225,7 +219,7 @@ function PoolRow({ b, myVolume }: { b: Bundle; myVolume: number }) {
         <div className="h-2 flex-1 overflow-hidden rounded-full bg-white/10">
           <div className="h-full rounded-full bg-brand" style={{ width: `${pct}%` }} />
         </div>
-        <span className={badge("gold", true)}>Stufe {b.current_tier} · mind. {b.current_discount_pct}%</span>
+        <span className="inline-flex items-center gap-1.5 text-[10.5px] font-semibold uppercase tracking-[0.12em] text-brand">Stufe {b.current_tier} · mind. {b.current_discount_pct}%</span>
       </div>
 
       <div className="mt-1.5 flex flex-wrap items-center justify-between gap-x-3 text-[11px] text-white/55">
@@ -481,7 +475,7 @@ function OrdersPanel({ companyName }: { companyName: string }) {
                 <td className="py-2.5 text-right tabular-nums text-white/75">CHF {chf(o.amount)}</td>
                 <td className="hidden py-2.5 text-white/55 sm:table-cell">{o.date}</td>
                 <td className="py-2.5">
-                  <span className={badge(o.status === "Abgeschlossen" ? "slate" : "gold", true)}>{o.status}</span>
+                  <span className={cn("inline-flex items-center gap-1.5 text-[10.5px] font-semibold uppercase tracking-[0.12em]", o.status === "Abgeschlossen" ? "text-white/35" : "text-brand")}>{o.status}</span>
                 </td>
                 <td className="py-2.5 text-right">
                   <button
@@ -700,7 +694,7 @@ function ContractsPanel() {
                   <td className="hidden py-2.5 text-white/55 sm:table-cell">{c.vol}</td>
                   <td className="py-2.5 tabular-nums text-white/70">{c.price}</td>
                   <td className="py-2.5 text-right">
-                    <span className={badge(c.status === "Aktiv" ? "accent" : "slate", true)}>{c.status}</span>
+                    <span className={cn("inline-flex items-center gap-1.5 text-[10.5px] font-semibold uppercase tracking-[0.12em]", c.status === "Aktiv" ? "text-brand" : "text-white/35")}>{c.status}</span>
                   </td>
                 </tr>
               ))}
@@ -885,7 +879,7 @@ function CartPanel({
     <div className={cn(PANEL, "p-4")}>
       <div className="flex items-center justify-between">
         <h3 className="text-[13px] font-semibold uppercase tracking-wider text-white/55">Warenkorb</h3>
-        {cart.length > 0 && <span className={badge("gold", true)}>{cart.length}</span>}
+        {cart.length > 0 && <span className="grid h-5 min-w-5 place-items-center rounded-full bg-brand px-1.5 text-[10.5px] font-bold tabular-nums text-navy-950">{cart.length}</span>}
       </div>
       {projectName && (
         <p className="mt-1 truncate text-[11.5px] text-white/40">für {projectName}</p>
@@ -1124,7 +1118,6 @@ export default function DashboardShell({ company }: { company: Company }) {
       {/* Handy: kompakte Kopfzeile + waagrechte Tab-Leiste statt der Seitenspalte.
           Damit steht der Inhalt sofort oben und nicht erst nach einem Bildschirm Navigation. */}
       <div className="relative overflow-hidden rounded-xl border border-white/10 bg-navy-900 text-white lg:hidden">
-        <div aria-hidden className="pointer-events-none absolute inset-0 opacity-[0.06]" style={GRID_BG} />
         <div className="relative flex items-center gap-2.5 px-3 py-2.5">
           <span className="grid h-8 w-8 shrink-0 place-items-center overflow-hidden rounded-lg bg-gradient-to-br from-brand to-brand-600 text-[11px] font-bold text-white">
             {company.logo_url ? (
@@ -1198,7 +1191,6 @@ export default function DashboardShell({ company }: { company: Company }) {
 
       {/* Linke Spalte: Navigation & Projekt-Auswahl (ab lg) */}
       <aside className="relative hidden h-fit overflow-hidden rounded-xl border border-white/10 bg-navy-900 text-white lg:block">
-        <div aria-hidden className="pointer-events-none absolute inset-0 opacity-[0.06]" style={GRID_BG} />
         <div className="relative flex items-center gap-2.5 border-b border-white/10 px-3 py-3">
           <span className="grid h-9 w-9 shrink-0 place-items-center overflow-hidden rounded-lg bg-gradient-to-br from-brand to-brand-600 text-sm font-bold text-white">
             {company.logo_url ? (
@@ -1290,7 +1282,6 @@ export default function DashboardShell({ company }: { company: Company }) {
       {/* Mittlere Spalte: Arbeitsbereich */}
       <div className={cn(PANEL, "min-w-0 overflow-hidden")}>
         <div className="relative flex flex-wrap items-center justify-between gap-2 border-b border-white/10 bg-navy-900 px-4 py-3 text-white sm:px-6">
-          <div aria-hidden className="pointer-events-none absolute inset-0 opacity-[0.06]" style={GRID_BG} />
           <h2 className="relative text-lg font-bold tracking-tight">{title}</h2>
           <Link
             href="/kbob"

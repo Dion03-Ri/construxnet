@@ -13,7 +13,7 @@ import {
   Clock,
 } from "lucide-react";
 import { useBundles, type Bundle } from "@/lib/bundles";
-import { PANEL, badge } from "@/lib/ui";
+import { PANEL } from "@/lib/ui";
 import { cn } from "@/lib/utils";
 
 /**
@@ -140,7 +140,7 @@ function TerminCard({ t }: { t: Termin }) {
 
       <div className="min-w-0 flex-1">
         <div className="flex flex-wrap items-center gap-2">
-          <span className={badge(meta.tone, true)}>
+          <span className={cn("inline-flex items-center gap-1.5 text-[10.5px] font-semibold uppercase tracking-[0.12em]", meta.tone === "gold" ? "text-brand" : "text-white/45")}>
             <Icon className="h-3 w-3" /> {t.kind}
           </span>
           <span className="inline-flex items-center gap-1 text-[12px] text-white/40">

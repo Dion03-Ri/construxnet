@@ -59,7 +59,7 @@ export default function ComingSoon({ accessError = false }: { accessError?: bool
           <span className="text-2xl font-extrabold tracking-tight text-white">Obtanet</span>
         </div>
 
-        <span className="inline-flex items-center gap-1.5 rounded-full border border-white/12 bg-white/5 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-white/60">
+        <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.14em] text-brand">
           Coming Soon
         </span>
 

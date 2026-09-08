@@ -40,7 +40,7 @@ import {
   type ProcMaterial,
   type ProcCategory,
 } from "@/data/procurement";
-import {  badge } from "@/lib/ui";
+
 import { cn } from "@/lib/utils";
 import { chf } from "@/lib/format";
 
@@ -743,8 +743,8 @@ export default function BeschaffungFlow({
                       <dt className="text-slate-500">Bündelung</dt>
                       <dd>
                         {pool
-                          ? <span className={badge("gold", true)}><Layers className="h-3 w-3" /> aktiviert</span>
-                          : <span className={badge("slate", true)}>Einzelbestellung</span>}
+                          ? <span className="inline-flex items-center gap-1.5 text-[10.5px] font-semibold uppercase tracking-[0.12em] text-brand-700"><Layers className="h-3 w-3" /> aktiviert</span>
+                          : <span className="text-[10.5px] font-semibold uppercase tracking-[0.12em] text-slate-400">Einzelbestellung</span>}
                       </dd>
                     </div>
                   </dl>

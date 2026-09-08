@@ -36,7 +36,7 @@ function useActive() {
 function Logo({ href = "/", dark = false }: { href?: string; dark?: boolean }) {
   return (
     <Link href={href} className="flex items-center gap-2 font-semibold tracking-tight">
-      <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-brand to-brand-600 text-white shadow-sm shadow-brand/30">
+      <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-brand text-navy-950">
         <HardHat className="h-5 w-5" />
       </span>
       <span className={cn("hidden text-[15px] sm:block", dark ? "text-white" : "text-white")}>
