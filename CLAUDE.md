@@ -635,7 +635,31 @@ Rand. Dasselbe Muster auf die fünf Dateien anwenden und `badge()`
 danach entfernen.
 
 ## 5. Farben: mehr Weiss und Schwarz, dazu Gold und Navy
-**Hier ist eine Rückfrage offen** (gestellt, noch nicht beantwortet).
+**Angefangen — die Nachrichtenseite ist der erste Versuch.**
+
+Der Nutzer will „eine perfekte Kombi", keine der beiden reinen
+Lesarten. Ausgangspunkt war seine Beobachtung: „die Nachrichten-Seite
+ist besser, wenn der Hintergrund weiss ist." Daraus die Regel, die in
+`lib/ui.ts` unter REGISTER B steht:
+
+> Wo gelesen und geschrieben wird, ist Papier.
+> Wo Zahlen und Markt stehen, ist es dunkel.
+
+Was daraus folgt, sobald der Nutzer die Nachrichtenseite abgenommen hat:
+- **Papier (`SHEET`):** Nachrichten (gebaut), Beschaffung, Profil
+  bearbeiten, Termine, Firmenprofil, Rechtsseiten.
+- **Dunkel:** Feed, Smart Pools, Referenzpreise, Netzwerk, Karte,
+  Startseite.
+- Der Rahmen bleibt immer dunkel — Kopfzeile, Fussbereich, der Grund
+  hinter allem. Das Blatt liegt darauf, es ersetzt ihn nicht.
+- **Navy wird endlich eine Fläche.** `accent-600` `#1B3A5C` trägt im
+  Blatt die eigenen Nachrichtenblasen und den Annehmen-Knopf. Achtung:
+  `navy-900` ist `#08111E`, also fast Schwarz — nicht das CI-Navy. Das
+  CI-Navy liegt in der `accent`-Skala.
+- Gold bleibt in beiden Registern der einzige Akzent, und zwar für das,
+  was zählt: Angebote, Preise, der Abschluss.
+
+Frühere Fassung dieses Punktes, zur Nachvollziehbarkeit:
 Zwei mögliche Lesarten, und sie führen zu völlig verschiedenen Seiten:
 
 - **(a) Mehr Kontrast im dunklen Register.** Echtes Schwarz statt
