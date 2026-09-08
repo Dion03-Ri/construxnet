@@ -28,7 +28,7 @@ export default function FeedProfileCard({
     <div className="space-y-3">
       {/* Profilkarte */}
       <div className={cn(PANEL, "overflow-hidden")}>
-        <div className="h-16 bg-gradient-to-r from-accent-600 via-accent-500 to-accent" />
+        <div className="h-16 bg-accent-600" />
         <div className="px-4 pb-4">
           <Link href={`/company/${company.id}`} className="group block">
             <div className="-mt-9 flex h-16 w-16 items-center justify-center overflow-hidden rounded-lg border-4 border-white bg-white/10 text-lg font-semibold text-white/75 shadow-sm">

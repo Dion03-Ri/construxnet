@@ -37,13 +37,13 @@ export default function FeedBundleHero() {
         <div className="flex shrink-0 flex-wrap gap-2">
           <Link
             href="/beschaffung"
-            className="inline-flex items-center gap-2 rounded-full bg-brand px-4 py-2.5 text-[13px] font-semibold text-navy-950 transition-colors hover:bg-brand/100"
+            className="inline-flex items-center gap-2 rounded-xl bg-brand px-4 py-2.5 text-[13px] font-semibold text-navy-950 transition-colors hover:bg-brand-600"
           >
             <Megaphone className="h-4 w-4" /> Bedarf melden
           </Link>
           <Link
             href="/pools"
-            className="inline-flex items-center gap-2 rounded-full border border-white/[0.16] px-4 py-2.5 text-[13px] font-semibold text-white/75 transition-colors hover:bg-white/[0.05]"
+            className="inline-flex items-center gap-2 rounded-xl border border-white/[0.16] px-4 py-2.5 text-[13px] font-semibold text-white/75 transition-colors hover:bg-white/[0.05]"
           >
             Offene Bündel <ArrowRight className="h-4 w-4" />
           </Link>

@@ -65,12 +65,6 @@ export const SWISS_CANTONS: { code: string; name: string }[] = [
   { code: "ZH", name: "Zürich" },
 ];
 
-/** Feine Raster-Textur der dunklen Panels — identisch zu Feed und Startseite. */
-export const GRID_BG = {
-  backgroundImage:
-    "linear-gradient(rgba(255,255,255,.7) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.7) 1px,transparent 1px)",
-  backgroundSize: "26px 26px",
-};
 
 export function initials(name: string) {
   return name.split(" ").slice(0, 2).map((w) => w[0]).join("").toUpperCase();

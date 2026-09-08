@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { Search, Loader2, Users, ArrowLeft, MapPin, SlidersHorizontal } from "lucide-react";
-import { useNetwork, ROLE_FILTERS, SWISS_CANTONS, GRID_BG, type NetCompany } from "@/lib/network";
+import { useNetwork, ROLE_FILTERS, SWISS_CANTONS, type NetCompany } from "@/lib/network";
 import CompanyCard from "@/components/network/CompanyCard";
 import DirectRequestModal from "@/components/network/DirectRequestModal";
 import { PANEL } from "@/lib/ui";
@@ -96,7 +96,6 @@ export default function DiscoverGrid() {
     <div className="space-y-5">
       {/* Kopf */}
       <header className="relative overflow-hidden rounded-xl border border-white/10 bg-navy-900 p-5 text-white sm:p-6">
-        <div aria-hidden className="pointer-events-none absolute inset-0 opacity-[0.06]" style={GRID_BG} />
         <div className="relative">
           <Link
             href="/network"

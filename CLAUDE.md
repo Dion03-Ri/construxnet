@@ -562,6 +562,23 @@ SHELL-Erklärung: gleiche Breiten überall, keine Rahmen um Gruppen,
 keine erzeugten Motive, keine Dreiwort-Überschriften mit Punkten, kein
 Sparkle-Symbol, keine Emoji in Beispieltexten, keine Hashtags.
 
+**Die Liste der Muster, die raus sind — und raus bleiben:**
+- **Kapsel-Knöpfe** (`rounded-full` mit Fläche und Text). Der Radius ist
+  jetzt `rounded-xl`, zentral in `BTN_BASE`. Runde Formen nur noch für
+  das, was wirklich rund ist: Zähler, Punkte, Rundbilder.
+- **Pfeile in gefüllten Knöpfen.** „Kostenlos registrieren →" ist die
+  Kombination, die der Nutzer als erzeugt erkannt hat. Ein Knopf, auf
+  dem steht was er tut, braucht keinen Pfeil. In Textlinks („Alle →")
+  ist der Pfeil in Ordnung.
+- **Ovale Status-Etiketten** (`badge()`). Die Funktion ist gelöscht.
+  Status steht als Wort in Grossbuchstaben, gesperrt, ohne Fläche.
+- **Millimeterpapier-Raster** hinter Panels. An vier Stellen entfernt,
+  `GRID_TEXTURE` und beide lokalen Kopien sind weg.
+- **Farbverläufe als Fläche** — die Logo-Kachel `from-brand to-brand-600`
+  mit Goldschatten, das Navy-Verlaufsband im Profil. Flächen sind flach.
+  Verläufe bleiben nur als Bildschleier über einem Foto.
+- **Farbnebel** (`blur-2xl`/`blur-3xl` in einer Ecke). Alle weg.
+
 **Überschriften.** Die Hero-Zeile hiess einmal „Vernetzen. Bündeln.
 Sparen." — drei abstrakte Verben, jedes auf einer Zeile, das letzte in
 Gold. Das ist das meistkopierte Überschriftenmuster überhaupt. Eine

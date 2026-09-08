@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import { useBundles, nextStep, deadlineLabel } from "@/lib/bundles";
 import { useSavedPools } from "@/lib/useSavedPools";
-import { PANEL, badge } from "@/lib/ui";
+import { PANEL } from "@/lib/ui";
 import { cn } from "@/lib/utils";
 
 function chf(v: number) {
@@ -75,7 +75,7 @@ export default function SavedPools() {
                 </p>
               </div>
               <div className="flex shrink-0 items-center gap-1.5">
-                <span className={badge(sealed ? "navy" : "gold", true)}>
+                <span className={cn("inline-flex items-center gap-1.5 text-[10.5px] font-semibold uppercase tracking-[0.12em]", sealed ? "text-white/45" : "text-brand")}>
                   {sealed ? (
                     <><Gavel className="h-3 w-3" /> Sealed-Bid</>
                   ) : (

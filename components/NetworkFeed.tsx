@@ -246,7 +246,7 @@ function Composer({ onCreated }: { onCreated: () => void }) {
               type="button"
               onClick={() => setOpen(true)}
               disabled={!company}
-              className="h-11 flex-1 rounded-full border border-white/[0.10] px-5 text-left text-sm text-white/50 transition-colors hover:border-brand/40 hover:text-white/75 disabled:opacity-60"
+              className="h-11 flex-1 rounded-xl border border-white/[0.10] px-4 text-left text-sm text-white/50 transition-colors hover:border-brand/40 hover:text-white/75 disabled:opacity-60"
             >
               {company ? "Beitrag hinzufügen …" : "Firmenprofil nötig, um zu posten"}
             </button>
