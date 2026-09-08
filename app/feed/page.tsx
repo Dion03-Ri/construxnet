@@ -5,7 +5,7 @@ import KbobTile from "@/components/feed/KbobTile";
 import BundleChances from "@/components/pools/BundleChances";
 import { requireCompanyOrOnboard } from "@/lib/company";
 import { createServerSupabaseClient } from "@/lib/supabase";
-import { GROUND, SHELL } from "@/lib/ui";
+import { GROUND, SHELL_WORK } from "@/lib/ui";
 import { cn } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
@@ -22,13 +22,19 @@ export const metadata = {
  * — die eigene Firma und sechs Verweise, die schon im Kopf der Seite
  * stehen.
  *
- * Jetzt: ein Kopfband über die volle Breite, darunter die Werkbank
- * (Bündel-Chancen breit, Referenzpreis daneben), dann die Partner als
- * Zeilen bis an den rechten Rand, und zuunterst die News.
+ * Jetzt: ein Kopfband, darunter die Bündel-Chancen über die ganze Breite,
+ * und zuunterst die News in einer Textspalte mit einer Schiene daneben.
  *
- * Die Reihenfolge ist nicht frei wählbar: die News laden beim Scrollen
- * endlos nach. Was darunter stünde, erreicht nie jemand — also stehen sie
- * zuletzt.
+ * Zwei Masse bestimmen den Aufbau:
+ *
+ * `SHELL_WORK` statt `SHELL` — die Seite ist eine Arbeitsfläche, keine
+ * Werbeseite. Über 1760 px werden Zeilenlisten zu Streifen, und ein
+ * quadratisches Foto in einem Beitrag wird so gross wie der halbe
+ * Bildschirm.
+ *
+ * Die News stehen zuletzt, weil sie beim Scrollen endlos nachladen. Was
+ * darunter stünde, erreicht nie jemand — deshalb steht alles, was daneben
+ * nützlich ist, in der Schiene rechts und nicht unter dem Strom.
  */
 
 /** „17 Std", „4 Tage" — die Frist so, wie man sie ausspricht. */
@@ -85,19 +91,28 @@ export default async function FeedPage() {
   ];
 
   return (
-    <main className={cn(GROUND, SHELL, "py-6")}>
+    <main className={cn(GROUND, SHELL_WORK, "py-6")}>
       <FeedHead stats={stats} badges={{ "/network/requests": incoming }} />
 
-      {/* Werkbank: beide beantworten dieselbe Frage — lohnt es sich gerade? */}
-      <div className="grid grid-cols-1 gap-x-14 gap-y-4 lg:grid-cols-[minmax(0,1fr)_320px]">
-        <BundleChances wide />
-        <KbobTile className="lg:mt-5" />
-      </div>
+      {/* Das Einzige, was die ganze Breite bekommt: drei Zeilen, die man
+          im Vorbeigehen liest. */}
+      <BundleChances wide />
 
-      <RecommendedPartners />
+      <div className="mt-8 grid grid-cols-1 gap-x-16 gap-y-10 lg:grid-cols-[minmax(0,1fr)_320px]">
+        <div className="min-w-0">
+          <NetworkFeed />
+        </div>
 
-      <div className="mt-10">
-        <NetworkFeed />
+        {/* Die Schiene bleibt beim Lesen stehen — Referenzpreis und Partner
+            sind dann die ganze Zeit da statt einmal oben und dann weg.
+
+            Auf dem Handy gibt es kein Nebeneinander: dort rutscht die
+            Schiene VOR den Strom. Hinter einer Liste, die endlos nachlaedt,
+            waere sie unerreichbar. */}
+        <aside className="order-first lg:order-none lg:sticky lg:top-[88px] lg:self-start">
+          <KbobTile />
+          <RecommendedPartners />
+        </aside>
       </div>
     </main>
   );

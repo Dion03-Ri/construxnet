@@ -509,10 +509,17 @@ function PostCard({ post, index }: { post: Post; index: number }) {
           Beitraegen ohne Bild eine Flaeche mit Farbverlauf und einem
           Paket-Symbol in der Mitte — ein erzeugtes Motiv, das nichts
           zeigt. Ein Beitrag ohne Bild hat jetzt kein Bild. */}
+      {/* Ein Quadrat in einer Spalte von 700 px wird 700 px hoch und
+          verdraengt damit alles andere. Der Ausschnitt begrenzt die Hoehe
+          auf ein Breitformat — das Bild wird beschnitten, nicht gequetscht. */}
       {post.media_url && (
         <div className="mt-4 overflow-hidden rounded-lg">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={post.media_url} alt={post.title ?? name} className="max-h-96 w-full object-cover" />
+          <img
+            src={post.media_url}
+            alt={post.title ?? name}
+            className="max-h-[340px] w-full object-cover"
+          />
         </div>
       )}
 
@@ -709,9 +716,24 @@ export default function NetworkFeed() {
     <div className="space-y-3">
       <Composer onCreated={load} />
 
-      <div className="space-y-2.5 pt-4">
+      {/* Vorher zwei Reihen mit zusammen zehn Woertern, bevor der erste
+          Beitrag kam. Die Art bleibt als Reihe — man waehlt sie oft —, die
+          Region wird ein Auswahlfeld: sechsundzwanzig Kantone gehoeren
+          nicht als Woerterband auf die Seite. */}
+      <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-3 pt-4">
         <ChipRow options={typeOptions} value={type} onChange={setType} />
-        <ChipRow options={regionOptions} value={region} onChange={setRegion} />
+        <select
+          value={region}
+          onChange={(e) => setRegion(e.target.value)}
+          aria-label="Region"
+          className="shrink-0 rounded-lg border border-white/[0.12] bg-transparent px-2.5 py-1.5 text-[12.5px] text-white/[0.72] outline-none transition-colors hover:border-white/[0.24] focus:border-brand [&>option]:bg-[#16181a] [&>option]:text-white"
+        >
+          {regionOptions.map((o) => (
+            <option key={o.key} value={o.key}>
+              {o.label}
+            </option>
+          ))}
+        </select>
       </div>
 
       {isDemo && (
