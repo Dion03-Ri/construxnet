@@ -820,20 +820,44 @@ Vom Nutzer ausdrücklich auf die Todo-Liste gegeben. Nichts davon ist
 gebaut. Reihenfolge ist keine Rangfolge — sie ist die, in der er sie
 genannt hat.
 
-## 1. Abos aktivieren, damit man sie lösen kann
-Der Preisabschnitt auf `/` ist heute reine Darstellung: die Knöpfe
-zeigen auf `/sign-up`, es gibt kein Abo-Objekt, keinen Zustand
-„gebucht", keine Rechnung.
+## 1. Abos — GEBAUT BIS ZUR ZAHLUNG
+Der ganze Ablauf steht: wählen, wechseln, kündigen, Kündigung
+zurücknehmen, Laufzeit ablaufen lassen. Was fehlt, ist genau ein
+Schritt — die Zahlungsmethode (Punkt 2).
 
-Was dazugehört: Stufen im Schema (Firma → Abo, Gültigkeit,
-Zahlungsstatus), das Freischalten von Funktionen je Stufe (heute ist
-alles für alle offen), ein Wechsel- und Kündigungsweg, und die
-Rechnungsstellung.
+**Migration `24_subscriptions.sql`** (muss noch eingespielt werden):
+Tabelle `subscriptions`, eine Zeile je Firma, plus die Funktionen
+`subscription_mine`, `subscription_choose`, `subscription_cancel`,
+`subscription_resume`, `advance_due_subscriptions`.
 
-**Hängt an Punkt 0 der Launch-Liste** — die Zahlen 0 / 79 / 189 sind
-Platzhalter. Ein Abo zu bauen, das man buchen kann, bevor der Preis
-steht, heisst den Preis stillschweigend zu bestätigen. Erst der Preis,
-dann die Mechanik.
+**Die Sicherheitsregel, die man nicht brechen darf:** der Client hat auf
+`subscriptions` nur SELECT, kein UPDATE. Könnte er schreiben, setzte
+sich jeder in einer Zeile auf ENTERPRISE/ACTIVE. Alle Änderungen laufen
+über die SECURITY-DEFINER-Funktionen, und die setzen eine
+kostenpflichtige Stufe **ausschliesslich** auf `PENDING_PAYMENT`. Auf
+`ACTIVE` stellt es später nur der Webhook des Zahlungsanbieters mit dem
+Dienstschlüssel.
+
+Zwei Regeln, die im Ablauf stecken:
+- **Herunterstufen nimmt nichts sofort weg.** Wer kündigt, behält die
+  bezahlte Stufe bis `current_period_end`. Bezahlt ist bezahlt.
+- **Hochstufen gilt nicht sofort.** Es wird in `pending_plan`
+  vorgemerkt, der Zustand ist `PENDING_PAYMENT`, und die Seite sagt
+  das auch so. Ein Ablauf, der so tut, als wäre gebucht, ist schlimmer
+  als gar keiner.
+
+Seite: `/konto`, verlinkt im Kontomenü. `data/plans.ts` ist die einzige
+Quelle für Stufen, Preise und Grenzen — der Preisabschnitt auf `/` liest
+daraus, nicht aus einer zweiten Liste.
+
+**Preise sind weiterhin Platzhalter** (Punkt 0 der Launch-Liste). Sie
+stehen in `data/plans.ts` und nirgends sonst; steht der Preis fest, wird
+er dort geändert.
+
+**Noch nicht gebaut:** die Durchsetzung der Grenzen. `poolLimit` steht in
+`data/plans.ts` (Gratis = 1 Bündel), wird aber nirgends geprüft. Das ist
+der nächste kleine Schritt und sollte erst kurz vor dem Start scharf
+geschaltet werden — vorher blockiert es die eigene Erprobung.
 
 ## 2. Zahlungsmethoden und Zahlungssysteme einbauen
 Bisher ist gar keine Zahlung angebunden. Aus dem Master-Briefing:
@@ -950,6 +974,42 @@ zeigt rechts `components/home/OfferSheet.tsx` — den Zuschlag als
 weisses Blatt. Was stattdessen dort stehen soll, ist noch offen.
 **Keine selbst erzeugte Grafik.** Kommt ein Bild, dann Stockfoto, und
 das ist vorher zu sagen.
+
+## 9. Regionaler Kontext: Sprache, Währung, Einheit, Reichweite
+**Vom Nutzer ausdrücklich auf die Liste gegeben. Grosser Umbau, wird
+später angefasst — erst auf seine Ansage.**
+
+Seine Formulierung: wer in Dallas ist, soll die Seite automatisch auf
+Englisch bekommen und **nur Firmen aus der eigenen Region** sehen. „Es
+macht keinen Sinn, einen Bauunternehmer in Zürich mit einem aus Dallas
+oder Tokio zu vernetzen."
+
+Das sind vier Dinge, die zusammengehören und einzeln nichts taugen:
+
+1. **Sprache** — heute ist jede Zeichenkette deutsch und steht fest im
+   Text. Es gibt keine Übersetzungsschicht. Das ist der grösste Teil der
+   Arbeit: jede Seite, jede Komponente, jede Fehlermeldung.
+2. **Währung und Einheit** — `CHF`, `m³`, `t` stehen an hunderten
+   Stellen fest. Siehe „Dynamischer Kontextwechsel" weiter oben.
+3. **Normwerk** — SIA 118 / SN EN 206 gilt in der Schweiz. In Texas ist
+   es ASTM, in Japan JIS. Materialbezeichnungen wie „Beton C25/30" sind
+   europäische Norm und anderswo schlicht falsch.
+4. **Reichweite** — Netzwerk, Feed und Bündel müssen an einen Markt
+   gebunden sein. Die Grundlage steht (`lat`/`lng`,
+   `delivery_radius_km`), aber gefiltert wird heute nach Regionsnamen wie
+   „Zürich", nicht nach Umkreis. Ein zweiter Markt braucht ein
+   Markt-Objekt, an dem Sprache, Währung, Einheit, Normwerk und
+   Umkreisgrenze hängen.
+
+**Die Reihenfolge ist nicht frei.** Punkt 4 (Markt-Objekt) und die
+Kontextschicht aus Punkt 2 gehören zuerst — sie sind die Schicht, an der
+alles andere hängt. Die Übersetzung kommt danach, sonst übersetzt man
+Texte, die gleich wieder umgebaut werden.
+
+**Empfehlung zum Zeitpunkt:** die Schicht anlegen, solange die Seite
+klein ist, auch wenn sie vorerst überall „CH / de / CHF / metrisch / SIA"
+zurückgibt. Jede Seite, die vorher gebaut wird, muss nachher angefasst
+werden.
 
 ## Was schon vorher offen war (nicht vergessen)
 Steht ausführlich weiter oben in dieser Datei:
