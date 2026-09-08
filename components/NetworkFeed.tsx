@@ -509,16 +509,29 @@ function PostCard({ post, index }: { post: Post; index: number }) {
           Beitraegen ohne Bild eine Flaeche mit Farbverlauf und einem
           Paket-Symbol in der Mitte — ein erzeugtes Motiv, das nichts
           zeigt. Ein Beitrag ohne Bild hat jetzt kein Bild. */}
-      {/* Ein Quadrat in einer Spalte von 700 px wird 700 px hoch und
-          verdraengt damit alles andere. Der Ausschnitt begrenzt die Hoehe
-          auf ein Breitformat — das Bild wird beschnitten, nicht gequetscht. */}
+      {/* Das Bild wird nicht beschnitten, sondern verkleinert.
+
+          Vorher stand hier ein Ausschnitt auf Breitformat: ein
+          quadratisches Foto verlor damit oben und unten je ein Viertel. Was
+          jemand hochlaedt, soll ganz zu sehen sein — ein Lieferschein oder
+          ein Werkfoto ist ohne seine Raender oft wertlos.
+
+          Stattdessen behaelt das Bild sein Seitenverhaeltnis und wird an
+          der laengeren Seite begrenzt: hoechstens 420 px hoch, hoechstens
+          so breit wie die Spalte. Ein Quadrat erscheint als 420 x 420 und
+          nimmt damit weniger Platz als eine beschnittene Zeile ueber die
+          volle Breite; ein Breitformat wird von der Spalte begrenzt, ein
+          Hochformat von der Hoehe.
+
+          Die Haarlinie steht dort, weil ein helles Bild sonst ohne Kante
+          in den schwarzen Grund laeuft. */}
       {post.media_url && (
-        <div className="mt-4 overflow-hidden rounded-lg">
+        <div className="mt-4">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={post.media_url}
             alt={post.title ?? name}
-            className="max-h-[340px] w-full object-cover"
+            className="max-h-[420px] w-auto max-w-full rounded-lg border border-white/[0.12] object-contain"
           />
         </div>
       )}

@@ -404,9 +404,13 @@ Drei Regeln, die den Aufbau festlegen:
 - **Die News stehen zuletzt** und alles Begleitende neben ihnen. Sie laden
   beim Scrollen endlos nach; was darunter stünde, erreicht nie jemand —
   auch auf dem Handy nicht, daher `order-first` für die Schiene.
-- **Höchstens 820 px für einen Beitrag.** Das ist die Lesebreite, und es
-  ist die Breite, bei der ein hochgeladenes Bild noch verhältnismässig ist
-  (zusätzlich auf `max-h-[340px]` beschnitten).
+- **Höchstens 820 px für einen Beitrag.** Das ist die Lesebreite.
+- **Ein Beitragsbild wird verkleinert, nie beschnitten.**
+  `max-h-[420px] w-auto max-w-full object-contain` — das Seitenverhältnis
+  bleibt, begrenzt wird die längere Seite. Ein Quadrat erscheint als
+  420 × 420, ein Breitformat wird von der Spalte begrenzt, ein Hochformat
+  von der Höhe. Ein Ausschnitt (`object-cover`) wäre hier falsch: ein
+  Lieferschein oder ein Werkfoto ohne seine Ränder ist oft wertlos.
 - **Der Balken in einer Bündel-Zeile hat eine feste Länge (20rem).** Liesse
   man ihn mitwachsen, wäre er bei 1760 px ein Meter Strich mit drei Wörtern
   daneben. Region, Füllstand und Rabatt hängen rechts am Rand, mit festen
