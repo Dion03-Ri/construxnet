@@ -1,20 +1,26 @@
 /**
- * Einfache Ratenbegrenzung im Arbeitsspeicher.
+ * Ratenbegrenzung.
  *
- * Was sie leistet: sie stoppt das schnelle Durchprobieren von Passwörtern
- * und das Zuspammen der Warteliste von einer Quelle aus.
+ * ZWEI STUFEN, und beide werden gebraucht:
  *
- * Was sie nicht leistet: auf Vercel läuft jede Instanz für sich, und
- * Instanzen kommen und gehen. Ein verteilter Angriff über viele Adressen
- * oder über längere Zeit läuft daran vorbei. Für einen dauerhaften Schutz
- * braucht es einen gemeinsamen Speicher — Upstash, Vercel KV oder eine
- * Tabelle in Supabase.
+ * 1. Im Arbeitsspeicher (`rateLimit`). Schnell, ohne Netz, faengt den
+ *    schnellen Ansturm auf DERSELBEN Instanz ab.
+ * 2. Gemeinsam (`rateLimitShared`), ueber die Tabelle `rate_limits` in
+ *    Supabase. Auf Vercel laeuft jede Instanz fuer sich, und Instanzen
+ *    kommen und gehen — ohne gemeinsamen Speicher bekommt, wer ein
+ *    Passwort durchprobiert, bei jeder neuen Instanz zehn frische
+ *    Versuche. Damit waere die Grenze eine Bremse gewesen, kein Schutz.
  *
- * Bewusst trotzdem so gebaut: das Naheliegende zu verhindern kostet hier
- * nichts, und ein ehrlicher Hinweis auf die Grenze ist mehr wert als eine
- * Lösung, die mehr verspricht als sie hält.
+ * Warum kein Redis: eine Tabelle in Supabase kostet kein weiteres Konto,
+ * keine weiteren Zugangsdaten und keine weitere Sache, die ausfallen
+ * kann. Ein Zugriff pro Anfrage auf eine Tabelle mit Primaerschluessel
+ * faellt neben dem Rest nicht auf.
+ *
+ * Wenn die Datenbank nicht antwortet, bleibt Stufe 1 stehen. Das ist die
+ * bewusste Entscheidung: eine Anmeldeseite, die bei einer
+ * Datenbankstoerung gar niemanden mehr durchlaesst, waere schlimmer als
+ * eine, die kurzzeitig nur je Instanz begrenzt.
  */
-
 type Bucket = { count: number; resetAt: number };
 
 const buckets = new Map<string, Bucket>();
@@ -55,4 +61,39 @@ export function callerKey(req: Request, scope: string): string {
   const fwd = req.headers.get("x-forwarded-for") ?? "";
   const ip = fwd.split(",")[0]?.trim() || req.headers.get("x-real-ip") || "unbekannt";
   return `${scope}:${ip}`;
+}
+
+/**
+ * Dieselbe Grenze, aber ueber alle Instanzen hinweg.
+ *
+ * Erst der Speicher-Zaehler (kostet nichts und faengt das Naheliegende
+ * ab), dann der gemeinsame. Wer schon an Stufe 1 scheitert, erzeugt gar
+ * keine Datenbanklast.
+ */
+export async function rateLimitShared(
+  key: string,
+  max: number,
+  windowMs: number,
+): Promise<RateResult> {
+  const lokal = rateLimit(key, max, windowMs);
+  if (!lokal.ok) return lokal;
+
+  try {
+    const { supabaseAdmin } = await import("@/lib/supabase");
+    const { data, error } = await supabaseAdmin().rpc("rate_hit", {
+      p_key: key,
+      p_max: max,
+      p_window_ms: windowMs,
+    });
+    if (error) return lokal;
+    const zeile = (Array.isArray(data) ? data[0] : data) as
+      | { ok: boolean; retry_after_sec: number }
+      | undefined;
+    if (!zeile) return lokal;
+    return { ok: zeile.ok, retryAfterSec: zeile.ok ? 0 : zeile.retry_after_sec };
+  } catch {
+    // Datenbank nicht erreichbar oder Migration noch nicht eingespielt:
+    // Stufe 1 gilt weiter.
+    return lokal;
+  }
 }

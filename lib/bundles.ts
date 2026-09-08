@@ -218,8 +218,21 @@ export async function submitDemand(
     p_kbob_price: input.kbobPrice || null,
     p_project_id: input.projectId,
   });
-  if (error) return { error: error.message };
+  if (error) return { error: lesbarerFehler(error.message) };
   return { bundleId: data as string };
+}
+
+/**
+ * Datenbankmeldungen, die dem Nutzer etwas sagen sollen.
+ *
+ * Der Waechter fuer die Abo-Grenzen wirft eine Ausnahme mit dem Praefix
+ * `PLAN_LIMIT:`. Ohne Uebersetzung stuende im Formular eine Zeile
+ * PostgreSQL-Prosa samt Funktionsnamen und Zeilennummer.
+ */
+function lesbarerFehler(meldung: string): string {
+  const i = meldung.indexOf("PLAN_LIMIT:");
+  if (i >= 0) return meldung.slice(i + "PLAN_LIMIT:".length).trim();
+  return meldung;
 }
 
 /**

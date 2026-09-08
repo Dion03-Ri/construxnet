@@ -17,7 +17,14 @@ export type Plan = {
   unit?: string;
   note: string;
   features: string[];
-  /** Wie viele Bündel gleichzeitig. `null` = ohne Grenze. */
+  /**
+   * Wie viele laufende Bündel gleichzeitig. `null` = ohne Grenze.
+   *
+   * ACHTUNG, ZWEITE STELLE: dieselben Zahlen stehen in der Tabelle
+   * `plan_limits` (Migration 26). Diese Datei ZEIGT sie, die Tabelle
+   * SETZT sie DURCH — eine Grenze, die nur der Browser kennt, ist keine.
+   * Wer eine ändert, muss die andere mitändern.
+   */
   poolLimit: number | null;
 };
 
