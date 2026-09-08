@@ -3,78 +3,66 @@ import { cn } from "@/lib/utils";
 import { BTN_LIGHT, D_MD, EYEBROW, SECTION, SHELL } from "@/lib/ui";
 
 /**
- * Zwei Wege zum besseren Preis — im Aufbau der grossen Produktkarten:
- * dunkler Grund, sehr weiche Ecken, hauchdünner Rand, mittig Titel, kurzer
- * Satz, runder Knopf — und darunter ein Bild, das bis an die untere Kante
- * läuft und von unten leuchtet.
+ * Zwei Wege zum besseren Preis.
  *
- * Die Bilder sind aus unseren eigenen Bausteinen gebaut, nicht eingekauft:
- * links die Bündelung (drei Bedarfe werden ein Volumen), rechts der direkte
- * Weg (ein Werk, ein Preis gegen die KBOB-Referenz).
+ * Aufbau nach dem Vorbild der Robinhood-Karten: dunkler Grund, sehr weiche
+ * Ecken, Titel und ein kurzer Satz oben, ein runder Knopf — und darunter
+ * das Motiv über die ganze Breite, bündig an der unteren Kante.
+ *
+ * Vorher stand das Bild klein und mittig in einer Bühne mit Rand ringsum.
+ * Das las sich wie ein Symbol in einem Kästchen. Über die volle Breite
+ * wird es zur Grundfläche der Karte: der Handschlag reicht mit beiden
+ * Armen bis an die Ränder, der Bündelstapel steht auf der Unterkante.
+ *
+ * Es braucht dafür weder Verlauf noch Maske. Beide Aufnahmen haben nach
+ * der Schwarzpunkt-Korrektur exakt 0/0/0 als Hintergrund, und die Karte
+ * ist ebenfalls schwarz — die Bildkante ist damit unsichtbar, und das
+ * Motiv scheint direkt auf der Karte zu liegen.
  */
-
 
 function Card({
   title,
   lead,
   cta,
   href,
-  children,
+  src,
+  alt,
 }: {
   title: string;
   lead: string;
   cta: string;
   href: string;
-  children: React.ReactNode;
+  src: string;
+  alt: string;
 }) {
   return (
-    <div className="group relative flex flex-col overflow-hidden rounded-[28px] border border-white/[0.22] bg-black pt-9 sm:rounded-[32px] sm:pt-12">
-
-      <div className="relative px-6 text-center sm:px-10">
-        <h3 className="font-display text-[26px] font-bold leading-[1.15] tracking-[-0.02em] text-white">{title}</h3>
-        <p className="mx-auto mt-4 max-w-[24rem] text-[14.5px] font-medium leading-relaxed text-white/60 sm:text-[15.5px]">
+    <div className="group relative flex flex-col overflow-hidden rounded-[28px] border border-white/[0.22] bg-black sm:rounded-[32px]">
+      <div className="px-6 pb-2 pt-10 text-center sm:px-10 sm:pt-14">
+        <h3 className="font-display text-[26px] font-bold leading-[1.15] tracking-[-0.02em] text-white sm:text-[30px]">
+          {title}
+        </h3>
+        <p className="mx-auto mt-4 max-w-[26rem] text-[14.5px] font-medium leading-relaxed text-white/60 sm:text-[15.5px]">
           {lead}
         </p>
-        <Link
-          href={href}
-          className={cn(BTN_LIGHT, "mt-7 sm:mt-8")}
-        >
+        <Link href={href} className={cn(BTN_LIGHT, "mt-7 sm:mt-8")}>
           {cta}
         </Link>
       </div>
 
-      {/* Bildbühne: das Motiv steht klein und mittig, mit Luft nach unten.
-          Kein Verlauf darueber, kein Schimmer dahinter — beides hat frueher
-          einen hellen Kasten um das Bild erzeugt.
-
-          Der eigentliche Grund fuer den hellen Rand lag aber in der Datei
-          selbst: der Hintergrund von art-direkt lag bei rgb(27,19,7) statt
-          auf Schwarz. Behoben per Schwarzpunkt-Korrektur — beide Aufnahmen
-          haben jetzt 0/0/0 und gehen randlos in die schwarze Karte ueber. */}
-      <div className="mt-8 flex h-[230px] items-center justify-center px-8 pb-10 sm:mt-10 sm:h-[255px] sm:px-12 sm:pb-12">
-        {children}
+      {/* Das Motiv, randlos. `mt-auto` drückt es auf die Unterkante, damit
+          beide Karten gleich hoch bleiben, auch wenn ein Text länger ist. */}
+      <div className="mt-auto pt-8 sm:pt-10">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={src}
+          alt={alt}
+          loading="lazy"
+          width={1400}
+          height={609}
+          className="block w-full select-none"
+        />
       </div>
     </div>
-  );
-}
-
-/**
- * Ein Bildmotiv auf der Bühne.
- *
- * Nie beschneiden, nie verlaufen lassen, nie an eine Kante drücken — das
- * Motiv steht vollständig und mittig da. Alles, was es braucht, ist ein
- * freigestelltes Objekt auf reinem Schwarz; die Karte ist ebenfalls
- * schwarz, deshalb bleibt die Bildkante unsichtbar.
- */
-function Art({ src, alt }: { src: string; alt: string }) {
-  return (
-    // eslint-disable-next-line @next/next/no-img-element
-    <img
-      src={src}
-      alt={alt}
-      loading="lazy"
-      className="max-h-full w-auto max-w-full object-contain"
-    />
   );
 }
 
@@ -97,18 +85,18 @@ export default function TwoWays() {
             lead="Dein Bedarf wird mit gleichen Bedarfen deiner Region zusammengelegt. Je grösser das Bündel, desto höher der Mengenrabatt."
             cta="Smart Pools ansehen"
             href="/pools"
-          >
-            <Art src="/art-buendel.jpg" alt="Zu einem Bündel geschnürter Materialstapel" />
-          </Card>
+            src="/art-buendel.jpg"
+            alt="Gestapelte, zu einem Bündel geschnürte Materialpakete"
+          />
 
           <Card
             title="Direkt verhandeln"
             lead="Du willst nicht bündeln? Finde geprüfte Baustoffwerke und verhandle direkt — mit dem KBOB-Referenzpreis als Basis."
             cta="Zum Netzwerk"
             href="/network"
-          >
-            <Art src="/art-direkt.jpg" alt="Handschlag als Zeichen des direkten Abschlusses" />
-          </Card>
+            src="/art-direkt.jpg"
+            alt="Handschlag als Zeichen des direkten Abschlusses"
+          />
         </div>
       </div>
     </section>

@@ -172,7 +172,10 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         <TopBar />
         <div className="pb-safe-nav md:pb-0">
           {children}
-          <LegalBar />
+          {/* Die Startseite bringt ihren eigenen Fussbereich mit. Wer
+              eingeloggt war, sah bisher beide untereinander — den grossen
+              mit Spalten und darunter nochmal dieselbe Rechtszeile. */}
+          {pathname !== "/" && <LegalBar />}
         </div>
         <MobileNav />
       </SignedIn>

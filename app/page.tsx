@@ -49,11 +49,6 @@ const STEPS = [
 ];
 
 /* Feine Raster-Textur der dunklen Panels (identisch zum Feed) */
-const GRID_BG = {
-  backgroundImage:
-    "linear-gradient(rgba(255,255,255,.7) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.7) 1px,transparent 1px)",
-  backgroundSize: "26px 26px",
-};
 
 /* ------------------------------------------------------------------ */
 /*  Produkt-Vorschau: Miniatur des 3-Spalten-Dashboards                */
@@ -223,15 +218,21 @@ export default function Home() {
       </section>
 
       {/* ================= Pools + Netzwerk ================= */}
-      {/* Vorher zwei umrandete Karten mit Fotoband darueber. Jetzt zwei
-          Spalten auf derselben Flaeche, getrennt nur durch eine senkrechte
-          Haarlinie — wie die Preisstufen darunter. Die Fotobaender sind
-          weg: sie schmueckten, ohne etwas zu sagen, und machten aus zwei
-          Listen zwei Kaesten. */}
-      <section className={cn(SHELL, SECTION)}>
+      {/* Der eine helle Abschnitt der Startseite.
+
+          Bis hierher ist die Seite durchgehend schwarz — sechstausend
+          Pixel ohne Wechsel. Das ist nicht ruhig, das ist gleichfoermig.
+          Hier liegt deshalb ein weisses Blatt: dieselbe Regel wie in der
+          Anwendung, wo Nachrichten und Formulare Papier sind und Markt
+          und Zahlen dunkel bleiben. Was hier steht, ist zum Lesen — zwei
+          Listen, wer gerade buendelt und wer im Netzwerk ist.
+
+          Danach geht es wieder ins Schwarze und zum Schluss ins Navy. */}
+      <section className="bg-white text-slate-900">
+      <div className={cn(SHELL, SECTION)}>
         <div className="grid grid-cols-1 gap-y-14 lg:grid-cols-2 lg:gap-y-0">
           {/* Pools */}
-          <div className="lg:border-r lg:border-white/[0.08] lg:pr-12">
+          <div className="lg:border-r lg:border-slate-200 lg:pr-12">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={PHOTO_POOLS.src}
@@ -240,28 +241,28 @@ export default function Home() {
               className="mb-8 h-44 w-full rounded-xl object-cover sm:h-52"
             />
             <div className="flex items-baseline justify-between">
-              <h2 className="text-[19px] font-bold tracking-tight text-white">Aktive Smart Pools</h2>
-              <Link href="/pools" className="inline-flex items-center gap-1 text-[13px] font-semibold text-brand hover:text-brand-500">
+              <h2 className="text-[19px] font-bold tracking-tight text-slate-900">Aktive Smart Pools</h2>
+              <Link href="/pools" className="inline-flex items-center gap-1 text-[13px] font-semibold text-brand-700 hover:text-brand">
                 Alle <ArrowRight className="h-3.5 w-3.5" />
               </Link>
             </div>
             <ul className="mt-6">
               {POOLS.map((p) => (
-                <li key={p.material} className="grid grid-cols-[1fr_auto] items-baseline gap-x-6 border-t border-white/[0.08] py-5">
+                <li key={p.material} className="grid grid-cols-[1fr_auto] items-baseline gap-x-6 border-t border-slate-200 py-5">
                   <div className="min-w-0">
-                    <div className="truncate text-[15px] font-semibold text-white">{p.material}</div>
-                    <div className="mt-1 flex items-center gap-1 text-[12px] text-white/40">
+                    <div className="truncate text-[15px] font-semibold text-slate-900">{p.material}</div>
+                    <div className="mt-1 flex items-center gap-1 text-[12px] text-slate-400">
                       <MapPin className="h-3 w-3" /> {p.region} · {p.volume}
                     </div>
-                    <div className="mt-3 h-1 w-full max-w-[16rem] overflow-hidden rounded-full bg-white/10">
+                    <div className="mt-3 h-1 w-full max-w-[16rem] overflow-hidden rounded-full bg-slate-200">
                       <div className="h-full rounded-full bg-brand" style={{ width: `${p.fill}%` }} />
                     </div>
                   </div>
                   <div className="text-right">
-                    <div className="font-display text-[20px] font-bold tabular-nums leading-none text-white">
-                      {p.fill}<span className="text-[13px] text-white/40"> %</span>
+                    <div className="font-display text-[20px] font-bold tabular-nums leading-none text-slate-900">
+                      {p.fill}<span className="text-[13px] text-slate-400"> %</span>
                     </div>
-                    <div className="mt-1.5 inline-flex items-center gap-1 text-[11.5px] text-white/35">
+                    <div className="mt-1.5 inline-flex items-center gap-1 text-[11.5px] text-slate-400">
                       <Clock className="h-3 w-3" /> {p.deadline}
                     </div>
                   </div>
@@ -271,7 +272,7 @@ export default function Home() {
           </div>
 
           {/* Netzwerk */}
-          <div className="border-t border-white/[0.08] pt-14 lg:border-t-0 lg:pl-12 lg:pt-0">
+          <div className="border-t border-slate-200 pt-14 lg:border-t-0 lg:pl-12 lg:pt-0">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={PHOTO_NETWORK.src}
@@ -280,24 +281,24 @@ export default function Home() {
               className="mb-8 h-44 w-full rounded-xl object-cover sm:h-52"
             />
             <div className="flex items-baseline justify-between">
-              <h2 className="text-[19px] font-bold tracking-tight text-white">Firmen im Netzwerk</h2>
-              <Link href="/network" className="inline-flex items-center gap-1 text-[13px] font-semibold text-brand hover:text-brand-500">
+              <h2 className="text-[19px] font-bold tracking-tight text-slate-900">Firmen im Netzwerk</h2>
+              <Link href="/network" className="inline-flex items-center gap-1 text-[13px] font-semibold text-brand-700 hover:text-brand">
                 Zum Netzwerk <ArrowRight className="h-3.5 w-3.5" />
               </Link>
             </div>
             <ul className="mt-6">
               {COMPANIES.map((c) => (
-                <li key={c.uid} className="flex items-center gap-4 border-t border-white/[0.08] py-5">
-                  <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-white/[0.06] text-[12px] font-bold text-white/70">
+                <li key={c.uid} className="flex items-center gap-4 border-t border-slate-200 py-5">
+                  <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-slate-100 text-[12px] font-bold text-slate-600">
                     {c.name.split(" ").slice(0, 2).map((w) => w[0]).join("")}
                   </span>
                   <div className="min-w-0 flex-1">
-                    <div className="flex items-center gap-1.5 truncate text-[15px] font-semibold text-white">
-                      {c.name} <BadgeCheck className="h-4 w-4 shrink-0 text-brand" />
+                    <div className="flex items-center gap-1.5 truncate text-[15px] font-semibold text-slate-900">
+                      {c.name} <BadgeCheck className="h-4 w-4 shrink-0 text-brand-700" />
                     </div>
-                    <div className="mt-0.5 truncate text-[12px] text-white/40">{c.cat} · {c.city}</div>
+                    <div className="mt-0.5 truncate text-[12px] text-slate-400">{c.cat} · {c.city}</div>
                   </div>
-                  <Link href="/network" className="shrink-0 text-[13px] font-semibold text-brand transition-colors hover:text-brand-500">
+                  <Link href="/network" className="shrink-0 text-[13px] font-semibold text-brand-700 transition-colors hover:text-brand">
                     Vernetzen
                   </Link>
                 </li>
@@ -305,6 +306,7 @@ export default function Home() {
             </ul>
           </div>
         </div>
+      </div>
       </section>
 
       {/* ================= Preise ================= */}
@@ -312,15 +314,17 @@ export default function Home() {
 
       {/* ================= Abschluss-CTA ================= */}
       <section className={cn(SHELL, "pb-24 lg:pb-32")}>
-        <div className="relative overflow-hidden rounded-[28px] border border-white/10 bg-navy-900 px-6 py-14 text-white sm:rounded-[32px] sm:px-14 sm:py-20">
-          <div aria-hidden className="pointer-events-none absolute inset-0 opacity-[0.06]" style={GRID_BG} />
-          <div
-            aria-hidden
-            className="pointer-events-none absolute -right-24 -top-28 h-80 w-80 rounded-full bg-brand/20 blur-3xl"
-          />
+        {/* Der Schluss in Navy — die dritte Fläche der Seite.
+
+            Vorher lag darüber ein Millimeterpapier-Raster und rechts oben
+            ein verwaschener Goldnebel. Beides zeigt nichts: das Raster ist
+            Zierrat, der Nebel ist der Farbschimmer, den jede erzeugte
+            Landingpage in die Ecke setzt. Eine ruhige Fläche trägt die
+            Aussage besser. */}
+        <div className="relative overflow-hidden rounded-[28px] bg-accent-600 px-6 py-14 text-white sm:rounded-[32px] sm:px-14 sm:py-20">
           <div className="relative grid grid-cols-1 items-center gap-8 lg:grid-cols-[1.3fr_1fr]">
             <div>
-              <span className={EYEBROW}>Erst zahlen, wenn du sparst</span>
+              <span className="text-[11.5px] font-semibold uppercase tracking-[0.16em] text-brand-100">Loslegen</span>
               <h2 className={cn(D_MD, "mt-5")}>
                 Bereit, günstiger und vernetzter zu bauen?
               </h2>

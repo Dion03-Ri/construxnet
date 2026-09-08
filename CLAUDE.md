@@ -673,6 +673,10 @@ Was daraus folgt:
 - **Papier (`SHEET`), gebaut:** Nachrichten, Beschaffung, Profil
   bearbeiten, Firmenprofil, Impressum/AGB/Datenschutz.
 - **Bleibt dunkel:** Termine (Fristen sind Daten), Benachrichtigungen.
+- **Startseite:** schwarz mit zwei Ausnahmen — der Abschnitt „Aktive
+  Smart Pools / Firmen im Netzwerk" ist weiss, der Abschluss-CTA Navy.
+  Sechstausend Pixel ohne Wechsel sind nicht ruhig, sondern
+  gleichförmig.
 - **Dunkel:** Feed, Smart Pools, Referenzpreise, Netzwerk, Karte,
   Startseite.
 - Der Rahmen bleibt immer dunkel — Kopfzeile, Fussbereich, der Grund
