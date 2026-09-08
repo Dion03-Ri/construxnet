@@ -20,11 +20,10 @@ import {
   MoreHorizontal,
   Building2,
   HelpCircle,
+  Boxes,
 } from "lucide-react";
 import { useSupabaseBrowser } from "@/lib/supabase-browser";
 import { fetchMyCompanyId } from "@/lib/myCompany";
-import RecommendedPartners from "@/components/feed/RecommendedPartners";
-import FeedBundleHero from "@/components/feed/FeedBundleHero";
 import { SAMPLE_POSTS, type MockPost } from "@/data/feedMock";
 
 import { cn } from "@/lib/utils";
@@ -54,11 +53,12 @@ const POST_TYPES: Record<string, { label: string }> = {
   QUESTION: { label: "Frage" },
 };
 
-/** Die drei Arten, die im Composer angeboten werden. */
+/** Die Arten, die im Composer angeboten werden. */
 const COMPOSER_TYPES = [
-  { key: "UPDATE", label: "Update", icon: Newspaper, placeholder: "Was gibt es Neues in deinem Betrieb?" },
+  { key: "MATERIAL_OFFER", label: "Kapazität", icon: Boxes, placeholder: "Was hast du frei — Material, Menge, Lieferradius?" },
   { key: "PROJECT", label: "Projekt", icon: Building2, placeholder: "Erzähl von deinem Projekt — Ort, Umfang, Besonderheiten …" },
   { key: "QUESTION", label: "Frage", icon: HelpCircle, placeholder: "Was möchtest du die Branche fragen?" },
+  { key: "UPDATE", label: "Update", icon: Newspaper, placeholder: "Was gibt es Neues in deinem Betrieb?" },
 ] as const;
 
 type Post = MockPost;
@@ -237,35 +237,35 @@ function Composer({ onCreated }: { onCreated: () => void }) {
   );
 
   return (
-    <div className="border-t border-white/[0.12] pt-5">
+    <div className={open ? "border-t border-white/[0.12] pt-5" : undefined}>
       {!open ? (
-        <div>
-          <div className="flex items-center gap-3">
-            {avatar}
+        /* Geschlossen ist der Composer kein Kasten mehr, sondern eine Zeile
+           in der Überschrift der News: „Neu in der Branche" links, rechts
+           die Arten, die man selber melden kann. Der Avatar und das leere
+           Eingabefeld sagten nichts, was man nicht ohnehin weiss, und
+           kosteten die Höhe eines halben Beitrags. */
+        <div className="flex flex-wrap items-baseline gap-x-6 gap-y-2 border-b border-white/[0.12] pb-3">
+          <h2 className="mr-auto text-[15px] font-bold tracking-tight text-white">Neu in der Branche</h2>
+          <span className="text-[12px] text-white/[0.4]">
+            {company ? "selber melden:" : "Firmenprofil nötig, um zu melden"}
+          </span>
+          <Link
+            href="/beschaffung"
+            className="text-[12.5px] font-semibold text-white/[0.72] transition-colors hover:text-brand"
+          >
+            Bedarf
+          </Link>
+          {COMPOSER_TYPES.map((t) => (
             <button
+              key={t.key}
               type="button"
-              onClick={() => setOpen(true)}
+              onClick={() => start(t.key)}
               disabled={!company}
-              className="h-11 flex-1 rounded-xl border border-white/[0.12] px-4 text-left text-sm text-white/[0.56] transition-colors hover:border-brand/40 hover:text-white/[0.72] disabled:opacity-60"
+              className="text-[12.5px] font-semibold text-white/[0.72] transition-colors hover:text-brand disabled:opacity-40"
             >
-              {company ? "Beitrag hinzufügen …" : "Firmenprofil nötig, um zu posten"}
+              {t.label}
             </button>
-          </div>
-
-          <div className="mt-4 flex flex-wrap items-center gap-x-7 gap-y-2">
-            {COMPOSER_TYPES.map((t) => (
-              <button
-                key={t.key}
-                type="button"
-                onClick={() => start(t.key)}
-                disabled={!company}
-                className="inline-flex items-center gap-2 text-[13px] font-semibold text-white/[0.72] transition-colors hover:text-white disabled:opacity-50"
-              >
-                <t.icon className="h-4 w-4 text-brand" />
-                {t.label}
-              </button>
-            ))}
-          </div>
+          ))}
         </div>
       ) : (
         <div>
@@ -707,15 +707,9 @@ export default function NetworkFeed() {
 
   return (
     <div className="space-y-3">
-      {/* Kern des Modells zuerst & hervorgehoben: bündeln & sparen */}
-      <FeedBundleHero />
-
       <Composer onCreated={load} />
 
-      {/* Empfohlene Partner für die Beschaffung */}
-      <RecommendedPartners />
-
-      <div className="space-y-2.5 border-t border-white/[0.12] pt-5">
+      <div className="space-y-2.5 pt-4">
         <ChipRow options={typeOptions} value={type} onChange={setType} />
         <ChipRow options={regionOptions} value={region} onChange={setRegion} />
       </div>
