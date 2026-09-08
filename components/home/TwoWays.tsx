@@ -6,18 +6,23 @@ import { BTN_LIGHT, D_MD, EYEBROW, SECTION, SHELL } from "@/lib/ui";
  * Zwei Wege zum besseren Preis.
  *
  * Aufbau nach dem Vorbild der Robinhood-Karten: dunkler Grund, sehr weiche
- * Ecken, Titel und ein kurzer Satz oben, ein runder Knopf — und darunter
- * das Motiv über die ganze Breite, bündig an der unteren Kante.
+ * Ecken, Titel und ein kurzer Satz oben, ein Knopf — und darunter das
+ * Motiv über die ganze Breite, bündig an der unteren Kante.
  *
- * Vorher stand das Bild klein und mittig in einer Bühne mit Rand ringsum.
- * Das las sich wie ein Symbol in einem Kästchen. Über die volle Breite
- * wird es zur Grundfläche der Karte: der Handschlag reicht mit beiden
- * Armen bis an die Ränder, der Bündelstapel steht auf der Unterkante.
+ * Die beiden Motive sind Strichzeichnungen in Gold auf Schwarz. Sie kamen
+ * in verschiedenen Formaten — das Bündel quadratisch, der Handschlag
+ * breit. Beide liegen jetzt freigestellt und mittig auf derselben Fläche
+ * von 1400 × 760, mit Luft ringsum. Das ist der Grund, warum die zwei
+ * Karten exakt gleich hoch sind und keine Zeichnung an einer Kante
+ * abgeschnitten wird.
  *
- * Es braucht dafür weder Verlauf noch Maske. Beide Aufnahmen haben nach
- * der Schwarzpunkt-Korrektur exakt 0/0/0 als Hintergrund, und die Karte
- * ist ebenfalls schwarz — die Bildkante ist damit unsichtbar, und das
- * Motiv scheint direkt auf der Karte zu liegen.
+ * Eine Strichzeichnung braucht diese Luft. Ein Foto darf randlos laufen,
+ * eine Zeichnung nicht: sie ist ein Objekt mit Aussenkontur, und wo die
+ * Kontur die Bildkante trifft, sieht es nach Fehler aus.
+ *
+ * Weder Verlauf noch Maske nötig — nach der Schwarzpunkt-Korrektur ist
+ * der Hintergrund exakt 0/0/0, und die Karte ist ebenfalls schwarz. Die
+ * Bildkante ist damit unsichtbar.
  */
 
 function Card({
@@ -58,7 +63,7 @@ function Card({
           alt={alt}
           loading="lazy"
           width={1400}
-          height={609}
+          height={760}
           className="block w-full select-none"
         />
       </div>
@@ -86,7 +91,7 @@ export default function TwoWays() {
             cta="Smart Pools ansehen"
             href="/pools"
             src="/art-buendel.jpg"
-            alt="Gestapelte, zu einem Bündel geschnürte Materialpakete"
+            alt="Strichzeichnung: eine zu einem Bündel geschnürte Palette mit Baumaterial"
           />
 
           <Card
@@ -95,7 +100,7 @@ export default function TwoWays() {
             cta="Zum Netzwerk"
             href="/network"
             src="/art-direkt.jpg"
-            alt="Handschlag als Zeichen des direkten Abschlusses"
+            alt="Strichzeichnung: ein Handschlag als Zeichen des direkten Abschlusses"
           />
         </div>
       </div>
