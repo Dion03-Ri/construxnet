@@ -1,5 +1,6 @@
 import Link from "next/link";
 import TwoWays from "@/components/home/TwoWays";
+import SiteFooter from "@/components/SiteFooter";
 import ProcessVideo from "@/components/home/ProcessVideo";
 import Pricing from "@/components/home/Pricing";
 import { HERO_IMAGE, PHOTO_POOLS, PHOTO_NETWORK } from "@/data/media";
@@ -19,7 +20,7 @@ import {
   Truck,
   Users,
 } from "lucide-react";
-import { BTN_GOLD, BTN_LIGHT, BTN_OUTLINE_DARK, D_LG, D_MD, EYEBROW, GROUND, LEAD, ROW_HOVER, SECTION_TIGHT, SECTION_WIDE, SHELL } from "@/lib/ui";
+import { BTN_GOLD, BTN_LIGHT, BTN_OUTLINE_DARK, D_LG, D_MD, D_XL, EYEBROW, GROUND, LEAD, ROW_HOVER, SECTION_TIGHT, SECTION_WIDE, SHELL } from "@/lib/ui";
 import { cn } from "@/lib/utils";
 
 /* ------------------------------------------------------------------ */
@@ -121,8 +122,19 @@ export default function Home() {
           className="absolute inset-0 hidden bg-gradient-to-t from-navy-950 via-transparent to-navy-950/45 lg:block"
         />
 
+        {/* Der Textblock sitzt OBEN, nicht in der Mitte.
+
+            Vorher stand er senkrecht zentriert — dadurch begann die
+            Ueberschrift auf halber Hoehe, und darueber wie darunter lag
+            gleich viel Leere. Das ist die Anordnung, die jede erzeugte
+            Startseite hat.
+
+            Vorbild ist Revolut: die Ueberschrift beginnt kurz unter der
+            Kopfleiste, der ganze Block steht im oberen Drittel, und
+            darunter bleibt das Bild stehen. Der Blick faellt zuerst auf
+            den Satz, dann faellt er ins Bild — nicht umgekehrt. */}
         <div className={cn(SHELL, "relative")}>
-          <div className="py-24 sm:py-32 lg:w-[60%] lg:py-44">
+          <div className="pb-32 pt-16 sm:pb-44 sm:pt-20 lg:w-[72%] lg:pb-64 lg:pt-24 2xl:w-[62%]">
             <span className={EYEBROW}>Die Zukunft der Beschaffung</span>
 
             {/* Vorher stand hier „Vernetzen. Bündeln. Sparen." — drei
@@ -135,22 +147,31 @@ export default function Home() {
                 dem verhandeln, der auf der anderen Seite des Geschäfts
                 sitzt. Kein Gold in der Überschrift — die Zeile darüber und
                 der Knopf darunter tragen die Farbe, das reicht. */}
-            <h1 className={cn(D_LG, "mt-5 text-white")}>
+            {/* Groesser als vorher (D_XL statt D_LG). Eine Ueberschrift, die
+                nur wenig groesser ist als der Fliesstext darunter, sieht
+                aus wie ein Absatz mit Fettdruck. */}
+            <h1 className={cn(D_XL, "mt-6 text-white lg:text-[4.5rem] 2xl:text-[5rem]")}>
               Gemeinsam einkaufen,<br className="hidden sm:block" /> direkt verhandeln.
             </h1>
 
-            <p className={cn(LEAD, "mt-7 max-w-xl text-white/[0.72]")}>
+            {/* Schmaler als vorher: eine kurze, tiefe Textspalte neben einer
+                grossen Ueberschrift liest sich als Absicht, eine breite
+                flache als Fuellung. */}
+            <p className={cn(LEAD, "mt-8 max-w-md text-white/[0.72]")}>
               Obtanet legt den Bedarf mehrerer Schweizer Baufirmen zu einem Volumen
               zusammen und setzt dich an denselben Tisch wie die Werke, die darauf
               bieten. Statt Katalogpreis ein Preis, der ausgehandelt wurde.
             </p>
 
-            <div className="mt-9 flex flex-wrap gap-3">
+            <div className="mt-10 flex flex-wrap gap-3">
               <Link href="/beschaffung" className={BTN_GOLD}>
                 <Megaphone className="h-4 w-4" /> Materialbedarf melden
               </Link>
-              <Link href="/pools" className={BTN_OUTLINE_DARK}>
-                Offene Bündel ansehen <ArrowRight className="h-4 w-4" />
+              {/* „Offene Buendel ansehen" war ein Produktlink — er ergibt erst
+                  Sinn, wenn man das Modell schon verstanden hat. Wer zum
+                  ersten Mal hier ist, versteht es nicht. */}
+              <Link href="/so-funktioniert-es" className={BTN_OUTLINE_DARK}>
+                Wie es funktioniert <ArrowRight className="h-4 w-4" />
               </Link>
             </div>
           </div>
@@ -378,46 +399,7 @@ export default function Home() {
       </section>
 
       {/* ================= Footer ================= */}
-      <footer className="border-t border-white/[0.12] bg-[#16181a]">
-        <div className={cn(SHELL, "grid grid-cols-2 gap-8 py-12 md:grid-cols-5")}>
-          <div className="col-span-2 md:col-span-1">
-            {/* Hier stand ein Symbolkaestchen und daneben der Name als Text.
-                Das „gap-2" des Flex-Kastens lief dabei zwischen „Obta" und
-                „net" — sichtbar als Leerzeichen mitten im Namen, weil Flex
-                den Textknoten und das span als zwei Kinder behandelt.
-                Beides erledigt sich mit der echten Wortmarke. */}
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/logo-hell.png" alt="Obtanet" className="h-7 w-auto" />
-            <p className="mt-3 max-w-xs text-[13px] leading-relaxed text-white/[0.72]">
-              Das B2B-Netzwerk der Schweizer Baubranche — vernetzen, bündeln, sparen.
-            </p>
-          </div>
-          {[
-            { h: "Plattform", links: [["Feed", "/feed"], ["Netzwerk", "/network"], ["Smart Pools", "/pools"], ["KBOB Index", "/kbob"]] },
-            { h: "Beschaffung", links: [["Bedarf melden", "/beschaffung"], ["Nachrichten", "/messages"], ["Dashboard", "/dashboard"]] },
-            { h: "Konto", links: [["Registrieren", "/sign-up"], ["Login", "/sign-in"]] },
-            { h: "Rechtliches", links: [["Impressum", "/impressum"], ["AGB", "/agb"], ["Datenschutz", "/datenschutz"]] },
-          ].map((col) => (
-            <div key={col.h}>
-              <div className="text-[11px] font-bold uppercase tracking-wider text-white/[0.56]">{col.h}</div>
-              <ul className="mt-3 space-y-2">
-                {col.links.map(([label, href]) => (
-                  <li key={label}>
-                    <Link href={href} className="text-[13px] text-white/[0.72] transition-colors hover:text-brand">{label}</Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
-        <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 border-t border-white/[0.12] py-5 text-center text-[12px] text-white/[0.56]">
-          <span>© {new Date().getFullYear()} Obtanet · Schweizer Baubranche</span>
-          <span aria-hidden>·</span>
-          <Link href="/impressum" className="transition-colors hover:text-brand">Impressum</Link>
-          <Link href="/agb" className="transition-colors hover:text-brand">AGB</Link>
-          <Link href="/datenschutz" className="transition-colors hover:text-brand">Datenschutz</Link>
-        </div>
-      </footer>
+      <SiteFooter />
     </main>
   );
 }
