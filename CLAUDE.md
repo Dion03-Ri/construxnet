@@ -584,8 +584,26 @@ Diese Punkte müssen erledigt sein, bevor echte Firmen darauf arbeiten:
 3. **Vorstart-Sperre entfernen** (`COMING_SOON`, `PREVIEW_PASSWORD` in
    Vercel löschen).
 4. **Web-Push** für Nachrichten (siehe Chat).
-5. **Ratenbegrenzung über einen gemeinsamen Speicher** statt im
-   Arbeitsspeicher (Upstash, Vercel KV oder Supabase-Tabelle).
+5. ~~Ratenbegrenzung über einen gemeinsamen Speicher~~ — **erledigt**,
+   Migration 25 (Tabelle `rate_limits`).
+5b. **PLAN-GRENZEN SCHARF SCHALTEN.** Migration 26 ist eingespielt, der
+   Wächter steht, aber der Schalter ist auf `off` — heute darf jede Firma
+   beliebig viele Bündel. Am Starttag, wenn die Zahlung läuft, im
+   Supabase-SQL-Editor ausführen:
+
+   ```sql
+   UPDATE app_settings SET value = 'on' WHERE key = 'plan_limits';
+   ```
+
+   Danach erlaubt die Gratis-Stufe genau **ein** laufendes Bündel
+   gleichzeitig; der Versuch, einem zweiten beizutreten, wird mit einem
+   Hinweis auf `/konto` abgewiesen. Zurück geht es jederzeit mit `'off'`,
+   ohne neue Auslieferung.
+
+   **Der Nutzer speichert diesen Befehl NICHT selbst — er ist beim
+   Startgespräch von hier vorzulesen.** Vorher nicht einschalten: er hat
+   selbst nur die Gratis-Stufe und käme beim Testen nicht mehr über ein
+   Bündel hinaus.
 6. **Impressum, AGB, Datenschutz** — Seiten stehen (`/impressum`, `/agb`,
    `/datenschutz`), verlinkt im Fussbereich und in der Anwendung, öffentlich
    auch hinter der Vorstart-Sperre. **Offen:** die Werte in `data/legal.ts`
@@ -881,13 +899,40 @@ verwechselt werden dürfen:
   ist vor dem Bau juristisch zu klären, nicht danach.
 
 ## 3. E-Mails kommen noch von „construxnet"
-Im Verzeichnis liegt kein Mailversand — die Mails (Anmeldung,
-Bestätigung, Passwort) verschickt **Clerk**. Zu ändern also nicht im
-Code, sondern im Clerk-Dashboard: Anwendungsname, Absenderadresse und
--name, die E-Mail-Vorlagen und die Anmeldeseiten-Beschriftung. Wenn
-eine eigene Absenderdomain gewünscht ist, braucht es dort zusätzlich
-die DNS-Einträge. Ebenfalls prüfen: Projektname in Supabase und in
-Vercel, die tauchen in Systemmails auf.
+**Im Code ist nichts mehr zu tun.** Nachgeprüft: „construxnet" kommt im
+ganzen Quelltext nicht mehr vor (die letzte Stelle war eine
+Kommentarzeile in `01_schema.sql`), `package.json` heisst `obtanet`, und
+die Clerk-Oberfläche ist in `lib/clerk.ts` bereits auf „Obtanet"
+lokalisiert („Anmelden bei Obtanet", „Obtanet-Konto erstellen").
+
+Die Mails verschickt **Clerk**, und was darin steht, kommt aus dem
+Clerk-Dashboard — nicht aus diesem Verzeichnis. Zu ändern sind dort:
+
+1. **Der Anwendungsname.** Das ist mit grosser Wahrscheinlichkeit die
+   Ursache: Clerk setzt den Namen als `{{app.name}}` in Betreff und Text
+   *jeder* Vorlage ein und benutzt ihn als Absender-Anzeigename. Heisst
+   die Anwendung dort noch „ConstruXnet", steht das in jeder Mail.
+2. **Die E-Mail-Vorlagen** einzeln durchgehen (Bestätigungscode,
+   Passwort zurücksetzen, Adresse ändern, Einladung). Falls jemand dort
+   den Namen von Hand eingetippt hat, hilft Punkt 1 allein nicht.
+3. **Das Logo und die Farben** der von Clerk gehosteten Seiten und
+   Mail-Köpfe.
+4. **Absenderadresse.** Voreingestellt verschickt Clerk von einer
+   eigenen Domain. Für `@obtanet.com` als Absender braucht es eine
+   verifizierte Domain samt DNS-Einträgen (DKIM/SPF/Return-Path).
+
+**Voraussetzung für Punkt 4:** eine **Produktions-Instanz** in Clerk.
+Entwicklungs-Instanzen (`pk_test_…`/`sk_test_…`) können keine eigene
+Absenderdomain und markieren Mails als Entwicklungsversand. Vor dem Start
+also prüfen, ob in Vercel `pk_live_…`/`sk_live_…` gesetzt sind — und
+daran denken, dass eine Produktions-Instanz **eigene** Nutzerkonten hat:
+in der Entwicklungs-Instanz angelegte Konten wandern nicht mit.
+
+Ebenfalls kurz prüfen: der Projektname in Supabase und in Vercel. Der
+taucht in deren Systemmails an dich auf, nicht in Mails an Nutzer.
+
+*Die genauen Menüpunkte im Clerk-Dashboard ändern sich von Zeit zu Zeit;
+oben steht deshalb, WAS zu ändern ist, nicht wo es diese Woche liegt.*
 
 ## 4. Das KI-Oval um Aktivitäts- und Statuszeichen — ERLEDIGT
 `badge()` ist aus `lib/ui.ts` entfernt und hat keine Aufrufer mehr. Der

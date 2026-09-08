@@ -1,5 +1,5 @@
 -- ============================================================
--- CONSTRUXNET — CORE SCHEMA
+-- OBTANET — CORE SCHEMA (fruehere Arbeitsbezeichnung: ConstruXnet)
 -- Separates Supabase-Projekt, komplett unabhängig von SourceOn.
 -- Verknüpfung zu SourceOn NUR über clerk_user_id (kein Cross-DB-Join,
 -- keine Foreign Keys über Projektgrenzen hinweg).
