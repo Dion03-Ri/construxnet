@@ -358,6 +358,28 @@ stanzt ihn aus, und der Rest bleibt als heller Rahmen stehen.
   erhaltene Anfragen beantworten, gesendete Einladungen zurückziehen. Drei
   Reiter, echte Listen — kein zweiter Feed.
 
+### Logo (ENTSCHIEDEN)
+Wortmarke „obtanet" — „obta" in Navy `#1B3A5C` bzw. Weiss, „net" in Gold
+`#D99000`. Kein Bauhelm, kein Symbolkästchen, kein Verlauf.
+
+Dateien unter `public/`:
+- `logo-hell.png` — Weiss + Gold, für dunklen Grund (Seitenkopf)
+- `logo-dunkel.png` — Navy + Gold, für hellen Grund
+- `logo-zeichen-hell.png` / `-dunkel.png` — nur das „o", quadratisch
+- `logo-zeichen-gold.png` — das „o" in Gold, 512 px
+- `app/icon.png`, `app/apple-icon.png` — Navy-Kachel mit goldenem „o"
+
+Die Vorlagen liegen unter `design/logo/` als JPEG. Die Dateien in
+`public/` sind daraus freigestellt und **auf die CI-Werte umgefärbt** —
+die Farbe wird pro Bildpunkt neu gesetzt, nicht aus dem JPEG übernommen.
+Deshalb sind sie exakt `#D99000` und `#1B3A5C`, egal was die Kompression
+aus der Vorlage gemacht hat. Das Skript dafür steht in der
+Commit-Beschreibung; ändert sich die Vorlage, muss es neu laufen.
+
+**Offen:** es gibt noch kein SVG. Für Druck, Fahrzeugbeschriftung und
+sehr grosse Darstellung braucht es eins — die PNGs reichen für den
+Bildschirm (1254 px breit, also rund 9-fach über der Kopfgrösse).
+
 ### Der Rand ist überall 72 px
 `SHELL`, `SHELL_NARROW` und `SHELL_WORK` haben dieselbe Geometrie:
 `max-w-[1760px]`, `lg:px-[72px]`. Es gibt keine schmalere Hülle mehr.

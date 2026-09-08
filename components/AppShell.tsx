@@ -4,7 +4,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { SignedIn, SignedOut } from "@clerk/nextjs";
 import {
-  HardHat,
   Home,
   Users,
   Package,
@@ -33,15 +32,26 @@ function useActive() {
   return (href: string) => pathname === href || pathname.startsWith(href + "/");
 }
 
-function Logo({ href = "/", dark = false }: { href?: string; dark?: boolean }) {
+/**
+ * Das Logo.
+ *
+ * Hier stand ein goldenes Kaestchen mit einem Bauhelm daneben der Name als
+ * Text. Beides war Platzhalter: das Kaestchen war ein Symbol aus einer
+ * Icon-Bibliothek, und der Text hat die Hausschrift der Wortmarke nicht
+ * getroffen.
+ *
+ * Jetzt die echte Wortmarke, freigestellt und auf die CI-Werte gesetzt
+ * (#1B3A5C und #D99000).
+ *
+ * Auf dem Handy stand kurz nur das „o" — ein einzelner heller Ring sieht
+ * dort aber aus wie ein Ladekreis. Der ganze Schriftzug passt bei 24 px
+ * Hoehe bequem neben Glocke und Konto, also steht er ueberall.
+ */
+function Logo({ href = "/" }: { href?: string }) {
   return (
-    <Link href={href} className="flex items-center gap-2 font-semibold tracking-tight">
-      <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-brand text-navy-950">
-        <HardHat className="h-5 w-5" />
-      </span>
-      <span className={cn("hidden text-[15px] sm:block", dark ? "text-white" : "text-white")}>
-        Obta<span className="text-brand">net</span>
-      </span>
+    <Link href={href} aria-label="Obtanet — zur Startseite" className="flex items-center">
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src="/logo-hell.png" alt="Obtanet" className="h-6 w-auto sm:h-7" />
     </Link>
   );
 }
@@ -51,7 +61,7 @@ function TopBar() {
   return (
     <header className="sticky top-0 z-50 border-b border-white/[0.12] bg-navy-900">
       <div className={cn(SHELL, "flex h-14 items-center gap-3")}>
-        <Logo dark />
+        <Logo />
 
         <GlobalSearch />
 
@@ -133,7 +143,7 @@ function MarketingHeader() {
   return (
     <header className="sticky top-0 z-50 border-b border-white/[0.12] bg-navy-900/95 backdrop-blur">
       <div className={cn(SHELL, "flex h-16 items-center justify-between")}>
-        <Logo href="/" dark />
+        <Logo href="/" />
         <div className="flex items-center gap-2">
           <Link
             href="/sign-in"
