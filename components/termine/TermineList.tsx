@@ -126,32 +126,34 @@ function TerminCard({ t }: { t: Termin }) {
   const past = t.at.getTime() < Date.now();
 
   return (
-    <div className="flex flex-col gap-4 border-t border-white/[0.12] py-6 transition-colors hover:bg-white/[0.02] sm:flex-row sm:items-start">
-      <div className="flex shrink-0 flex-col items-center justify-center rounded-lg border border-white/[0.12] bg-white/[0.03] px-4 py-2.5 text-center sm:w-20">
-        <span className="text-[11px] font-semibold uppercase tracking-wider text-brand">
+    <div className="flex flex-col gap-4 border-t border-slate-200 py-6 first:border-t-0 first:pt-0 sm:flex-row sm:items-start">
+      {/* Das Datum als Kalenderblatt: auf Papier traegt es die Navy-Kante,
+          nicht mehr die helle Linie des dunklen Registers. */}
+      <div className="flex shrink-0 flex-col items-center justify-center rounded-lg border border-slate-200 bg-slate-50 px-4 py-2.5 text-center sm:w-20">
+        <span className="text-[11px] font-semibold uppercase tracking-wider text-accent-600">
           {t.at.toLocaleDateString("de-CH", { month: "short" })}
         </span>
-        <span className="text-2xl font-bold leading-tight text-white">{t.at.getDate()}</span>
-        <span className="text-[11px] text-white/[0.56]">
+        <span className="text-2xl font-bold leading-tight text-slate-900">{t.at.getDate()}</span>
+        <span className="text-[11px] text-slate-400">
           {t.at.toLocaleDateString("de-CH", { weekday: "short" })}
         </span>
       </div>
 
       <div className="min-w-0 flex-1">
         <div className="flex flex-wrap items-center gap-2">
-          <span className={cn("inline-flex items-center gap-1.5 text-[10.5px] font-semibold uppercase tracking-[0.12em]", meta.tone === "gold" ? "text-brand" : "text-white/[0.56]")}>
+          <span className={cn("inline-flex items-center gap-1.5 text-[10.5px] font-semibold uppercase tracking-[0.12em]", meta.tone === "gold" ? "text-brand-700" : "text-accent-600")}>
             <Icon className="h-3 w-3" /> {t.kind}
           </span>
-          <span className="inline-flex items-center gap-1 text-[12px] text-white/[0.56]">
+          <span className="inline-flex items-center gap-1 text-[12px] text-slate-400">
             <Clock className="h-3.5 w-3.5" />
             {t.at.toLocaleTimeString("de-CH", { hour: "2-digit", minute: "2-digit" })} Uhr
           </span>
           {past && (
-            <span className="text-[12px] font-semibold text-rose-300">abgelaufen</span>
+            <span className="text-[12px] font-semibold text-rose-600">abgelaufen</span>
           )}
         </div>
-        <h3 className="mt-1.5 text-[15px] font-semibold text-white">{t.title}</h3>
-        <p className="mt-1 text-[13px] leading-relaxed text-white/[0.72]">{t.description}</p>
+        <h3 className="mt-1.5 text-[15px] font-semibold text-slate-900">{t.title}</h3>
+        <p className="mt-1 text-[13px] leading-relaxed text-slate-500">{t.description}</p>
 
         <div className="mt-3 flex flex-wrap items-center gap-2">
           <button
@@ -159,7 +161,7 @@ function TerminCard({ t }: { t: Termin }) {
             onClick={() => { downloadIcs(t); setAdded(true); }}
             className={cn(
               "inline-flex items-center gap-1.5 rounded-md px-3.5 py-2 text-[13px] font-semibold transition-colors",
-              added ? "bg-accent/10 text-brand" : "bg-brand text-navy-900 hover:bg-brand/100",
+              added ? "bg-brand-50 text-brand-700" : "bg-brand text-navy-950 hover:bg-brand-500",
             )}
           >
             {added ? (
@@ -170,7 +172,7 @@ function TerminCard({ t }: { t: Termin }) {
           </button>
           <Link
             href={t.href}
-            className="inline-flex items-center gap-1 rounded-md border border-white/[0.12] px-3.5 py-2 text-[13px] font-semibold text-white/[0.72] transition-colors hover:bg-white/[0.05]"
+            className="inline-flex items-center gap-1 rounded-md border border-slate-200 px-3.5 py-2 text-[13px] font-semibold text-slate-600 transition-colors hover:bg-slate-50"
           >
             Zum Bündel <ArrowRight className="h-3.5 w-3.5" />
           </Link>
@@ -194,7 +196,7 @@ export default function TermineList() {
 
   if (loading) {
     return (
-      <div className="grid place-items-center py-20 text-white/[0.56]">
+      <div className="grid place-items-center py-20 text-slate-400">
         <Loader2 className="h-5 w-5 animate-spin" />
       </div>
     );
@@ -202,16 +204,16 @@ export default function TermineList() {
 
   if (termine.length === 0) {
     return (
-      <div className="border-t border-white/[0.12] py-20 text-center">
-        <CalendarDays className="mx-auto h-8 w-8 text-white/[0.4]" />
-        <p className="mt-3 text-[15px] font-semibold text-white/90">Keine anstehenden Fristen</p>
-        <p className="mx-auto mt-1 max-w-md text-[13px] leading-relaxed text-white/[0.72]">
+      <div className="py-16 text-center">
+        <CalendarDays className="mx-auto h-8 w-8 text-slate-300" />
+        <p className="mt-3 text-[15px] font-semibold text-slate-900">Keine anstehenden Fristen</p>
+        <p className="mx-auto mt-1 max-w-md text-[13px] leading-relaxed text-slate-500">
           Sobald du an einem Bündel beteiligt bist, stehen hier seine Sammel- und
           Angebotsfristen — mit einem Klick in deinen Kalender.
         </p>
         <Link
           href="/beschaffung"
-          className="mt-4 inline-flex items-center gap-1.5 rounded-md bg-brand px-4 py-2 text-sm font-semibold text-navy-900 transition-colors hover:bg-brand/100"
+          className="mt-4 inline-flex items-center gap-1.5 rounded-md bg-brand px-4 py-2 text-sm font-semibold text-navy-950 transition-colors hover:bg-brand-500"
         >
           Bedarf melden <ArrowRight className="h-4 w-4" />
         </Link>
@@ -220,7 +222,7 @@ export default function TermineList() {
   }
 
   return (
-    <div className="border-b border-white/[0.12]">
+    <div>
       {termine.map((t) => <TerminCard key={t.id} t={t} />)}
     </div>
   );
