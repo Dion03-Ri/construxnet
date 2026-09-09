@@ -93,18 +93,24 @@ export default function Home() {
   return (
     <main className={GROUND}>
       {/* ============================ HERO ============================ */}
-      {/* Vollflaechiges Bild statt einer Grafik neben dem Text. Der Kran bei
-          Nacht bringt das Navy der Marke schon mit — es muss nichts eingefaerbt
-          werden. Zwei Verlaeufe legen sich darueber: einer von links, damit die
-          Schrift steht, einer von unten, damit der Uebergang zum naechsten
-          Abschnitt nicht abreisst. */}
+      {/* Vollflaechiges Bild statt einer Grafik neben dem Text. Die Baustelle
+          bei Nacht bringt das Navy der Marke schon mit — es muss nichts
+          eingefaerbt werden. Zwei Verlaeufe legen sich darueber: einer von
+          links, damit die Schrift steht, einer von unten, damit der Uebergang
+          zum naechsten Abschnitt nicht abreisst.
+
+          Der Bildausschnitt ist nicht ueberall derselbe. Am Bildschirm ist
+          das Seitenverhaeltnis fast das des Bildes, es steht also ganz da.
+          Auf dem Handy bleibt nur ein Drittel der Breite uebrig — und dort
+          steht die Schrift MITTEN im Bild. Darum sitzt der Ausschnitt dort
+          links, auf der ruhigen Baugrube, und nicht auf dem Tablet. */}
       <section className="relative isolate overflow-hidden bg-black text-white">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={HERO_IMAGE}
           alt=""
           aria-hidden
-          className="absolute inset-0 h-full w-full object-cover object-[64%_38%]"
+          className="absolute inset-0 h-full w-full object-cover object-[42%_58%] lg:object-[58%_50%]"
         />
         {/* Zwei getrennte Abdunklungen statt einer fuer alles.
             Am Bildschirm steht der Text links neben dem Bild, also faellt
