@@ -10,14 +10,7 @@ import {
   ArrowRight,
   Megaphone,
   BadgeCheck,
-  MapPin,
-  Clock,
-  ShieldCheck,
-  Building2,
-  Search,
-  Plus,
   Coins,
-  Handshake,
   Truck,
   Users,
 } from "lucide-react";
@@ -31,12 +24,33 @@ const POOLS = [
   { material: "Beton C25/30", region: "Zürich", volume: "180 m³", deadline: "4 Tage", fill: 77 },
   { material: "Bewehrungsstahl B500B", region: "Bern", volume: "48 t", deadline: "9 Tage", fill: 54 },
   { material: "Koffer-/Wandkies 0/45", region: "Nordwestschweiz", volume: "320 t", deadline: "2 Tage", fill: 88 },
+  { material: "Beton C30/37", region: "Ostschweiz", volume: "240 m³", deadline: "12 Tage", fill: 41 },
+  { material: "Zement CEM II/A-LL 42,5 N", region: "Zentralschweiz", volume: "90 t", deadline: "6 Tage", fill: 63 },
+  { material: "Walzasphalt AC 11 S", region: "Genferseeregion", volume: "410 t", deadline: "14 Tage", fill: 35 },
 ];
 
+/* Die Namen sind mit Absicht keine Namen.
+   „Muster", „Beispiel" und „Demo" stehen davor, damit niemand eine dieser
+   Zeilen fuer ein echtes Mitglied haelt — und damit keine erfundene Firma
+   zufaellig heisst wie eine, die es wirklich gibt. Der Ort ist ein eigenes
+   Feld und kein Namensbestandteil, aus demselben Grund.
+
+   Drei waren es vorher. Drei Firmen mit je einem Knopf daneben lesen sich
+   wie eine bezahlte Platzierung; ein Verzeichnis faengt bei einem Dutzend
+   an, auszusehen wie ein Verzeichnis. */
 const COMPANIES = [
-  { name: "Muster Bau AG", city: "Zürich", uid: "CHE-102.345.678", cat: "Bauunternehmen" },
-  { name: "Beispiel Beton Mittelland", city: "Bern", uid: "CHE-114.987.221", cat: "Baustoffwerk" },
-  { name: "Musterbau Innerschweiz AG", city: "Luzern", uid: "CHE-108.556.019", cat: "Bauunternehmen" },
+  { name: "Muster Bau AG", city: "Zürich", cat: "Bauunternehmen" },
+  { name: "Beispiel Baustoff AG", city: "Bern", cat: "Baustoffwerk" },
+  { name: "Demo Tiefbau AG", city: "Luzern", cat: "Tiefbau" },
+  { name: "Muster Kies AG", city: "Aarau", cat: "Kieswerk" },
+  { name: "Beispiel Armierung AG", city: "Basel", cat: "Stahlhandel" },
+  { name: "Demo Elementbau AG", city: "Winterthur", cat: "Elementwerk" },
+  { name: "Muster Belagswerk AG", city: "St. Gallen", cat: "Belagswerk" },
+  { name: "Beispiel Transport AG", city: "Thun", cat: "Transport" },
+  { name: "Demo Erdbau AG", city: "Olten", cat: "Erdbau" },
+  { name: "Muster Hochbau AG", city: "Chur", cat: "Bauunternehmen" },
+  { name: "Beispiel Zimmerei AG", city: "Solothurn", cat: "Holzbau" },
+  { name: "Demo Baustoffhandel AG", city: "Zug", cat: "Handel" },
 ];
 
 // Bewusst ohne Icons: eine Nummer und zwei Zeilen Text tragen den Ablauf
@@ -55,29 +69,25 @@ const STEPS = [
 /* ------------------------------------------------------------------ */
 
 /**
- * Ein Foto, das als Grund gemeint ist und nicht als Bild.
+ * Eine Bildtafel, wie sie in einem gedruckten Bericht steht.
  *
- * Vorher lagen hier zwei Aufnahmen in voller Helligkeit auf weissem
- * Papier. Sie waren das Lauteste im ganzen Abschnitt und standen dabei
- * ueber zwei Listen, mit denen sie nichts zu tun haben — das Auge blieb
- * am Foto haengen statt an den Zahlen darunter.
+ * Vorher lagen die beiden Aufnahmen als hochkante Kacheln links und rechts
+ * NEBEN je einer Liste, die Seiten abwechselnd. Das ist das am haeufigsten
+ * kopierte Muster erzeugter Startseiten — Text, Bild, Text, Bild, im
+ * Zickzack — und die Bilder gehoerten dabei zu nichts: ein Materiallager
+ * neben einer Buendelliste erklaert die Liste nicht.
  *
- * Jetzt abgedunkelt und in Navy getoent: die Aufnahme bleibt am selben
- * Ort und zeigt dasselbe, tritt aber hinter die Liste zurueck. Der
- * Ein Verlauf nach Weiss stand kurz drin und war falsch: er machte den
- * unteren Rand milchig, statt das Bild einzufaedeln. Eine dunkle Flaeche
- * auf weissem Papier braucht keinen Uebergang — so sieht ein gedrucktes
- * Bild aus.
+ * Jetzt steht beides als ein einziges Band ueber dem ganzen Abschnitt,
+ * zwei Aufnahmen durch eine Haarlinie getrennt, mit geraden Ecken. Eine
+ * Tafel oeffnet ein Kapitel, sie begleitet keine Zeile.
  *
- * Die Werte sind von Hand eingestellt, nicht geraten: bei 0.58 Helligkeit
- * bleibt die Struktur des Materials erkennbar, darunter wird das Bild zur
- * grauen Flaeche.
+ * Abgedunkelt und in Navy getoent bleibt es. Die Werte sind von Hand
+ * eingestellt, nicht geraten: bei 0.58 Helligkeit bleibt die Struktur des
+ * Materials erkennbar, darunter wird das Bild zur grauen Flaeche.
  */
-function SectionPhoto({ slot, className }: { slot: { src: string; alt: string }; className?: string }) {
+function Bildtafel({ slot, className }: { slot: { src: string; alt: string }; className?: string }) {
   return (
-    /* Auf dem Handy ein Band ueber der Liste, ab lg eine hochkante Spalte,
-       die sich auf die Hoehe der Liste zieht (Raster streckt von selbst). */
-    <div className={cn("relative h-44 overflow-hidden rounded-2xl sm:h-52 lg:h-auto", className)}>
+    <div className={cn("relative h-56 overflow-hidden lg:h-72", className)}>
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={slot.src}
@@ -299,83 +309,101 @@ export default function Home() {
           <div className="max-w-2xl">
             <span className={cn(EYEBROW, "text-brand-700")}>Gerade auf Obtanet</span>
             <h2 className={cn(D_MD, "mt-4 text-slate-900")}>Bündel und Firmen, offen einsehbar</h2>
+            {/* Vor dem Start gibt es keine echten Buendel und keine echten
+                Mitglieder. Das hier zu verschweigen und trotzdem Namen
+                hinzuschreiben, waere die eine Sache, die man auf einer
+                Startseite nicht tun darf. Also steht es da. */}
+            <p className={cn(LEAD, "mt-5 text-slate-600")}>
+              Wer gerade bündelt und wer im Netzwerk ist, steht offen — ohne
+              Anmeldung. Bis zum Start sind die Einträge Beispiele; das Raster
+              ist das, was danach hier steht.
+            </p>
           </div>
 
-          {/* Das Foto steht hochkant neben der Liste, nicht als Band darueber.
+          {/* Eine Tafel ueber dem Kapitel statt zwei Kacheln im Zickzack.
+              Die Haarlinie zwischen den Aufnahmen entsteht durch gap-px auf
+              grauem Grund — kein Rahmen, keine Ecken. */}
+          <div className="mt-12 grid grid-cols-1 gap-px bg-slate-200 sm:grid-cols-[3fr_2fr]">
+            <Bildtafel slot={PHOTO_POOLS} />
+            <Bildtafel slot={PHOTO_NETWORK} className="hidden sm:block" />
+          </div>
 
-              Vorher lagen die beiden Aufnahmen als breite Streifen ueber
-              ihren Listen — sie gehoerten zu nichts und lasen sich als
-              Zierleiste. Hochkant neben einer Textspalte liest dasselbe
-              Bild als Beleg, und die Liste bekommt die Breite, die sie
-              braucht: die Fortschrittsbalken standen vorher auf 16 rem in
-              einer halben Spalte.
-
-              Die Seiten wechseln: beim ersten Block links, beim zweiten
-              rechts. Auf dem Handy steht das Bild ueber der Liste — 220 px
-              Breite gibt es dort nicht. */}
-          <div className="mt-12 grid grid-cols-1 gap-8 lg:grid-cols-[220px_minmax(0,1fr)] lg:gap-14">
-            <SectionPhoto slot={PHOTO_POOLS} />
-            <div>
-              <div className="flex items-baseline justify-between border-b border-slate-900 pb-3">
-                <h3 className="text-[19px] font-bold tracking-tight text-slate-900">Aktive Smart Pools</h3>
-                <Link href="/pools" className="inline-flex items-center gap-1 text-[13px] font-semibold text-brand-700 hover:text-brand">
-                  Alle <ArrowRight className="h-3.5 w-3.5" />
-                </Link>
-              </div>
-              <ul>
+          {/* ---- Buendel: eine Tabelle, kein Kachelfeld ----
+              Eine Kopfzeile, feste Spalten, sechs Zeilen. Was Daten sind,
+              soll wie Daten aussehen; die grossen Prozentzahlen mit Uhr-
+              und Ortssymbol daneben waren Schmuck um drei Zahlen herum. */}
+          <div className="mt-14">
+            <div className="flex items-baseline justify-between border-b border-slate-900 pb-3">
+              <h3 className="text-[19px] font-bold tracking-tight text-slate-900">Aktive Smart Pools</h3>
+              <Link href="/pools" className="inline-flex items-center gap-1 text-[13px] font-semibold text-brand-700 hover:text-brand">
+                Alle ansehen <ArrowRight className="h-3.5 w-3.5" />
+              </Link>
+            </div>
+            {/* Auf dem Handy faellt die Region weg, statt dass die Tabelle
+                seitlich verschwindet. Vier Spalten passen auf 390 px, fuenf
+                nicht — und eine Tabelle, von der man ein Stueck wegschieben
+                muss, liest niemand. */}
+            <table className="w-full table-fixed border-collapse text-left">
+              <thead>
+                <tr className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">
+                  <th className="w-[38%] py-3 pr-4 font-semibold md:w-[28%]">Material</th>
+                  <th className="hidden w-[16%] py-3 pr-4 font-semibold md:table-cell">Region</th>
+                  <th className="w-[22%] py-3 pr-4 text-right font-semibold md:w-[12%] md:pr-6">Menge</th>
+                  <th className="w-[20%] py-3 pr-4 text-right font-semibold md:w-[34%] md:text-left">Füllung</th>
+                  <th className="w-[20%] py-3 text-right font-semibold md:w-[10%]">Frist</th>
+                </tr>
+              </thead>
+              <tbody>
                 {POOLS.map((p) => (
-                  <li key={p.material} className="grid grid-cols-[1fr_auto] items-baseline gap-x-6 border-t border-slate-200 py-5 first:border-t-0">
-                    <div className="min-w-0">
-                      <div className="truncate text-[15px] font-semibold text-slate-900">{p.material}</div>
-                      <div className="mt-1 flex items-center gap-1 text-[12px] text-slate-600">
-                        <MapPin className="h-3 w-3" /> {p.region} · {p.volume}
+                  <tr key={p.material} className="border-t border-slate-200">
+                    <td className="py-4 pr-4 text-[14.5px] font-semibold leading-snug text-slate-900">{p.material}</td>
+                    <td className="hidden py-4 pr-4 text-[13.5px] text-slate-600 md:table-cell">{p.region}</td>
+                    <td className="py-4 pr-4 text-right text-[13.5px] tabular-nums text-slate-900 md:pr-6">{p.volume}</td>
+                    <td className="py-4 pr-4">
+                      {/* Der Balken faellt auf dem Handy weg. Dreissig Pixel
+                          Balken zeigen nichts, was die Zahl daneben nicht
+                          schon sagt — und sie kosten die Breite, an der
+                          „180 m³" sonst umbricht. */}
+                      <div className="flex items-center justify-end gap-3 md:justify-start">
+                        <div className="hidden h-1 flex-1 overflow-hidden bg-slate-200 md:block">
+                          <div className="h-full bg-brand" style={{ width: `${p.fill}%` }} />
+                        </div>
+                        <span className="w-10 shrink-0 text-right text-[13.5px] font-semibold tabular-nums text-slate-900">
+                          {p.fill} %
+                        </span>
                       </div>
-                      <div className="mt-3 h-1 w-full max-w-[24rem] overflow-hidden rounded-full bg-slate-200">
-                        <div className="h-full rounded-full bg-brand" style={{ width: `${p.fill}%` }} />
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <div className="font-display text-[20px] font-bold tabular-nums leading-none text-slate-900">
-                        {p.fill}<span className="text-[13px] text-slate-600"> %</span>
-                      </div>
-                      <div className="mt-1.5 inline-flex items-center gap-1 text-[11.5px] text-slate-600">
-                        <Clock className="h-3 w-3" /> {p.deadline}
-                      </div>
-                    </div>
-                  </li>
+                    </td>
+                    <td className="py-4 text-right text-[13.5px] tabular-nums text-slate-600">{p.deadline}</td>
+                  </tr>
                 ))}
-              </ul>
-            </div>
+              </tbody>
+            </table>
           </div>
 
-          <div className="mt-14 grid grid-cols-1 gap-8 lg:mt-16 lg:grid-cols-[minmax(0,1fr)_220px] lg:gap-14">
-            <SectionPhoto slot={PHOTO_NETWORK} className="lg:order-last" />
-            <div className="lg:order-first">
-              <div className="flex items-baseline justify-between border-b border-slate-900 pb-3">
-                <h3 className="text-[19px] font-bold tracking-tight text-slate-900">Firmen im Netzwerk</h3>
-                <Link href="/network" className="inline-flex items-center gap-1 text-[13px] font-semibold text-brand-700 hover:text-brand">
-                  Zum Netzwerk <ArrowRight className="h-3.5 w-3.5" />
-                </Link>
-              </div>
-              <ul>
-                {COMPANIES.map((c) => (
-                  <li key={c.uid} className="flex items-center gap-4 border-t border-slate-200 py-5 first:border-t-0">
-                    <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-slate-100 text-[12px] font-bold text-slate-600">
-                      {c.name.split(" ").slice(0, 2).map((w) => w[0]).join("")}
-                    </span>
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-center gap-1.5 truncate text-[15px] font-semibold text-slate-900">
-                        {c.name} <BadgeCheck className="h-4 w-4 shrink-0 text-brand-700" />
-                      </div>
-                      <div className="mt-0.5 truncate text-[12px] text-slate-600">{c.cat} · {c.city}</div>
-                    </div>
-                    <Link href="/network" className="shrink-0 text-[13px] font-semibold text-brand-700 transition-colors hover:text-brand">
-                      Vernetzen
-                    </Link>
-                  </li>
-                ))}
-              </ul>
+          {/* ---- Firmen: ein Verzeichnis in drei Spalten ----
+              Vorher drei Zeilen, jede mit einem runden Kuerzel-Plaettchen
+              und einem eigenen „Vernetzen" daneben. Genau so sieht eine
+              bezahlte Platzierung aus: wenige Namen, jeder mit Aufforderung.
+              Jetzt ein Dutzend Eintraege, gleich gewichtet, ohne Plaettchen
+              und ohne Knopf — der eine Weg ins Netzwerk steht oben. */}
+          <div className="mt-14 lg:mt-16">
+            <div className="flex items-baseline justify-between border-b border-slate-900 pb-3">
+              <h3 className="text-[19px] font-bold tracking-tight text-slate-900">Firmen im Netzwerk</h3>
+              <Link href="/network" className="inline-flex items-center gap-1 text-[13px] font-semibold text-brand-700 hover:text-brand">
+                Zum Netzwerk <ArrowRight className="h-3.5 w-3.5" />
+              </Link>
             </div>
+            <ul className="grid grid-cols-1 gap-x-12 sm:grid-cols-2 lg:grid-cols-3">
+              {COMPANIES.map((c) => (
+                <li key={c.name} className="border-t border-slate-200 py-4">
+                  <div className="flex items-center gap-1.5">
+                    <span className="truncate text-[15px] font-semibold text-slate-900">{c.name}</span>
+                    <BadgeCheck aria-label="verifiziert" className="h-4 w-4 shrink-0 text-brand-700" />
+                  </div>
+                  <div className="mt-1 truncate text-[13px] text-slate-600">{c.cat} · {c.city}</div>
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
       </section>
