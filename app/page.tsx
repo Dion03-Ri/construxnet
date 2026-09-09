@@ -187,23 +187,24 @@ export default function Home() {
       <TwoWays />
 
       {/* ================= Smart Pools =================
-          Rechts bleibt frei — dort kommt das Video hin.
+          Links die Aussage, rechts der Film — und der laeuft rechts aus
+          dem Bild heraus, statt in einem Rahmen zu sitzen. Ein Video, das
+          brav in seiner Box bleibt, sieht aus wie ein eingebetteter
+          Youtube-Clip; eines, das die Bildkante schneidet, gehoert zur
+          Seite.
 
-          Der Abschnitt hatte zwei ungleiche Haelften: links die Aussage,
-          rechts drei nummerierte Belege. Die Belege stehen jetzt unter dem
-          Text auf derselben Seite, damit die rechte Haelfte leer ist.
+          Die drei nummerierten Belege standen frueher hier. Sie sind weg:
+          der Film zeigt genau das, was sie behaupteten — dass der Vorteil
+          am Buendel haengt, dass am KBOB gemessen wird, dass der Vorteil
+          vorher feststeht. Beides nebeneinander waere dieselbe Aussage
+          zweimal.
 
-          Warum leer und nicht mit etwas gefuellt: das Video wird ueber die
-          volle Breite laufen und rechts aus dem Bild fliessen, waehrend der
-          Text links stehen bleibt. Was jetzt dort staende, muesste dann
-          wieder weg — und ein Platzhalter, der so tut als waere er Inhalt,
-          ist schlimmer als eine leere Flaeche.
-
-          Solange kein Video da ist, sieht man auf breiten Schirmen rechts
-          nichts. Das ist Absicht. Auf schmalen faellt die Spalte ohnehin
-          weg. */}
-      <section className="border-y border-white/[0.12] bg-[#0a0a0a]">
-        <div className={cn(SHELL, SECTION_WIDE, "grid grid-cols-1 gap-x-20 lg:grid-cols-[minmax(0,560px)_minmax(0,1fr)]")}>
+          `autoPlay muted loop playsInline` ist die einzige Kombination,
+          die auf dem Handy von selbst laeuft — ohne `muted` und
+          `playsInline` verweigern iOS und Android den Start. Wer
+          reduzierte Bewegung eingestellt hat, bekommt das Standbild. */}
+      <section className="overflow-hidden border-y border-white/[0.12] bg-[#0a0a0a]">
+        <div className={cn(SHELL, SECTION_WIDE, "grid grid-cols-1 items-center gap-x-16 gap-y-12 lg:grid-cols-[minmax(0,480px)_minmax(0,1fr)]")}>
           <div>
             <span className={EYEBROW}>Smart Pools</span>
             <h2 className={cn(D_LG, "mt-6 text-white")}>
@@ -213,12 +214,20 @@ export default function Home() {
               Wer alleine einkauft, zahlt Einzelpreise. Obtanet legt den Bedarf
               mehrerer Baufirmen zusammen und verhandelt mit dem ganzen Volumen.
             </p>
+            <Link href="/pools" className={cn(BTN_LIGHT, "mt-10")}>
+              So funktioniert ein Pool
+            </Link>
 
-            {/* Die drei Belege untereinander, jeder mit einer laufenden
-                Nummer — kein Raster, eine Aufzaehlung. */}
-            <dl className="mt-12">
+            {/* Auf dem Handy statt des Films die drei Belege.
+
+                Der Film ist 16:9 und traegt Schrift in 34 px — auf 390 px
+                Breite sind das sieben Pixel, also nichts. Ein Video, das
+                man nicht lesen kann, ist auf dem Handy kein Inhalt,
+                sondern ein Ladebalken. Dort steht deshalb, was der Film
+                sagt, in Worten. */}
+            <dl className="mt-12 lg:hidden">
               {[
-                ["Je grösser das Bündel, desto höher der Rabatt", "Auch kleine Einzelbestellungen profitieren — der Vorteil hängt am Volumen des Bündels, nicht am eigenen."],
+                ["Je grösser das Bündel, desto höher der Rabatt", "Auch kleine Einzelbestellungen profitieren — deine Stufe hängt an deiner Menge, dass es die Stufe gibt, am Bündel."],
                 ["Gemessen am KBOB-Referenzpreis", "Kein Prospektversprechen, sondern eine Grösse, die sich nachrechnen lässt."],
                 ["Der Mindestvorteil steht vorher fest", "Wird er bis zur Frist nicht erreicht, löst sich das Bündel auf. Es entsteht keine Verpflichtung."],
               ].map(([t, d], i) => (
@@ -233,14 +242,24 @@ export default function Home() {
                 </div>
               ))}
             </dl>
-
-            <Link href="/pools" className={cn(BTN_LIGHT, "mt-12")}>
-              So funktioniert ein Pool
-            </Link>
           </div>
 
-          {/* Platz fuer das Video. Bleibt leer, bis es da ist. */}
-          <div aria-hidden className="hidden lg:block" />
+          {/* Der Film laeuft ueber die rechte Kante hinaus: er ist breiter
+              als seine Spalte und wird nicht beschnitten, sondern vom
+              `overflow-hidden` des Abschnitts abgeschnitten. */}
+          <div className="relative hidden lg:block lg:-mr-[72px] lg:w-[calc(100%+72px)] 2xl:-mr-[160px] 2xl:w-[calc(100%+160px)]">
+            <video
+              className="w-full rounded-l-2xl border-y border-l border-white/[0.12] lg:rounded-r-none"
+              src="/smart-pools.webm"
+              poster="/smart-pools-poster.png"
+              autoPlay
+              muted
+              loop
+              playsInline
+              preload="metadata"
+              aria-label="Wie aus vier Bestellungen ein Volumen wird: Bündelung, verdeckte Angebote am KBOB-Referenzpreis gemessen, Zuschlag, und die Verteilung des Vorteils nach eingebrachter Menge."
+            />
+          </div>
         </div>
       </section>
 
