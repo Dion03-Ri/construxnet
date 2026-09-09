@@ -1007,25 +1007,18 @@ hinstellt.**
 Auf Papier (Blatt mit farbigem Kopfband, `components/ui/SheetPage.tsx`):
 Beschaffung · Profil bearbeiten · Firmenprofil · Rechtsseiten ·
 Nachrichten · Fristen · Empfangene Anfragen · Benachrichtigungen ·
-<<<<<<< HEAD
 Lieferscheine · Onboarding.
-=======
-Lieferscheine · Abo · Onboarding.
->>>>>>> origin/claude/construxnet-platform-rebuild-jll7j9
 
 Dunkel bleiben die Seiten, auf denen Zahlen und Markt stehen: Feed,
 Smart Pools, KBOB, Karte, Netzwerk, Dashboard, Startseite und
 „So funktioniert es".
 
-<<<<<<< HEAD
 **Das Abo gehoert dazu — auf Ansage des Nutzers.** Es stand kurz auf
 Papier; er wollte die schwarze Fassung zurueck. Die Regel traegt das:
 auf `/konto` stehen Preise, Stufen und Laufzeiten nebeneinander, das
 ist eine Vergleichstabelle und keine Korrespondenz. Der schwarze Anker
 (`TILE`) unter „Deine Stufe" bleibt entsprechend auch.
 
-=======
->>>>>>> origin/claude/construxnet-platform-rebuild-jll7j9
 Das Kopfband wechselt zwischen Navy und Schwarz — belegt in der
 Kopfnotiz von `SheetPage.tsx`. Wer eine Seite ergaenzt, nimmt die Farbe,
 die die Nachbarseite nicht hat. **Gold als Textfarbe traegt auf Weiss nur
