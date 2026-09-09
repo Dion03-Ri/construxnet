@@ -21,82 +21,75 @@ export default function NotificationList() {
   );
 
   return (
-    <div className={"border-t border-white/[0.12]"}>
-      <div className="flex items-center justify-between gap-3 border-b border-white/[0.12] px-4 py-3 sm:px-5">
-        <h1 className="text-[15px] font-semibold text-white">
-          Benachrichtigungen
-          {unread > 0 && (
-            <span className="ml-2 rounded-md bg-brand px-1.5 py-0.5 text-[11px] font-bold text-navy-900">
-              {unread}
-            </span>
-          )}
-        </h1>
+    <div>
+      {/* Der Titel steht im Kopfband der Seite — hier bleibt nur, was man
+          mit der Liste tut. */}
+      <div className="flex flex-wrap items-center justify-between gap-3 pb-3">
+        <div className="flex flex-wrap gap-1">
+          {NOTICE_TABS.map((t) => (
+            <button
+              key={t.key}
+              type="button"
+              onClick={() => setTab(t.key)}
+              className={cn(
+                "rounded-md px-3 py-1.5 text-[13px] font-medium transition-colors",
+                tab === t.key
+                  ? "bg-brand-50 text-brand-700"
+                  : "text-slate-500 hover:bg-slate-100 hover:text-slate-900",
+              )}
+            >
+              {t.label}
+            </button>
+          ))}
+        </div>
         {unread > 0 && (
           <button
             type="button"
             onClick={markAllSeen}
-            className="inline-flex items-center gap-1 text-[12px] font-medium text-white/[0.72] transition-colors hover:text-brand"
+            className="inline-flex items-center gap-1 text-[12px] font-medium text-slate-500 transition-colors hover:text-brand-700"
           >
             <Check className="h-3.5 w-3.5" /> Alle als gelesen
           </button>
         )}
       </div>
 
-      <div className="flex flex-wrap gap-1 border-b border-white/[0.12] px-3 py-2.5">
-        {NOTICE_TABS.map((t) => (
-          <button
-            key={t.key}
-            type="button"
-            onClick={() => setTab(t.key)}
-            className={cn(
-              "rounded-md px-3 py-1.5 text-[13px] font-medium transition-colors",
-              tab === t.key
-                ? "bg-brand/10 text-brand"
-                : "text-white/[0.72] hover:bg-white/[0.07] hover:text-white",
-            )}
-          >
-            {t.label}
-          </button>
-        ))}
-      </div>
-
       {loading ? (
-        <div className="grid place-items-center py-16 text-white/[0.56]">
+        <div className="grid place-items-center py-16 text-slate-400">
           <Loader2 className="h-5 w-5 animate-spin" />
         </div>
       ) : list.length === 0 ? (
-        <div className="px-6 py-14 text-center">
-          <BellOff className="mx-auto h-8 w-8 text-white/[0.4]" />
-          <p className="mt-3 text-[15px] font-semibold text-white/90">
+        <div className="py-14 text-center">
+          <BellOff className="mx-auto h-8 w-8 text-slate-300" />
+          <p className="mt-3 text-[15px] font-semibold text-slate-900">
             {notices.length === 0 ? "Nichts Neues" : "Nichts in dieser Kategorie"}
           </p>
-          <p className="mx-auto mt-1 max-w-sm text-[13px] leading-relaxed text-white/[0.72]">
+          <p className="mx-auto mt-1 max-w-sm text-[13px] leading-relaxed text-slate-500">
             {notices.length === 0
               ? "Hier stehen Verbindungsanfragen, eingegangene Angebote, der Stand deiner Bündel und ungelesene Nachrichten — sobald es etwas gibt."
               : "In anderen Kategorien liegt vielleicht etwas."}
           </p>
         </div>
       ) : (
-        <ul className="divide-y divide-white/[0.12]">
+        <ul className="-mx-6 divide-y divide-slate-200 border-t border-slate-200 sm:-mx-9">
           {list.map((n) => {
             const fresh = isUnread(n);
             return (
-              <li key={n.id} className={cn("relative", fresh && "bg-brand/[0.03]")}>
+              <li key={n.id} className={cn("relative", fresh && "bg-brand-50/50")}>
                 {fresh && <span className="absolute left-0 top-0 h-full w-[3px] bg-brand" />}
                 <Link
                   href={n.href}
-                  className="flex items-start gap-3 px-4 py-3.5 transition-colors hover:bg-white/[0.05] sm:px-5"
+                  className="flex items-start gap-3 py-3.5 pl-6 pr-4 transition-colors hover:bg-slate-50 sm:pl-9 sm:pr-6"
                 >
                   <span className={cn("mt-0.5 grid h-10 w-10 shrink-0 place-items-center rounded-full", n.tone)}>
                     <n.icon className="h-4 w-4" />
                   </span>
                   <div className="min-w-0 flex-1">
-                    <p className="text-[13.5px] leading-snug text-white/[0.72]">
-                      <span className="font-semibold text-white">{n.actor}</span> {n.text}
+                    <p className="text-[13.5px] leading-snug text-slate-500">
+                      <span className="font-semibold text-slate-900">{n.actor}</span> {n.text}
                     </p>
-                    <p className="mt-1 text-[11px] text-white/[0.56]">{relTime(n.at)}</p>
+                    {relTime(n.at) && <p className="mt-1 text-[11px] text-slate-400">{relTime(n.at)}</p>}
                   </div>
-                  <ChevronRight className="mt-2 h-4 w-4 shrink-0 text-white/[0.4]" />
+                  <ChevronRight className="mt-2 h-4 w-4 shrink-0 text-slate-300" />
                 </Link>
               </li>
             );

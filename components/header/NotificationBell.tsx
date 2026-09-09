@@ -79,7 +79,7 @@ export default function NotificationBell() {
                     onClick={() => setTab(t.key)}
                     className={cn(
                       "rounded-md px-3 py-1 text-xs font-medium transition-colors",
-                      tab === t.key ? "bg-brand text-white" : "text-white/[0.72] hover:bg-white/[0.07]",
+                      tab === t.key ? "bg-brand text-navy-950" : "text-white/[0.72] hover:bg-white/[0.07]",
                     )}
                   >
                     {t.label}

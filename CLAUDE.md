@@ -953,7 +953,24 @@ Beschaffung. Alle sieben sind weg; die vier Seitenköpfe tragen jetzt
 dieselbe Form wie `/pools`: Zeile, Überschrift, Satz, Haarlinie.
 
 ## 5. Farben: mehr Weiss und Schwarz, dazu Gold und Navy
-**Angefangen — die Nachrichtenseite ist der erste Versuch.**
+**Register verteilt — die Seiten stehen jetzt dort, wo die Regel sie
+hinstellt.**
+
+Auf Papier (Blatt mit farbigem Kopfband, `components/ui/SheetPage.tsx`):
+Beschaffung · Profil bearbeiten · Firmenprofil · Rechtsseiten ·
+Nachrichten · Fristen · Empfangene Anfragen · Benachrichtigungen ·
+Lieferscheine · Abo · Onboarding.
+
+Dunkel bleiben die Seiten, auf denen Zahlen und Markt stehen: Feed,
+Smart Pools, KBOB, Karte, Netzwerk, Dashboard, Startseite und
+„So funktioniert es".
+
+Das Kopfband wechselt zwischen Navy und Schwarz — belegt in der
+Kopfnotiz von `SheetPage.tsx`. Wer eine Seite ergaenzt, nimmt die Farbe,
+die die Nachbarseite nicht hat. **Gold als Textfarbe traegt auf Weiss nur
+2.6:1**; auf Papier steht deshalb `brand-700` (#9A6A00, 4.7:1), volles
+Gold bleibt Flaeche und Symbol. Auf goldenem Grund steht Navy, nie
+Weiss — das galt auch im dunklen Register schon.
 
 Der Nutzer will „eine perfekte Kombi", keine der beiden reinen
 Lesarten. Ausgangspunkt war seine Beobachtung: „die Nachrichten-Seite

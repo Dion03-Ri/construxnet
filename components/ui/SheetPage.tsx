@@ -21,7 +21,7 @@ import { cn } from "@/lib/utils";
  *
  * Belegt: Beschaffung Navy · Profil bearbeiten Schwarz · Firmenprofil
  * Navy · Fristen Navy · Empfangene Anfragen Schwarz ·
- * Benachrichtigungen Schwarz.
+ * Benachrichtigungen Navy.
  */
 export default function SheetPage({
   band = "navy",
