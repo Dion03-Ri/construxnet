@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ThumbsUp, MessageCircle, Rocket, Share2, Mail, Link2, Check } from "lucide-react";
 import { useSupabaseBrowser } from "@/lib/supabase-browser";
 import { postUrl } from "@/lib/post";
+import { mitGeduld } from "@/lib/supabaseRetry";
 import { cn } from "@/lib/utils";
 import PostComments from "./PostComments";
 
@@ -118,9 +119,11 @@ export default function PostActions({
     // schief, wird zurueckgedreht.
     onLike(neu);
     if (!demo) {
-      const { error } = neu
-        ? await supabase.from("post_likes").insert({ post_id: postId, company_id: meineFirma })
-        : await supabase.from("post_likes").delete().eq("post_id", postId).eq("company_id", meineFirma);
+      const { error } = await mitGeduld(() =>
+        neu
+          ? supabase.from("post_likes").insert({ post_id: postId, company_id: meineFirma })
+          : supabase.from("post_likes").delete().eq("post_id", postId).eq("company_id", meineFirma),
+      );
       // 23505 heisst: lag schon vor. Fuer den Nutzer ist das kein Fehler.
       if (error && error.code !== "23505") onLike(!neu);
     }

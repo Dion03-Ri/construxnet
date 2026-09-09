@@ -26,6 +26,7 @@ import { useSupabaseBrowser } from "@/lib/supabase-browser";
 import { fetchMyCompanyId } from "@/lib/myCompany";
 import { SAMPLE_POSTS, type MockPost } from "@/data/feedMock";
 import PostActions from "@/components/feed/PostActions";
+import { mitGeduld, istUhrenfehler } from "@/lib/supabaseRetry";
 
 import { cn } from "@/lib/utils";
 
@@ -856,15 +857,12 @@ export default function NetworkFeed() {
     if (!meineFirma || isDemo || posts.length === 0) return;
     let abgebrochen = false;
     const ids = posts.map((p) => p.id);
-    supabase
-      .from("post_likes")
-      .select("post_id")
-      .eq("company_id", meineFirma)
-      .in("post_id", ids)
-      .then(({ data }) => {
-        if (abgebrochen || !data) return;
-        setMeineLikes(new Set((data as { post_id: string }[]).map((r) => r.post_id)));
-      });
+    mitGeduld(() =>
+      supabase.from("post_likes").select("post_id").eq("company_id", meineFirma).in("post_id", ids),
+    ).then(({ data }) => {
+      if (abgebrochen || !data) return;
+      setMeineLikes(new Set((data as { post_id: string }[]).map((r) => r.post_id)));
+    });
     return () => {
       abgebrochen = true;
     };
@@ -903,9 +901,15 @@ export default function NetworkFeed() {
     setError(null);
     pageRef.current = 0;
 
-    const { data, error } = await fetchPage(0);
+    // Mit zweitem Anlauf: ein frisch erneuertes Sitzungs-Token kann eine
+    // Sekunde lang „noch nicht gueltig" sein (siehe lib/supabaseRetry.ts).
+    const { data, error } = await mitGeduld(() => fetchPage(0));
     if (error) {
-      setError(error.message);
+      setError(
+        istUhrenfehler(error)
+          ? "Die Anmeldung war einen Moment nicht gültig. Bitte nochmals versuchen."
+          : error.message,
+      );
       setPosts([]);
       setHasMore(false);
     } else {
@@ -939,7 +943,7 @@ export default function NetworkFeed() {
       return;
     }
 
-    const { data, error } = await fetchPage(nextPage);
+    const { data, error } = await mitGeduld(() => fetchPage(nextPage));
     if (!error) {
       const rows = (data ?? []) as unknown as Post[];
       setPosts((prev) => [...prev, ...rows.map((r) => ({ ...r, comments_count: r.comments_count ?? 0 }))]);
@@ -1021,6 +1025,15 @@ export default function NetworkFeed() {
           <div>
             <p className="font-medium">Feed konnte nicht geladen werden.</p>
             <p className="mt-0.5 text-rose-300">{error}</p>
+            {/* Ein Fehler ohne Ausweg ist eine Sackgasse: hier steht der
+                zweite Versuch, statt dass der Nutzer die Seite neu laedt. */}
+            <button
+              type="button"
+              onClick={() => load()}
+              className="mt-2 inline-flex items-center gap-1.5 rounded-md border border-rose-400/40 px-3 py-1.5 text-[13px] font-semibold text-rose-200 transition-colors hover:bg-rose-500/10"
+            >
+              Nochmals versuchen
+            </button>
           </div>
         </div>
       ) : posts.length === 0 ? (
