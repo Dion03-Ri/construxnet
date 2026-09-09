@@ -2,6 +2,7 @@ import Link from "next/link";
 import TwoWays from "@/components/home/TwoWays";
 import SiteFooter from "@/components/SiteFooter";
 import ProcessVideo from "@/components/home/ProcessVideo";
+import PoolFilm from "@/components/home/PoolFilm";
 import Pricing from "@/components/home/Pricing";
 import { HERO_IMAGE, PHOTO_POOLS, PHOTO_NETWORK } from "@/data/media";
 import TrustBar from "@/components/home/TrustBar";
@@ -193,22 +194,18 @@ export default function Home() {
       <TwoWays />
 
       {/* ================= Smart Pools =================
-          Links die Aussage, rechts der Film — und der laeuft rechts aus
-          dem Bild heraus, statt in einem Rahmen zu sitzen. Ein Video, das
-          brav in seiner Box bleibt, sieht aus wie ein eingebetteter
-          Youtube-Clip; eines, das die Bildkante schneidet, gehoert zur
-          Seite.
+          Links die Aussage, rechts der Film.
 
           Die drei nummerierten Belege standen frueher hier. Sie sind weg:
           der Film zeigt genau das, was sie behaupteten — dass der Vorteil
-          am Buendel haengt, dass am KBOB gemessen wird, dass der Vorteil
-          vorher feststeht. Beides nebeneinander waere dieselbe Aussage
-          zweimal.
+          am Buendel haengt, dass gegen einen Referenzpreis gemessen wird,
+          dass der Vorteil vorher feststeht. Beides nebeneinander waere
+          dieselbe Aussage zweimal. Unter `lg` laeuft kein Film, sondern
+          stehen die Belege als Text: der Film ist 16:9 und traegt Schrift
+          in 34 px, auf 390 px Breite waeren das sieben Pixel.
 
-          `autoPlay muted loop playsInline` ist die einzige Kombination,
-          die auf dem Handy von selbst laeuft — ohne `muted` und
-          `playsInline` verweigern iOS und Android den Start. Wer
-          reduzierte Bewegung eingestellt hat, bekommt das Standbild. */}
+          Das Abspielen steckt in PoolFilm — dort steht auch, warum das
+          Javascript braucht und nicht `autoPlay` im Markup sein darf. */}
       <section className="overflow-hidden border-y border-white/[0.12] bg-[#0a0a0a]">
         <div className={cn(SHELL, SECTION_WIDE, "grid grid-cols-1 items-center gap-x-16 gap-y-12 lg:grid-cols-[minmax(0,480px)_minmax(0,1fr)]")}>
           <div>
@@ -233,7 +230,7 @@ export default function Home() {
                 sagt, in Worten. */}
             <dl className="mt-12 lg:hidden">
               {[
-                ["Je grösser das Bündel, desto höher der Rabatt", "Auch kleine Einzelbestellungen profitieren — deine Stufe hängt an deiner Menge, dass es die Stufe gibt, am Bündel."],
+                ["Je grösser das Bündel, desto höher der Rabatt", "Auch kleine Bestellungen profitieren: dass es überhaupt einen Rabatt gibt, hängt am Bündel — wie hoch er ausfällt, an deiner Menge."],
                 ["Gemessen am KBOB-Referenzpreis", "Kein Prospektversprechen, sondern eine Grösse, die sich nachrechnen lässt."],
                 ["Der Mindestvorteil steht vorher fest", "Wird er bis zur Frist nicht erreicht, löst sich das Bündel auf. Es entsteht keine Verpflichtung."],
               ].map(([t, d], i) => (
@@ -256,17 +253,7 @@ export default function Home() {
               abgeschnitten und damit unlesbar. Ein Bild darf ueber den Rand
               hinauslaufen, ein Text nicht. Jetzt ganz in der Spalte. */}
           <div className="relative hidden lg:block">
-            <video
-              className="w-full rounded-2xl border border-white/[0.12]"
-              src="/smart-pools.webm"
-              poster="/smart-pools-poster.png"
-              autoPlay
-              muted
-              loop
-              playsInline
-              preload="metadata"
-              aria-label="Wie aus vier Bestellungen ein Volumen wird: Bündelung, verdeckte Angebote am KBOB-Referenzpreis gemessen, Zuschlag, und die Verteilung des Vorteils nach eingebrachter Menge."
-            />
+            <PoolFilm />
           </div>
         </div>
       </section>

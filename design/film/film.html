@@ -11,7 +11,7 @@
   --grund:#060B12;
   --gold:#D99000;
   --weiss:#fff; --mid:rgba(255,255,255,.72); --low:rgba(255,255,255,.44);
-  --linie:rgba(255,255,255,.16); --boden:rgba(255,255,255,.28);
+  --linie:rgba(255,255,255,.15); --gleis:rgba(255,255,255,.07);
   --ease:cubic-bezier(.16,1,.3,1);
 }
 *{margin:0;padding:0;box-sizing:border-box}
@@ -19,358 +19,358 @@ html,body{width:1920px;height:1080px;overflow:hidden;background:var(--grund)}
 body{font-family:Archivo,sans-serif;color:var(--weiss);font-variant-numeric:tabular-nums;
      -webkit-font-smoothing:antialiased}
 
-/* Sicherer Rand: nichts beruehrt die Bildkante. */
+/* Sicherer Rand: nichts beruehrt die Bildkante. Die Schiene ist genau
+   1660 px breit — das ist die ganze nutzbare Flaeche und zugleich die
+   Zielmenge des Buendels. Jede Menge im Film ist ein Stueck davon. */
 .szene{position:absolute;inset:0;opacity:0;padding:92px 130px;display:flex;flex-direction:column}
 .szene.an{opacity:1;transition:opacity .35s var(--ease)}
 
-/* ---------- Typografie. Nur Schrift und Haarlinien, keine Kaesten. ---------- */
 .klein{font-size:21px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--gold)}
 .gross{font-size:76px;font-weight:500;line-height:1.08;letter-spacing:-.02em;margin-top:22px}
-.riesig{font-size:124px;font-weight:500;line-height:1;letter-spacing:-.035em}
+.riesig{font-size:118px;font-weight:500;line-height:1;letter-spacing:-.035em}
 .fuss{font-size:26px;color:var(--low);font-weight:500;margin-top:auto}
 .auf{opacity:0;transform:translateY(18px);transition:opacity .5s var(--ease),transform .5s var(--ease)}
 .an .auf{opacity:1;transform:none}
 .an .v1{transition-delay:.08s}.an .v2{transition-delay:.18s}.an .v3{transition-delay:.28s}
 .an .v4{transition-delay:.38s}.an .v5{transition-delay:.48s}.an .v6{transition-delay:.58s}
 
-/* ---------- Die Baustellen: Strichzeichnungen auf einer Bodenlinie ---------- */
-.boden,.platten{display:grid;grid-template-columns:repeat(4,1fr);gap:56px}
-.boden{align-items:end;border-bottom:1px solid var(--boden);margin-top:44px}
-.bild{display:flex;align-items:flex-end;justify-content:flex-start;height:352px}
-.bild svg{transform:scaleY(.04);transform-origin:bottom;opacity:0;
-          transition:transform .85s var(--ease),opacity .3s linear}
-.an .bild svg,.gebaut .bild svg{transform:none;opacity:1}
-.b1 svg{transition-delay:.10s}.b2 svg{transition-delay:.26s}
-.b3 svg{transition-delay:.42s}.b4 svg{transition-delay:.58s}
-.riss{fill:none;stroke:rgba(255,255,255,.62);stroke-width:2}
-.fenster{fill:rgba(255,255,255,.15)}
-.kran{fill:none;stroke:rgba(255,255,255,.4);stroke-width:2}
+/* ---------- Das eine Motiv: die Schiene ---------- */
+.gleis{width:1660px;background:var(--gleis);display:flex;overflow:hidden}
+.gleis .seg{width:0;height:100%;transition:width .7s linear}
+.a1{background:#1B3A5C}.a2{background:#254D7A}.a3{background:#2E5C90}.a4{background:#3A6FA8}
 
-.platten{margin-top:24px}
-.plakat .wer{font-size:21px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--low)}
-.plakat .was{margin-top:12px;font-size:44px;font-weight:600;letter-spacing:-.01em}
-.plakat .dazu{margin-top:8px;font-size:30px;font-weight:600;color:var(--gold)}
-.plakat .grau{margin-top:8px;font-size:26px;font-weight:500;color:var(--low)}
+/* Szene 1: vier eigene Schienen, jede auf demselben Massstab */
+.solo{margin-top:54px}
+.solo .kopf{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:14px}
+.solo .kopf .wer{font-size:34px;font-weight:600}
+.solo .kopf .wer span{color:var(--mid);font-weight:500}
+.solo .kopf .rechts{font-size:28px;color:var(--low);font-weight:500}
+.solo .gleis{height:20px}
 
-/* ---------- Die Menge: 50 zaehlbare Fahrmischer, 5 Reihen zu 10 ---------- */
-#flotte{margin-top:46px;display:grid;grid-template-columns:repeat(10,140px);gap:13px}
-.mischer{opacity:0;transform:translateX(-22px);
-  transition:opacity .22s linear,transform .3s var(--ease);fill:currentColor}
-.mischer.da{opacity:1;transform:none}
-.f1{color:#1B3A5C}.f2{color:#254D7A}.f3{color:#326396}.f4{color:#4179AF}
-#summenlinie{height:3px;background:var(--gold);width:0;margin-top:30px;
-  transition:width 1.1s var(--ease)}
-.legende{margin-top:26px;display:flex;gap:52px;align-items:center;
-  font-size:25px;font-weight:500;color:var(--mid)}
-.legende span{display:flex;align-items:center;gap:13px;white-space:nowrap}
-.legende svg{fill:currentColor}
-.legende .txt{color:var(--mid)}
+/* Szene 2 + 4: eine Schiene, vier Abschnitte */
+.gleis.dick{height:34px}
+.marken{display:flex;width:1660px;margin-top:20px}
+.marke{border-left:1px solid rgba(255,255,255,.22);padding:18px 0 0 16px}
+.marke .wer{font-size:21px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--low)}
+.marke .satz{margin-top:10px;font-size:46px;font-weight:600;color:var(--gold);letter-spacing:-.01em}
+.marke .preis{margin-top:6px;font-size:25px;font-weight:500;color:var(--mid)}
+.marke .menge{margin-top:10px;font-size:30px;font-weight:600}
 
-/* ---------- Das Buendel im Produkt: nur Haarlinien ---------- */
-.bund{margin-top:64px;border-top:1px solid var(--linie);border-bottom:1px solid var(--linie);
-  padding:44px 0;display:grid;grid-template-columns:1fr 700px;gap:80px;align-items:center}
-.bund h3{font-size:52px;font-weight:600;letter-spacing:-.01em}
-.bund .meta{margin-top:18px;font-size:27px;color:var(--mid);display:flex;gap:14px;align-items:center}
-.bund .meta i{font-style:normal;color:var(--low)}
-.bund .kopf{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:18px}
-.bund .kopf b{font-size:50px;font-weight:600}
-.bund .kopf span{font-size:27px;color:var(--low);font-weight:500}
-.schiene{height:10px;background:rgba(255,255,255,.10)}
-.schiene i{display:block;height:100%;width:0;background:var(--gold);transition:width 2s var(--ease)}
+/* Szene 2: die Buendelzeile im Produkt, nur Haarlinien */
+.bund{border-top:1px solid var(--linie);border-bottom:1px solid var(--linie);
+  padding:36px 0;display:flex;justify-content:space-between;align-items:baseline}
+.bund h3{font-size:48px;font-weight:600;letter-spacing:-.01em}
+.bund .meta{font-size:27px;color:var(--mid);font-weight:500}
+.zaehler{display:flex;align-items:baseline;gap:40px;margin-top:44px}
+.zaehler .neben{font-size:38px;color:var(--mid);font-weight:500}
 
-/* ---------- Ausschreibung: Zeilen, keine Kaesten ---------- */
+/* Szene 3: Ausschreibung — Zeilen, keine Kaesten */
 .werke{margin-top:44px;border-top:1px solid var(--linie)}
-.werk{display:grid;grid-template-columns:1fr 340px 400px;align-items:baseline;gap:48px;
+.werk{position:relative;display:grid;grid-template-columns:1fr 340px 380px;align-items:baseline;gap:48px;
   padding:34px 0;border-bottom:1px solid var(--linie);
   opacity:0;transform:translateY(16px);transition:opacity .45s var(--ease),transform .45s var(--ease)}
 .werk.da{opacity:1;transform:none}
 .werk .name{font-size:42px;font-weight:600}
-.werk .ort{font-size:26px;color:var(--low);font-weight:500;margin-left:20px}
-.werk .gebot{font-size:48px;font-weight:600;text-align:right;letter-spacing:.02em}
+.werk .gebot{font-size:48px;font-weight:600;text-align:right}
 .werk .abstand{font-size:29px;color:var(--low);text-align:right;font-weight:500;white-space:nowrap}
-.werk.raus{opacity:.3}
+.werk.raus{opacity:.32}
 .werk.sieger .gebot,.werk.sieger .abstand,.werk.sieger .name{color:var(--gold)}
+.werk.sieger::before{content:'';position:absolute;left:-30px;top:24px;bottom:24px;width:4px;background:var(--gold)}
 .stempel{margin-top:40px;font-size:27px;font-weight:600;letter-spacing:.2em;color:var(--gold);
   opacity:0;transform:translateY(10px);transition:opacity .4s var(--ease),transform .4s var(--ease)}
 .stempel.da{opacity:1;transform:none}
 
-/* ---------- Bilanz ---------- */
+/* Szene 5: Bilanz */
 .bilanz{margin-top:40px;border-top:1px solid var(--linie)}
-.zeile{display:grid;grid-template-columns:290px 300px 80px 190px 1fr;align-items:baseline;
+.zeile{display:grid;grid-template-columns:300px 290px 80px 190px 1fr;align-items:baseline;
   padding:28px 0;border-bottom:1px solid var(--linie)}
 .zeile .f{font-size:40px;font-weight:600}
-.zeile .allein{font-size:29px;color:var(--low);font-weight:500}
-.zeile .pfeil{font-size:29px;color:var(--low)}
+.zeile .allein,.zeile .pfeil{font-size:29px;color:var(--low);font-weight:500}
 .zeile .neu{font-size:46px;font-weight:600;color:var(--gold)}
 .zeile .spar{font-size:38px;font-weight:600;text-align:right}
-.summe{margin-top:46px;display:flex;align-items:baseline;gap:34px}
-.summe .neben{font-size:34px;color:var(--mid);font-weight:500;line-height:1.3}
 </style>
 
-<!-- 1 — Ausgangslage -->
 <section class="szene" id="s1">
-  <div class="auf klein">Ausgangslage</div>
-  <div class="auf v1 gross">Vier Firmen bauen.<br>Alle brauchen denselben Beton.</div>
-  <div class="boden" id="boden1"></div>
-  <div class="platten" id="platten1"></div>
-  <div class="auf v6 fuss">Jede bestellt für sich — zum Listenpreis von CHF 160.00 je m³.</div>
+  <div class="auf klein" data-t="s1auge"></div>
+  <div class="auf v1 gross" data-t="s1kopf"></div>
+  <div id="solos"></div>
+  <div class="auf v6 fuss" data-t="s1fuss"></div>
 </section>
 
-<!-- 2 — Buendelung -->
 <section class="szene" id="s2">
-  <div class="klein">Bündelung</div>
-  <div class="gross">Aus vier Bestellungen<br>wird eine einzige Menge.</div>
-  <div id="flotte"></div>
-  <div id="summenlinie"></div>
-  <div class="legende" id="legende"></div>
-  <div class="fuss" style="display:flex;align-items:baseline;gap:40px;color:var(--weiss);margin-top:34px">
-    <div class="riesig" id="summe">0 m³</div>
-    <div style="font-size:40px;color:var(--mid);font-weight:500" id="wert">CHF 0</div>
-    <div style="font-size:25px;color:var(--low);font-weight:500;margin-left:auto">Ein Fahrmischer = 10 m³</div>
+  <div class="klein" data-t="s2auge"></div>
+  <div class="gross" data-t="s2kopf"></div>
+  <div class="bund" style="margin-top:52px">
+    <h3 data-t="ware"></h3>
+    <div class="meta" data-t="s2meta"></div>
   </div>
+  <div class="gleis dick" id="gleis2" style="margin-top:46px"></div>
+  <div class="marken" id="marken2"></div>
+  <div class="zaehler">
+    <div class="riesig" id="summe">0</div>
+    <div class="neben" id="wert"></div>
+  </div>
+  <div class="fuss" data-t="s2fuss"></div>
 </section>
 
-<!-- 3 — Im Produkt -->
-<section class="szene" id="s3" style="justify-content:center">
-  <div class="klein">Auf Obtanet</div>
-  <div class="gross">Ein Bündel. Eine Frist.<br>Ein Abschluss.</div>
-  <div class="bund">
-    <div>
-      <h3>Beton C25/30</h3>
-      <div class="meta"><span>Zürich</span><i>·</i><span>4 Firmen</span><i>·</i><span>schliesst in 4 Tagen</span></div>
-    </div>
-    <div>
-      <div class="kopf"><b id="zvol">0 m³</b><span>Ziel 500 m³</span></div>
-      <div class="schiene"><i id="zbalken"></i></div>
-    </div>
-  </div>
+<section class="szene" id="s3">
+  <div class="klein" data-t="s3auge"></div>
+  <div class="gross" data-t="s3kopf"></div>
+  <div style="margin-top:34px;font-size:27px;color:var(--mid);font-weight:500" data-t="s3sub"></div>
+  <div class="werke" id="werke"></div>
+  <div class="stempel" id="stempel"></div>
 </section>
 
-<!-- 4 — Ausschreibung -->
 <section class="szene" id="s4">
-  <div class="klein">Ausschreibung</div>
-  <div class="gross">Drei Werke bieten auf<br>das ganze Volumen.</div>
-  <div style="margin-top:34px;font-size:27px;color:var(--mid);font-weight:500">
-    500 m³ ausgeschrieben &nbsp;·&nbsp; Referenz KBOB CHF 160.00 je m³</div>
-  <div class="werke">
-    <div class="werk" id="w1"><div><span class="name">Werk Nord</span><span class="ort">Bülach</span></div><div class="gebot">•••</div><div class="abstand"></div></div>
-    <div class="werk" id="w2"><div><span class="name">Werk Mitte</span><span class="ort">Dietikon</span></div><div class="gebot">•••</div><div class="abstand"></div></div>
-    <div class="werk" id="w3"><div><span class="name">Werk Süd</span><span class="ort">Horgen</span></div><div class="gebot">•••</div><div class="abstand"></div></div>
+  <div class="auf klein" data-t="s4auge"></div>
+  <div class="auf v1 gross" data-t="s4kopf"></div>
+  <div class="auf v2" id="s4zuschlag"
+       style="margin-top:32px;font-size:27px;font-weight:600;color:var(--gold)"></div>
+  <div class="gleis dick" id="gleis4" style="margin-top:96px"></div>
+  <div class="marken" id="marken4"></div>
+  <div class="auf v6 fuss" data-t="s4fuss"></div>
+</section>
+
+<section class="szene" id="s5" style="justify-content:center">
+  <div class="auf klein" data-t="s5auge"></div>
+  <div class="bilanz" id="bilanz"></div>
+  <div class="auf v6" style="margin-top:46px;display:flex;align-items:baseline;gap:34px">
+    <div class="riesig" id="gespart">0</div>
+    <div style="font-size:34px;color:var(--mid);font-weight:500;line-height:1.35" id="statt"></div>
   </div>
-  <div class="stempel" id="stempel">ZUSCHLAG · WERK SÜD · 500 m³ ZU CHF 133.25 JE m³</div>
 </section>
 
-<!-- 5 — Verteilung -->
-<section class="szene" id="s5">
-  <div class="auf klein">Verteilung</div>
-  <div class="auf v1 gross">Der Rabatt geht dorthin,<br>wo die Menge herkommt.</div>
-  <div class="auf v2" style="margin-top:34px;font-size:27px;font-weight:600;color:var(--gold);letter-spacing:.02em">
-    Zuschlag Werk Süd &nbsp;·&nbsp; 500 m³ zu CHF 133.25 je m³</div>
-  <div class="boden gebaut" id="boden5"></div>
-  <div class="platten" id="platten5"></div>
-  <div class="auf v6 fuss">Wer mehr einbringt, kommt auf die höhere Stufe — höchstens 20 %.</div>
-</section>
-
-<!-- 6 — Bilanz -->
 <section class="szene" id="s6" style="justify-content:center">
-  <div class="auf klein">Was die Bündelung bringt</div>
-  <div class="bilanz">
-    <div class="zeile auf v1"><div class="f">Firma A</div><div class="allein">allein kein Rabatt</div><div class="pfeil">→</div><div class="neu">9 %</div><div class="spar">CHF 576 gespart</div></div>
-    <div class="zeile auf v2"><div class="f">Firma B</div><div class="allein">allein kein Rabatt</div><div class="pfeil">→</div><div class="neu">12 %</div><div class="spar">CHF 1'728 gespart</div></div>
-    <div class="zeile auf v3"><div class="f">Firma C</div><div class="allein">allein 5 %</div><div class="pfeil">→</div><div class="neu">16 %</div><div class="spar">CHF 3'072 gespart</div></div>
-    <div class="zeile auf v4"><div class="f">Firma D</div><div class="allein">allein 12 %</div><div class="pfeil">→</div><div class="neu">20 %</div><div class="spar">CHF 8'000 gespart</div></div>
-  </div>
-  <div class="summe auf v6">
-    <div class="riesig" id="gespart">CHF 0</div>
-    <div class="neben">gespart statt CHF 5'760.<br>Zusammen mehr als das Doppelte.</div>
-  </div>
-</section>
-
-<!-- 7 — Abbinder -->
-<section class="szene" id="s7" style="justify-content:center">
-  <div class="auf gross" style="margin-top:0">Gemeinsam einkaufen,<br>direkt verhandeln.</div>
+  <div class="auf gross" style="margin-top:0" data-t="claim"></div>
   <div class="auf v3" style="margin-top:56px"><img src="logo-hell.png" style="height:60px"></div>
 </section>
 
 <script>
+/* ===================================================================
+   Sprache. Der Film ist eine Vorlage: alles Sichtbare steht hier,
+   nichts im Aufbau. Eine weitere Sprache ist ein weiterer Eintrag,
+   danach film.html?sprache=xx aufrufen und neu abfilmen.
+   =================================================================== */
+const WORT = {
+  de: {
+    firmen: ['Firma A', 'Firma B', 'Firma C', 'Firma D'],
+    lieferanten: ['Lieferant 1', 'Lieferant 2', 'Lieferant 3'],
+    einheit: 'm³', je: 'je m³',
+    s1auge: 'Ausgangslage',
+    s1kopf: 'Allein ist jede Bestellung<br>zu klein für einen guten Preis.',
+    s1allein: (p) => `allein −${p} %`,
+    s1fuss: 'Referenzpreis CHF 160.00 je m³ · Zielmenge des Bündels 500 m³',
+    s2auge: 'Bündelung',
+    s2kopf: 'Vier Bestellungen,<br>ein Volumen.',
+    ware: 'Beton C25/30',
+    s2meta: '4 Firmen · Sammelphase · schliesst in 4 Tagen',
+    s2wert: (w) => `Listenwert ${w}`,
+    s2fuss: 'Jede Firma behält ihre eigene Menge — verhandelt wird die Summe.',
+    s3auge: 'Ausschreibung',
+    s3kopf: 'Die Lieferanten bieten<br>auf das ganze Volumen.',
+    s3sub: '500 m³ ausgeschrieben · Referenzpreis CHF 160.00 je m³',
+    s3ab: (p) => `−${p} % gegenüber Referenz`,
+    s3stempel: (n, p) => `ZUSCHLAG · ${n.toUpperCase()} · 500 m³ ZU CHF ${p} JE m³`,
+    s4auge: 'Verteilung',
+    s4kopf: 'Der Rabatt richtet sich nach<br>der eingebrachten Menge.',
+    s4zuschlag: (n, p) => `Zuschlag ${n} · 500 m³ zu CHF ${p} je m³`,
+    s4fuss: 'Der Zuschlag gilt für das ganze Volumen. Innerhalb des Bündels bestimmt die eingebrachte Menge die Stufe — höchstens 20 %.',
+    s5auge: 'Was die Bündelung bringt',
+    s5allein: (p) => p === 0 ? 'allein kein Rabatt' : `allein −${p} %`,
+    s5spar: (b) => `${b} gespart`,
+    s5statt: (b) => `gespart statt ${b} allein.<br>Zusammen mehr als das Dreifache.`,
+    claim: 'Gemeinsam einkaufen,<br>direkt verhandeln.',
+  },
+  en: {
+    firmen: ['Company A', 'Company B', 'Company C', 'Company D'],
+    lieferanten: ['Supplier 1', 'Supplier 2', 'Supplier 3'],
+    einheit: 'm³', je: 'per m³',
+    s1auge: 'Starting point',
+    s1kopf: 'On its own, every order<br>is too small for a good price.',
+    s1allein: (p) => `alone −${p} %`,
+    s1fuss: 'Reference price CHF 160.00 per m³ · bundle target 500 m³',
+    s2auge: 'Bundling',
+    s2kopf: 'Four orders,<br>one volume.',
+    ware: 'Concrete C25/30',
+    s2meta: '4 companies · collecting · closes in 4 days',
+    s2wert: (w) => `List value ${w}`,
+    s2fuss: 'Every company keeps its own quantity — what gets negotiated is the sum.',
+    s3auge: 'Tender',
+    s3kopf: 'Suppliers bid on<br>the entire volume.',
+    s3sub: '500 m³ tendered · reference price CHF 160.00 per m³',
+    s3ab: (p) => `−${p} % against reference`,
+    s3stempel: (n, p) => `AWARDED · ${n.toUpperCase()} · 500 m³ AT CHF ${p} PER m³`,
+    s4auge: 'Allocation',
+    s4kopf: 'The discount follows<br>the volume you bring.',
+    s4zuschlag: (n, p) => `Awarded to ${n} · 500 m³ at CHF ${p} per m³`,
+    s4fuss: 'The award covers the whole volume. Inside the bundle, the quantity you bring sets your tier — 20 % at most.',
+    s5auge: 'What bundling delivers',
+    s5allein: (p) => p === 0 ? 'alone no discount' : `alone −${p} %`,
+    s5spar: (b) => `${b} saved`,
+    s5statt: (b) => `saved instead of ${b} alone.<br>Together, more than three times as much.`,
+    claim: 'Buy together,<br>negotiate directly.',
+  },
+};
+const SPRACHE = new URLSearchParams(location.search).get('sprache') || 'de';
+const W = WORT[SPRACHE] || WORT.de;
+
+/* ===================================================================
+   Die Zahlen. Nachgerechnet, und sie muessen zusammenbleiben:
+   80 + 110 + 145 + 165 = 500 m3 · Referenz 160.00 → Listenwert 80'000
+   Zuschlag 133.60 (−16.5 %) → 500 x 133.60 = 66'800 → gespart 13'200
+   =================================================================== */
+const ZIEL = 500, REFERENZ = 160, ZUSCHLAG = '133.60', BREITE = 1660;
+const FIRMEN = [
+  { m3:  80, allein: 0, satz: 10, preis: '144.00', spart:  1280 },
+  { m3: 110, allein: 3, satz: 14, preis: '137.60', spart:  2464 },
+  { m3: 145, allein: 6, satz: 18, preis: '131.20', spart:  4176 },
+  { m3: 165, allein: 8, satz: 20, preis: '128.00', spart:  5280 },
+];
+const GEBOTE = [
+  { preis: '142.40', ab: 11 },
+  { preis: '138.40', ab: 13.5 },
+  { preis: ZUSCHLAG, ab: 16.5 },
+];
+
 const $  = (s) => document.querySelector(s);
 const $$ = (s) => [...document.querySelectorAll(s)];
 const schlaf = (ms) => new Promise(r => setTimeout(r, ms));
-const zeig = (id) => {
+const zahl = (n) => n.toLocaleString('de-CH').replace(/[,‘’  ]/g, "'");
+const chf  = (n) => 'CHF ' + zahl(Math.round(n));
+const menge = (n) => zahl(Math.round(n)) + ' ' + W.einheit;
+const breit = (m) => (BREITE * m / ZIEL);
+
+$$('[data-t]').forEach(el => { el.innerHTML = W[el.dataset.t]; });
+
+function zeig(id) {
   $$('.szene').forEach(s => { s.style.transition = 'none'; s.classList.remove('an'); });
   return new Promise(r => requestAnimationFrame(() => {
     const el = $(id); el.style.transition = ''; el.classList.add('an'); r();
   }));
-};
-function zaehle(el, von, bis, dauer, form) {
+}
+/* weich: mit Auslauf. Wenn eine Zahl neben einem Balken mitlaeuft,
+   muss sie gleichmaessig zaehlen, sonst eilt sie ihm voraus. */
+function zaehle(el, von, bis, dauer, form, weich = true) {
   const start = performance.now();
   return new Promise(fertig => {
     (function tick(t) {
-      const p = Math.min(1, (t - start) / dauer), e = 1 - Math.pow(1 - p, 3);
-      el.textContent = form(Math.round(von + (bis - von) * e));
+      const p = Math.min(1, (t - start) / dauer);
+      const e = weich ? 1 - Math.pow(1 - p, 3) : p;
+      el.textContent = form(Math.round((von + (bis - von) * e) * 100) / 100);
       p < 1 ? requestAnimationFrame(tick) : fertig();
     })(performance.now());
   });
 }
-const zahl = (n) => n.toLocaleString('de-CH').replace(/[,\u2018\u2019\u00A0\u202F]/g, "'");
-const m3  = (n) => zahl(n) + ' m³';
-const chf = (n) => 'CHF ' + zahl(n);
 
-/* ---------------------------------------------------------------
-   Die vier Firmen. Die Haeuser sind nicht Dekoration: Geschosszahl
-   und Breite wachsen mit der Menge, die die Firma einbringt.
-   --------------------------------------------------------------- */
-const FIRMEN = [
-  { name: 'Firma A', ort: 'Zürich',     m3:  40, stock: 2, breite: 148, kran: false, preis: '145.60', satz: '9 %'  },
-  { name: 'Firma B', ort: 'Winterthur', m3:  90, stock: 4, breite: 172, kran: false, preis: '140.80', satz: '12 %' },
-  { name: 'Firma C', ort: 'Baden',      m3: 120, stock: 5, breite: 196, kran: false, preis: '134.40', satz: '16 %' },
-  { name: 'Firma D', ort: 'Wetzikon',   m3: 250, stock: 7, breite: 244, kran: true,  satz: '20 %', preis: '128.00' },
-];
-const GESCHOSS = 38;   /* Pixel je Geschoss */
-const KRANHOCH = 74;   /* so weit ragt der Kran ueber das Haus */
+/* Szene 1 — vier eigene Schienen auf demselben Massstab */
+$('#solos').innerHTML = FIRMEN.map((f, i) => `
+  <div class="solo auf v${i + 2}">
+    <div class="kopf">
+      <div class="wer">${W.firmen[i]} <span>· ${menge(f.m3)}</span></div>
+      <div class="rechts">${W.s1allein(f.allein)}</div>
+    </div>
+    <div class="gleis"><i class="seg a${i + 1}" data-breit="${breit(f.m3).toFixed(1)}"></i></div>
+  </div>`).join('');
 
-/* Rohbau als Strichzeichnung: Umriss, Geschossdecken, Fenster, bei D ein Kran. */
-function haus(f) {
-  const b = f.breite, h = f.stock * GESCHOSS, kb = f.kran ? 118 : 0;
-  const H = h + 4 + (f.kran ? KRANHOCH : 0), B = b + kb + 4;
-  const boden = H - 2, geschoss = (h - 2) / f.stock;
-  const t = [];
-  t.push(`<rect class="riss" x="2" y="${H - h}" width="${b}" height="${h - 2}"/>`);
-  /* Geschossdecken */
-  for (let i = 1; i < f.stock; i++) {
-    const y = boden - geschoss * i;
-    t.push(`<line class="riss" x1="2" y1="${y.toFixed(1)}" x2="${b + 2}" y2="${y.toFixed(1)}"/>`);
-  }
-  /* Fenster: mittig im Geschoss ueber der Decke, das Erdgeschoss bleibt dem Tor */
-  const spalten = Math.max(3, Math.round(b / 54));
-  for (let i = 1; i < f.stock; i++) {
-    const y = boden - geschoss * i - geschoss / 2 - 7;
-    for (let k = 0; k < spalten; k++) {
-      const x = 2 + b * (k + .5) / spalten - 12;
-      t.push(`<rect class="fenster" x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="24" height="14"/>`);
-    }
-  }
-  /* Tor im Erdgeschoss */
-  const th = Math.min(30, geschoss - 8);
-  t.push(`<rect class="fenster" x="${(2 + b / 2 - 19).toFixed(1)}" y="${(boden - th).toFixed(1)}" width="38" height="${th.toFixed(1)}"/>`);
-  if (f.kran) {
-    const mx = b + 40, oben = 4;
-    t.push(`<line class="kran" x1="${mx}" y1="${boden}" x2="${mx}" y2="${oben}"/>`);
-    t.push(`<line class="kran" x1="${mx - 52}" y1="${oben + 20}" x2="${mx + 74}" y2="${oben + 20}"/>`);
-    t.push(`<line class="kran" x1="${mx}" y1="${oben}" x2="${mx - 52}" y2="${oben + 20}"/>`);
-    t.push(`<line class="kran" x1="${mx}" y1="${oben}" x2="${mx + 74}" y2="${oben + 20}"/>`);
-    t.push(`<line class="kran" x1="${mx + 52}" y1="${oben + 20}" x2="${mx + 52}" y2="${oben + 78}"/>`);
-    t.push(`<rect class="fenster" x="${mx + 41}" y="${oben + 78}" width="22" height="18"/>`);
-  }
-  return `<svg viewBox="0 0 ${B} ${H}" width="${B}" height="${H}">${t.join('')}</svg>`;
-}
+/* Szene 2 und 4 — eine Schiene, vier Abschnitte */
+const segmente = (id) => FIRMEN.map((f, i) =>
+  `<i class="seg a${i + 1}" data-breit="${breit(f.m3).toFixed(1)}"></i>`).join('');
+$('#gleis2').innerHTML = segmente();
+$('#gleis4').innerHTML = segmente();
+$('#marken2').innerHTML = FIRMEN.map((f, i) =>
+  `<div class="marke" style="width:${breit(f.m3).toFixed(1)}px">
+     <div class="wer">${W.firmen[i]}</div><div class="menge">${menge(f.m3)}</div></div>`).join('');
+$('#marken4').innerHTML = FIRMEN.map((f, i) =>
+  `<div class="marke" style="width:${breit(f.m3).toFixed(1)}px">
+     <div class="wer">${W.firmen[i]}</div>
+     <div class="satz" id="satz${i}">−0 %</div>
+     <div class="preis">${menge(f.m3)} · CHF ${f.preis}</div></div>`).join('');
+$('#wert').textContent = W.s2wert(chf(ZIEL * REFERENZ));
+$('#s4zuschlag').textContent = W.s4zuschlag(W.lieferanten[2], ZUSCHLAG);
 
-function baueBoden(ziel, platten, art) {
-  ziel.innerHTML = FIRMEN.map((f, i) =>
-    `<div class="bild b${i + 1}">${haus(f)}</div>`).join('');
-  platten.innerHTML = FIRMEN.map((f, i) => {
-    const kopf = `<div class="wer">${f.name} · ${f.ort}</div>`;
-    if (art === 'menge') {
-      return `<div class="plakat auf v${i + 2}">${kopf}<div class="was">${f.m3} m³</div></div>`;
-    }
-    return `<div class="plakat auf v${i + 2}">${kopf}` +
-           `<div class="was">CHF ${f.preis}</div>` +
-           `<div class="dazu">−${f.satz} · ${f.m3} m³</div></div>`;
-  }).join('');
-}
-baueBoden($('#boden1'), $('#platten1'), 'menge');
-baueBoden($('#boden5'), $('#platten5'), 'preis');
+/* Szene 3 — die Gebote */
+$('#werke').innerHTML = GEBOTE.map((g, i) =>
+  `<div class="werk" id="w${i}"><div class="name">${W.lieferanten[i]}</div>
+     <div class="gebot">•••</div><div class="abstand"></div></div>`).join('');
+$('#stempel').textContent = W.s3stempel(W.lieferanten[2], ZUSCHLAG);
 
-/* ---------------------------------------------------------------
-   Fahrmischer. Einer steht fuer 10 m3 — man kann sie abzaehlen.
-   Zwei Spuren zu 25: oben A + B + C, unten D allein. Damit sieht
-   man ohne eine einzige Zahl, dass D so viel bringt wie die drei
-   anderen zusammen.
-   --------------------------------------------------------------- */
-const MISCHER = `<svg class="mischer" viewBox="0 0 122 56" width="62" height="28">
-<rect x="26" y="37" width="90" height="6"/>
-<path d="M2 43V26h9l7-10h13v27z"/>
-<rect x="44" y="31" width="5" height="7"/><rect x="94" y="31" width="5" height="7"/>
-<ellipse cx="70" cy="23" rx="33" ry="12" transform="rotate(-8 70 23)"/>
-<path d="M99 11l19 9-4 11-16-4z"/>
-<circle cx="17" cy="45" r="8"/><circle cx="90" cy="45" r="8"/><circle cx="108" cy="45" r="8"/></svg>`;
-
-function mischer(klasse, breite) {
-  const h = Math.round(breite * 56 / 122);
-  return MISCHER.replace('class="mischer"', 'class="mischer ' + klasse + '"')
-                .replace('width="62" height="28"', `width="${breite}" height="${h}"`);
-}
-/* 50 Fahrmischer, in der Reihenfolge der vier Bestellungen eingefaerbt:
-   4 fuer A, 9 fuer B, 12 fuer C, 25 fuer D. Wer wie viel einbringt,
-   sieht man an der Flaeche, ohne eine Zahl zu lesen. */
-const flotte = $('#flotte');
-FIRMEN.forEach((f, i) => {
-  for (let k = 0; k < f.m3 / 10; k++) flotte.insertAdjacentHTML('beforeend', mischer('f' + (i + 1), 140));
-});
-$('#legende').innerHTML = FIRMEN.map((f, i) =>
-  `<span class="f${i + 1}">${mischer('f' + (i + 1) + ' da', 46)}` +
-  `<span class="txt">${f.name} · ${f.m3} m³</span></span>`).join('');
+/* Szene 5 — die Bilanz */
+$('#bilanz').innerHTML = FIRMEN.map((f, i) =>
+  `<div class="zeile auf v${i + 1}"><div class="f">${W.firmen[i]}</div>
+     <div class="allein">${W.s5allein(f.allein)}</div><div class="pfeil">→</div>
+     <div class="neu">−${f.satz} %</div>
+     <div class="spar">${W.s5spar(chf(f.spart))}</div></div>`).join('');
+$('#statt').innerHTML = W.s5statt(chf(4032));
 
 async function film() {
   await schlaf(500);
 
-  /* 1 — Ausgangslage: die Baustellen wachsen aus dem Boden */
-  await zeig('#s1'); await schlaf(5000);
+  /* 1 — allein: vier kurze Balken auf einer Schiene, die 500 m3 lang ist */
+  await zeig('#s1'); await schlaf(300);
+  $$('#s1 .seg').forEach((s, i) => setTimeout(() => {
+    s.style.transition = 'width .9s var(--ease)';
+    s.style.width = s.dataset.breit + 'px';
+  }, 120 * i));
+  await schlaf(4600);
 
-  /* 2 — Buendelung: die Fahrmischer fahren auf, dann steht die Menge */
-  await zeig('#s2'); await schlaf(400);
-  const wagen = $$('#flotte .mischer');
-  for (const [i, m] of wagen.entries()) { m.classList.add('da'); if (i % 2 === 0) await schlaf(48); }
-  await schlaf(500);
-  $('#summenlinie').style.width = '1517px';
-  await schlaf(400);
-  await Promise.all([
-    zaehle($('#summe'), 0, 500, 1300, m3),
-    zaehle($('#wert'), 0, 80000, 1300, chf),
-  ]);
-  await schlaf(1700);
+  /* 2 — die vier Mengen legen sich hintereinander und fuellen die Schiene */
+  await zeig('#s2'); await schlaf(500);
+  const dauer = 2600;
+  zaehle($('#summe'), 0, ZIEL, dauer, menge, false);
+  for (const [i, s] of $$('#gleis2 .seg').entries()) {
+    s.style.transitionDuration = (dauer * FIRMEN[i].m3 / ZIEL) + 'ms';
+    s.style.width = s.dataset.breit + 'px';
+    await schlaf(dauer * FIRMEN[i].m3 / ZIEL);
+  }
+  await schlaf(2200);
 
-  /* 3 — im Produkt */
-  await zeig('#s3'); await schlaf(400);
-  $('#zbalken').style.width = '100%';
-  await zaehle($('#zvol'), 0, 500, 2000, m3);
-  await schlaf(1600);
-
-  /* 4 — Ausschreibung */
-  await zeig('#s4'); await schlaf(450);
-  const werke = [
-    { el: $('#w1'), preis: 'CHF 141.20', ab: '−12 % gegenüber KBOB' },
-    { el: $('#w2'), preis: 'CHF 137.90', ab: '−14 % gegenüber KBOB' },
-    { el: $('#w3'), preis: 'CHF 133.25', ab: '−17 % gegenüber KBOB' },
-  ];
-  for (const w of werke) { w.el.classList.add('da'); await schlaf(300); }
+  /* 3 — Ausschreibung: erst verdeckt, dann offen, dann der Zuschlag */
+  await zeig('#s3'); await schlaf(450);
+  const werke = GEBOTE.map((g, i) => $('#w' + i));
+  for (const el of werke) { el.classList.add('da'); await schlaf(300); }
   await schlaf(800);
-  for (const w of werke) {
-    w.el.querySelector('.gebot').textContent = w.preis;
-    w.el.querySelector('.abstand').textContent = w.ab;
+  for (const [i, el] of werke.entries()) {
+    el.querySelector('.gebot').textContent = 'CHF ' + GEBOTE[i].preis;
+    el.querySelector('.abstand').textContent = W.s3ab(GEBOTE[i].ab);
     await schlaf(400);
   }
   await schlaf(650);
-  werke[0].el.classList.add('raus'); werke[1].el.classList.add('raus');
-  werke[2].el.classList.add('sieger');
+  werke[0].classList.add('raus'); werke[1].classList.add('raus');
+  werke[2].classList.add('sieger');
   $('#stempel').classList.add('da');
   await schlaf(2500);
 
-  /* 5 — Verteilung */
-  await zeig('#s5'); await schlaf(5200);
-
-  /* 6 — Bilanz */
-  await zeig('#s6'); await schlaf(1300);
-  await zaehle($('#gespart'), 0, 13376, 1500, chf);
+  /* 4 — Verteilung: dieselbe Schiene, jetzt zaehlt jede Stufe hoch */
+  await zeig('#s4'); await schlaf(300);
+  $$('#gleis4 .seg').forEach(s => {
+    s.style.transition = 'width .8s var(--ease)';
+    s.style.width = s.dataset.breit + 'px';
+  });
+  await schlaf(900);
+  await Promise.all(FIRMEN.map((f, i) =>
+    zaehle($('#satz' + i), 0, f.satz, 1200, (n) => '−' + Math.round(n) + ' %')));
   await schlaf(3400);
 
-  /* 7 — Abbinder */
-  await zeig('#s7'); await schlaf(3000);
+  /* 5 — was es bringt */
+  await zeig('#s5'); await schlaf(1300);
+  await zaehle($('#gespart'), 0, 13200, 1500, chf);
+  await schlaf(3300);
+
+  /* 6 — Abbinder. Er steht drei Sekunden, dann wird es schwarz.
+     Der Film laeuft in der Seite in Endlosschleife: das Schwarz am Ende
+     und am Anfang ist der Atemzug dazwischen, mehr nicht — beim
+     Zuschneiden bleiben davon je rund drei Zehntel stehen. */
+  await zeig('#s6'); await schlaf(3000);
   $$('.szene').forEach(x => x.classList.remove('an'));
-  await schlaf(700);
+  await schlaf(600);
   document.title = 'ENDE';
 }
 if (location.hash !== '#standbild') {
-  window.addEventListener('load', () => setTimeout(film, 300));
+  /* Erst wenn die Schriften da sind. Faengt der Film vorher an, wird die
+     erste Szene mit der Ersatzschrift aufgebaut und springt dann um. */
+  window.addEventListener('load', async () => {
+    if (document.fonts && document.fonts.ready) await document.fonts.ready;
+    setTimeout(film, 200);
+  });
 }
 </script>
