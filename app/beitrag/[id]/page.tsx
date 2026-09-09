@@ -8,8 +8,12 @@ import { cn } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
 
+/* „!network_posts_company_id_fkey" sagt PostgREST, welcher Weg gemeint
+   ist: seit `post_likes`, `post_comments` und `post_reports` je einen
+   Schluessel auf `network_posts` und auf `companies` haben, gibt es
+   mehrere — und ohne Angabe lehnt PostgREST die Abfrage ab. */
 const FELDER =
-  "id, post_type, title, content, region, media_url, likes_count, comments_count, created_at, company_id, companies(company_name, city, verified, logo_url)";
+  "id, post_type, title, content, region, media_url, likes_count, comments_count, created_at, company_id, companies!network_posts_company_id_fkey(company_name, city, verified, logo_url)";
 
 async function holen(id: string): Promise<Beitrag | null> {
   // Ueber den Dienstschluessel, weil die Seite auch ohne Anmeldung
