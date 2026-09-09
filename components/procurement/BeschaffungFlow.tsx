@@ -21,7 +21,6 @@ import {
   Boxes,
   ShieldCheck,
   X,
-  TrendingDown,
   Send,
   Search,
   PenLine,
@@ -377,24 +376,29 @@ export default function BeschaffungFlow({
 
         {/* Ausgewählte Materialien — immer zuoberst, damit die Übersicht bleibt */}
         {positions.length > 0 && (
-          <div className="mb-4 overflow-hidden rounded-lg border border-slate-200 bg-accent-600 p-4 text-white">
-            <div className="flex items-center justify-between">
-              <div className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+          /* Eine navye Insel im weissen Blatt: hier gelten die Farben des
+             dunklen Registers. Vorher standen hier Klassen aus beiden —
+             ein heller Rahmen um die Navyflaeche, die Beschriftung in
+             Schiefergrau (2.5:1) und Plaettchen mit heller Fuellung unter
+             weisser Schrift. */
+          <div className="mb-4 overflow-hidden rounded-lg bg-accent-600 p-4 text-white">
+            <div className="flex items-center justify-between gap-3">
+              <div className="text-[11px] font-semibold uppercase tracking-wider text-white/[0.56]">
                 Ausgewählt · {positions.length} {positions.length === 1 ? "Material" : "Materialien"}
               </div>
               {positions.length > 1 && (
-                <span className="rounded border border-brand/30 bg-brand/10 px-2 py-0.5 text-[10.5px] font-semibold text-brand">
+                <span className="rounded border border-brand/40 bg-brand/15 px-2 py-0.5 text-[10.5px] font-semibold text-brand">
                   wird in separate Pools aufgeteilt
                 </span>
               )}
             </div>
             <div className="mt-2.5 flex flex-wrap gap-1.5">
               {positions.map((p) => (
-                <span key={p.key} className="inline-flex items-center gap-1.5 rounded-md border border-slate-200 bg-white/[0.06] py-1 pl-2.5 pr-1.5 text-[12.5px]">
+                <span key={p.key} className="inline-flex items-center gap-1.5 rounded-md border border-white/20 bg-white/10 py-1 pl-2.5 pr-1.5 text-[12.5px] text-white">
                   <span className="font-medium">{p.label}</span>
                   {Number(p.qty) > 0 && <span className="text-brand">{chf(Number(p.qty))} {p.unit}</span>}
-                  {p.isNew && <span className="rounded bg-brand/20 px-1 text-[10px] font-bold text-brand">NEU</span>}
-                  <button type="button" onClick={() => removePosition(p.key)} className="rounded p-0.5 text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-900">
+                  {p.isNew && <span className="rounded bg-brand/25 px-1 text-[10px] font-bold text-brand">NEU</span>}
+                  <button type="button" onClick={() => removePosition(p.key)} className="rounded p-0.5 text-white/[0.56] transition-colors hover:bg-white/15 hover:text-white">
                     <X className="h-3.5 w-3.5" />
                   </button>
                 </span>
@@ -538,7 +542,7 @@ export default function BeschaffungFlow({
                     <button
                       type="button"
                       onClick={() => fileRef.current?.click()}
-                      className="flex w-full items-center justify-center gap-2 rounded-lg border border-dashed border-slate-300 bg-slate-50 px-3 py-3.5 text-sm text-slate-500 transition-colors hover:border-brand hover:text-brand"
+                      className="flex w-full items-center justify-center gap-2 rounded-lg border border-dashed border-slate-300 bg-slate-50 px-3 py-3.5 text-sm text-slate-500 transition-colors hover:border-brand hover:text-brand-700"
                     >
                       <Upload className="h-4 w-4" /> Datei hinzufügen
                     </button>
@@ -590,7 +594,7 @@ export default function BeschaffungFlow({
                     ))}
                   </div>
 
-                  <div className="mt-5 grid grid-cols-1 gap-4 border-t border-white/[0.06] pt-5 sm:grid-cols-3">
+                  <div className="mt-5 grid grid-cols-1 gap-4 border-t border-slate-200 pt-5 sm:grid-cols-3">
                     <div>
                       <label className="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-slate-400">
                         <CalendarClock className="mr-1 inline h-3.5 w-3.5" /> Lieferzeitraum
@@ -622,7 +626,7 @@ export default function BeschaffungFlow({
                       {projects.length === 0 && !projectsLoading && (
                         <p className="mt-1 text-[11.5px] text-slate-400">
                           Baustellen legst du im{" "}
-                          <Link href="/dashboard" className="font-semibold text-brand hover:underline">Dashboard unter „Projekte"</Link>{" "}
+                          <Link href="/dashboard" className="font-semibold text-brand-700 hover:underline">Dashboard unter „Projekte"</Link>{" "}
                           an — dann kannst du hier direkt auswählen.
                         </p>
                       )}
@@ -674,7 +678,7 @@ export default function BeschaffungFlow({
                             <div className="text-[11px] text-slate-400">{chf(l.qty)} {l.pos.unit} · Stufe {l.tier.tier}</div>
                           </div>
                           <div className="text-right">
-                            <div className="text-[15px] font-bold text-brand">{l.discount} %</div>
+                            <div className="text-[15px] font-bold text-brand-700">{l.discount} %</div>
                             <div className="text-[11px] text-slate-400">mind. CHF {chf(l.savings)}</div>
                           </div>
                         </div>
@@ -705,7 +709,7 @@ export default function BeschaffungFlow({
                           {pool && <th className="px-3.5 py-2 text-right font-medium">Mindestvorteil</th>}
                         </tr>
                       </thead>
-                      <tbody className="divide-y divide-white/[0.12]">
+                      <tbody className="divide-y divide-slate-200">
                         {lines.map((l) => (
                           <tr key={l.pos.key}>
                             <td className="px-3.5 py-2.5">
@@ -717,7 +721,7 @@ export default function BeschaffungFlow({
                             <td className="px-2 py-2.5 text-right tabular-nums text-slate-500">CHF {chf(l.pos.kbobPrice)}</td>
                             {pool && (
                               <td className="px-3.5 py-2.5 text-right">
-                                <span className="font-semibold text-brand">{l.discount} %</span>
+                                <span className="font-semibold text-brand-700">{l.discount} %</span>
                                 <div className="text-[11px] text-slate-400">CHF {chf(l.savings)}</div>
                               </td>
                             )}
@@ -727,7 +731,7 @@ export default function BeschaffungFlow({
                     </table>
                   </div>
 
-                  <dl className="mt-3 divide-y divide-white/[0.12] rounded-lg border border-slate-200">
+                  <dl className="mt-3 divide-y divide-slate-200 rounded-lg border border-slate-200">
                     {[
                       ["Lieferzeitraum", deliveryWindow],
                       ["Region", region],
@@ -749,16 +753,28 @@ export default function BeschaffungFlow({
                     </div>
                   </dl>
 
+                  {/* Die Zahl, um die es in diesem Formular geht.
+
+                      Vorher stand sie in einem navyblauen Kasten mit einem
+                      goldenen Symbolquadrat davor — die Bauform, die auf
+                      jeder erzeugten Oberflaeche vorkommt. Die zweite Zeile
+                      war ausserdem `text-slate-900/50`: dunkles Grau auf
+                      Navy, also praktisch unlesbar (1.2:1).
+
+                      Jetzt traegt die Zahl sich selbst: eine Haarlinie
+                      darueber, die Beschriftung klein, der Betrag gross.
+                      Kein Kasten, keine Flaeche, kein Symbol. */}
                   {pool && totals.savings > 0 && (
-                    <div className="mt-4 flex items-center gap-3 rounded-lg border border-slate-200 bg-accent-600 p-4 text-white">
-                      <span className="grid h-9 w-9 shrink-0 place-items-center rounded-md bg-brand/10 text-brand-700">
-                        <TrendingDown className="h-5 w-5" />
-                      </span>
-                      <div className="text-sm">
-                        <div className="font-semibold">Garantierter Mindestvorteil: CHF {chf(totals.savings)}</div>
-                        <div className="text-slate-900/50">
-                          Über {positions.length} {positions.length === 1 ? "Position" : "Positionen"} · Bestellwert CHF {chf(totals.cost)}
-                        </div>
+                    <div className="mt-5 border-t border-slate-200 pt-5">
+                      <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-400">
+                        Garantierter Mindestvorteil
+                      </div>
+                      <div className="mt-2 font-display text-[32px] font-medium leading-none tabular-nums text-slate-900">
+                        CHF {chf(totals.savings)}
+                      </div>
+                      <div className="mt-2.5 text-[13px] text-slate-500">
+                        Über {positions.length} {positions.length === 1 ? "Position" : "Positionen"} · Bestellwert CHF{" "}
+                        <span className="tabular-nums">{chf(totals.cost)}</span>
                       </div>
                     </div>
                   )}
@@ -768,7 +784,7 @@ export default function BeschaffungFlow({
           </AnimatePresence>
 
           {/* Nav */}
-          <div className="mt-6 flex items-center justify-between border-t border-white/[0.06] pt-4">
+          <div className="mt-6 flex items-center justify-between border-t border-slate-200 pt-4">
             <button type="button" onClick={back} disabled={step === 0} className="inline-flex items-center gap-1.5 rounded-md px-3 py-2 text-sm font-semibold text-slate-500 transition-colors hover:bg-slate-100 disabled:opacity-40">
               <ChevronLeft className="h-4 w-4" /> Zurück
             </button>
@@ -825,7 +841,7 @@ export default function BeschaffungFlow({
               <div className="mt-2 space-y-1.5 text-sm">
                 <Row k="Positionen" v={String(positions.length)} />
                 <Row k="Bündelung" v={pool ? "aktiv" : "—"} />
-                <div className="my-1 border-t border-white/[0.06]" />
+                <div className="my-1 border-t border-slate-200" />
                 <Row k="Bestellwert" v={`CHF ${chf(totals.cost)}`} bold />
                 <Row k="Mindestvorteil" v={`CHF ${chf(totals.savings)}`} accent />
               </div>
@@ -835,7 +851,7 @@ export default function BeschaffungFlow({
           <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
             <p className="text-[13px] leading-relaxed text-slate-600">
               Schon Mitglieder in deiner Region?{" "}
-              <Link href="/network" className="font-semibold text-brand hover:underline">Netzwerk ansehen</Link> und direkt verhandeln.
+              <Link href="/network" className="font-semibold text-brand-700 hover:underline">Netzwerk ansehen</Link> und direkt verhandeln.
             </p>
           </div>
         </div>
@@ -964,7 +980,7 @@ function CustomMaterialModal({
                       <button
                         type="button"
                         onClick={() => useExisting(c.material)}
-                        className="flex w-full items-center gap-2 rounded-md border border-transparent bg-white/[0.04] px-2.5 py-1.5 text-left transition-colors hover:border-brand/40 hover:bg-slate-50"
+                        className="flex w-full items-center gap-2 rounded-md border border-transparent bg-slate-50 px-2.5 py-1.5 text-left transition-colors hover:border-brand/40 hover:bg-slate-50"
                       >
                         <span className="min-w-0 flex-1">
                           <span className="block truncate text-[13px] font-semibold text-slate-900">
@@ -974,7 +990,7 @@ function CustomMaterialModal({
                             {c.reason}
                           </span>
                         </span>
-                        <span className="shrink-0 text-[11.5px] font-semibold text-brand">
+                        <span className="shrink-0 text-[11.5px] font-semibold text-brand-700">
                           übernehmen
                         </span>
                       </button>
@@ -1058,7 +1074,7 @@ function Row({ k, v, bold, accent }: { k: string; v: string; bold?: boolean; acc
   return (
     <div className="flex items-center justify-between">
       <span className="text-slate-500">{k}</span>
-      <span className={cn("tabular-nums", accent ? "font-semibold text-brand" : bold ? "font-bold text-slate-900" : "text-slate-700")}>{v}</span>
+      <span className={cn("tabular-nums", accent ? "font-semibold text-brand-700" : bold ? "font-bold text-slate-900" : "text-slate-700")}>{v}</span>
     </div>
   );
 }
