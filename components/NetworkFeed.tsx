@@ -18,6 +18,9 @@ import {
   Send,
   X,
   MoreHorizontal,
+  Trash2,
+  MessageSquare,
+  UserRound,
   Building2,
   HelpCircle,
   Boxes,
@@ -428,11 +431,165 @@ function EngagementButton({
   );
 }
 
-function PostCard({ post, index }: { post: Post; index: number }) {
+/**
+ * Das Menue am Beitrag.
+ *
+ * Der Knopf stand vorher da und tat nichts — kein `onClick`, kein Inhalt.
+ * Ein Bedienelement, das sich nicht bedienen laesst, ist schlimmer als
+ * keines: man drueckt darauf und zweifelt an der Seite, nicht am Knopf.
+ *
+ * Jetzt stehen darin nur Dinge, die es wirklich gibt. Beim eigenen
+ * Beitrag das Loeschen — zweistufig, weil ein Loeschen ohne Rueckfrage
+ * einen Fehlgriff nicht verzeiht. Bei fremden Beitraegen der Weg zur
+ * Firma: anschreiben oder Profil ansehen. Was es nicht gibt (melden,
+ * stummschalten, bearbeiten), steht auch nicht drin.
+ */
+function PostMenu({
+  eigener,
+  companyId,
+  onLoeschen,
+  loeschend,
+}: {
+  eigener: boolean;
+  companyId: string;
+  onLoeschen: () => void;
+  loeschend: boolean;
+}) {
+  const [offen, setOffen] = useState(false);
+  const [sicher, setSicher] = useState(false);
+  const huelle = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!offen) return;
+    function aus(e: MouseEvent) {
+      if (huelle.current && !huelle.current.contains(e.target as Node)) setOffen(false);
+    }
+    function taste(e: KeyboardEvent) {
+      if (e.key === "Escape") setOffen(false);
+    }
+    document.addEventListener("mousedown", aus);
+    document.addEventListener("keydown", taste);
+    return () => {
+      document.removeEventListener("mousedown", aus);
+      document.removeEventListener("keydown", taste);
+    };
+  }, [offen]);
+
+  // Zugeklappt faengt die Rueckfrage wieder von vorne an.
+  useEffect(() => {
+    if (!offen) setSicher(false);
+  }, [offen]);
+
+  const eintrag =
+    "flex w-full items-center gap-2.5 px-3.5 py-2.5 text-left text-[13.5px] transition-colors";
+
+  return (
+    <div ref={huelle} className="relative shrink-0">
+      <button
+        type="button"
+        onClick={() => setOffen((v) => !v)}
+        aria-label="Optionen zum Beitrag"
+        aria-expanded={offen}
+        className={cn(
+          "rounded-lg p-1 transition-colors",
+          offen ? "bg-white/[0.08] text-white" : "text-white/[0.5] hover:text-white/[0.72]",
+        )}
+      >
+        <MoreHorizontal className="h-4 w-4" />
+      </button>
+
+      {offen && (
+        <div className="absolute right-0 z-30 mt-1.5 w-56 overflow-hidden rounded-xl border border-white/[0.12] bg-[#16181a] py-1 shadow-[0_20px_50px_-20px_rgba(0,0,0,0.9)]">
+          {eigener ? (
+            sicher ? (
+              <>
+                <div className="px-3.5 pb-1.5 pt-2 text-[12px] leading-snug text-white/[0.72]">
+                  Beitrag endgültig löschen?
+                </div>
+                <button
+                  type="button"
+                  onClick={onLoeschen}
+                  disabled={loeschend}
+                  className={cn(eintrag, "font-semibold text-rose-300 hover:bg-rose-500/10 disabled:opacity-50")}
+                >
+                  {loeschend ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
+                  Ja, löschen
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setSicher(false)}
+                  className={cn(eintrag, "text-white/[0.72] hover:bg-white/[0.06] hover:text-white")}
+                >
+                  Abbrechen
+                </button>
+              </>
+            ) : (
+              <button
+                type="button"
+                onClick={() => setSicher(true)}
+                className={cn(eintrag, "text-rose-300 hover:bg-rose-500/10")}
+              >
+                <Trash2 className="h-4 w-4" /> Beitrag löschen
+              </button>
+            )
+          ) : (
+            <>
+              <Link
+                href={`/messages?to=${companyId}`}
+                onClick={() => setOffen(false)}
+                className={cn(eintrag, "text-white/[0.72] hover:bg-white/[0.06] hover:text-white")}
+              >
+                <MessageSquare className="h-4 w-4" /> Firma anschreiben
+              </Link>
+              <Link
+                href={`/company/${companyId}`}
+                onClick={() => setOffen(false)}
+                className={cn(eintrag, "text-white/[0.72] hover:bg-white/[0.06] hover:text-white")}
+              >
+                <UserRound className="h-4 w-4" /> Firmenprofil ansehen
+              </Link>
+            </>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function PostCard({
+  post,
+  index,
+  meineFirma,
+  onGeloescht,
+  demo,
+}: {
+  post: Post;
+  index: number;
+  meineFirma: string | null;
+  onGeloescht: (id: string) => void;
+  demo: boolean;
+}) {
   const c = post.companies;
   const name = c?.company_name ?? "Unbekannte Firma";
+  const supabase = useSupabaseBrowser();
   const [liked, setLiked] = useState(false);
   const [expanded, setExpanded] = useState(false);
+  const [loeschend, setLoeschend] = useState(false);
+  const eigener = meineFirma !== null && meineFirma === post.company_id;
+
+  async function loeschen() {
+    setLoeschend(true);
+    // Im Demo-Feed gibt es keine Zeile in der Datenbank — dort verschwindet
+    // der Beitrag nur aus der Ansicht.
+    if (!demo) {
+      const { error } = await supabase.from("network_posts").delete().eq("id", post.id);
+      if (error) {
+        setLoeschend(false);
+        return;
+      }
+    }
+    onGeloescht(post.id);
+  }
   const likeCount = post.likes_count + (liked ? 1 : 0);
 
   const LIMIT = 220;
@@ -486,9 +643,12 @@ function PostCard({ post, index }: { post: Post; index: number }) {
             {post.region && post.region !== c?.city && <span>{post.region}</span>}
           </div>
         </div>
-        <button type="button" className="shrink-0 rounded-lg p-1 text-white/[0.5] hover:text-white/[0.72]" aria-label="Optionen">
-          <MoreHorizontal className="h-4 w-4" />
-        </button>
+        <PostMenu
+          eigener={eigener}
+          companyId={post.company_id}
+          onLoeschen={loeschen}
+          loeschend={loeschend}
+        />
       </div>
 
       {post.title && <h3 className="mt-3 font-semibold text-white">{post.title}</h3>}
@@ -620,6 +780,23 @@ export default function NetworkFeed() {
   const [error, setError] = useState<string | null>(null);
   const [region, setRegion] = useState("ALL");
   const [type, setType] = useState("ALL");
+  /* Fuer das Menue am Beitrag: nur beim eigenen Beitrag steht dort das
+     Loeschen. */
+  const [meineFirma, setMeineFirma] = useState<string | null>(null);
+
+  useEffect(() => {
+    let abgebrochen = false;
+    fetchMyCompanyId(supabase).then((id) => {
+      if (!abgebrochen) setMeineFirma(id ?? null);
+    }, () => undefined);
+    return () => {
+      abgebrochen = true;
+    };
+  }, [supabase]);
+
+  const entfernen = useCallback((id: string) => {
+    setPosts((prev) => prev.filter((p) => p.id !== id));
+  }, []);
 
   // Endloses Nachladen: Seite für Seite, wie im LinkedIn-Feed.
   const pageRef = useRef(0);
@@ -773,7 +950,16 @@ export default function NetworkFeed() {
           Keine Beiträge in dieser Auswahl.
         </div>
       ) : (
-        posts.map((p, i) => <PostCard key={p.id} post={p} index={i} />)
+        posts.map((p, i) => (
+          <PostCard
+            key={p.id}
+            post={p}
+            index={i}
+            meineFirma={meineFirma}
+            onGeloescht={entfernen}
+            demo={isDemo}
+          />
+        ))
       )}
 
       {/* Nachlade-Bereich */}
