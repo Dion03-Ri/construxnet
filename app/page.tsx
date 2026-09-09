@@ -244,12 +244,14 @@ export default function Home() {
             </dl>
           </div>
 
-          {/* Der Film laeuft ueber die rechte Kante hinaus: er ist breiter
-              als seine Spalte und wird nicht beschnitten, sondern vom
-              `overflow-hidden` des Abschnitts abgeschnitten. */}
-          <div className="relative hidden lg:block lg:-mr-[72px] lg:w-[calc(100%+72px)] 2xl:-mr-[160px] 2xl:w-[calc(100%+160px)]">
+          {/* Der Film stand hier zuerst ueber die rechte Bildkante hinaus.
+              Das sah in der Skizze gut aus und war in der Sache falsch: im
+              Film steht Schrift, und was ueber die Kante laeuft, ist
+              abgeschnitten und damit unlesbar. Ein Bild darf ueber den Rand
+              hinauslaufen, ein Text nicht. Jetzt ganz in der Spalte. */}
+          <div className="relative hidden lg:block">
             <video
-              className="w-full rounded-l-2xl border-y border-l border-white/[0.12] lg:rounded-r-none"
+              className="w-full rounded-2xl border border-white/[0.12]"
               src="/smart-pools.webm"
               poster="/smart-pools-poster.png"
               autoPlay
