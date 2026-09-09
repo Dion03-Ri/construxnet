@@ -6,6 +6,7 @@ import { Check, Loader2, AlertTriangle } from "lucide-react";
 import { useSupabaseBrowser } from "@/lib/supabase-browser";
 import { PLANS, STATUS_LABEL, plan as planOf, type Subscription } from "@/data/plans";
 import { chf } from "@/lib/format";
+import { TILE } from "@/lib/ui";
 import { cn } from "@/lib/utils";
 
 /**
@@ -60,7 +61,7 @@ export default function SubscriptionPanel() {
 
   if (laden) {
     return (
-      <div className="grid place-items-center py-20 text-slate-400">
+      <div className="grid place-items-center py-20 text-white/[0.56]">
         <Loader2 className="h-5 w-5 animate-spin" />
       </div>
     );
@@ -73,58 +74,58 @@ export default function SubscriptionPanel() {
   return (
     <div className="space-y-10">
       {fehler && (
-        <p className="flex items-start gap-2 border-l-2 border-rose-300 py-2 pl-4 text-sm text-rose-700">
+        <p className="flex items-start gap-2 border-l-2 border-rose-400/60 py-2 pl-4 text-sm text-rose-300">
           <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />
           {fehler}
         </p>
       )}
 
       {/* ---------- Was gerade gilt ---------- */}
-      <div className="max-w-3xl rounded-[20px] border border-slate-200 bg-slate-50 p-6">
-        <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-400">
+      <div className={cn(TILE, "max-w-3xl p-6")}>
+        <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-white/[0.56]">
           Deine Stufe
         </div>
         <div className="mt-3 flex flex-wrap items-baseline gap-x-3 gap-y-1">
-          <span className="font-display text-[34px] font-medium leading-none text-slate-900">
+          <span className="font-display text-[34px] font-medium leading-none text-white">
             {aktuell.name}
           </span>
-          <span className="text-[13px] text-slate-400">
+          <span className="text-[13px] text-white/[0.56]">
             {sub ? STATUS_LABEL[sub.status] : "aktiv"}
           </span>
         </div>
 
-        <dl className="mt-6 grid grid-cols-1 gap-x-10 gap-y-3 border-t border-slate-200 pt-5 text-[13px] sm:grid-cols-2">
+        <dl className="mt-6 grid grid-cols-1 gap-x-10 gap-y-3 border-t border-white/[0.12] pt-5 text-[13px] sm:grid-cols-2">
           <div className="flex justify-between gap-4">
-            <dt className="text-slate-400">Preis</dt>
-            <dd className="tabular-nums text-slate-900">
+            <dt className="text-white/[0.56]">Preis</dt>
+            <dd className="tabular-nums text-white">
               {aktuell.price === 0 ? "kostenlos" : `CHF ${chf(aktuell.price)} ${aktuell.unit ?? ""}`}
             </dd>
           </div>
           <div className="flex justify-between gap-4">
-            <dt className="text-slate-400">Gleichzeitige Bündel</dt>
-            <dd className="tabular-nums text-slate-900">{aktuell.poolLimit ?? "ohne Grenze"}</dd>
+            <dt className="text-white/[0.56]">Gleichzeitige Bündel</dt>
+            <dd className="tabular-nums text-white">{aktuell.poolLimit ?? "ohne Grenze"}</dd>
           </div>
           <div className="flex justify-between gap-4">
-            <dt className="text-slate-400">Läuft bis</dt>
-            <dd className="tabular-nums text-slate-900">{datum(sub?.current_period_end ?? null)}</dd>
+            <dt className="text-white/[0.56]">Läuft bis</dt>
+            <dd className="tabular-nums text-white">{datum(sub?.current_period_end ?? null)}</dd>
           </div>
           <div className="flex justify-between gap-4">
-            <dt className="text-slate-400">Seit</dt>
-            <dd className="tabular-nums text-slate-900">{datum(sub?.started_at ?? null)}</dd>
+            <dt className="text-white/[0.56]">Seit</dt>
+            <dd className="tabular-nums text-white">{datum(sub?.started_at ?? null)}</dd>
           </div>
         </dl>
 
         {wartet && (
-          <p className="mt-5 border-t border-slate-200 pt-5 text-[13px] leading-relaxed text-slate-600">
-            <b className="font-semibold text-brand-700">{planOf(sub!.pending_plan!).name}</b> ist
+          <p className="mt-5 border-t border-white/[0.12] pt-5 text-[13px] leading-relaxed text-white/[0.72]">
+            <b className="font-semibold text-brand">{planOf(sub!.pending_plan!).name}</b> ist
             vorgemerkt. Die Zahlung ist noch nicht angebunden — sobald sie es ist, wird die Stufe
             hier aktiv. Bis dahin gilt weiter <b className="font-semibold">{aktuell.name}</b>.
           </p>
         )}
 
         {gekuendigt && !wartet && (
-          <div className="mt-5 border-t border-slate-200 pt-5">
-            <p className="text-[13px] leading-relaxed text-slate-600">
+          <div className="mt-5 border-t border-white/[0.12] pt-5">
+            <p className="text-[13px] leading-relaxed text-white/[0.72]">
               Gekündigt. <b className="font-semibold">{aktuell.name}</b> läuft noch bis{" "}
               <b className="font-semibold tabular-nums">{datum(sub?.current_period_end ?? null)}</b>,
               danach gilt Gratis. Bezahlt ist bezahlt — es wird dir nichts vorher weggenommen.
@@ -133,7 +134,7 @@ export default function SubscriptionPanel() {
               type="button"
               onClick={() => ruf("subscription_resume")}
               disabled={busy !== null}
-              className="mt-4 text-[13px] font-semibold text-brand-700 hover:underline disabled:opacity-50"
+              className="mt-4 text-[13px] font-semibold text-brand hover:underline disabled:opacity-50"
             >
               {busy === "subscription_resume" ? "…" : "Kündigung zurücknehmen"}
             </button>
@@ -143,44 +144,44 @@ export default function SubscriptionPanel() {
 
       {/* ---------- Stufe wechseln ---------- */}
       <div>
-        <h2 className="text-[15px] font-bold tracking-tight text-slate-900">Stufe wechseln</h2>
-        <p className="mt-1 max-w-xl text-[13px] leading-relaxed text-slate-500">
+        <h2 className="text-[15px] font-bold tracking-tight text-white">Stufe wechseln</h2>
+        <p className="mt-1 max-w-xl text-[13px] leading-relaxed text-white/[0.56]">
           Ein Wechsel nach oben wird vorgemerkt und gilt, sobald die Zahlung angebunden ist. Ein
           Wechsel nach unten greift am Ende der bezahlten Laufzeit.
         </p>
 
-        <ul className="mt-6 border-t border-slate-200">
+        <ul className="mt-6 border-t border-white/[0.12]">
           {PLANS.map((p) => {
             const ist = sub?.plan === p.key && !gekuendigt;
             const vorgemerkt = sub?.pending_plan === p.key;
             return (
               <li
                 key={p.key}
-                className="grid grid-cols-1 items-start gap-x-10 gap-y-4 border-b border-slate-200 py-6 lg:grid-cols-[13rem_minmax(0,1fr)_11rem]"
+                className="grid grid-cols-1 items-start gap-x-10 gap-y-4 border-b border-white/[0.12] py-6 lg:grid-cols-[13rem_minmax(0,1fr)_11rem]"
               >
                 <div>
                   <div className="flex items-baseline gap-2">
-                    <span className="text-[16px] font-bold tracking-tight text-slate-900">{p.name}</span>
+                    <span className="text-[16px] font-bold tracking-tight text-white">{p.name}</span>
                     {ist && (
-                      <span className="text-[10.5px] font-semibold uppercase tracking-[0.12em] text-brand-700">
+                      <span className="text-[10.5px] font-semibold uppercase tracking-[0.12em] text-brand">
                         aktuell
                       </span>
                     )}
                     {vorgemerkt && !ist && (
-                      <span className="text-[10.5px] font-semibold uppercase tracking-[0.12em] text-slate-400">
+                      <span className="text-[10.5px] font-semibold uppercase tracking-[0.12em] text-white/[0.56]">
                         vorgemerkt
                       </span>
                     )}
                   </div>
-                  <div className="mt-1.5 text-[13px] tabular-nums text-slate-600">
+                  <div className="mt-1.5 text-[13px] tabular-nums text-white/[0.72]">
                     {p.price === 0 ? "kostenlos" : `CHF ${chf(p.price)} ${p.unit ?? ""}`}
                   </div>
                 </div>
 
                 <ul className="space-y-1.5">
                   {p.features.map((f) => (
-                    <li key={f} className="flex items-start gap-2 text-[13px] text-slate-600">
-                      <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-brand-700" />
+                    <li key={f} className="flex items-start gap-2 text-[13px] text-white/[0.72]">
+                      <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-brand" />
                       {f}
                     </li>
                   ))}
@@ -193,7 +194,7 @@ export default function SubscriptionPanel() {
                         type="button"
                         onClick={() => ruf("subscription_cancel")}
                         disabled={busy !== null}
-                        className="text-[13px] font-semibold text-slate-400 transition-colors hover:text-rose-600 disabled:opacity-50"
+                        className="text-[13px] font-semibold text-white/[0.5] transition-colors hover:text-rose-300 disabled:opacity-50"
                       >
                         {busy === "subscription_cancel" ? "…" : "kündigen"}
                       </button>
@@ -206,8 +207,8 @@ export default function SubscriptionPanel() {
                       className={cn(
                         "inline-flex items-center gap-1.5 whitespace-nowrap text-[13px] font-semibold transition-colors disabled:opacity-50",
                         p.key === "FREE"
-                          ? "text-slate-500 hover:text-slate-900"
-                          : "text-brand-700 hover:underline",
+                          ? "text-white/[0.72] hover:text-white"
+                          : "text-brand hover:underline",
                       )}
                     >
                       {busy === "w-" + p.key
@@ -225,18 +226,18 @@ export default function SubscriptionPanel() {
       </div>
 
       {/* ---------- Was noch fehlt ---------- */}
-      <div className="max-w-3xl border-l-2 border-brand pl-5">
-        <h3 className="text-[14px] font-bold tracking-tight text-slate-900">
+      <div className="max-w-3xl border-l-2 border-brand/50 pl-5">
+        <h3 className="text-[14px] font-bold tracking-tight text-white">
           Zahlung ist noch nicht angebunden
         </h3>
-        <p className="mt-2 text-[13px] leading-relaxed text-slate-500">
+        <p className="mt-2 text-[13px] leading-relaxed text-white/[0.56]">
           Auswahl, Wechsel und Kündigung funktionieren vollständig. Es fehlt der letzte Schritt:
           die Zahlungsmethode. Bis dahin bleibt eine kostenpflichtige Stufe auf „wartet auf
           Zahlung" stehen und wird nicht aktiv.
         </p>
-        <p className="mt-3 text-[13px] leading-relaxed text-slate-500">
+        <p className="mt-3 text-[13px] leading-relaxed text-white/[0.56]">
           Die Preise sind ausserdem noch nicht bestätigt.{" "}
-          <Link href="/messages" className="font-semibold text-brand-700 hover:underline">
+          <Link href="/messages" className="font-semibold text-brand hover:underline">
             Fragen dazu
           </Link>{" "}
           beantworten wir direkt.
