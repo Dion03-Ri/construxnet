@@ -38,14 +38,19 @@ export const NOTICE_TABS: { key: "all" | NoticeCat; label: string }[] = [
 ];
 
 const TONE = {
-  gold: "text-brand bg-brand/10",
-  navy: "text-accent bg-accent-50",
+  // Gold als Symbolfarbe: die dunklere Stufe, sonst steht das Zeichen
+  // auf der hellen Flaeche bei 2.6:1.
+  gold: "text-brand-700 bg-brand-50",
+  navy: "text-accent-600 bg-accent-50",
   rose: "text-rose-600 bg-rose-50",
 } as const;
 
 /** „vor 12 Min." / „vor 3 Std." / „vor 2 Tagen" */
 export function relTime(iso: string): string {
-  const min = Math.round((Date.now() - new Date(iso).getTime()) / 60_000);
+  const t = new Date(iso).getTime();
+  // Fehlt der Zeitstempel, steht lieber nichts da als „vor NaN Tagen".
+  if (!Number.isFinite(t)) return "";
+  const min = Math.round((Date.now() - t) / 60_000);
   if (min < 1) return "gerade eben";
   if (min < 60) return `vor ${min} Min.`;
   const h = Math.round(min / 60);

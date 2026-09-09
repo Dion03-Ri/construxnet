@@ -13,6 +13,9 @@ export default async function OnboardingPage() {
   const company = await getMyCompany();
   if (company) redirect("/dashboard");
 
+  /* Das erste Blatt: hier wird geschrieben, also Papier. Der Kopf mit
+     Wortmarke und Gruss bleibt auf dem dunklen Grund stehen — er gehoert
+     zur Seite, nicht zum Formular. */
   return (
     <main className="mx-auto max-w-lg px-4 py-8 sm:px-6 sm:py-12">
       <header className="mb-8 text-center">
@@ -26,7 +29,7 @@ export default async function OnboardingPage() {
         </p>
       </header>
 
-      <div className="rounded-lg border border-white/[0.12] bg-[#16181a] p-6 backdrop-blur sm:p-8">
+      <div className="rounded-[20px] border border-slate-200 bg-white p-6 text-slate-900 sm:p-8">
         <OnboardingForm />
       </div>
     </main>
