@@ -853,6 +853,32 @@ Hinweis nicht — dort gibt es nur einen Weg.
 
 ---
 
+## Rabattstufen: Video und Produkt sagen noch Verschiedenes
+
+Der Videoauftrag (`design/video-prompt-smart-pools.md`) zeigt das Modell so,
+wie der Nutzer es beschrieben hat: **der Prozentsatz haengt an der Menge,
+die eine Firma selbst einbringt.** Vier Firmen im selben Buendel bekommen
+9 / 12 / 16 / 20 %.
+
+**Das Produkt rechnet heute anders.** `bundles.current_discount_pct` ist
+EIN Wert je Buendel — alle Teilnehmer bekommen denselben Satz. Die Stufe
+haengt am Gesamtvolumen, nicht am eigenen Anteil.
+
+Beides zusammen geht nicht. Vor dem Start muss entschieden werden:
+
+1. **Produkt zieht nach** — je Teilnahme ein eigener Satz, abgeleitet aus
+   `bundle_participations.requested_volume`. Aendert `bundle_recalc()`, die
+   Anzeige in OpenPools, die Zusammenfassung in der Beschaffung und den
+   Mindestvorteil. Der ehrlichere Weg, und der, den das Video zeigt.
+2. **Video zieht nach** — ein Satz fuer alle, der Unterschied entsteht nur
+   in Franken. Einfacher, aber weniger ueberzeugend, und nicht das, was der
+   Nutzer erklaeren will.
+
+Dazu offen (Launch-Liste): die Schwellen der Leiter 5/9/12/16/20 % sind
+weiterhin unbestaetigt.
+
+---
+
 # OFFENE AUFTRÄGE DES NUTZERS (Stand: siehe letzten Commit)
 
 Vom Nutzer ausdrücklich auf die Todo-Liste gegeben. Nichts davon ist
