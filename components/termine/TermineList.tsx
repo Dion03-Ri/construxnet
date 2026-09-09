@@ -134,7 +134,7 @@ function TerminCard({ t }: { t: Termin }) {
           {t.at.toLocaleDateString("de-CH", { month: "short" })}
         </span>
         <span className="text-2xl font-bold leading-tight text-slate-900">{t.at.getDate()}</span>
-        <span className="text-[11px] text-slate-400">
+        <span className="text-[11px] text-slate-500">
           {t.at.toLocaleDateString("de-CH", { weekday: "short" })}
         </span>
       </div>
@@ -144,7 +144,7 @@ function TerminCard({ t }: { t: Termin }) {
           <span className={cn("inline-flex items-center gap-1.5 text-[10.5px] font-semibold uppercase tracking-[0.12em]", meta.tone === "gold" ? "text-brand-700" : "text-accent-600")}>
             <Icon className="h-3 w-3" /> {t.kind}
           </span>
-          <span className="inline-flex items-center gap-1 text-[12px] text-slate-400">
+          <span className="inline-flex items-center gap-1 text-[12px] text-slate-500">
             <Clock className="h-3.5 w-3.5" />
             {t.at.toLocaleTimeString("de-CH", { hour: "2-digit", minute: "2-digit" })} Uhr
           </span>
@@ -153,7 +153,7 @@ function TerminCard({ t }: { t: Termin }) {
           )}
         </div>
         <h3 className="mt-1.5 text-[15px] font-semibold text-slate-900">{t.title}</h3>
-        <p className="mt-1 text-[13px] leading-relaxed text-slate-500">{t.description}</p>
+        <p className="mt-1 text-[13px] leading-relaxed text-slate-600">{t.description}</p>
 
         <div className="mt-3 flex flex-wrap items-center gap-2">
           <button
@@ -196,7 +196,7 @@ export default function TermineList() {
 
   if (loading) {
     return (
-      <div className="grid place-items-center py-20 text-slate-400">
+      <div className="grid place-items-center py-20 text-slate-500">
         <Loader2 className="h-5 w-5 animate-spin" />
       </div>
     );
@@ -207,7 +207,7 @@ export default function TermineList() {
       <div className="py-16 text-center">
         <CalendarDays className="mx-auto h-8 w-8 text-slate-300" />
         <p className="mt-3 text-[15px] font-semibold text-slate-900">Keine anstehenden Fristen</p>
-        <p className="mx-auto mt-1 max-w-md text-[13px] leading-relaxed text-slate-500">
+        <p className="mx-auto mt-1 max-w-md text-[13px] leading-relaxed text-slate-600">
           Sobald du an einem Bündel beteiligt bist, stehen hier seine Sammel- und
           Angebotsfristen — mit einem Klick in deinen Kalender.
         </p>

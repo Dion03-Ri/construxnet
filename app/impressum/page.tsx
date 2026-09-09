@@ -63,7 +63,7 @@ export default function ImpressumPage() {
         melden ihren Materialbedarf und bündeln ihn, Baustoffwerke geben darauf verdeckte
         Angebote ab. Obtanet vermittelt zwischen den Beteiligten und wird nicht selbst
         Partei der Liefergeschäfte. Einzelheiten stehen in den{" "}
-        <a href="/agb" className="font-medium text-brand hover:underline">
+        <a href="/agb" className="font-medium text-brand-700 hover:underline">
           Allgemeinen Geschäftsbedingungen
         </a>
         .

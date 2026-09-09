@@ -50,7 +50,13 @@ const config: Config = {
           100: "#F6E6C2",
           500: "#D99000",
           600: "#B8770A",
-          700: "#9A6A00",
+          // Die Textstufe des Golds. Wird ausschliesslich als Schriftfarbe
+          // auf hellem Grund verwendet — nie als Flaeche. Sie lag bei
+          // #9A6A00 und traegt damit 4.73:1 auf reinem Weiss, aber nur
+          // 4.29:1 auf den hellen Goldtoenungen (brand-50) und 4.48:1 auf
+          // slate-50 — beides unter der Grenze. Einen Hauch dunkler, und
+          // sie traegt ueberall: 6.2:1 auf Weiss, 5.6:1 auf brand-50.
+          700: "#7E5700",
         },
         // Sekundär-Akzent: SourceOn-Blau/Navy — volle Skala (KEIN Grün mehr)
         accent: {

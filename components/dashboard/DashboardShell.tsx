@@ -756,7 +756,7 @@ function WorkspacePanel({
           <select
             value={cat}
             onChange={(e) => setCat(e.target.value as "ALL" | ProcCategory)}
-            className="rounded-md border border-white/[0.16] bg-white/[0.03] px-3 py-2.5 text-sm text-white/[0.72] outline-none focus:border-brand"
+            className="select-dark rounded-md border border-white/[0.16] bg-white/[0.03] px-3 py-2.5 text-sm text-white/[0.72] outline-none focus:border-brand"
           >
             <option value="ALL">Alle Kategorien</option>
             {PROC_CATEGORIES.map((c) => (
@@ -1145,7 +1145,7 @@ export default function DashboardShell({ company }: { company: Company }) {
                 value={projectId}
                 onChange={(e) => setProjectId(e.target.value)}
                 aria-label="Baustelle / Projekt"
-                className="w-[38%] shrink-0 truncate rounded-md border border-white/15 bg-navy-800 px-2 py-1.5 text-[12px] text-white outline-none focus:border-brand"
+                className="select-dark w-[38%] shrink-0 truncate rounded-md border border-white/15 bg-navy-800 px-2 py-1.5 text-[12px] text-white outline-none focus:border-brand"
               >
                 <option value="">Keine Baustelle</option>
                 {projects.map((p) => (
@@ -1231,7 +1231,7 @@ export default function DashboardShell({ company }: { company: Company }) {
               <select
                 value={projectId}
                 onChange={(e) => setProjectId(e.target.value)}
-                className="mt-1.5 w-full rounded-md border border-white/15 bg-navy-800 px-2.5 py-2 text-[13px] text-white outline-none focus:border-brand"
+                className="select-dark mt-1.5 w-full rounded-md border border-white/15 bg-navy-800 px-2.5 py-2 text-[13px] text-white outline-none focus:border-brand"
               >
                 <option value="">Keine Baustelle</option>
                 {projects.map((p) => (

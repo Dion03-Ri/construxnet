@@ -259,7 +259,7 @@ export default function NetworkHub() {
                     tab === t.key
                       ? "bg-white/15 text-white"
                       : counts[t.key] > 0 && t.key === "incoming"
-                        ? "bg-brand/15 text-brand-700"
+                        ? "bg-brand/15 text-brand"
                         : "bg-white/10 text-white/[0.72]",
                   )}
                 >

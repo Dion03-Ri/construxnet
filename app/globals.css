@@ -51,3 +51,22 @@
     transition-duration: 0.001ms !important;
   }
 }
+
+/* Auswahllisten im dunklen Register.
+
+   Die aufgeklappte Liste eines <select> zeichnet nicht die Seite, sondern
+   das Betriebssystem. Sie erbt dabei die Schriftfarbe des Feldes — bei
+   einem dunklen Feld also Weiss — legt sie aber auf ihren eigenen, hellen
+   Grund. Ergebnis: Weiss auf Weiss, man sieht nur den gerade markierten
+   Eintrag.
+
+   Zwei Angaben, weil die Browser es unterschiedlich handhaben:
+   `color-scheme` sagt dem System, die Liste dunkel zu zeichnen, die
+   Regel für `option` setzt Grund und Schrift zusätzlich selbst. */
+.select-dark {
+  color-scheme: dark;
+}
+.select-dark option {
+  background-color: #16181a;
+  color: #ffffff;
+}

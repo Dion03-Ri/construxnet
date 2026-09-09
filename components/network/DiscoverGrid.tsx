@@ -168,7 +168,7 @@ export default function DiscoverGrid() {
               value={canton}
               onChange={(e) => { setCanton(e.target.value); setLimit(PAGE); }}
               aria-label="Kanton"
-              className="w-full appearance-none rounded-xl border border-white/[0.12] bg-white/[0.04] py-2.5 pl-9 pr-3 text-[13px] text-white/90 outline-none focus:border-brand"
+              className="select-dark w-full appearance-none rounded-xl border border-white/[0.12] bg-white/[0.04] py-2.5 pl-9 pr-3 text-[13px] text-white/90 outline-none focus:border-brand"
             >
               <option value="ALL">Alle Kantone</option>
               {SWISS_CANTONS.map((k) => (
@@ -182,7 +182,7 @@ export default function DiscoverGrid() {
             value={sort}
             onChange={(e) => setSort(e.target.value)}
             aria-label="Sortierung"
-            className="w-full appearance-none rounded-xl border border-white/[0.12] bg-white/[0.04] px-3 py-2.5 text-[13px] text-white/90 outline-none focus:border-brand"
+            className="select-dark w-full appearance-none rounded-xl border border-white/[0.12] bg-white/[0.04] px-3 py-2.5 text-[13px] text-white/90 outline-none focus:border-brand"
           >
             {SORTS.map((s) => (
               <option key={s.key} value={s.key}>{s.label}</option>

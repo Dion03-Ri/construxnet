@@ -242,7 +242,7 @@ function ProjectModal({
               <select
                 value={d.status}
                 onChange={(e) => set("status", e.target.value as ProjectStatus)}
-                className={FIELD}
+                className={cn(FIELD, "select-dark")}
               >
                 {STATUS_ORDER.map((s) => (
                   <option key={s} value={s}>{PROJECT_STATUS_LABEL[s]}</option>

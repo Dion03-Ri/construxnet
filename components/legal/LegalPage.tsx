@@ -10,7 +10,7 @@ export function Fill({ value }: { value: string }) {
   return (
     <span
       title="Diese Angabe fehlt noch"
-      className="rounded border border-brand/40 bg-brand/10 px-1.5 py-0.5 text-[0.9em] font-semibold text-brand-700"
+      className="rounded border border-brand/40 bg-brand-50 px-1.5 py-0.5 text-[0.9em] font-semibold text-brand-700"
     >
       {value.replace(/^\[\[|\]\]$/g, "")}
     </span>
@@ -44,7 +44,7 @@ export function LI({ children }: { children: React.ReactNode }) {
 
 /** Kleine Fussnote auf ein Gesetz — belegt, worauf sich ein Abschnitt stützt. */
 export function Ref({ children }: { children: React.ReactNode }) {
-  return <span className="text-[13px] text-slate-400"> ({children})</span>;
+  return <span className="text-[13px] text-slate-500"> ({children})</span>;
 }
 
 const NAV = [
