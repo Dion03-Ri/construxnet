@@ -94,8 +94,21 @@ export const PHOTO_EXCAVATION: PhotoSlot = {
    steht unten, falls das je wieder gefragt ist — ein Standbild an
    dieser Stelle ist aber die ruhigere und schnellere Loesung, und es
    gibt nichts, was erst geladen werden muss.
+
+   /hero-baustelle.jpg ist KEIN Stockfoto, sondern ein vom Auftraggeber
+   beigestellter Bildgenerator-Render: Baustelle bei Nacht, im Vordergrund
+   ein Tablet mit der Bedarfsmeldung. Aufbereitet aus der Vorlage
+   (1703 px, PNG): auf 2400 px hochgerechnet und nachgeschaerft, Rot
+   gedaempft, Gruen herausgenommen, Tiefen nach Navy gezogen. Das Rezept
+   steht in design/hero/grade.mjs und ist wiederholbar.
+
+   OFFEN: Der Kleintext auf dem Tablet ist erzeugter Buchstabensalat.
+   In der Anzeigegroesse liest ihn niemand — nur „Materialbedarf melden"
+   und das Logo sind echt. Wer genau hinsieht, merkt es trotzdem. Sauber
+   waere, den Bildschirm durch eine echte Aufnahme von /beschaffung zu
+   ersetzen.
    ================================================================== */
-export const HERO_IMAGE = "/hero-kran.jpg";
+export const HERO_IMAGE = "/hero-baustelle.jpg";
 
 /** Nicht in Gebrauch. Aufbewahrt, damit die Adresse nicht verlorengeht,
  *  falls der Kopf doch einmal wieder bewegt sein soll. */
