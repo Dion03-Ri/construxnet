@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Loader2, Send, Trash2 } from "lucide-react";
 import { useSupabaseBrowser } from "@/lib/supabase-browser";
 import { initials, timeAgo } from "@/lib/post";
+import { mitGeduld } from "@/lib/supabaseRetry";
 import { cn } from "@/lib/utils";
 
 type Kommentar = {
@@ -51,11 +52,13 @@ export default function PostComments({
       setLaden(false);
       return;
     }
-    const { data, error } = await supabase
-      .from("post_comments")
-      .select("id, company_id, content, created_at, companies(company_name, logo_url)")
-      .eq("post_id", postId)
-      .order("created_at", { ascending: true });
+    const { data, error } = await mitGeduld(() =>
+      supabase
+        .from("post_comments")
+        .select("id, company_id, content, created_at, companies(company_name, logo_url)")
+        .eq("post_id", postId)
+        .order("created_at", { ascending: true }),
+    );
     if (error) setFehler("Kommentare konnten nicht geladen werden.");
     else setListe((data ?? []) as unknown as Kommentar[]);
     setLaden(false);
@@ -70,11 +73,13 @@ export default function PostComments({
     if (!inhalt || !meineFirma || demo) return;
     setSendend(true);
     setFehler(null);
-    const { data, error } = await supabase
-      .from("post_comments")
-      .insert({ post_id: postId, company_id: meineFirma, content: inhalt })
-      .select("id, company_id, content, created_at, companies(company_name, logo_url)")
-      .single();
+    const { data, error } = await mitGeduld(() =>
+      supabase
+        .from("post_comments")
+        .insert({ post_id: postId, company_id: meineFirma, content: inhalt })
+        .select("id, company_id, content, created_at, companies(company_name, logo_url)")
+        .single(),
+    );
     setSendend(false);
     if (error || !data) {
       setFehler("Der Kommentar konnte nicht gespeichert werden.");
