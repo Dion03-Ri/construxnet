@@ -72,9 +72,11 @@ const STEPS = [
  * bleibt die Struktur des Materials erkennbar, darunter wird das Bild zur
  * grauen Flaeche.
  */
-function SectionPhoto({ slot }: { slot: { src: string; alt: string } }) {
+function SectionPhoto({ slot, className }: { slot: { src: string; alt: string }; className?: string }) {
   return (
-    <div className="relative mb-8 h-44 overflow-hidden rounded-xl sm:h-52">
+    /* Auf dem Handy ein Band ueber der Liste, ab lg eine hochkante Spalte,
+       die sich auf die Hoehe der Liste zieht (Raster streckt von selbst). */
+    <div className={cn("relative h-44 overflow-hidden rounded-2xl sm:h-52 lg:h-auto", className)}>
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={slot.src}
@@ -279,72 +281,89 @@ export default function Home() {
 
           Danach geht es wieder ins Schwarze und zum Schluss ins Navy. */}
       <section className="bg-white text-slate-900">
-      <div className={cn(SHELL, SECTION_WIDE)}>
-        <div className="grid grid-cols-1 gap-y-14 lg:grid-cols-2 lg:gap-y-0">
-          {/* Pools */}
-          <div className="lg:border-r lg:border-slate-200 lg:pr-12">
-            <SectionPhoto slot={PHOTO_POOLS} />
-            <div className="flex items-baseline justify-between">
-              <h2 className="text-[19px] font-bold tracking-tight text-slate-900">Aktive Smart Pools</h2>
-              <Link href="/pools" className="inline-flex items-center gap-1 text-[13px] font-semibold text-brand-700 hover:text-brand">
-                Alle <ArrowRight className="h-3.5 w-3.5" />
-              </Link>
-            </div>
-            <ul className="mt-6">
-              {POOLS.map((p) => (
-                <li key={p.material} className="grid grid-cols-[1fr_auto] items-baseline gap-x-6 border-t border-slate-200 py-5">
-                  <div className="min-w-0">
-                    <div className="truncate text-[15px] font-semibold text-slate-900">{p.material}</div>
-                    <div className="mt-1 flex items-center gap-1 text-[12px] text-slate-500">
-                      <MapPin className="h-3 w-3" /> {p.region} · {p.volume}
-                    </div>
-                    <div className="mt-3 h-1 w-full max-w-[16rem] overflow-hidden rounded-full bg-slate-200">
-                      <div className="h-full rounded-full bg-brand" style={{ width: `${p.fill}%` }} />
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <div className="font-display text-[20px] font-bold tabular-nums leading-none text-slate-900">
-                      {p.fill}<span className="text-[13px] text-slate-500"> %</span>
-                    </div>
-                    <div className="mt-1.5 inline-flex items-center gap-1 text-[11.5px] text-slate-500">
-                      <Clock className="h-3 w-3" /> {p.deadline}
-                    </div>
-                  </div>
-                </li>
-              ))}
-            </ul>
+        <div className={cn(SHELL, SECTION_WIDE)}>
+          <div className="max-w-2xl">
+            <span className={cn(EYEBROW, "text-brand-700")}>Gerade auf Obtanet</span>
+            <h2 className={cn(D_MD, "mt-4 text-slate-900")}>Bündel und Firmen, offen einsehbar</h2>
           </div>
 
-          {/* Netzwerk */}
-          <div className="border-t border-slate-200 pt-14 lg:border-t-0 lg:pl-12 lg:pt-0">
-            <SectionPhoto slot={PHOTO_NETWORK} />
-            <div className="flex items-baseline justify-between">
-              <h2 className="text-[19px] font-bold tracking-tight text-slate-900">Firmen im Netzwerk</h2>
-              <Link href="/network" className="inline-flex items-center gap-1 text-[13px] font-semibold text-brand-700 hover:text-brand">
-                Zum Netzwerk <ArrowRight className="h-3.5 w-3.5" />
-              </Link>
-            </div>
-            <ul className="mt-6">
-              {COMPANIES.map((c) => (
-                <li key={c.uid} className="flex items-center gap-4 border-t border-slate-200 py-5">
-                  <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-slate-100 text-[12px] font-bold text-slate-600">
-                    {c.name.split(" ").slice(0, 2).map((w) => w[0]).join("")}
-                  </span>
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-center gap-1.5 truncate text-[15px] font-semibold text-slate-900">
-                      {c.name} <BadgeCheck className="h-4 w-4 shrink-0 text-brand-700" />
+          {/* Das Foto steht hochkant neben der Liste, nicht als Band darueber.
+
+              Vorher lagen die beiden Aufnahmen als breite Streifen ueber
+              ihren Listen — sie gehoerten zu nichts und lasen sich als
+              Zierleiste. Hochkant neben einer Textspalte liest dasselbe
+              Bild als Beleg, und die Liste bekommt die Breite, die sie
+              braucht: die Fortschrittsbalken standen vorher auf 16 rem in
+              einer halben Spalte.
+
+              Die Seiten wechseln: beim ersten Block links, beim zweiten
+              rechts. Auf dem Handy steht das Bild ueber der Liste — 220 px
+              Breite gibt es dort nicht. */}
+          <div className="mt-12 grid grid-cols-1 gap-8 lg:grid-cols-[220px_minmax(0,1fr)] lg:gap-14">
+            <SectionPhoto slot={PHOTO_POOLS} />
+            <div>
+              <div className="flex items-baseline justify-between border-b border-slate-900 pb-3">
+                <h3 className="text-[19px] font-bold tracking-tight text-slate-900">Aktive Smart Pools</h3>
+                <Link href="/pools" className="inline-flex items-center gap-1 text-[13px] font-semibold text-brand-700 hover:text-brand">
+                  Alle <ArrowRight className="h-3.5 w-3.5" />
+                </Link>
+              </div>
+              <ul>
+                {POOLS.map((p) => (
+                  <li key={p.material} className="grid grid-cols-[1fr_auto] items-baseline gap-x-6 border-t border-slate-200 py-5 first:border-t-0">
+                    <div className="min-w-0">
+                      <div className="truncate text-[15px] font-semibold text-slate-900">{p.material}</div>
+                      <div className="mt-1 flex items-center gap-1 text-[12px] text-slate-600">
+                        <MapPin className="h-3 w-3" /> {p.region} · {p.volume}
+                      </div>
+                      <div className="mt-3 h-1 w-full max-w-[24rem] overflow-hidden rounded-full bg-slate-200">
+                        <div className="h-full rounded-full bg-brand" style={{ width: `${p.fill}%` }} />
+                      </div>
                     </div>
-                    <div className="mt-0.5 truncate text-[12px] text-slate-500">{c.cat} · {c.city}</div>
-                  </div>
-                  <Link href="/network" className="shrink-0 text-[13px] font-semibold text-brand-700 transition-colors hover:text-brand">
-                    Vernetzen
-                  </Link>
-                </li>
-              ))}
-            </ul>
+                    <div className="text-right">
+                      <div className="font-display text-[20px] font-bold tabular-nums leading-none text-slate-900">
+                        {p.fill}<span className="text-[13px] text-slate-600"> %</span>
+                      </div>
+                      <div className="mt-1.5 inline-flex items-center gap-1 text-[11.5px] text-slate-600">
+                        <Clock className="h-3 w-3" /> {p.deadline}
+                      </div>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+
+          <div className="mt-14 grid grid-cols-1 gap-8 lg:mt-16 lg:grid-cols-[minmax(0,1fr)_220px] lg:gap-14">
+            <SectionPhoto slot={PHOTO_NETWORK} className="lg:order-last" />
+            <div className="lg:order-first">
+              <div className="flex items-baseline justify-between border-b border-slate-900 pb-3">
+                <h3 className="text-[19px] font-bold tracking-tight text-slate-900">Firmen im Netzwerk</h3>
+                <Link href="/network" className="inline-flex items-center gap-1 text-[13px] font-semibold text-brand-700 hover:text-brand">
+                  Zum Netzwerk <ArrowRight className="h-3.5 w-3.5" />
+                </Link>
+              </div>
+              <ul>
+                {COMPANIES.map((c) => (
+                  <li key={c.uid} className="flex items-center gap-4 border-t border-slate-200 py-5 first:border-t-0">
+                    <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-slate-100 text-[12px] font-bold text-slate-600">
+                      {c.name.split(" ").slice(0, 2).map((w) => w[0]).join("")}
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center gap-1.5 truncate text-[15px] font-semibold text-slate-900">
+                        {c.name} <BadgeCheck className="h-4 w-4 shrink-0 text-brand-700" />
+                      </div>
+                      <div className="mt-0.5 truncate text-[12px] text-slate-600">{c.cat} · {c.city}</div>
+                    </div>
+                    <Link href="/network" className="shrink-0 text-[13px] font-semibold text-brand-700 transition-colors hover:text-brand">
+                      Vernetzen
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
         </div>
-      </div>
       </section>
 
       {/* ================= Preise ================= */}
