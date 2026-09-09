@@ -5,10 +5,6 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { useAuth } from "@clerk/nextjs";
 import {
-  ThumbsUp,
-  MessageCircle,
-  Share2,
-  Rocket,
   BadgeCheck,
   MapPin,
   Loader2,
@@ -29,6 +25,7 @@ import {
 import { useSupabaseBrowser } from "@/lib/supabase-browser";
 import { fetchMyCompanyId } from "@/lib/myCompany";
 import { SAMPLE_POSTS, type MockPost } from "@/data/feedMock";
+import PostActions from "@/components/feed/PostActions";
 
 import { cn } from "@/lib/utils";
 
@@ -393,44 +390,6 @@ function Composer({ onCreated }: { onCreated: () => void }) {
 /*  Post-Karte                                                                */
 /* -------------------------------------------------------------------------- */
 
-function EngagementButton({
-  icon: Icon,
-  label,
-  active,
-  accent,
-  onClick,
-  href,
-}: {
-  icon: typeof ThumbsUp;
-  label: string;
-  active?: boolean;
-  accent?: string;
-  onClick?: () => void;
-  href?: string;
-}) {
-  const cls = cn(
-    "inline-flex flex-1 items-center justify-center gap-2 rounded-lg py-2 text-[13px] font-medium transition-colors hover:bg-white/[0.07]",
-    active ? accent : "text-white/[0.72]",
-  );
-  const inner = (
-    <>
-      <Icon className="h-4 w-4" />
-      <span className="hidden sm:inline">{label}</span>
-    </>
-  );
-  if (href) {
-    return (
-      <Link href={href} className={cls}>
-        {inner}
-      </Link>
-    );
-  }
-  return (
-    <button type="button" onClick={onClick} className={cls}>
-      {inner}
-    </button>
-  );
-}
 
 /**
  * Das Menue am Beitrag.
@@ -627,17 +586,22 @@ function PostCard({
   meineFirma,
   onGeloescht,
   demo,
+  gelikt,
+  onLike,
+  onKommentarAnzahl,
 }: {
   post: Post;
   index: number;
   meineFirma: string | null;
   onGeloescht: (id: string) => void;
   demo: boolean;
+  gelikt: boolean;
+  onLike: (jetzt: boolean) => void;
+  onKommentarAnzahl: (delta: number) => void;
 }) {
   const c = post.companies;
   const name = c?.company_name ?? "Unbekannte Firma";
   const supabase = useSupabaseBrowser();
-  const [liked, setLiked] = useState(false);
   const [expanded, setExpanded] = useState(false);
   const [loeschend, setLoeschend] = useState(false);
   const eigener = meineFirma !== null && meineFirma === post.company_id;
@@ -655,7 +619,6 @@ function PostCard({
     }
     onGeloescht(post.id);
   }
-  const likeCount = post.likes_count + (liked ? 1 : 0);
 
   const LIMIT = 220;
   const isLong = post.content.length > LIMIT;
@@ -764,23 +727,19 @@ function PostCard({
         </div>
       )}
 
-      <div className="mt-3 flex items-center justify-between text-[11px] text-white/[0.56]">
-        <span>{likeCount} Reaktionen</span>
-        <span>{post.comments_count} Kommentare</span>
-      </div>
-
-      <div className="mt-1 flex items-center gap-1 border-t border-white/[0.06] pt-1">
-        <EngagementButton
-          icon={ThumbsUp}
-          label="Gefällt mir"
-          active={liked}
-          accent="text-brand"
-          onClick={() => setLiked((v) => !v)}
-        />
-        <EngagementButton icon={MessageCircle} label="Kommentieren" />
-        <EngagementButton icon={Rocket} label="Pool beitreten" accent="text-brand" href="/pools" />
-        <EngagementButton icon={Share2} label="Teilen" />
-      </div>
+      <PostActions
+        postId={post.id}
+        autorId={post.company_id}
+        titel={post.title ?? name}
+        text={post.content}
+        likes={post.likes_count}
+        kommentare={post.comments_count}
+        gelikt={gelikt}
+        meineFirma={meineFirma}
+        demo={demo}
+        onLike={onLike}
+        onKommentarAnzahl={onKommentarAnzahl}
+      />
     </motion.article>
   );
 }
@@ -851,6 +810,11 @@ export default function NetworkFeed() {
   /* Fuer das Menue am Beitrag: nur beim eigenen Beitrag steht dort das
      Loeschen. */
   const [meineFirma, setMeineFirma] = useState<string | null>(null);
+  /* Welche der geladenen Beitraege die eigene Firma schon mit einer
+     Reaktion versehen hat. In einer Abfrage fuer alle sichtbaren
+     Beitraege — eine je Beitrag waeren zwanzig Abfragen fuer eine
+     Bildschirmseite. */
+  const [meineLikes, setMeineLikes] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     let abgebrochen = false;
@@ -866,6 +830,46 @@ export default function NetworkFeed() {
     setPosts((prev) => prev.filter((p) => p.id !== id));
   }, []);
 
+  const likeSetzen = useCallback((id: string, jetzt: boolean) => {
+    setMeineLikes((prev) => {
+      const n = new Set(prev);
+      if (jetzt) n.add(id);
+      else n.delete(id);
+      return n;
+    });
+    setPosts((prev) =>
+      prev.map((p) =>
+        p.id === id ? { ...p, likes_count: Math.max(0, p.likes_count + (jetzt ? 1 : -1)) } : p,
+      ),
+    );
+  }, []);
+
+  const kommentarAnzahl = useCallback((id: string, delta: number) => {
+    setPosts((prev) =>
+      prev.map((p) =>
+        p.id === id ? { ...p, comments_count: Math.max(0, p.comments_count + delta) } : p,
+      ),
+    );
+  }, []);
+
+  useEffect(() => {
+    if (!meineFirma || isDemo || posts.length === 0) return;
+    let abgebrochen = false;
+    const ids = posts.map((p) => p.id);
+    supabase
+      .from("post_likes")
+      .select("post_id")
+      .eq("company_id", meineFirma)
+      .in("post_id", ids)
+      .then(({ data }) => {
+        if (abgebrochen || !data) return;
+        setMeineLikes(new Set((data as { post_id: string }[]).map((r) => r.post_id)));
+      });
+    return () => {
+      abgebrochen = true;
+    };
+  }, [supabase, meineFirma, isDemo, posts]);
+
   // Endloses Nachladen: Seite für Seite, wie im LinkedIn-Feed.
   const pageRef = useRef(0);
   const sentinelRef = useRef<HTMLDivElement | null>(null);
@@ -876,7 +880,7 @@ export default function NetworkFeed() {
       let q = supabase
         .from("network_posts")
         .select(
-          "id, post_type, title, content, region, media_url, likes_count, created_at, company_id, companies(company_name, city, verified, logo_url)",
+          "id, post_type, title, content, region, media_url, likes_count, comments_count, created_at, company_id, companies(company_name, city, verified, logo_url)",
         )
         .order("created_at", { ascending: false })
         .range(from, from + PAGE_SIZE - 1);
@@ -1026,6 +1030,9 @@ export default function NetworkFeed() {
             meineFirma={meineFirma}
             onGeloescht={entfernen}
             demo={isDemo}
+            gelikt={meineLikes.has(p.id)}
+            onLike={(jetzt) => likeSetzen(p.id, jetzt)}
+            onKommentarAnzahl={(d) => kommentarAnzahl(p.id, d)}
           />
         ))
       )}
