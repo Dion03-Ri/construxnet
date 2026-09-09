@@ -103,7 +103,11 @@ function TopBar() {
           })}
         </nav>
 
-        <div className="ml-auto flex items-center gap-2 md:ml-3">
+        {/* Ohne eigenes `ml-auto`: auf dem Handy schiebt der Suchknopf die
+            Gruppe nach rechts, auf grossen Bildschirmen die Navigation.
+            Zwei automatische Aussenabstaende teilen den Platz und setzen
+            die Lupe sonst in die Mitte der Leiste. */}
+        <div className="flex items-center gap-2 md:ml-3">
           <NotificationBell />
           <span className="hidden h-6 w-px bg-white/10 sm:block" />
           <ProfileMenu />

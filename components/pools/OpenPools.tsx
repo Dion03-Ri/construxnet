@@ -114,7 +114,10 @@ function PoolRow({
   const sealed = b.status === "SEALED_BIDDING";
 
   return (
-    <li className="border-t border-white/[0.12] transition-colors hover:bg-white/[0.02]">
+    /* Die Kennung macht die Zeile anspringbar: die Suche in der Kopfleiste
+       verweist auf /pools#b-<id>. `scroll-mt` haelt die Zeile unter der
+       klebenden Leiste, sonst landet sie darunter. */
+    <li id={`b-${b.id}`} className="scroll-mt-20 border-t border-white/[0.12] transition-colors hover:bg-white/[0.02]">
       <div className={cn(ROW_GRID, "gap-y-5 py-6")}>
         {/* ---------- Was und wo ---------- */}
         <div className="min-w-0">
