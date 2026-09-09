@@ -348,7 +348,7 @@ export default function OpenPools() {
         <select
           value={region}
           onChange={(e) => setRegion(e.target.value)}
-          className={cn(INPUT_DARK, "mb-3 w-full py-2 text-[13px] sm:w-auto")}
+          className={cn(INPUT_DARK, "select-dark mb-3 w-full py-2 text-[13px] sm:w-auto")}
         >
           {REGIONS.map((r) => (
             <option key={r} value={r}>{r === "Alle" ? "Alle Regionen" : r}</option>
@@ -399,7 +399,7 @@ export default function OpenPools() {
           <div
             className={cn(
               ROW_GRID,
-              "hidden pb-2.5 pt-7 text-[10.5px] font-semibold uppercase tracking-[0.12em] text-white/[0.4] lg:grid",
+              "hidden pb-2.5 pt-7 text-[10.5px] font-semibold uppercase tracking-[0.12em] text-white/[0.56] lg:grid",
             )}
           >
             <span>Bündel</span>

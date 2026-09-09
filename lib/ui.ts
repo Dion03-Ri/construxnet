@@ -271,10 +271,17 @@ export const SHEET_MUTED = "bg-slate-50";
 /** Haarlinie im Blatt — das Gegenstück zu HAIRLINE. */
 export const SHEET_LINE = "border-slate-200";
 
-/** Textstufen im Blatt. Wieder genau drei, wie im dunklen Register. */
+/** Textstufen im Blatt. Wieder genau drei, wie im dunklen Register.
+ *
+ *  Die Stufen lagen eine Nuance zu hell: `slate-400` traegt auf Weiss nur
+ *  2.56:1 und war damit als Text nicht lesbar — betroffen war jede
+ *  Nebenangabe im Papierregister (Uhrzeiten, Normen, Ortsangaben). Die
+ *  Reihe ist einmal nachgedunkelt: 900 / 600 (7.6:1) / 500 (4.8:1).
+ *  `slate-400` bleibt fuer Zierrat ohne Aussage — etwa das grosse Symbol
+ *  in einer leeren Liste, neben dem derselbe Satz noch einmal steht. */
 export const S_HI = "text-slate-900";
-export const S_MID = "text-slate-500";
-export const S_LOW = "text-slate-400";
+export const S_MID = "text-slate-600";
+export const S_LOW = "text-slate-500";
 
 /** Eingabefeld im Blatt. */
 export const INPUT_SHEET =

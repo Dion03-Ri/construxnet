@@ -205,7 +205,7 @@ export default function AgbPage() {
       <H2>10. Datenschutz</H2>
       <P>
         Welche Daten wir bearbeiten, wer sie erhält und welche Rechte bestehen, steht in der{" "}
-        <a href="/datenschutz" className="font-medium text-brand hover:underline">
+        <a href="/datenschutz" className="font-medium text-brand-700 hover:underline">
           Datenschutzerklärung
         </a>
         . Sie ist Bestandteil dieser Bedingungen.

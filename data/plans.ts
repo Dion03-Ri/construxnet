@@ -1,10 +1,15 @@
 /**
  * Die Abo-Stufen — eine Quelle für Preisabschnitt, Kontoseite und Grenzen.
  *
- * ACHTUNG, PREISE SIND PLATZHALTER. 0 / 79 / 189 sind gesetzt, weil eine
- * Preisseite ohne Zahlen nicht baubar ist — sie sind nicht bestätigt.
- * Steht der Preis fest, wird er hier geändert und nirgends sonst; deshalb
- * darf keine Zahl aus dieser Datei irgendwo im Text stehen.
+ * 0 / 129 / 489 CHF pro Monat — vom Betreiber am 09.09.2026 festgelegt.
+ * Zuvor standen hier Platzhalter (0 / 79 / 189).
+ *
+ * Diese Datei bleibt die einzige Quelle: Preisabschnitt der Startseite und
+ * Kontoseite lesen daraus. Keine dieser Zahlen darf irgendwo im Fliesstext
+ * stehen, sonst steht sie beim naechsten Wechsel an zwei Orten.
+ *
+ * Nicht davon beruehrt: die Rabattstufen der Buendelung (5/9/12/16/20 %)
+ * sind weiterhin unbestaetigt — das ist Punkt 0 der Startliste.
  */
 
 export type PlanKey = "FREE" | "PRO" | "ENTERPRISE";
@@ -12,7 +17,7 @@ export type PlanKey = "FREE" | "PRO" | "ENTERPRISE";
 export type Plan = {
   key: PlanKey;
   name: string;
-  /** Platzhalter, siehe oben. */
+  /** CHF pro Monat, 0 = kostenlos. Siehe Kopf. */
   price: number;
   unit?: string;
   note: string;
@@ -45,7 +50,7 @@ export const PLANS: Plan[] = [
   {
     key: "PRO",
     name: "Pro",
-    price: 79,
+    price: 129,
     unit: "pro Monat",
     note: "Für Baufirmen, die regelmässig einkaufen.",
     poolLimit: null,
@@ -61,7 +66,7 @@ export const PLANS: Plan[] = [
   {
     key: "ENTERPRISE",
     name: "Enterprise",
-    price: 189,
+    price: 489,
     unit: "pro Monat",
     note: "Für Gruppen mit mehreren Niederlassungen.",
     poolLimit: null,

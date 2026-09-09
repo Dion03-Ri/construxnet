@@ -246,7 +246,7 @@ function Composer({ onCreated }: { onCreated: () => void }) {
            kosteten die Höhe eines halben Beitrags. */
         <div className="flex flex-wrap items-baseline gap-x-6 gap-y-2 border-b border-white/[0.12] pb-3">
           <h2 className="mr-auto text-[15px] font-bold tracking-tight text-white">Neu in der Branche</h2>
-          <span className="text-[12px] text-white/[0.4]">
+          <span className="text-[12px] text-white/[0.56]">
             {company ? "selber melden:" : "Firmenprofil nötig, um zu melden"}
           </span>
           <Link
@@ -357,7 +357,7 @@ function Composer({ onCreated }: { onCreated: () => void }) {
             <select
               value={region}
               onChange={(e) => setRegion(e.target.value)}
-              className="rounded-md border border-white/[0.12] bg-[#16181a] px-2.5 py-1.5 text-xs text-white/[0.72] outline-none focus:border-brand/50"
+              className="select-dark rounded-md border border-white/[0.12] bg-[#16181a] px-2.5 py-1.5 text-xs text-white/[0.72] outline-none focus:border-brand/50"
             >
               <option value="">Region / Kanton (optional)</option>
               {CANTON_GROUPS.map((g) => (
@@ -739,7 +739,7 @@ export default function NetworkFeed() {
           value={region}
           onChange={(e) => setRegion(e.target.value)}
           aria-label="Region"
-          className="shrink-0 rounded-lg border border-white/[0.12] bg-transparent px-2.5 py-1.5 text-[12.5px] text-white/[0.72] outline-none transition-colors hover:border-white/[0.24] focus:border-brand [&>option]:bg-[#16181a] [&>option]:text-white"
+          className="select-dark shrink-0 rounded-lg border border-white/[0.12] bg-transparent px-2.5 py-1.5 text-[12.5px] text-white/[0.72] outline-none transition-colors hover:border-white/[0.24] focus:border-brand [&>option]:bg-[#16181a] [&>option]:text-white"
         >
           {regionOptions.map((o) => (
             <option key={o.key} value={o.key}>

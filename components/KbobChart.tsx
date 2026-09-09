@@ -538,7 +538,7 @@ export default function KbobChart({ initialMaterial }: { initialMaterial?: strin
           }
         >
           {avgDelta === null ? (
-            <span className="font-display text-[30px] font-bold leading-none text-white/20">—</span>
+            <span className="font-display text-[30px] font-bold leading-none text-white/[0.4]">—</span>
           ) : (
             <Trend value={avgDelta} big />
           )}

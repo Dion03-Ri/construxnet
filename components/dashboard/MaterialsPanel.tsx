@@ -25,7 +25,7 @@ import { cn } from "@/lib/utils";
 
 const STATUS_STYLE: Record<CustomStatus, string> = {
   PRIVATE: "bg-white/10 text-white/[0.72]",
-  SHARED: "bg-brand/15 text-brand-700",
+  SHARED: "bg-brand/15 text-brand",
   MERGED: "bg-navy-100 text-navy-700",
 };
 
@@ -205,7 +205,7 @@ export default function MaterialsPanel({
                       className={cn(
                         "inline-flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-[12.5px] font-semibold transition-colors disabled:opacity-50",
                         m.status === "SHARED"
-                          ? "bg-brand/10 text-brand-700 hover:bg-brand/15"
+                          ? "bg-brand-50 text-brand-700 hover:bg-brand-100"
                           : "border border-white/[0.16] text-white/[0.72] hover:bg-white/[0.05]",
                       )}
                     >

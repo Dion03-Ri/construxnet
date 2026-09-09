@@ -868,9 +868,10 @@ Seite: `/konto`, verlinkt im Kontomenü. `data/plans.ts` ist die einzige
 Quelle für Stufen, Preise und Grenzen — der Preisabschnitt auf `/` liest
 daraus, nicht aus einer zweiten Liste.
 
-**Preise sind weiterhin Platzhalter** (Punkt 0 der Launch-Liste). Sie
-stehen in `data/plans.ts` und nirgends sonst; steht der Preis fest, wird
-er dort geändert.
+**Preise stehen** (0 / 129 / 489 CHF pro Monat, vom Nutzer am
+09.09.2026 festgelegt). Sie stehen in `data/plans.ts` und nirgends
+sonst. Weiterhin offen sind die **Rabattstufen** der Buendelung
+(5/9/12/16/20 %) — die sind nicht dasselbe wie der Abopreis.
 
 **Die Grenzen sind gebaut, aber AUSGESCHALTET** (Migration 26). Geprüft
 wird in einem Trigger auf `bundle_participations`, nicht in der

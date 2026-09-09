@@ -202,7 +202,7 @@ export default function SupplierMap({
           className={cn(
             "inline-flex shrink-0 items-center gap-1.5 rounded-md px-3 py-1.5 text-[12.5px] font-semibold transition-colors disabled:opacity-60",
             consent
-              ? "bg-brand/10 text-brand-700 hover:bg-brand/15"
+              ? "bg-brand-50 text-brand-700 hover:bg-brand-100"
               : "border border-white/[0.16] text-white/[0.72] hover:bg-white/[0.05]",
           )}
         >

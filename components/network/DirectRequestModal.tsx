@@ -261,7 +261,7 @@ export default function DirectRequestModal({
               <select
                 value={window}
                 onChange={(e) => setWindow(e.target.value)}
-                className="w-full rounded-md border border-white/[0.16] bg-white/[0.03] px-3 py-2 text-sm text-white outline-none focus:border-brand focus:bg-[#16181a]"
+                className="select-dark w-full rounded-md border border-white/[0.16] bg-white/[0.03] px-3 py-2 text-sm text-white outline-none focus:border-brand focus:bg-[#16181a]"
               >
                 {DELIVERY_WINDOWS.map((w) => <option key={w} value={w}>{w}</option>)}
               </select>
@@ -289,7 +289,7 @@ export default function DirectRequestModal({
                 value={projectId}
                 onChange={(e) => setProjectId(e.target.value)}
                 disabled={projects.length === 0}
-                className="w-full rounded-md border border-white/[0.16] bg-white/[0.03] px-3 py-2 text-sm text-white outline-none focus:border-brand focus:bg-[#16181a] disabled:text-white/[0.56]"
+                className="select-dark w-full rounded-md border border-white/[0.16] bg-white/[0.03] px-3 py-2 text-sm text-white outline-none focus:border-brand focus:bg-[#16181a] disabled:text-white/[0.56]"
               >
                 <option value="">{projects.length === 0 ? "Keine angelegt" : "Keine Zuordnung"}</option>
                 {projects.map((p) => (

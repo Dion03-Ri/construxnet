@@ -15,13 +15,8 @@ import { cn } from "@/lib/utils";
  * eigene Karte mit Rand und Schatten, hier trägt die Ordnung allein die
  * Linie und der Abstand.
  *
- * ═══════════════════════════════════════════════════════════════════
- *  ACHTUNG — DIE ZAHLEN SIND PLATZHALTER
- *  0 / 79 / 189 sind Testwerte zum Ansehen des Aufbaus, ausdrücklich
- *  so vereinbart. Sie sind NICHT bestätigt und dürfen nicht in Werbung,
- *  AGB oder Verträge übernommen werden, bevor das Preismodell steht.
- *  Siehe CLAUDE.md, Punkt 0 der Launch-Liste.
- * ═══════════════════════════════════════════════════════════════════
+ * Die Zahlen stehen in `data/plans.ts` und nur dort — 0 / 129 / 489 CHF
+ * pro Monat, vom Betreiber festgelegt. Hier steht keine einzige davon.
  */
 
 /**

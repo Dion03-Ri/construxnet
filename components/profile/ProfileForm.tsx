@@ -40,8 +40,8 @@ const IMAGE_EXT: Record<string, string> = {
 };
 
 const input =
-  "w-full rounded-md border border-slate-300 bg-slate-50 px-3 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:border-brand focus:bg-white focus:outline-none focus:ring-1 focus:ring-brand/30";
-const label = "mb-1.5 block text-xs font-semibold uppercase tracking-wider text-slate-500";
+  "w-full rounded-md border border-slate-300 bg-slate-50 px-3 py-2.5 text-sm text-slate-900 placeholder:text-slate-500 focus:border-brand focus:bg-white focus:outline-none focus:ring-1 focus:ring-brand/30";
+const label = "mb-1.5 block text-xs font-semibold uppercase tracking-wider text-slate-600";
 
 function initials(name: string) {
   return name.split(" ").slice(0, 2).map((w) => w[0]).join("").toUpperCase();
@@ -68,7 +68,7 @@ function Section({
       <h2 className="flex items-center gap-2 text-[15px] font-bold tracking-tight text-slate-900">
         <Icon className="h-4 w-4 text-brand-700" /> {title}
       </h2>
-      {hint && <p className="mt-1 text-[12.5px] leading-relaxed text-slate-500">{hint}</p>}
+      {hint && <p className="mt-1 text-[12.5px] leading-relaxed text-slate-600">{hint}</p>}
       <div className="mt-5 space-y-4">{children}</div>
     </section>
   );
@@ -139,12 +139,12 @@ export default function ProfileForm({ company }: { company: EditableCompany }) {
               <button
                 type="button"
                 onClick={() => setLogoUrl("")}
-                className="ml-2 text-[12.5px] font-medium text-slate-400 hover:text-slate-600"
+                className="ml-2 text-[12.5px] font-medium text-slate-500 hover:text-slate-600"
               >
                 entfernen
               </button>
             )}
-            <p className="mt-1 text-[11.5px] text-slate-400">JPG, PNG oder WebP, bis 2 MB.</p>
+            <p className="mt-1 text-[11.5px] text-slate-500">JPG, PNG oder WebP, bis 2 MB.</p>
             {logoError && <p className="mt-1 text-[12px] font-medium text-red-600">{logoError}</p>}
           </div>
           <input
@@ -176,18 +176,18 @@ export default function ProfileForm({ company }: { company: EditableCompany }) {
               placeholder="CHE-123.456.789"
               className={input}
             />
-            <p className="mt-1 text-[11.5px] text-slate-400">
+            <p className="mt-1 text-[11.5px] text-slate-500">
               Form CHE-123.456.789. Die Prüfziffer wird nachgerechnet.
             </p>
           </div>
           <div>
             <span className={label}>Rolle</span>
-            <div className="flex items-center gap-2 rounded-md border border-slate-200 bg-slate-100 px-3 py-2.5 text-sm text-slate-500">
+            <div className="flex items-center gap-2 rounded-md border border-slate-200 bg-slate-100 px-3 py-2.5 text-sm text-slate-600">
               {isSupplier ? <Factory className="h-4 w-4" /> : <Building2 className="h-4 w-4" />}
               {isSupplier ? "Baustoffwerk / Lieferant" : "Bauunternehmen"}
               {company.verified && <ShieldCheck className="ml-auto h-4 w-4 text-brand" />}
             </div>
-            <p className="mt-1 text-[11.5px] text-slate-400">
+            <p className="mt-1 text-[11.5px] text-slate-500">
               Die Rolle bestimmt, wer bieten und wer beschaffen darf — sie lässt sich hier nicht ändern.
             </p>
           </div>
@@ -218,9 +218,9 @@ export default function ProfileForm({ company }: { company: EditableCompany }) {
             </select>
           </div>
         </div>
-        <p className="text-[12px] text-slate-400">
+        <p className="text-[12px] text-slate-500">
           Steht deine Karten-Zustimmung, wird der Punkt nach dem Speichern automatisch neu ermittelt.{" "}
-          <Link href="/map" className="font-medium text-brand hover:underline">Zur Karte</Link>
+          <Link href="/map" className="font-medium text-brand-700 hover:underline">Zur Karte</Link>
         </p>
       </Section>
 
@@ -270,7 +270,7 @@ export default function ProfileForm({ company }: { company: EditableCompany }) {
             <div className="max-h-72 space-y-3 overflow-y-auto rounded-md border border-slate-200 bg-slate-50 p-3">
               {PROC_CATEGORIES.map((cat) => (
                 <div key={cat}>
-                  <div className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">{cat}</div>
+                  <div className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">{cat}</div>
                   <div className="mt-1 grid grid-cols-1 gap-1 sm:grid-cols-2">
                     {PROC_MATERIALS.filter((m) => m.category === cat).map((m) => (
                       <label key={m.key} className="flex cursor-pointer items-center gap-2 text-[13px] text-slate-700">

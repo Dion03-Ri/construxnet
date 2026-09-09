@@ -295,7 +295,7 @@ export default function Home() {
                 <li key={p.material} className="grid grid-cols-[1fr_auto] items-baseline gap-x-6 border-t border-slate-200 py-5">
                   <div className="min-w-0">
                     <div className="truncate text-[15px] font-semibold text-slate-900">{p.material}</div>
-                    <div className="mt-1 flex items-center gap-1 text-[12px] text-slate-400">
+                    <div className="mt-1 flex items-center gap-1 text-[12px] text-slate-500">
                       <MapPin className="h-3 w-3" /> {p.region} · {p.volume}
                     </div>
                     <div className="mt-3 h-1 w-full max-w-[16rem] overflow-hidden rounded-full bg-slate-200">
@@ -304,9 +304,9 @@ export default function Home() {
                   </div>
                   <div className="text-right">
                     <div className="font-display text-[20px] font-bold tabular-nums leading-none text-slate-900">
-                      {p.fill}<span className="text-[13px] text-slate-400"> %</span>
+                      {p.fill}<span className="text-[13px] text-slate-500"> %</span>
                     </div>
-                    <div className="mt-1.5 inline-flex items-center gap-1 text-[11.5px] text-slate-400">
+                    <div className="mt-1.5 inline-flex items-center gap-1 text-[11.5px] text-slate-500">
                       <Clock className="h-3 w-3" /> {p.deadline}
                     </div>
                   </div>
@@ -334,7 +334,7 @@ export default function Home() {
                     <div className="flex items-center gap-1.5 truncate text-[15px] font-semibold text-slate-900">
                       {c.name} <BadgeCheck className="h-4 w-4 shrink-0 text-brand-700" />
                     </div>
-                    <div className="mt-0.5 truncate text-[12px] text-slate-400">{c.cat} · {c.city}</div>
+                    <div className="mt-0.5 truncate text-[12px] text-slate-500">{c.cat} · {c.city}</div>
                   </div>
                   <Link href="/network" className="shrink-0 text-[13px] font-semibold text-brand-700 transition-colors hover:text-brand">
                     Vernetzen
@@ -389,7 +389,9 @@ export default function Home() {
                   <f.icon className="mt-0.5 h-4 w-4 shrink-0 text-brand" />
                   <div>
                     <div className="text-[13px] font-semibold">{f.t}</div>
-                    <div className="text-[11.5px] text-white/[0.56]">{f.d}</div>
+                    {/* Auf Navy statt auf Schwarz: dieselbe Weissstufe traegt hier nur
+                        4.46:1, weil die Flaeche heller ist. */}
+                    <div className="text-[11.5px] text-white/[0.66]">{f.d}</div>
                   </div>
                 </div>
               ))}

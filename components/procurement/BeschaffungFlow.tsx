@@ -318,7 +318,7 @@ export default function BeschaffungFlow({
             erzeugten Oberflaeche. Der Haken allein sagt dasselbe. */}
         <Check className="mx-auto h-8 w-8 text-brand-700" />
         <h2 className="mt-4 text-xl font-bold text-slate-900">Bedarf eingereicht</h2>
-        <p className="mx-auto mt-1.5 max-w-lg text-sm leading-relaxed text-slate-500">
+        <p className="mx-auto mt-1.5 max-w-lg text-sm leading-relaxed text-slate-600">
           {bundleIds.length === 1
             ? "Deine Position liegt jetzt in einem Bündel"
             : `${bundleIds.length} Positionen liegen jetzt in Bündeln`}
@@ -358,12 +358,12 @@ export default function BeschaffungFlow({
                         "grid h-7 w-7 shrink-0 place-items-center rounded-md text-[13px] font-bold",
                         state === "done" && "bg-accent-600 text-brand",
                         state === "active" && "bg-brand text-navy-950",
-                        state === "todo" && "border border-slate-300 bg-white text-slate-400",
+                        state === "todo" && "border border-slate-300 bg-white text-slate-500",
                       )}
                     >
                       {state === "done" ? <Check className="h-4 w-4" /> : i + 1}
                     </span>
-                    <span className={cn("hidden text-[13px] font-medium sm:block", state === "todo" ? "text-slate-400" : "text-slate-900")}>
+                    <span className={cn("hidden text-[13px] font-medium sm:block", state === "todo" ? "text-slate-500" : "text-slate-900")}>
                       {label}
                     </span>
                   </div>
@@ -414,17 +414,17 @@ export default function BeschaffungFlow({
               {step === 0 && (
                 <div>
                   <h2 className="text-lg font-bold text-slate-900">Welche Materialien brauchst du?</h2>
-                  <p className="mt-0.5 text-sm text-slate-500">
+                  <p className="mt-0.5 text-sm text-slate-600">
                     Mehrfachauswahl möglich — jede Position wird später ihrem eigenen Pool zugeordnet.
                   </p>
 
                   <div className="relative mt-4">
-                    <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                    <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
                     <input
                       value={matQuery}
                       onChange={(e) => setMatQuery(e.target.value)}
                       placeholder="Material oder Nummer suchen (z. B. Beton, OB-BET-001 …)"
-                      className="h-10 w-full rounded-md border border-slate-300 bg-slate-50 pl-9 pr-3 text-sm text-slate-900 placeholder:text-slate-400 outline-none focus:border-brand focus:bg-white focus:ring-1 focus:ring-brand/30"
+                      className="h-10 w-full rounded-md border border-slate-300 bg-slate-50 pl-9 pr-3 text-sm text-slate-900 placeholder:text-slate-500 outline-none focus:border-brand focus:bg-white focus:ring-1 focus:ring-brand/30"
                     />
                   </div>
 
@@ -432,7 +432,7 @@ export default function BeschaffungFlow({
                     <button
                       type="button"
                       onClick={() => setMatCat("ALL")}
-                      className={cn("rounded-md px-2.5 py-1 text-[12px] font-medium transition-colors", matCat === "ALL" ? "bg-accent-600 text-white" : "border border-slate-200 bg-white text-slate-500 hover:border-slate-300 hover:text-slate-900")}
+                      className={cn("rounded-md px-2.5 py-1 text-[12px] font-medium transition-colors", matCat === "ALL" ? "bg-accent-600 text-white" : "border border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:text-slate-900")}
                     >
                       Alle
                     </button>
@@ -441,7 +441,7 @@ export default function BeschaffungFlow({
                         key={c}
                         type="button"
                         onClick={() => setMatCat(c)}
-                        className={cn("rounded-md px-2.5 py-1 text-[12px] font-medium transition-colors", matCat === c ? "bg-accent-600 text-white" : "border border-slate-200 bg-white text-slate-500 hover:border-slate-300 hover:text-slate-900")}
+                        className={cn("rounded-md px-2.5 py-1 text-[12px] font-medium transition-colors", matCat === c ? "bg-accent-600 text-white" : "border border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:text-slate-900")}
                       >
                         {c}
                       </button>
@@ -466,8 +466,8 @@ export default function BeschaffungFlow({
                           </span>
                           <span className="min-w-0">
                             <span className="block text-[14px] font-semibold text-slate-900">{m.label}</span>
-                            <span className="mt-0.5 block truncate text-[11px] text-slate-400">{m.sia}</span>
-                            <span className="mt-1 inline-block text-[11px] text-slate-500">
+                            <span className="mt-0.5 block truncate text-[11px] text-slate-500">{m.sia}</span>
+                            <span className="mt-1 inline-block text-[11px] text-slate-600">
                               KBOB-Ref CHF {chf(m.kbobPrice)}/{m.unit}
                             </span>
                           </span>
@@ -478,7 +478,7 @@ export default function BeschaffungFlow({
                       <div className="col-span-full py-6 text-center">
                         {searchSuggestions.length > 0 ? (
                           <>
-                            <p className="text-[13px] text-slate-500">
+                            <p className="text-[13px] text-slate-600">
                               Kein wörtlicher Treffer. Meinst du eines davon?
                             </p>
                             <div className="mt-2.5 flex flex-wrap justify-center gap-1.5">
@@ -493,12 +493,12 @@ export default function BeschaffungFlow({
                                 </button>
                               ))}
                             </div>
-                            <p className="mt-2 text-[11.5px] text-slate-400">
+                            <p className="mt-2 text-[11.5px] text-slate-500">
                               Sonst unten als „Weiteres Material" erfassen.
                             </p>
                           </>
                         ) : (
-                          <p className="text-[13px] text-slate-400">
+                          <p className="text-[13px] text-slate-500">
                             Kein Katalog-Treffer — erfasse es unten als „Weiteres Material".
                           </p>
                         )}
@@ -511,19 +511,19 @@ export default function BeschaffungFlow({
                     onClick={() => setModalOpen(true)}
                     className="mt-2 flex w-full items-center gap-3 rounded-lg border border-dashed border-slate-300 p-3 text-left transition-colors hover:border-brand hover:bg-brand/[0.03]"
                   >
-                    <span className="grid h-8 w-8 shrink-0 place-items-center rounded-md bg-slate-100 text-slate-500">
+                    <span className="grid h-8 w-8 shrink-0 place-items-center rounded-md bg-slate-100 text-slate-600">
                       <PenLine className="h-4 w-4" />
                     </span>
                     <span className="text-[14px] font-semibold text-slate-900">
                       Weiteres Material erfassen
-                      <span className="ml-1 text-[12px] font-normal text-slate-400">— nicht im Katalog? Hier hinzufügen.</span>
+                      <span className="ml-1 text-[12px] font-normal text-slate-500">— nicht im Katalog? Hier hinzufügen.</span>
                     </span>
-                    <Plus className="ml-auto h-4 w-4 shrink-0 text-slate-400" />
+                    <Plus className="ml-auto h-4 w-4 shrink-0 text-slate-500" />
                   </button>
 
                   {/* Belege */}
                   <div className="mt-5">
-                    <label className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+                    <label className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-slate-500">
                       Pläne, Lieferscheine oder Fotos (optional)
                     </label>
                     {files.length > 0 && (
@@ -532,7 +532,7 @@ export default function BeschaffungFlow({
                           <li key={`${f}-${i}`} className="flex items-center gap-2 rounded-md border border-slate-200 bg-slate-50 px-3 py-2 text-sm">
                             <FileText className="h-4 w-4 shrink-0 text-brand" />
                             <span className="min-w-0 flex-1 truncate text-slate-700">{f}</span>
-                            <button type="button" onClick={() => setFiles((prev) => prev.filter((_, j) => j !== i))} className="rounded p-1 text-slate-400 hover:bg-slate-200">
+                            <button type="button" onClick={() => setFiles((prev) => prev.filter((_, j) => j !== i))} className="rounded p-1 text-slate-500 hover:bg-slate-200">
                               <X className="h-4 w-4" />
                             </button>
                           </li>
@@ -542,12 +542,12 @@ export default function BeschaffungFlow({
                     <button
                       type="button"
                       onClick={() => fileRef.current?.click()}
-                      className="flex w-full items-center justify-center gap-2 rounded-lg border border-dashed border-slate-300 bg-slate-50 px-3 py-3.5 text-sm text-slate-500 transition-colors hover:border-brand hover:text-brand-700"
+                      className="flex w-full items-center justify-center gap-2 rounded-lg border border-dashed border-slate-300 bg-slate-50 px-3 py-3.5 text-sm text-slate-600 transition-colors hover:border-brand hover:text-brand-700"
                     >
                       <Upload className="h-4 w-4" /> Datei hinzufügen
                     </button>
                     <input ref={fileRef} type="file" multiple accept="image/*,application/pdf" className="hidden" onChange={onFile} />
-                    <p className="mt-1.5 text-[11.5px] text-slate-400">
+                    <p className="mt-1.5 text-[11.5px] text-slate-500">
                       Die Dateien werden dem Bedarf angehängt. Automatisches Auslesen von Material und Menge ist in Arbeit.
                     </p>
                   </div>
@@ -558,7 +558,7 @@ export default function BeschaffungFlow({
               {step === 1 && (
                 <div>
                   <h2 className="text-lg font-bold text-slate-900">Mengen, Lieferung & Standort</h2>
-                  <p className="mt-0.5 text-sm text-slate-500">Gib je Material die benötigte Menge an.</p>
+                  <p className="mt-0.5 text-sm text-slate-600">Gib je Material die benötigte Menge an.</p>
 
                   <div className="mt-4 space-y-2">
                     {positions.map((p) => (
@@ -566,7 +566,7 @@ export default function BeschaffungFlow({
                         <div className="flex items-start justify-between gap-3">
                           <div className="min-w-0">
                             <div className="text-[14px] font-semibold text-slate-900">{p.label}</div>
-                            <div className="truncate text-[11px] text-slate-400">{p.sia}</div>
+                            <div className="truncate text-[11px] text-slate-500">{p.sia}</div>
                           </div>
                           <div className="flex w-[170px] shrink-0 items-center rounded-md border border-slate-300 bg-slate-50 focus-within:border-brand focus-within:bg-white focus-within:ring-1 focus-within:ring-brand/30">
                             <input
@@ -576,17 +576,17 @@ export default function BeschaffungFlow({
                               placeholder="Menge"
                               className="min-w-0 flex-1 bg-transparent px-3 py-2 text-sm text-slate-900 outline-none"
                             />
-                            <span className="px-2.5 text-sm font-medium text-slate-400">{p.unit}</span>
+                            <span className="px-2.5 text-sm font-medium text-slate-500">{p.unit}</span>
                           </div>
                         </div>
                         <div className="mt-2 flex items-center gap-2">
-                          <label className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">SIA</label>
+                          <label className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">SIA</label>
                           <input
                             value={p.sia}
                             onChange={(e) => updatePosition(p.key, { sia: e.target.value })}
                             className="min-w-0 flex-1 rounded-md border border-slate-200 bg-slate-50 px-2.5 py-1.5 text-[12.5px] text-slate-700 outline-none focus:border-brand focus:bg-white"
                           />
-                          <button type="button" onClick={() => removePosition(p.key)} className="rounded-md p-1.5 text-slate-300 transition-colors hover:bg-rose-500/10 hover:text-rose-500">
+                          <button type="button" onClick={() => removePosition(p.key)} className="rounded-md p-1.5 text-slate-500 transition-colors hover:bg-rose-500/10 hover:text-rose-600">
                             <Trash2 className="h-4 w-4" />
                           </button>
                         </div>
@@ -596,7 +596,7 @@ export default function BeschaffungFlow({
 
                   <div className="mt-5 grid grid-cols-1 gap-4 border-t border-slate-200 pt-5 sm:grid-cols-3">
                     <div>
-                      <label className="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+                      <label className="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-slate-500">
                         <CalendarClock className="mr-1 inline h-3.5 w-3.5" /> Lieferzeitraum
                       </label>
                       <select value={deliveryWindow} onChange={(e) => setDeliveryWindow(e.target.value)} className="w-full rounded-md border border-slate-300 bg-slate-50 px-3 py-2 text-sm text-slate-900 outline-none focus:border-brand focus:bg-white">
@@ -604,7 +604,7 @@ export default function BeschaffungFlow({
                       </select>
                     </div>
                     <div>
-                      <label className="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+                      <label className="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-slate-500">
                         <MapPin className="mr-1 inline h-3.5 w-3.5" /> Region
                       </label>
                       <select value={region} onChange={(e) => setRegion(e.target.value)} className="w-full rounded-md border border-slate-300 bg-slate-50 px-3 py-2 text-sm text-slate-900 outline-none focus:border-brand focus:bg-white">
@@ -612,7 +612,7 @@ export default function BeschaffungFlow({
                       </select>
                     </div>
                     <div>
-                      <label className="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-slate-400">Baustelle (optional)</label>
+                      <label className="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-slate-500">Baustelle (optional)</label>
                       {projects.length > 0 ? (
                         <select value={projectId} onChange={(e) => setProjectId(e.target.value)} className="w-full rounded-md border border-slate-300 bg-slate-50 px-3 py-2 text-sm text-slate-900 outline-none focus:border-brand focus:bg-white">
                           <option value="">Keiner Baustelle zuordnen</option>
@@ -624,7 +624,7 @@ export default function BeschaffungFlow({
                         <input value={site} onChange={(e) => setSite(e.target.value)} placeholder={projectsLoading ? "Wird geladen …" : "z. B. Überbauung Bern-West"} className="w-full rounded-md border border-slate-300 bg-slate-50 px-3 py-2 text-sm text-slate-900 outline-none focus:border-brand focus:bg-white" />
                       )}
                       {projects.length === 0 && !projectsLoading && (
-                        <p className="mt-1 text-[11.5px] text-slate-400">
+                        <p className="mt-1 text-[11.5px] text-slate-500">
                           Baustellen legst du im{" "}
                           <Link href="/dashboard" className="font-semibold text-brand-700 hover:underline">Dashboard unter „Projekte"</Link>{" "}
                           an — dann kannst du hier direkt auswählen.
@@ -639,7 +639,7 @@ export default function BeschaffungFlow({
               {step === 2 && (
                 <div>
                   <h2 className="text-lg font-bold text-slate-900">Smart Pool aktivieren?</h2>
-                  <p className="mt-0.5 text-sm text-slate-500">Bündeln ist ein Zusatz — kein Pflichtschritt.</p>
+                  <p className="mt-0.5 text-sm text-slate-600">Bündeln ist ein Zusatz — kein Pflichtschritt.</p>
 
                   <button
                     type="button"
@@ -656,7 +656,7 @@ export default function BeschaffungFlow({
                       <span className="flex items-center gap-2 text-[15px] font-semibold text-slate-900">
                         <Layers className="h-4 w-4 text-brand" /> Bedarf bündeln
                       </span>
-                      <span className="mt-1 block text-[13px] leading-relaxed text-slate-500">
+                      <span className="mt-1 block text-[13px] leading-relaxed text-slate-600">
                         Jede Position wird mit gleichen Bedarfen deiner Region zu einem grösseren Volumen
                         zusammengelegt. Die Baustoffwerke geben darauf verdeckte Angebote (Sealed-Bid) ab —
                         das beste Angebot gegenüber dem KBOB-Referenzpreis erhält den Zuschlag. Je grösser
@@ -668,22 +668,22 @@ export default function BeschaffungFlow({
                   {/* Erwarteter Vorteil je Position */}
                   {pool && (
                     <div className="mt-4 space-y-2">
-                      <div className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+                      <div className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">
                         Erwarteter Mindestvorteil je Position
                       </div>
                       {lines.map((l) => (
                         <div key={l.pos.key} className="flex items-center justify-between gap-3 rounded-lg border border-slate-200 px-3.5 py-2.5">
                           <div className="min-w-0">
                             <div className="truncate text-[13.5px] font-semibold text-slate-900">{l.pos.label}</div>
-                            <div className="text-[11px] text-slate-400">{chf(l.qty)} {l.pos.unit} · Stufe {l.tier.tier}</div>
+                            <div className="text-[11px] text-slate-500">{chf(l.qty)} {l.pos.unit} · Stufe {l.tier.tier}</div>
                           </div>
                           <div className="text-right">
                             <div className="text-[15px] font-bold text-brand-700">{l.discount} %</div>
-                            <div className="text-[11px] text-slate-400">mind. CHF {chf(l.savings)}</div>
+                            <div className="text-[11px] text-slate-500">mind. CHF {chf(l.savings)}</div>
                           </div>
                         </div>
                       ))}
-                      <p className="flex items-start gap-2 pt-1 text-[11.5px] leading-relaxed text-slate-400">
+                      <p className="flex items-start gap-2 pt-1 text-[11.5px] leading-relaxed text-slate-500">
                         <Gavel className="mt-0.5 h-3.5 w-3.5 shrink-0 text-brand" />
                         Garantierter Mindestwert — das beste Sealed-Bid-Angebot kann darüber liegen. Die
                         Rabattstufen werden aktuell überarbeitet.
@@ -697,12 +697,12 @@ export default function BeschaffungFlow({
               {step === 3 && (
                 <div>
                   <h2 className="text-lg font-bold text-slate-900">Übersicht & Absenden</h2>
-                  <p className="mt-0.5 text-sm text-slate-500">Prüfe deine Angaben und melde den Bedarf.</p>
+                  <p className="mt-0.5 text-sm text-slate-600">Prüfe deine Angaben und melde den Bedarf.</p>
 
                   <div className="mt-4 overflow-x-auto rounded-lg border border-slate-200">
                     <table className="w-full min-w-[340px] text-left text-[13px]">
                       <thead className="bg-slate-50">
-                        <tr className="text-[11px] uppercase tracking-wider text-slate-400">
+                        <tr className="text-[11px] uppercase tracking-wider text-slate-500">
                           <th className="px-3.5 py-2 font-medium">Material</th>
                           <th className="px-2 py-2 font-medium">Menge</th>
                           <th className="px-2 py-2 text-right font-medium">KBOB</th>
@@ -715,14 +715,14 @@ export default function BeschaffungFlow({
                             <td className="px-3.5 py-2.5">
                               <div className="font-semibold text-slate-900">{l.pos.label}</div>
                               <div className="font-mono text-[10.5px] tracking-tight text-brand-700">{l.pos.id}</div>
-                              <div className="truncate text-[11px] text-slate-400">{l.pos.sia}</div>
+                              <div className="truncate text-[11px] text-slate-500">{l.pos.sia}</div>
                             </td>
                             <td className="px-2 py-2.5 tabular-nums text-slate-600">{chf(l.qty)} {l.pos.unit}</td>
-                            <td className="px-2 py-2.5 text-right tabular-nums text-slate-500">CHF {chf(l.pos.kbobPrice)}</td>
+                            <td className="px-2 py-2.5 text-right tabular-nums text-slate-600">CHF {chf(l.pos.kbobPrice)}</td>
                             {pool && (
                               <td className="px-3.5 py-2.5 text-right">
                                 <span className="font-semibold text-brand-700">{l.discount} %</span>
-                                <div className="text-[11px] text-slate-400">CHF {chf(l.savings)}</div>
+                                <div className="text-[11px] text-slate-500">CHF {chf(l.savings)}</div>
                               </td>
                             )}
                           </tr>
@@ -739,16 +739,16 @@ export default function BeschaffungFlow({
                       ["Belege", files.length ? files.join(", ") : "—"],
                     ].map(([k, v]) => (
                       <div key={k} className="flex items-start justify-between gap-4 px-4 py-2.5 text-sm">
-                        <dt className="text-slate-500">{k}</dt>
+                        <dt className="text-slate-600">{k}</dt>
                         <dd className="text-right font-medium text-slate-900">{v}</dd>
                       </div>
                     ))}
                     <div className="flex items-center justify-between gap-4 px-4 py-2.5 text-sm">
-                      <dt className="text-slate-500">Bündelung</dt>
+                      <dt className="text-slate-600">Bündelung</dt>
                       <dd>
                         {pool
                           ? <span className="inline-flex items-center gap-1.5 text-[10.5px] font-semibold uppercase tracking-[0.12em] text-brand-700"><Layers className="h-3 w-3" /> aktiviert</span>
-                          : <span className="text-[10.5px] font-semibold uppercase tracking-[0.12em] text-slate-400">Einzelbestellung</span>}
+                          : <span className="text-[10.5px] font-semibold uppercase tracking-[0.12em] text-slate-500">Einzelbestellung</span>}
                       </dd>
                     </div>
                   </dl>
@@ -766,13 +766,13 @@ export default function BeschaffungFlow({
                       Kein Kasten, keine Flaeche, kein Symbol. */}
                   {pool && totals.savings > 0 && (
                     <div className="mt-5 border-t border-slate-200 pt-5">
-                      <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-400">
+                      <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">
                         Garantierter Mindestvorteil
                       </div>
                       <div className="mt-2 font-display text-[32px] font-medium leading-none tabular-nums text-slate-900">
                         CHF {chf(totals.savings)}
                       </div>
-                      <div className="mt-2.5 text-[13px] text-slate-500">
+                      <div className="mt-2.5 text-[13px] text-slate-600">
                         Über {positions.length} {positions.length === 1 ? "Position" : "Positionen"} · Bestellwert CHF{" "}
                         <span className="tabular-nums">{chf(totals.cost)}</span>
                       </div>
@@ -785,12 +785,12 @@ export default function BeschaffungFlow({
 
           {/* Nav */}
           <div className="mt-6 flex items-center justify-between border-t border-slate-200 pt-4">
-            <button type="button" onClick={back} disabled={step === 0} className="inline-flex items-center gap-1.5 rounded-md px-3 py-2 text-sm font-semibold text-slate-500 transition-colors hover:bg-slate-100 disabled:opacity-40">
+            <button type="button" onClick={back} disabled={step === 0} className="inline-flex items-center gap-1.5 rounded-md px-3 py-2 text-sm font-semibold text-slate-600 transition-colors hover:bg-slate-100 disabled:opacity-40">
               <ChevronLeft className="h-4 w-4" /> Zurück
             </button>
             <div className="flex items-center gap-3">
               {step === 1 && totals.filled < positions.length && (
-                <span className="text-[12px] text-slate-400">Menge bei allen Positionen nötig</span>
+                <span className="text-[12px] text-slate-500">Menge bei allen Positionen nötig</span>
               )}
               {submitError && (
                 <span className="max-w-xs text-right text-[12px] font-medium text-rose-300">
@@ -828,7 +828,7 @@ export default function BeschaffungFlow({
                 "Sealed-Bid der Werke, Zuschlag, SIA-118-Vertrag",
               ].map((t, i) => (
                 <li key={t} className="flex gap-2.5 text-[13px] text-slate-600">
-                  <span className="grid h-5 w-5 shrink-0 place-items-center rounded bg-slate-100 text-[11px] font-bold text-slate-500">{i + 1}</span>
+                  <span className="grid h-5 w-5 shrink-0 place-items-center rounded bg-slate-100 text-[11px] font-bold text-slate-600">{i + 1}</span>
                   {t}
                 </li>
               ))}
@@ -837,7 +837,7 @@ export default function BeschaffungFlow({
 
           {totals.filled > 0 && (
             <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
-              <div className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">Live-Kalkulation</div>
+              <div className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">Live-Kalkulation</div>
               <div className="mt-2 space-y-1.5 text-sm">
                 <Row k="Positionen" v={String(positions.length)} />
                 <Row k="Bündelung" v={pool ? "aktiv" : "—"} />
@@ -944,14 +944,14 @@ function CustomMaterialModal({
           <h3 className="flex items-center gap-2 text-[15px] font-bold text-slate-900">
             <PenLine className="h-4 w-4 text-brand" /> Weiteres Material erfassen
           </h3>
-          <button type="button" onClick={onClose} className="rounded-md p-1.5 text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-700">
+          <button type="button" onClick={onClose} className="rounded-md p-1.5 text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-700">
             <X className="h-4 w-4" />
           </button>
         </div>
 
         <div className="space-y-3.5 px-5 py-4">
           <div>
-            <label className="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-slate-400">Bezeichnung *</label>
+            <label className="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-slate-500">Bezeichnung *</label>
             <input
               value={label}
               onChange={(e) => setLabel(e.target.value)}
@@ -960,7 +960,7 @@ function CustomMaterialModal({
               className="w-full rounded-md border border-slate-300 bg-slate-50 px-3 py-2 text-sm text-slate-900 outline-none focus:border-brand focus:bg-white focus:ring-1 focus:ring-brand/30"
             />
             {resolving && label.trim().length >= 3 && (
-              <p className="mt-2 flex items-center gap-1.5 text-[11.5px] text-slate-400">
+              <p className="mt-2 flex items-center gap-1.5 text-[11.5px] text-slate-500">
                 <Loader2 className="h-3 w-3 animate-spin" /> Katalog wird abgeglichen …
               </p>
             )}
@@ -986,7 +986,7 @@ function CustomMaterialModal({
                           <span className="block truncate text-[13px] font-semibold text-slate-900">
                             {c.material.label}
                           </span>
-                          <span className="block truncate text-[11px] text-slate-400">
+                          <span className="block truncate text-[11px] text-slate-500">
                             {c.reason}
                           </span>
                         </span>
@@ -997,7 +997,7 @@ function CustomMaterialModal({
                     </li>
                   ))}
                 </ul>
-                <p className="mt-2 text-[11px] leading-relaxed text-slate-500">
+                <p className="mt-2 text-[11px] leading-relaxed text-slate-600">
                   Dasselbe Material unter zwei Namen landet in zwei getrennten
                   Bündeln — dann erreicht keines die Rabattstufe. Nur wirklich
                   Neues neu erfassen.
@@ -1008,24 +1008,24 @@ function CustomMaterialModal({
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-slate-400">Einheit *</label>
+              <label className="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-slate-500">Einheit *</label>
               <input value={unit} onChange={(e) => setUnit(e.target.value)} placeholder="m³, t, m², Stk" className="w-full rounded-md border border-slate-300 bg-slate-50 px-3 py-2 text-sm text-slate-900 outline-none focus:border-brand focus:bg-white" />
             </div>
             <div>
-              <label className="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-slate-400">Richtpreis (optional)</label>
+              <label className="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-slate-500">Richtpreis (optional)</label>
               <input value={price} onChange={(e) => setPrice(e.target.value.replace(/[^0-9.]/g, ""))} inputMode="decimal" placeholder="CHF pro Einheit" className="w-full rounded-md border border-slate-300 bg-slate-50 px-3 py-2 text-sm text-slate-900 outline-none focus:border-brand focus:bg-white" />
             </div>
           </div>
 
           <div>
-            <label className="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-slate-400">Kategorie</label>
+            <label className="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-slate-500">Kategorie</label>
             <select value={category} onChange={(e) => setCategory(e.target.value as ProcCategory)} className="w-full rounded-md border border-slate-300 bg-slate-50 px-3 py-2 text-sm text-slate-900 outline-none focus:border-brand focus:bg-white">
               {PROC_CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
             </select>
           </div>
 
           <div>
-            <label className="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-slate-400">SIA-/Normspezifikation (optional)</label>
+            <label className="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-slate-500">SIA-/Normspezifikation (optional)</label>
             <input value={sia} onChange={(e) => setSia(e.target.value)} placeholder="z. B. SN EN 206 · C30/37" className="w-full rounded-md border border-slate-300 bg-slate-50 px-3 py-2 text-sm text-slate-900 outline-none focus:border-brand focus:bg-white" />
           </div>
 
@@ -1044,7 +1044,7 @@ function CustomMaterialModal({
               <span className="block text-[13.5px] font-semibold text-slate-900">
                 Für andere Firmen freigeben
               </span>
-              <span className="mt-0.5 block text-[11.5px] leading-relaxed text-slate-500">
+              <span className="mt-0.5 block text-[11.5px] leading-relaxed text-slate-600">
                 Nur freigegebene Materialien lassen sich bündeln — sonst kann
                 niemand demselben Bedarf beitreten. Sichtbar wird die Position
                 mit Bezeichnung und Norm, nicht deine Menge oder dein Preis.
@@ -1057,7 +1057,7 @@ function CustomMaterialModal({
         </div>
 
         <div className="flex items-center justify-end gap-2 border-t border-slate-200 bg-slate-50 px-5 py-3">
-          <button type="button" onClick={onClose} className="rounded-md px-3.5 py-2 text-sm font-semibold text-slate-500 transition-colors hover:bg-slate-200">
+          <button type="button" onClick={onClose} className="rounded-md px-3.5 py-2 text-sm font-semibold text-slate-600 transition-colors hover:bg-slate-200">
             Abbrechen
           </button>
           <button type="button" onClick={submit} disabled={!valid || saving} className="inline-flex items-center gap-1.5 rounded-md bg-brand px-4 py-2 text-sm font-semibold text-navy-950 transition-colors hover:bg-brand/100 disabled:cursor-not-allowed disabled:opacity-50">
@@ -1073,7 +1073,7 @@ function CustomMaterialModal({
 function Row({ k, v, bold, accent }: { k: string; v: string; bold?: boolean; accent?: boolean }) {
   return (
     <div className="flex items-center justify-between">
-      <span className="text-slate-500">{k}</span>
+      <span className="text-slate-600">{k}</span>
       <span className={cn("tabular-nums", accent ? "font-semibold text-brand-700" : bold ? "font-bold text-slate-900" : "text-slate-700")}>{v}</span>
     </div>
   );

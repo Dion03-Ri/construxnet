@@ -88,7 +88,7 @@ export default function ReceivedRequests() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center gap-2 py-16 text-sm text-slate-500">
+      <div className="flex items-center justify-center gap-2 py-16 text-sm text-slate-600">
         <Loader2 className="h-4 w-4 animate-spin" /> Anfragen werden geladen …
       </div>
     );
@@ -97,11 +97,11 @@ export default function ReceivedRequests() {
   if (reqs.length === 0) {
     return (
       <div className="flex flex-col items-center gap-3 py-14 text-center">
-        <span className="grid h-12 w-12 place-items-center rounded-full bg-slate-100 text-slate-400">
+        <span className="grid h-12 w-12 place-items-center rounded-full bg-slate-100 text-slate-500">
           <Inbox className="h-6 w-6" />
         </span>
         <p className="text-sm font-semibold text-slate-900">Keine offenen Anfragen</p>
-        <p className="max-w-sm text-[13px] text-slate-500">
+        <p className="max-w-sm text-[13px] text-slate-600">
           Wenn dir Firmen eine Vernetzungs-Anfrage senden, erscheinen sie hier zum Annehmen.
         </p>
         <Link href="/network" className="mt-1 inline-flex items-center gap-1.5 rounded-md bg-brand px-4 py-2 text-sm font-semibold text-navy-950 transition-colors hover:bg-brand-500">
@@ -117,7 +117,7 @@ export default function ReceivedRequests() {
           <li key={connId} className="flex items-center gap-3 py-3.5 first:pt-0 last:pb-0">
             <Link
               href={`/company/${company.id}`}
-              className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full bg-slate-100 text-sm font-semibold text-slate-500"
+              className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full bg-slate-100 text-sm font-semibold text-slate-600"
             >
               {company.logo_url ? (
                 // eslint-disable-next-line @next/next/no-img-element
@@ -131,7 +131,7 @@ export default function ReceivedRequests() {
                 {company.company_name}
                 {company.verified && <BadgeCheck className="h-4 w-4 shrink-0 text-brand-700" />}
               </Link>
-              <p className="flex items-center gap-1 truncate text-xs text-slate-400">
+              <p className="flex items-center gap-1 truncate text-xs text-slate-500">
                 {ROLE_LABEL[company.role] ?? company.role}
                 {company.city && <><span>·</span><MapPin className="h-3 w-3" /> {company.city}</>}
               </p>

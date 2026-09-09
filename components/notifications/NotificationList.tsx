@@ -34,8 +34,8 @@ export default function NotificationList() {
               className={cn(
                 "rounded-md px-3 py-1.5 text-[13px] font-medium transition-colors",
                 tab === t.key
-                  ? "bg-brand-50 text-brand-700"
-                  : "text-slate-500 hover:bg-slate-100 hover:text-slate-900",
+                  ? "bg-brand text-navy-950"
+                  : "text-slate-600 hover:bg-slate-100 hover:text-slate-900",
               )}
             >
               {t.label}
@@ -46,7 +46,7 @@ export default function NotificationList() {
           <button
             type="button"
             onClick={markAllSeen}
-            className="inline-flex items-center gap-1 text-[12px] font-medium text-slate-500 transition-colors hover:text-brand-700"
+            className="inline-flex items-center gap-1 text-[12px] font-medium text-slate-600 transition-colors hover:text-brand-700"
           >
             <Check className="h-3.5 w-3.5" /> Alle als gelesen
           </button>
@@ -54,7 +54,7 @@ export default function NotificationList() {
       </div>
 
       {loading ? (
-        <div className="grid place-items-center py-16 text-slate-400">
+        <div className="grid place-items-center py-16 text-slate-500">
           <Loader2 className="h-5 w-5 animate-spin" />
         </div>
       ) : list.length === 0 ? (
@@ -63,7 +63,7 @@ export default function NotificationList() {
           <p className="mt-3 text-[15px] font-semibold text-slate-900">
             {notices.length === 0 ? "Nichts Neues" : "Nichts in dieser Kategorie"}
           </p>
-          <p className="mx-auto mt-1 max-w-sm text-[13px] leading-relaxed text-slate-500">
+          <p className="mx-auto mt-1 max-w-sm text-[13px] leading-relaxed text-slate-600">
             {notices.length === 0
               ? "Hier stehen Verbindungsanfragen, eingegangene Angebote, der Stand deiner Bündel und ungelesene Nachrichten — sobald es etwas gibt."
               : "In anderen Kategorien liegt vielleicht etwas."}
@@ -84,12 +84,12 @@ export default function NotificationList() {
                     <n.icon className="h-4 w-4" />
                   </span>
                   <div className="min-w-0 flex-1">
-                    <p className="text-[13.5px] leading-snug text-slate-500">
+                    <p className="text-[13.5px] leading-snug text-slate-600">
                       <span className="font-semibold text-slate-900">{n.actor}</span> {n.text}
                     </p>
-                    {relTime(n.at) && <p className="mt-1 text-[11px] text-slate-400">{relTime(n.at)}</p>}
+                    {relTime(n.at) && <p className="mt-1 text-[11px] text-slate-500">{relTime(n.at)}</p>}
                   </div>
-                  <ChevronRight className="mt-2 h-4 w-4 shrink-0 text-slate-300" />
+                  <ChevronRight className="mt-2 h-4 w-4 shrink-0 text-slate-400" />
                 </Link>
               </li>
             );

@@ -152,12 +152,12 @@ export default async function CompanyPage({ params }: { params: Promise<{ id: st
                 <h1 className="text-2xl font-bold tracking-tight text-slate-900">{company.company_name}</h1>
                 {company.verified && <BadgeCheck className="h-5 w-5 text-brand" />}
               </div>
-              <p className="mt-0.5 text-sm text-slate-500">
+              <p className="mt-0.5 text-sm text-slate-600">
                 {ROLE_LABEL[company.role] ?? company.role}
                 {company.city ? ` · ${company.city}` : ""}
                 {company.canton ? ` (${company.canton})` : ""}
               </p>
-              <p className="mt-1 flex items-center gap-1 text-xs text-slate-400">
+              <p className="mt-1 flex items-center gap-1 text-xs text-slate-500">
                 <MapPin className="h-3.5 w-3.5" /> {company.uid_number}
               </p>
               {company.verified && (
@@ -192,7 +192,7 @@ export default async function CompanyPage({ params }: { params: Promise<{ id: st
           </h2>
           <div className="mt-4 grid grid-cols-1 gap-5 sm:grid-cols-2">
             <div>
-              <div className="mb-1.5 flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+              <div className="mb-1.5 flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-slate-500">
                 <Boxes className="h-3.5 w-3.5" /> Materialien
               </div>
               {company.supply_materials?.length ? (
@@ -202,11 +202,11 @@ export default async function CompanyPage({ params }: { params: Promise<{ id: st
                   ))}
                 </div>
               ) : (
-                <p className="text-[13px] text-slate-400">Noch nicht angegeben</p>
+                <p className="text-[13px] text-slate-500">Noch nicht angegeben</p>
               )}
             </div>
             <div>
-              <div className="mb-1.5 flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+              <div className="mb-1.5 flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-slate-500">
                 <MapPin className="h-3.5 w-3.5" /> Liefergebiete
               </div>
               {company.supply_regions?.length ? (
@@ -216,20 +216,20 @@ export default async function CompanyPage({ params }: { params: Promise<{ id: st
                   ))}
                 </div>
               ) : (
-                <p className="text-[13px] text-slate-400">Noch nicht angegeben</p>
+                <p className="text-[13px] text-slate-500">Noch nicht angegeben</p>
               )}
             </div>
             <div className="flex items-center gap-2.5">
-              <span className="grid h-9 w-9 place-items-center rounded-md bg-slate-100 text-slate-500"><Ruler className="h-4 w-4" /></span>
+              <span className="grid h-9 w-9 place-items-center rounded-md bg-slate-100 text-slate-600"><Ruler className="h-4 w-4" /></span>
               <div>
-                <div className="text-[11px] uppercase tracking-wider text-slate-400">Lieferradius</div>
+                <div className="text-[11px] uppercase tracking-wider text-slate-500">Lieferradius</div>
                 <div className="text-sm font-semibold text-slate-900">{company.delivery_radius_km ? `${company.delivery_radius_km} km` : "—"}</div>
               </div>
             </div>
             <div className="flex items-center gap-2.5">
-              <span className="grid h-9 w-9 place-items-center rounded-md bg-slate-100 text-slate-500"><Gauge className="h-4 w-4" /></span>
+              <span className="grid h-9 w-9 place-items-center rounded-md bg-slate-100 text-slate-600"><Gauge className="h-4 w-4" /></span>
               <div className="min-w-0">
-                <div className="text-[11px] uppercase tracking-wider text-slate-400">Kapazität</div>
+                <div className="text-[11px] uppercase tracking-wider text-slate-500">Kapazität</div>
                 <div className="truncate text-sm font-semibold text-slate-900">{company.capacity_note || "—"}</div>
               </div>
             </div>
@@ -242,13 +242,13 @@ export default async function CompanyPage({ params }: { params: Promise<{ id: st
         <section className={"mt-8 border-t border-slate-200 pt-7"}>
           <h2 className="text-[15px] font-semibold text-slate-900">Kontakt</h2>
           <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
-            {contact?.email && <a href={`mailto:${contact.email}`} className="flex items-center gap-2.5 text-sm text-slate-700 hover:text-brand"><Mail className="h-4 w-4 text-slate-400" /> {contact.email}</a>}
-            {contact?.phone && <a href={`tel:${contact.phone.replace(/\s/g, "")}`} className="flex items-center gap-2.5 text-sm text-slate-700 hover:text-brand"><Phone className="h-4 w-4 text-slate-400" /> {contact.phone}</a>}
-            {contact?.address && <div className="flex items-center gap-2.5 text-sm text-slate-700"><MapPin className="h-4 w-4 text-slate-400" /> {contact.address}</div>}
-            {site && <a href={site} className="flex items-center gap-2.5 text-sm text-slate-700 hover:text-brand"><Globe className="h-4 w-4 text-slate-400" /> {contact?.website}</a>}
+            {contact?.email && <a href={`mailto:${contact.email}`} className="flex items-center gap-2.5 text-sm text-slate-700 hover:text-brand"><Mail className="h-4 w-4 text-slate-500" /> {contact.email}</a>}
+            {contact?.phone && <a href={`tel:${contact.phone.replace(/\s/g, "")}`} className="flex items-center gap-2.5 text-sm text-slate-700 hover:text-brand"><Phone className="h-4 w-4 text-slate-500" /> {contact.phone}</a>}
+            {contact?.address && <div className="flex items-center gap-2.5 text-sm text-slate-700"><MapPin className="h-4 w-4 text-slate-500" /> {contact.address}</div>}
+            {site && <a href={site} className="flex items-center gap-2.5 text-sm text-slate-700 hover:text-brand"><Globe className="h-4 w-4 text-slate-500" /> {contact?.website}</a>}
           </div>
           {isMe && (
-            <p className="mt-3 border-t border-slate-200 pt-3 text-[12px] text-slate-400">
+            <p className="mt-3 border-t border-slate-200 pt-3 text-[12px] text-slate-500">
               Diese Angaben sehen nur Firmen, mit denen du verbunden bist.
             </p>
           )}
@@ -256,8 +256,8 @@ export default async function CompanyPage({ params }: { params: Promise<{ id: st
       ) : (
         !isMe && (
           <section className={"mt-8 flex items-start gap-2.5 border-l-2 border-brand py-2 pl-4"}>
-            <Lock className="mt-0.5 h-4 w-4 shrink-0 text-slate-400" />
-            <p className="text-[13px] leading-relaxed text-slate-500">
+            <Lock className="mt-0.5 h-4 w-4 shrink-0 text-slate-500" />
+            <p className="text-[13px] leading-relaxed text-slate-600">
               <span className="font-semibold text-slate-700">Kontaktdaten sind Verbindungen vorbehalten.</span>{" "}
               Vernetze dich mit {company.company_name}, um E-Mail, Telefon und Adresse zu sehen —
               schreiben kannst du danach direkt hier im Netz.
@@ -270,20 +270,20 @@ export default async function CompanyPage({ params }: { params: Promise<{ id: st
           <section className="mt-8 border-t border-slate-200 pt-7">
             <h2 className="text-[15px] font-bold tracking-tight text-slate-900">Beiträge</h2>
             {posts.length === 0 ? (
-              <p className="mt-3 text-sm text-slate-400">Noch keine Beiträge.</p>
+              <p className="mt-3 text-sm text-slate-500">Noch keine Beiträge.</p>
             ) : (
               <div className="mt-3">
           {posts.map((p) => (
             <article key={p.id} className={"border-t border-slate-200 py-5"}>
               <div className="flex items-center justify-between">
-                <span className="text-[10.5px] font-semibold uppercase tracking-[0.12em] text-slate-400">{POST_TYPE_LABEL[p.post_type] ?? p.post_type}</span>
-                <span className="text-xs text-slate-400">
+                <span className="text-[10.5px] font-semibold uppercase tracking-[0.12em] text-slate-500">{POST_TYPE_LABEL[p.post_type] ?? p.post_type}</span>
+                <span className="text-xs text-slate-500">
                   {new Date(p.created_at).toLocaleDateString("de-CH", { day: "2-digit", month: "2-digit", year: "numeric" })}
                 </span>
               </div>
               {p.title && <h3 className="mt-2 font-semibold text-slate-900">{p.title}</h3>}
               <p className="mt-1.5 whitespace-pre-wrap text-sm text-slate-600">{p.content}</p>
-              <div className="mt-3 flex items-center gap-4 text-xs text-slate-400">
+              <div className="mt-3 flex items-center gap-4 text-xs text-slate-500">
                 <span className="inline-flex items-center gap-1.5"><Heart className="h-4 w-4" /> {p.likes_count}</span>
                 {p.region && <span className="inline-flex items-center gap-1.5"><MapPin className="h-3.5 w-3.5" /> {p.region}</span>}
               </div>
