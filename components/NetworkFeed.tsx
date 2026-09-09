@@ -20,7 +20,8 @@ import {
   MoreHorizontal,
   Trash2,
   MessageSquare,
-  UserRound,
+  Flag,
+  Check,
   Building2,
   HelpCircle,
   Boxes,
@@ -444,20 +445,54 @@ function EngagementButton({
  * Firma: anschreiben oder Profil ansehen. Was es nicht gibt (melden,
  * stummschalten, bearbeiten), steht auch nicht drin.
  */
+const MELDEGRUENDE: { key: string; label: string }[] = [
+  { key: "SPAM", label: "Werbung oder Spam" },
+  { key: "FALSCH", label: "Falsche Angaben" },
+  { key: "BELEIDIGEND", label: "Beleidigend" },
+  { key: "ANDERES", label: "Etwas anderes" },
+];
+
 function PostMenu({
   eigener,
   companyId,
+  postId,
+  meineFirma,
+  demo,
   onLoeschen,
   loeschend,
 }: {
   eigener: boolean;
   companyId: string;
+  postId: string;
+  meineFirma: string | null;
+  demo: boolean;
   onLoeschen: () => void;
   loeschend: boolean;
 }) {
+  const supabase = useSupabaseBrowser();
   const [offen, setOffen] = useState(false);
   const [sicher, setSicher] = useState(false);
+  const [meldeschritt, setMeldeschritt] = useState(false);
+  const [gemeldet, setGemeldet] = useState(false);
+  const [sendend, setSendend] = useState<string | null>(null);
   const huelle = useRef<HTMLDivElement>(null);
+
+  async function melden(grund: string) {
+    setSendend(grund);
+    if (!demo && meineFirma) {
+      const { error } = await supabase
+        .from("post_reports")
+        .insert({ post_id: postId, reporter_company_id: meineFirma, reason: grund });
+      // 23505: schon gemeldet. Fuer den Meldenden ist das dasselbe Ergebnis
+      // wie eine neue Meldung — die Meldung liegt vor.
+      if (error && error.code !== "23505") {
+        setSendend(null);
+        return;
+      }
+    }
+    setSendend(null);
+    setGemeldet(true);
+  }
 
   useEffect(() => {
     if (!offen) return;
@@ -477,7 +512,10 @@ function PostMenu({
 
   // Zugeklappt faengt die Rueckfrage wieder von vorne an.
   useEffect(() => {
-    if (!offen) setSicher(false);
+    if (!offen) {
+      setSicher(false);
+      setMeldeschritt(false);
+    }
   }, [offen]);
 
   const eintrag =
@@ -534,6 +572,8 @@ function PostMenu({
             )
           ) : (
             <>
+              {/* „Firmenprofil ansehen" stand hier auch — und war ueberfluessig:
+                  Name und Zeichen im Kopf des Beitrags fuehren schon dorthin. */}
               <Link
                 href={`/messages?to=${companyId}`}
                 onClick={() => setOffen(false)}
@@ -541,13 +581,38 @@ function PostMenu({
               >
                 <MessageSquare className="h-4 w-4" /> Firma anschreiben
               </Link>
-              <Link
-                href={`/company/${companyId}`}
-                onClick={() => setOffen(false)}
-                className={cn(eintrag, "text-white/[0.72] hover:bg-white/[0.06] hover:text-white")}
-              >
-                <UserRound className="h-4 w-4" /> Firmenprofil ansehen
-              </Link>
+
+              {gemeldet ? (
+                <div className={cn(eintrag, "text-white/[0.56]")}>
+                  <Check className="h-4 w-4 text-brand" /> Gemeldet — danke
+                </div>
+              ) : meldeschritt ? (
+                <>
+                  <div className="px-3.5 pb-1.5 pt-2 text-[11px] font-semibold uppercase tracking-wider text-white/[0.56]">
+                    Warum?
+                  </div>
+                  {MELDEGRUENDE.map((g) => (
+                    <button
+                      key={g.key}
+                      type="button"
+                      onClick={() => melden(g.key)}
+                      disabled={sendend !== null}
+                      className={cn(eintrag, "text-white/[0.72] hover:bg-white/[0.06] hover:text-white disabled:opacity-50")}
+                    >
+                      {sendend === g.key ? <Loader2 className="h-4 w-4 animate-spin" /> : <span className="h-4 w-4" />}
+                      {g.label}
+                    </button>
+                  ))}
+                </>
+              ) : meineFirma ? (
+                <button
+                  type="button"
+                  onClick={() => setMeldeschritt(true)}
+                  className={cn(eintrag, "text-white/[0.72] hover:bg-white/[0.06] hover:text-white")}
+                >
+                  <Flag className="h-4 w-4" /> Beitrag melden
+                </button>
+              ) : null}
             </>
           )}
         </div>
@@ -646,6 +711,9 @@ function PostCard({
         <PostMenu
           eigener={eigener}
           companyId={post.company_id}
+          postId={post.id}
+          meineFirma={meineFirma}
+          demo={demo}
           onLoeschen={loeschen}
           loeschend={loeschend}
         />
