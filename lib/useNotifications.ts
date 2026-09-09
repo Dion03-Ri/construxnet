@@ -8,6 +8,8 @@ import {
   Trophy,
   Clock,
   MessageSquare,
+  MessageCircle,
+  ThumbsUp,
   XCircle,
   Handshake,
   type LucideIcon,
@@ -96,7 +98,27 @@ export function useNotifications() {
       return;
     }
 
-    const [conns, requests, participations, messages] = await Promise.all([
+    // Eigene Beitraege zuerst — die Kennungen brauchen die beiden
+    // Abfragen danach. Bewusst in zwei Schritten statt mit einem Filter
+    // auf einer eingebetteten Tabelle: `in(...)` verhaelt sich
+    // vorhersehbar, eingebettete Filter haengen an der Beziehungsauflösung
+    // von PostgREST — und genau die hat uns schon einmal den Feed
+    // gekostet.
+    const { data: eigeneBeitraege } = await supabase
+      .from("network_posts")
+      .select("id, title, content")
+      .eq("company_id", myId)
+      .order("created_at", { ascending: false })
+      .limit(30);
+    const meineIds = ((eigeneBeitraege ?? []) as { id: string }[]).map((b) => b.id);
+    const titelZu = new Map(
+      ((eigeneBeitraege ?? []) as { id: string; title: string | null; content: string }[]).map((b) => [
+        b.id,
+        (b.title ?? b.content).slice(0, 48),
+      ]),
+    );
+
+    const [conns, requests, participations, messages, kommentare, reaktionen] = await Promise.all([
       supabase
         .from("connections")
         .select("id, company_id_a, company_id_b, requested_by, status, created_at")
@@ -118,6 +140,26 @@ export function useNotifications() {
         .is("read_at", null)
         .order("created_at", { ascending: false })
         .limit(15),
+      meineIds.length
+        ? supabase
+            .from("post_comments")
+            .select(
+              "id, post_id, company_id, content, created_at, companies!post_comments_company_id_fkey(company_name)",
+            )
+            .in("post_id", meineIds)
+            .order("created_at", { ascending: false })
+            .limit(20)
+        : Promise.resolve({ data: [] as unknown[] }),
+      meineIds.length
+        ? supabase
+            .from("post_likes")
+            .select(
+              "post_id, company_id, created_at, companies!post_likes_company_id_fkey(company_name)",
+            )
+            .in("post_id", meineIds)
+            .order("created_at", { ascending: false })
+            .limit(40)
+        : Promise.resolve({ data: [] as unknown[] }),
     ]);
 
     const out: Notice[] = [];
@@ -290,6 +332,61 @@ export function useNotifications() {
         text: m.content.split("\n")[0].slice(0, 90),
         at: m.created_at,
         href: `/messages?to=${m.sender_company_id}`,
+      });
+    }
+
+    // Kommentare unter eigenen Beitraegen.
+    type Kom = {
+      id: string;
+      post_id: string;
+      company_id: string;
+      content: string;
+      created_at: string;
+      companies: { company_name: string } | null;
+    };
+    for (const k of (kommentare.data ?? []) as unknown as Kom[]) {
+      if (k.company_id === myId) continue; // der eigene Kommentar ist keine Nachricht an sich selbst
+      out.push({
+        id: `kom:${k.id}`,
+        cat: "network",
+        icon: MessageCircle,
+        tone: TONE.navy,
+        actor: k.companies?.company_name ?? "Eine Firma",
+        text: `kommentierte „${titelZu.get(k.post_id) ?? "deinen Beitrag"}": ${k.content.slice(0, 60)}`,
+        at: k.created_at,
+        href: `/beitrag/${k.post_id}`,
+      });
+    }
+
+    // Reaktionen, je Beitrag zusammengefasst: zwanzig einzelne Zeilen
+    // „X hat reagiert" waeren keine Nachricht mehr, sondern ein Protokoll.
+    type Reak = {
+      post_id: string;
+      company_id: string;
+      created_at: string;
+      companies: { company_name: string } | null;
+    };
+    const proBeitrag = new Map<string, Reak[]>();
+    for (const r of (reaktionen.data ?? []) as unknown as Reak[]) {
+      if (r.company_id === myId) continue;
+      const liste = proBeitrag.get(r.post_id) ?? [];
+      liste.push(r);
+      proBeitrag.set(r.post_id, liste);
+    }
+    for (const [postId, liste] of proBeitrag) {
+      const neueste = liste[0];
+      const weitere = liste.length - 1;
+      out.push({
+        id: `reak:${postId}:${neueste.created_at}`,
+        cat: "network",
+        icon: ThumbsUp,
+        tone: TONE.gold,
+        actor: neueste.companies?.company_name ?? "Eine Firma",
+        text:
+          (weitere > 0 ? `und ${weitere} weitere reagierten` : "reagierte") +
+          ` auf „${titelZu.get(postId) ?? "deinen Beitrag"}".`,
+        at: neueste.created_at,
+        href: `/beitrag/${postId}`,
       });
     }
 
