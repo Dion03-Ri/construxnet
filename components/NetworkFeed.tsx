@@ -880,7 +880,13 @@ export default function NetworkFeed() {
       let q = supabase
         .from("network_posts")
         .select(
-          "id, post_type, title, content, region, media_url, likes_count, comments_count, created_at, company_id, companies(company_name, city, verified, logo_url)",
+          // Der Zusatz „!network_posts_company_id_fkey" ist kein Zierrat:
+          // seit `post_likes`, `post_comments` und `post_reports` je einen
+          // Schluessel auf `network_posts` UND auf `companies` haben, sieht
+          // PostgREST darin Verbindungstabellen und damit mehrere moegliche
+          // Wege von einem Beitrag zu einer Firma. Ohne die Angabe, welcher
+          // gemeint ist, lehnt es die Abfrage ab.
+          "id, post_type, title, content, region, media_url, likes_count, comments_count, created_at, company_id, companies!network_posts_company_id_fkey(company_name, city, verified, logo_url)",
         )
         .order("created_at", { ascending: false })
         .range(from, from + PAGE_SIZE - 1);

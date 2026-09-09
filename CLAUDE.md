@@ -832,6 +832,27 @@ heutigen Stand.
 
 ---
 
+## Beitraege und Firmen: der Embed braucht einen Hinweis
+
+`network_posts` und `companies` haengen seit Migration 27/28 nicht mehr
+nur direkt zusammen: `post_likes`, `post_comments` und `post_reports`
+tragen je einen Fremdschluessel auf beide. PostgREST liest darin
+Verbindungstabellen und findet dadurch mehrere Wege von einem Beitrag zu
+einer Firma — und lehnt eine Abfrage ohne Angabe ab:
+
+> Could not embed because more than one relationship was found for
+> 'network_posts' and 'companies'
+
+Richtig ist deshalb ueberall
+
+    companies!network_posts_company_id_fkey(company_name, …)
+
+Das gilt fuer jede neue Abfrage, die von einem Beitrag auf die Firma
+zeigt. Umgekehrt (von `post_comments` auf `companies`) braucht es den
+Hinweis nicht — dort gibt es nur einen Weg.
+
+---
+
 # OFFENE AUFTRÄGE DES NUTZERS (Stand: siehe letzten Commit)
 
 Vom Nutzer ausdrücklich auf die Todo-Liste gegeben. Nichts davon ist
