@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useAuth } from "@clerk/nextjs";
 import { useSupabaseBrowser } from "@/lib/supabase-browser";
 import { fetchMyCompanyId } from "@/lib/myCompany";
+import { useFrischBeiRueckkehr, useLive } from "@/lib/live";
 
 export type NetCompany = {
   id: string;
@@ -71,7 +72,7 @@ const NET_SPALTEN =
   "id, company_name, uid_number, role, canton, city, verified, logo_url, bio, created_at";
 
 /** Datenbankfehler in einen Satz, den man lesen kann. */
-function klartext(code: string | undefined, nachricht: string): string {
+export function klartext(code: string | undefined, nachricht: string): string {
   if (code === "23505") return "Mit dieser Firma besteht bereits eine Anfrage oder eine Verbindung.";
   if (code === "42501") return "Das darf dieses Konto nicht. Ist das Profil vollstaendig angelegt?";
   if (code === "23514") return "Diese Verbindung ist so nicht erlaubt.";
@@ -171,56 +172,21 @@ export function useNetwork() {
   }, [loadMine]);
 
   /**
-   * Live, ohne Neuladen.
+   * Live, ohne Neuladen. Siehe `lib/live.ts` fuer die Regeln dahinter.
    *
-   * Bisher wurde alles genau einmal beim Aufbau der Seite geholt. Eine
-   * Anfrage, die eine Minute spaeter eintraf, war erst nach F5 zu sehen —
-   * und eine Firma, die sich nach dem Aufbau der Seite anmeldete, tauchte
-   * im Verzeichnis gar nicht auf.
-   *
-   * Gehorcht wird auf INSERT und UPDATE, nicht auf DELETE: fuer geloeschte
-   * Zeilen prueft Supabase keine Zeilenregel, ein DELETE ginge also an
-   * jeden Zuhoerer. Wer selbst loescht, laedt ohnehin neu; die Gegenseite
-   * merkt es beim naechsten Blick auf den Tab (siehe unten).
+   * `connections` bringt Anfrage, Annahme und Verbindung sofort auf die
+   * Gegenseite. `companies` sorgt dafuer, dass eine Firma, die sich gerade
+   * erst angemeldet oder ihr Profil geaendert hat, im Verzeichnis auftaucht,
+   * ohne dass jemand die Seite neu laedt.
    */
-  useEffect(() => {
-    if (!isSignedIn) return;
-    const kanal = supabase
-      .channel("netzwerk")
-      .on("postgres_changes", { event: "INSERT", schema: "public", table: "connections" }, () => {
-        void loadMine();
-      })
-      .on("postgres_changes", { event: "UPDATE", schema: "public", table: "connections" }, () => {
-        void loadMine();
-      })
-      .on("postgres_changes", { event: "INSERT", schema: "public", table: "companies" }, () => {
-        void loadCompanies();
-      })
-      .subscribe();
-    return () => {
-      void supabase.removeChannel(kanal);
-    };
-  }, [isSignedIn, supabase, loadMine, loadCompanies]);
+  useLive(supabase, "netzwerk", ["connections"], loadMine, isSignedIn);
+  useLive(supabase, "netzwerk-firmen", ["companies"], loadCompanies, isSignedIn);
 
-  /**
-   * Ein Netz reisst. Wer den Tab zurueckholt, soll den Stand von jetzt
-   * sehen und nicht den von vorhin — das faengt auch die Loeschungen ab,
-   * auf die oben bewusst nicht gehorcht wird.
-   */
-  useEffect(() => {
-    function frisch() {
-      if (document.visibilityState === "visible") {
-        void loadMine();
-        void loadCompanies();
-      }
-    }
-    document.addEventListener("visibilitychange", frisch);
-    window.addEventListener("focus", frisch);
-    return () => {
-      document.removeEventListener("visibilitychange", frisch);
-      window.removeEventListener("focus", frisch);
-    };
+  const beides = useCallback(() => {
+    void loadMine();
+    void loadCompanies();
   }, [loadMine, loadCompanies]);
+  useFrischBeiRueckkehr(beides);
 
   const connect = useCallback(
     async (targetId: string) => {
@@ -254,7 +220,7 @@ export function useNetwork() {
     [supabase, loadMine],
   );
 
-  /** Ablehnen einer Anfrage — und zugleich das Zurückziehen einer eigenen. */
+  /** Ablehnen einer Anfrage — und zugleich das Zurueckziehen einer eigenen. */
   const remove = useCallback(
     async (connId: string) => {
       setFehler(null);

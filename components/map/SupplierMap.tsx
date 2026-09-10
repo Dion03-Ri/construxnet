@@ -6,6 +6,7 @@ import {
   MapPin, ShieldCheck, Info, Loader2, Eye, EyeOff, RefreshCw, Building2, Factory, Users,
 } from "lucide-react";
 import { useSupabaseBrowser } from "@/lib/supabase-browser";
+import { useFrischBeiRueckkehr, useLive } from "@/lib/live";
 import { setMapConsent, refreshMapLocation, type MapLocation } from "@/app/map/actions";
 import { CANTON_CENTROID, CITY_GAZETTEER } from "@/data/chMap";
 import type { MapPoint } from "@/components/map/LeafletMap";
@@ -131,6 +132,14 @@ export default function SupplierMap({
   useEffect(() => {
     load();
   }, [load]);
+
+  /**
+   * Standorte kommen live an. Stimmt eine Firma dem Karteneintrag zu oder
+   * laesst sie ihre Adresse neu verorten, ist das ein UPDATE auf
+   * `companies` — die Nadel erscheint, ohne dass jemand neu laedt.
+   */
+  useLive(supabase, "karte", ["companies"], load);
+  useFrischBeiRueckkehr(load);
 
   function toggleConsent() {
     const next = !consent;
@@ -300,10 +309,12 @@ export default function SupplierMap({
         {exact > 0 ? (
           <>
             <ShieldCheck className="mt-px h-3.5 w-3.5 shrink-0 text-brand" />
-            Gold = Baustoffwerk, Navy = Bauunternehmen; grosse Punkte sind
-            verifiziert, blasse stehen nur ungefähr. Standorte kommen aus der
-            amtlichen Adresssuche von swisstopo. Zoomen über die Schaltflächen
-            links oben — Scrollen bewegt die Seite.
+            Gold = Baustoffwerk, Navy = Bauunternehmen; ein Haken in der Nadel
+            heisst verifiziert, blasse Nadeln stehen nur ungefähr. Die Firmennamen
+            erscheinen, sobald du hineinzoomst — darüber wären es zu viele
+            übereinander; bis dahin nennt sie ein Zeiger auf der Nadel. Standorte
+            kommen aus der amtlichen Adresssuche von swisstopo. Zoomen über die
+            Schaltflächen links oben — Scrollen bewegt die Seite.
           </>
         ) : (
           <>
