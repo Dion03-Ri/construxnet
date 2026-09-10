@@ -1642,6 +1642,32 @@ Ohne diese Trennung nennt ein Werk seinen Rückzug „Ausfall" und ist raus.
 Datenbank wird `awarded_supplier_id` gesetzt, und das war's. Liefert er
 nicht, passiert nichts, während die Besteller festsitzen.
 
+## 6b. Vier Zeilenregeln waren kaputt — gefunden am 10.09.2026
+
+Beim Durchsehen des Ganzen aufgefallen, und es war ein Fehler in der
+laufenden Seite. Vier Regeln aus Migration 01 prüften die eigene Firma über
+`SELECT id FROM companies WHERE clerk_user_id = auth.jwt() ->> 'sub'`.
+Zeilenregeln laufen mit den Rechten des AUFRUFERS — und `clerk_user_id` ist
+seit Migration 19 gesperrt. Die Regeln lieferten deshalb nicht „keine
+Zeilen", sondern `permission denied for table companies`:
+
+    bundle_participations · sia_contracts · subscriptions · supplier_bids
+
+**Warum es niemandem auffiel:** Das meiste liest über SECURITY-DEFINER-
+Funktionen, die davon nicht betroffen sind. Und wo direkt gelesen wurde,
+verschluckte die Anwendung den Fehler — `(data ?? [])` macht aus einer
+Absage eine leere Liste. Auf `/pools` blieb „Meine" einfach leer, und
+nichts wurde rot.
+
+Migration 41 ersetzt alle vier durch `current_company_id()`. Die
+Fehlerverschluckung in `lib/bundles.ts` ist ebenfalls behoben.
+`kontrolle.sql` prüft, dass keine Regel auf diesen vier Tabellen wieder
+`clerk_user_id` liest.
+
+**Lehre, die über diesen Fall hinausgeht:** Ein `?? []` auf einer
+Datenbankantwort ist keine Vorsicht, sondern eine Vertuschung. Wo eine
+Absage möglich ist, gehört sie sichtbar gemacht.
+
 ## 7. NIEMAND LIEST IN CHATS
 
 **Harte Regel, ohne Ausnahme.** Nachrichteninhalte werden nicht
@@ -1767,8 +1793,27 @@ Bündel." Sonst sucht er ewig nach dem Haken.
    zwei Baustellen im selben Bündel eine davon verloren. Die Plan-Grenze
    zählt deshalb jetzt `DISTINCT bundle_id`, sonst hätte diese Migration
    eine Grenze verschärft, die niemand angefasst hat.
-3. Kapazität
-4. Teil-Gebote und Zuteilung
+3. ~~Kapazität~~ — **GEBAUT**, Migration 38/39. `lieferant_kapazitaet`
+   (Menge je Material und Monat), `kapazitaets_bindung` mit dem Lebenslauf
+   RESERVIERT → GEBUCHT → ERLEDIGT, `kapazitaet_pruefen()` und das
+   Lieferprofil in der Oberfläche.
+
+   **Geprüft wird gegen die BUCHUNGEN, nicht gegen Reservierungen** — an
+   beiden Stellen. Zuerst war der Zuschlag streng gebaut (auch gegen
+   eigene Reservierungen), und das war falsch: Ein Werk mit 300 m³ bot auf
+   zwei Bündel zu je 250; beim Zuschlag des ersten sah die strenge Prüfung
+   die Reservierung des zweiten und wies ab — das erste Bündel scheiterte,
+   obwohl das Werk es gefahren hätte. Richtig ist die Reihenfolge: Jeder
+   Zuschlag verbraucht Kapazität, der nächste sieht sie als belegt und
+   geht ans nächstbeste Gebot. Nachgestellt und bestätigt.
+
+   `award_bundle()` vermerkt am übergangenen Gebot, WARUM — sonst wäre der
+   Zuschlag für das günstigere Werk unerklärlich.
+
+4. Teil-Gebote und Zuteilung — **NOCH OFFEN.** `place_bid` nimmt
+   `p_anteil_pct` und `p_puffer_pct` schon entgegen und weist alles unter
+   100 % ab, damit ein Teilgebot nicht versehentlich das ganze Bündel
+   gewinnt.
 5. ~~Lieferantenprüfung~~ — **TEILWEISE GEBAUT**, Migration 37.
    `lieferantenkonten` mit Antrag, Zulassung und Freifrist;
    `bietfaehig()` als Rechnung statt Häkchen; `place_bid()` prüft sie

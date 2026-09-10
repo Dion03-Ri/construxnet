@@ -20,7 +20,11 @@ import {
   useMyBids,
   placeBid,
   holeMindestgebot,
+  holeKapazitaetFuer,
+  holeAusschreibungsBaustellen,
   type Mindestgebot,
+  type KapazitaetsZeile,
+  type AusschreibungsBaustelle,
   deadlineLabel,
   type Bundle,
 } from "@/lib/bundles";
@@ -56,6 +60,12 @@ export default function TendersPanel() {
      `app_settings`, und eine zweite Rechnung hier wäre eine zweite
      Wahrheit. */
   const [minimum, setMinimum] = useState<Mindestgebot | null>(null);
+  /* Die Mengenkurve mit der eigenen Kapazität, und die grobe Lage der
+     Baustellen. Beides braucht ein Werk, um seinen Aufwand zu rechnen —
+     500 m³ in einem Monat sind etwas anderes als über vier, und die
+     Fahrt ins Nachbardorf etwas anderes als über den Berg. */
+  const [kurve, setKurve] = useState<KapazitaetsZeile[]>([]);
+  const [orte, setOrte] = useState<AusschreibungsBaustelle[]>([]);
 
   const myBid = useMemo(() => {
     const m = new Map<string, (typeof bids)[number]>();
@@ -206,6 +216,57 @@ export default function TendersPanel() {
                         </div>
                       )}
 
+                      {/* Wann wie viel gebraucht wird — und ob du das fahren
+                          kannst. Ohne diese Kurve bietet ein Werk blind auf
+                          eine Jahreszahl. */}
+                      {kurve.length > 0 && (
+                        <div className="rounded-md border border-white/[0.12] bg-white/[0.03] px-3 py-2.5 text-[12.5px]">
+                          <div className="font-semibold text-white">Menge über die Monate</div>
+                          <ul className="mt-1.5 space-y-1">
+                            {kurve.map((m) => {
+                              const eng = m.gebraucht > m.frei_gebucht;
+                              return (
+                                <li key={m.monat} className="flex flex-wrap items-baseline justify-between gap-x-4">
+                                  <span className="text-white/[0.72]">
+                                    {new Date(m.monat).toLocaleDateString("de-CH", { month: "long", year: "numeric" })}
+                                  </span>
+                                  <span className={cn("tabular-nums", eng ? "text-rose-300" : "text-white")}>
+                                    {m.gebraucht.toLocaleString("de-CH")} {b.unit}
+                                    <span className="text-white/[0.5]">
+                                      {" "}· frei {m.frei_gebucht.toLocaleString("de-CH")}
+                                      {m.frei_offen !== m.frei_gebucht
+                                        ? ` (offene Gebote: ${(m.frei_gebucht - m.frei_offen).toLocaleString("de-CH")})`
+                                        : ""}
+                                    </span>
+                                  </span>
+                                </li>
+                              );
+                            })}
+                          </ul>
+                        </div>
+                      )}
+
+                      {orte.length > 0 && (
+                        <div className="rounded-md border border-white/[0.12] bg-white/[0.03] px-3 py-2.5 text-[12.5px]">
+                          <div className="font-semibold text-white">
+                            {orte.length} {orte.length === 1 ? "Baustelle" : "Baustellen"}
+                          </div>
+                          <ul className="mt-1.5 space-y-1">
+                            {orte.map((o, i) => (
+                              <li key={i} className="flex flex-wrap items-baseline justify-between gap-x-4">
+                                <span className="text-white/[0.72]">{o.lage}</span>
+                                <span className="tabular-nums text-white/[0.72]">
+                                  {o.menge.toLocaleString("de-CH")} {b.unit}
+                                </span>
+                              </li>
+                            ))}
+                          </ul>
+                          <p className="mt-1.5 text-[11px] leading-relaxed text-white/[0.5]">
+                            Wer dort baut, siehst du erst mit dem Zuschlag.
+                          </p>
+                        </div>
+                      )}
+
                       <div className="grid grid-cols-2 gap-3">
                         <div>
                           <label className="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-white/[0.56]">
@@ -335,7 +396,11 @@ export default function TendersPanel() {
                         setListPrice(mine ? String(mine.list_price_net) : "");
                         setFormError(null);
                         setMinimum(null);
+                        setKurve([]);
+                        setOrte([]);
                         void holeMindestgebot(supabase, b.id).then(setMinimum);
+                        void holeKapazitaetFuer(supabase, b.id).then(setKurve);
+                        void holeAusschreibungsBaustellen(supabase, b.id).then(setOrte);
                       }}
                       className="inline-flex items-center gap-1.5 rounded-md bg-brand px-3.5 py-2 text-[12.5px] font-semibold text-navy-900 transition-colors hover:bg-brand/100"
                     >

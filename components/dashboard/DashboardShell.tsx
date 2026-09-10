@@ -48,6 +48,9 @@ import {
   Minus,
   Calculator,
   ShieldCheck,
+  Trophy,
+  Factory,
+  Receipt,
 } from "lucide-react";
 import type { Company } from "@/lib/company";
 import { useSupabaseBrowser } from "@/lib/supabase-browser";
@@ -55,6 +58,9 @@ import { useProjects, projectLabel } from "@/lib/projects";
 import ProjectsPanel from "@/components/dashboard/ProjectsPanel";
 import RequestsPanel from "@/components/dashboard/RequestsPanel";
 import MeineGebotePanel from "@/components/dashboard/MeineGebotePanel";
+import ZuschlaegePanel from "@/components/dashboard/ZuschlaegePanel";
+import LieferprofilPanel from "@/components/dashboard/LieferprofilPanel";
+import AbrechnungPanel from "@/components/dashboard/AbrechnungPanel";
 import LieferantenkontoPanel from "@/components/dashboard/LieferantenkontoPanel";
 import MaterialsPanel from "@/components/dashboard/MaterialsPanel";
 import TendersPanel from "@/components/dashboard/TendersPanel";
@@ -161,6 +167,9 @@ const NAV_ALL = [
   { key: "orders", label: "Bestellungen", icon: ShoppingCart, buyerOnly: true },
   { key: "tenders", label: "Ausschreibungen", icon: Gavel, supplierOnly: true },
   { key: "gebote", label: "Meine Gebote", icon: Gavel, supplierOnly: true },
+  { key: "zuschlaege", label: "Zugeschlagen", icon: Trophy, supplierOnly: true },
+  { key: "lieferprofil", label: "Lieferprofil", icon: Factory, supplierOnly: true },
+  { key: "abrechnung", label: "Abrechnung", icon: Receipt, supplierOnly: true },
   { key: "lieferantenkonto", label: "Lieferantenkonto", icon: ShieldCheck, supplierOnly: true },
   { key: "contracts", label: "SIA-118 Verträge", icon: FileText },
   { key: "reports", label: "Berichte", icon: BarChart3 },
@@ -1345,6 +1354,9 @@ export default function DashboardShell({ company }: { company: Company }) {
               {view === "orders" && <OrdersPanel companyName={company.company_name} />}
               {view === "tenders" && isSupplier && <TendersPanel />}
               {view === "gebote" && isSupplier && <MeineGebotePanel />}
+              {view === "zuschlaege" && isSupplier && <ZuschlaegePanel />}
+              {view === "lieferprofil" && isSupplier && <LieferprofilPanel />}
+              {view === "abrechnung" && isSupplier && <AbrechnungPanel />}
               {view === "lieferantenkonto" && isSupplier && <LieferantenkontoPanel />}
               {view === "contracts" && <ContractsPanel />}
               {view === "reports" && <ReportsPanel role={role} />}
