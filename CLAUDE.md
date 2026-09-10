@@ -1339,6 +1339,71 @@ Ein Werk, das auch einkauft, ist in seiner Bestellerrolle ganz normal auf
 Gratis oder Pro. Die Rollen liegen nebeneinander, sie schliessen sich nicht
 aus.
 
+**Das Lieferantenkonto enthält NICHT die allgemeinen Stufen.** Auch das
+wurde erwogen — „im Lieferantenkonto ist alles drin, was die Seite kann" —
+und rechnet sich nicht: Enterprise kostet CHF 489 im Monat, also 5'868 im
+Jahr; das Lieferantenkonto im ersten Jahr nichts und danach 1'200, die von
+den Provisionen aufgefressen werden. Ein Werk bekäme Enterprise faktisch
+gratis, während das Bauunternehmen im selben Bündel voll zahlt. Das fällt
+auf, und zwar dem Besteller, der die KI-Funktionen bezahlt, die das Werk
+umsonst hat.
+
+Ein Werk löst also **normale Abos wie jede andere Firma**; wenn es die
+Lizenz zum Bieten will, kommt das Lieferantenkonto dazu.
+
+Wenn Werke später belohnt werden sollen, dann gezielt und verdient — „ab
+CHF X Provision im Jahr ist Pro inklusive" — sobald man weiss, was ein Werk
+im Schnitt umsetzt. Nicht vorher verschenkt.
+
+## 1d. ZUGELASSEN, NICHT GEKAUFT
+
+Der wichtigste Satz des ganzen Modells, vom Auftraggeber gefunden:
+
+> **Das Lieferantenkonto kann man nicht kaufen. Man wird dazu zugelassen.**
+
+Läge das Bieten hinter einer Zahlung, würde irgendwann jemand zahlen, um
+hineinzukommen — ein Bauunternehmen kauft das Lieferantenkonto und bietet
+mit. Das ganze Verfahren hinge an einer Kreditkarte. Hinter einem Nachweis
+kann Geld nichts ausrichten.
+
+**Die Reihenfolge ist deshalb: nachweisen → zugelassen werden → ab Jahr
+zwei zahlen.** Nie umgekehrt. Eine Konzession, kein Produkt. In der
+Datenbank heisst das: der Zahlungsvorgang setzt die Bietfähigkeit NICHT —
+er setzt nur das Konto auf bezahlt. Freigegeben wird von Hand.
+
+### Der Nachweis, dass es wirklich ein Werk ist
+
+Zwei Dinge tragen die Entscheidung:
+
+**1. Die Branchennummer im Register.** Ein Bauunternehmen steht unter
+Hoch-, Tief- oder Ausbau; ein Baustoffwerk unter Kies- und Sandgewinnung,
+Zement, Betonerzeugnissen oder Baustoffhandel. Automatisch prüfbar, trennt
+die grosse Mehrheit sofort — aber selbst deklariert und manchmal veraltet,
+also ein starkes Indiz und kein Beweis.
+
+**2. Ein Nachweis, dass tatsächlich produziert wird.** Hier hat die Branche
+etwas, das kein Bauunternehmen vorlegen kann: ein Betonwerk braucht eine
+**Konformitätsbescheinigung nach SN EN 206** (zertifizierte werkseigene
+Produktionskontrolle). Wer Beton verkauft, hat dieses Papier; wer keins
+hat, verkauft keinen Beton. Für Kies und Sand ist es die Abbaubewilligung,
+für Händler der Handelsregisterzweck plus Referenzen.
+
+Das ist der beste Filter, den es gibt: ein Dokument, das im normalen
+Geschäft ohnehin existiert und das man nicht mal eben beschafft.
+
+**Am Ende steht trotzdem ein Mensch.** Die Dokumente geben ihm etwas zu
+beurteilen — entscheiden muss er.
+
+**Gesperrt wird nicht die Rolle, verlangt wird der Beweis.** Ein
+Bauunternehmen, das tatsächlich ein eigenes Betonwerk betreibt — gibt es,
+gerade bei den grösseren —, erbringt diese Nachweise und darf dann auch
+bieten. Zu Recht. Wer nach Rolle sperrt, schliesst legitime Teilnehmer aus
+und wird trotzdem von einem geschickten Betrüger umgangen.
+
+**NICHT VERIFIZIERT:** der genaue Name der SN-EN-206-Bescheinigung, die
+zuständigen Zertifizierungsstellen und die Branchennummern des Bundes.
+Nachschlagen, bevor daraus eine Dokumentenliste in der Anmeldung wird.
+
 **Die Linie, die nicht überschritten werden darf:** Eine Stufe darf
 **niemals** beeinflussen, wer ein Bündel gewinnt. Heisst „Pro" irgendwann
 bessere Chancen beim Zuschlag, ist die verdeckte Ausschreibung
