@@ -602,11 +602,14 @@ sechsundzwanzig Kantone gehören nicht als Wörterband auf die Seite.
 
 ## Vor dem Launch — Pflicht
 Diese Punkte müssen erledigt sein, bevor echte Firmen darauf arbeiten:
-0. **Preismodell bestätigen.** Der Abschnitt steht auf `/` und ist gebaut
-   (`components/home/Pricing.tsx`), aber **die Zahlen 0 / 79 / 189 sind
-   Platzhalter** — ausdrücklich als Testwerte vereinbart, um den Aufbau zu
-   sehen. Sie dürfen NICHT in Werbung, AGB oder Verträge übernommen werden,
-   bevor Folgendes entschieden ist:
+0. **Preismodell — die Zahlen stehen, der Zuschnitt nicht ganz.**
+   0 / 129 / 489 CHF pro Monat, vom Auftraggeber am 09.09.2026 festgelegt
+   und in `data/plans.ts` hinterlegt (die einzige Quelle; `/` liest daraus).
+   Dieser Punkt hat vorher noch „0 / 79 / 189 sind Platzhalter" behauptet —
+   das war überholt und ist am 10.09.2026 richtiggestellt worden.
+
+   Offen bleiben die Fragen zum Zuschnitt, und sie gehören beantwortet,
+   bevor Preise in Werbung, AGB oder Verträge gehen:
    · Was kostet Pro pro Monat (und pro Jahr, falls es das gibt)?
    · Was ist in der Gratisstufe enthalten, was nur in Pro?
    · Gibt es eine Stufe für Lieferanten/Baustoffwerke, und wenn ja welche?
