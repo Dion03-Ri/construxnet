@@ -31,7 +31,8 @@ funktionen AS (
       ('konto_schliessen_intern',   'konto_schliessen_intern(uuid)',                    'Konto anonymisieren, Migration 30'),
       ('close_own_company_account', 'close_own_company_account()',                      'eigenes Konto schliessen, Migration 30'),
       ('hat_geschaeft_mit',         'hat_geschaeft_mit(uuid)',                          'Sichtbarkeit geschlossener Firmen, Migration 30'),
-      ('laufende_bindung',          'laufende_bindung(uuid)',                           'woran eine Firma hängt, Migration 31')
+      ('laufende_bindung',          'laufende_bindung(uuid)',                           'woran eine Firma hängt, Migration 31'),
+      ('meine_bindung',             'meine_bindung()',                                  'die eigene Bindung, Migration 32')
     ) AS f(name, sig, zweck)
 ),
 spalten AS (
@@ -56,9 +57,17 @@ austritt AS (
          CASE WHEN pg_get_functiondef('withdraw_demand(uuid)'::regprocedure) LIKE '%Sammelphase%'
               THEN 'ok' ELSE 'FEHLT' END AS stand,
          'Austritt nur in der Sammelphase, Migration 31' AS soll
+),
+rechte AS (
+  SELECT 'laufende_bindung: nicht für den Browser' AS was,
+         CASE WHEN to_regprocedure('laufende_bindung(uuid)') IS NULL THEN 'FEHLT'
+              WHEN has_function_privilege('authenticated', 'laufende_bindung(uuid)', 'EXECUTE')
+              THEN 'FEHLT' ELSE 'ok' END AS stand,
+         'fremde Firmen nicht abfragbar, Migration 32' AS soll
 )
 SELECT stand, was, soll FROM schluessel
 UNION ALL SELECT stand, was, soll FROM funktionen
 UNION ALL SELECT stand, was, soll FROM spalten
 UNION ALL SELECT stand, was, soll FROM austritt
+UNION ALL SELECT stand, was, soll FROM rechte
 ORDER BY stand DESC, was;

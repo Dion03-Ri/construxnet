@@ -1,3 +1,4 @@
+import Link from "next/link";
 import LegalPage, { H2, H3, P, UL, LI, Fill, Ref } from "@/components/legal/LegalPage";
 import { LEGAL } from "@/data/legal";
 
@@ -249,8 +250,9 @@ export default function DatenschutzPage() {
         deine Teilnahme, solange gesammelt wird.
       </P>
       <P>
-        Zum Schliessen genügt eine E-Mail an <Fill value={LEGAL.email} />. Melde dich auch
-        dann, wenn du nur einzelne Angaben gelöscht haben möchtest.
+        Schliessen kannst du dein Konto selbst, unter <Link className="text-brand hover:underline" href="/konto">Konto</Link>.
+        Eine E-Mail an <Fill value={LEGAL.email} /> geht ebenso — melde dich dort auch dann,
+        wenn du nur einzelne Angaben gelöscht haben möchtest.
       </P>
 
       <H2>7. Deine Rechte</H2>
