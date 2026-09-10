@@ -1038,6 +1038,35 @@ weiterhin unbestaetigt.
 
 ---
 
+## UID-Nummern zum Testen
+
+Die Anmeldung prüft die UID rechnerisch (`lib/uid.ts`, Gewichte 5-4-3-2-7-6-5-4,
+Modulo 11). Ausgedachte Nummern fallen durch — zum Testen mit mehreren Konten
+braucht es deshalb Nummern mit richtiger Prüfziffer:
+
+```
+CHE-999.000.019
+CHE-999.000.025
+CHE-999.000.031
+```
+
+Reserve, falls mehr gebraucht wird: `CHE-999.000.048`, `CHE-999.000.054`,
+`CHE-999.000.060`, `CHE-999.000.077`, `CHE-999.000.083`.
+
+**Warum der 999er-Bereich.** Das Register vergibt aufsteigend ab
+`CHE-100.000.000` und steht heute bei rund 400 Millionen. Eine 999er-Nummer
+ist also frei und kann keiner echten Firma gehören — genau das war die
+Bedingung: keine erfundenen Angaben auf den Namen einer echten Firma.
+
+`uid_number` ist UNIQUE: jede Nummer geht nur einmal. Jedes Testkonto
+braucht ausserdem einen eigenen Login (eigene E-Mail bei Clerk) — die
+Firmenzeile hängt an `clerk_user_id`.
+
+**Vor dem Launch aufräumen:** Testfirmen stehen im offenen Verzeichnis.
+Entweder vorher schliessen (`/konto`) oder die Zeilen entfernen — Letzteres
+schlägt fehl, sobald Nachrichten daran hängen (`RESTRICT`, Migration 30),
+dann bleibt nur das Schliessen.
+
 # OFFENE AUFTRÄGE DES NUTZERS (Stand: siehe letzten Commit)
 
 Vom Nutzer ausdrücklich auf die Todo-Liste gegeben. Nichts davon ist
