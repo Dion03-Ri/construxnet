@@ -30,6 +30,18 @@ die Rollen `anon`/`authenticated`/`service_role`, `auth.jwt()`, das Schema
 `storage` mit den drei Pfadfunktionen, und die Publikation
 `supabase_realtime`.
 
+## Ist in Supabase wirklich alles drin?
+
+`kontrolle.sql` im Supabase-SQL-Editor ausfuehren. Liest nur, aendert
+nichts, und gibt sechzehn Zeilen zurueck — alle muessen `ok` sagen.
+Steht irgendwo `FEHLT`, ist die zugehoerige Migration nicht oder nur
+teilweise eingespielt.
+
+Die Abfrage ist gegengeprueft: mit absichtlich entfernter Funktion,
+geloeschter Spalte und auf CASCADE zurueckgedrehtem Fremdschluessel
+meldet sie genau diese drei als `FEHLT`. Eine Kontrolle, die immer `ok`
+sagt, waere schlimmer als keine.
+
 ## Warum es das gibt
 
 Migration 30 ging beim Auftraggeber nicht durch: sie hängte einen
