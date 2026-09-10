@@ -5,6 +5,7 @@ import Link from "next/link";
 import {
   BadgeCheck,
   Search,
+  AlertTriangle,
   Loader2,
   UserPlus,
   Check,
@@ -105,7 +106,7 @@ const TABS = [
 
 export default function NetworkHub() {
   const {
-    companies, conns, myCompanyId, me, loading, isSignedIn,
+    companies, conns, myCompanyId, me, loading, isSignedIn, fehler,
     connected, incoming, outgoing,
     connect, accept, remove,
   } = useNetwork();
@@ -233,6 +234,15 @@ export default function NetworkHub() {
           dritte war der Grund fuer die Enge. */}
       <div className="grid grid-cols-1 gap-x-16 gap-y-14 pt-12 lg:grid-cols-[minmax(0,1fr)_270px]">
         <div className="min-w-0 space-y-12">
+        {/* Ein misslungener Versuch muss etwas sagen. Vorher tat ein
+            fehlgeschlagenes „Vernetzen" schlicht nichts. */}
+        {fehler && (
+          <p className="flex items-start gap-2 border-l-2 border-rose-400/60 py-2 pl-4 text-[13px] text-rose-300">
+            <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />
+            {fehler}
+          </p>
+        )}
+
         {/* Verbindungen verwalten */}
         <div className="border-t border-white/[0.12]">
           <div className="no-scrollbar flex gap-7 overflow-x-auto border-b border-white/[0.12]">

@@ -1,90 +1,20 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
-import { useAuth } from "@clerk/nextjs";
-import { BadgeCheck, Check, Loader2, Inbox, MapPin } from "lucide-react";
-import { useSupabaseBrowser } from "@/lib/supabase-browser";
-import { fetchMyCompanyId } from "@/lib/myCompany";
-import { cn } from "@/lib/utils";
+import { AlertTriangle, BadgeCheck, Check, Loader2, Inbox, MapPin } from "lucide-react";
+import { ROLE_LABEL, initials, useNetwork } from "@/lib/network";
 
-type Company = {
-  id: string;
-  company_name: string;
-  role: string;
-  city: string | null;
-  canton: string | null;
-  verified: boolean;
-  logo_url: string | null;
-};
-type Req = { connId: string; company: Company };
-
-const ROLE_LABEL: Record<string, string> = { BUYER: "Bauunternehmen", SUPPLIER: "Baustoffwerk / Lieferant" };
-
-function initials(name: string) {
-  return name.split(" ").slice(0, 2).map((w) => w[0]).join("").toUpperCase();
-}
-
+/**
+ * Die eingegangenen Anfragen auf /network/requests.
+ *
+ * Diese Ansicht hatte bis eben ihre EIGENE Abfrage — dieselbe Frage, zweimal
+ * anders gestellt. Zwei Wahrheiten sind eine zu viel: die eine Liste zeigte
+ * eine Anfrage, die andere nicht, je nachdem, welche gerade geladen hatte.
+ * Jetzt liest sie aus `useNetwork()` wie die Übersicht auch — und bekommt
+ * damit dasselbe Live-Verhalten und dieselben Fehlermeldungen.
+ */
 export default function ReceivedRequests() {
-  const { isSignedIn, userId } = useAuth();
-  const supabase = useSupabaseBrowser();
-  const [reqs, setReqs] = useState<Req[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  const load = useCallback(async () => {
-    setLoading(true);
-    if (!isSignedIn || !userId) {
-      setReqs([]);
-      setLoading(false);
-      return;
-    }
-    const mineId = await fetchMyCompanyId(supabase);
-    if (!mineId) {
-      setReqs([]);
-      setLoading(false);
-      return;
-    }
-    const { data: rows } = await supabase
-      .from("connections")
-      .select("id, company_id_a, company_id_b, status, requested_by")
-      .eq("status", "PENDING");
-    const incoming = ((rows ?? []) as { id: string; company_id_a: string; company_id_b: string; requested_by: string | null }[])
-      .filter((r) => (r.company_id_a === mineId || r.company_id_b === mineId) && r.requested_by !== mineId);
-    if (incoming.length === 0) {
-      setReqs([]);
-      setLoading(false);
-      return;
-    }
-    const otherIds = incoming.map((r) => (r.company_id_a === mineId ? r.company_id_b : r.company_id_a));
-    const { data: comps } = await supabase
-      .from("companies")
-      .select("id, company_name, role, city, canton, verified, logo_url")
-      .in("id", otherIds);
-    const byId = new Map(((comps ?? []) as Company[]).map((c) => [c.id, c]));
-    setReqs(
-      incoming
-        .map((r) => {
-          const other = r.company_id_a === mineId ? r.company_id_b : r.company_id_a;
-          const company = byId.get(other);
-          return company ? { connId: r.id, company } : null;
-        })
-        .filter(Boolean) as Req[],
-    );
-    setLoading(false);
-  }, [isSignedIn, userId, supabase]);
-
-  useEffect(() => {
-    load();
-  }, [load]);
-
-  async function accept(id: string) {
-    await supabase.from("connections").update({ status: "CONNECTED" }).eq("id", id);
-    load();
-  }
-  async function ignore(id: string) {
-    await supabase.from("connections").delete().eq("id", id);
-    load();
-  }
+  const { incoming, accept, remove, loading, fehler } = useNetwork();
 
   if (loading) {
     return (
@@ -94,7 +24,7 @@ export default function ReceivedRequests() {
     );
   }
 
-  if (reqs.length === 0) {
+  if (incoming.length === 0) {
     return (
       <div className="flex flex-col items-center gap-3 py-14 text-center">
         <span className="grid h-12 w-12 place-items-center rounded-full bg-slate-100 text-slate-500">
@@ -104,7 +34,16 @@ export default function ReceivedRequests() {
         <p className="max-w-sm text-[13px] text-slate-600">
           Wenn dir Firmen eine Vernetzungs-Anfrage senden, erscheinen sie hier zum Annehmen.
         </p>
-        <Link href="/network" className="mt-1 inline-flex items-center gap-1.5 rounded-md bg-brand px-4 py-2 text-sm font-semibold text-navy-950 transition-colors hover:bg-brand-500">
+        {fehler && (
+          <p className="flex items-start gap-2 text-[13px] text-rose-600">
+            <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />
+            {fehler}
+          </p>
+        )}
+        <Link
+          href="/network"
+          className="mt-1 inline-flex items-center gap-1.5 rounded-md bg-brand px-4 py-2 text-sm font-semibold text-navy-950 transition-colors hover:bg-brand-500"
+        >
           Firmen entdecken
         </Link>
       </div>
@@ -112,46 +51,66 @@ export default function ReceivedRequests() {
   }
 
   return (
-    <ul className="divide-y divide-slate-200">
-        {reqs.map(({ connId, company }) => (
-          <li key={connId} className="flex items-center gap-3 py-3.5 first:pt-0 last:pb-0">
+    <>
+      {fehler && (
+        <p className="mb-3 flex items-start gap-2 border-l-2 border-rose-400 py-2 pl-3 text-[13px] text-rose-600">
+          <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />
+          {fehler}
+        </p>
+      )}
+      <ul className="divide-y divide-slate-200">
+        {incoming.map(({ company, conn }) => (
+          <li key={conn.id} className="flex items-center gap-3 py-3.5 first:pt-0 last:pb-0">
             <Link
               href={`/company/${company.id}`}
               className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full bg-slate-100 text-sm font-semibold text-slate-600"
             >
               {company.logo_url ? (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img src={company.logo_url} alt={company.company_name} className="h-full w-full object-cover" />
+                <img
+                  src={company.logo_url}
+                  alt={company.company_name}
+                  className="h-full w-full object-cover"
+                />
               ) : (
                 initials(company.company_name)
               )}
             </Link>
             <div className="min-w-0 flex-1">
-              <Link href={`/company/${company.id}`} className="flex items-center gap-1 truncate text-sm font-semibold text-slate-900 transition-colors hover:text-brand-700">
+              <Link
+                href={`/company/${company.id}`}
+                className="flex items-center gap-1 truncate text-sm font-semibold text-slate-900 transition-colors hover:text-brand-700"
+              >
                 {company.company_name}
                 {company.verified && <BadgeCheck className="h-4 w-4 shrink-0 text-brand-700" />}
               </Link>
               <p className="flex items-center gap-1 truncate text-xs text-slate-500">
                 {ROLE_LABEL[company.role] ?? company.role}
-                {company.city && <><span>·</span><MapPin className="h-3 w-3" /> {company.city}</>}
+                {company.city && (
+                  <>
+                    <span>·</span>
+                    <MapPin className="h-3 w-3" /> {company.city}
+                  </>
+                )}
               </p>
             </div>
             <button
               type="button"
-              onClick={() => ignore(connId)}
+              onClick={() => remove(conn.id)}
               className="rounded-md border border-slate-200 px-3.5 py-1.5 text-sm font-semibold text-slate-600 transition-colors hover:bg-slate-50"
             >
               Ignorieren
             </button>
             <button
               type="button"
-              onClick={() => accept(connId)}
+              onClick={() => accept(conn.id)}
               className="inline-flex items-center gap-1 rounded-md bg-brand px-3.5 py-1.5 text-sm font-semibold text-navy-950 transition-colors hover:bg-brand-500"
             >
               <Check className="h-4 w-4" /> Annehmen
             </button>
           </li>
         ))}
-    </ul>
+      </ul>
+    </>
   );
 }

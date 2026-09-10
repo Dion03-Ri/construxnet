@@ -66,6 +66,18 @@ export const SWISS_CANTONS: { code: string; name: string }[] = [
 ];
 
 
+/** Dieselben Spalten fuer Verzeichnis und Gegenseite — sonst zwei Wahrheiten. */
+const NET_SPALTEN =
+  "id, company_name, uid_number, role, canton, city, verified, logo_url, bio, created_at";
+
+/** Datenbankfehler in einen Satz, den man lesen kann. */
+function klartext(code: string | undefined, nachricht: string): string {
+  if (code === "23505") return "Mit dieser Firma besteht bereits eine Anfrage oder eine Verbindung.";
+  if (code === "42501") return "Das darf dieses Konto nicht. Ist das Profil vollstaendig angelegt?";
+  if (code === "23514") return "Diese Verbindung ist so nicht erlaubt.";
+  return nachricht || "Unbekannter Fehler.";
+}
+
 export function initials(name: string) {
   return name.split(" ").slice(0, 2).map((w) => w[0]).join("").toUpperCase();
 }
@@ -79,7 +91,13 @@ export function useNetwork() {
   const supabase = useSupabaseBrowser();
 
   const [companies, setCompanies] = useState<NetCompany[]>([]);
+  // Die Firmen der Gegenseite, einzeln geholt. Frueher wurden sie im
+  // Verzeichnis gesucht — stand die Firma dort nicht (weil das Verzeichnis
+  // aelter war als die Anmeldung der Gegenseite), fiel die ANFRAGE lautlos
+  // aus der Liste. Genau so verschwanden Anfragen spurlos.
+  const [partners, setPartners] = useState<Record<string, NetCompany>>({});
   const [conns, setConns] = useState<Record<string, ConnState>>({});
+  const [fehler, setFehler] = useState<string | null>(null);
   const [myCompanyId, setMyCompanyId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -114,6 +132,16 @@ export function useNetwork() {
       };
     }
     setConns(map);
+
+    const fremde = Object.keys(map);
+    if (fremde.length === 0) {
+      setPartners({});
+      return;
+    }
+    const { data: gegen } = await supabase.from("companies").select(NET_SPALTEN).in("id", fremde);
+    if (gegen) {
+      setPartners(Object.fromEntries((gegen as NetCompany[]).map((c) => [c.id, c])));
+    }
   }, [isSignedIn, userId, supabase]);
 
   // Nur beim ersten Mal einen Ladezustand zeigen. Sonst leert ein stiller
@@ -125,7 +153,7 @@ export function useNetwork() {
     if (!loadedOnce.current) setLoading(true);
     const { data } = await supabase
       .from("companies")
-      .select("id, company_name, uid_number, role, canton, city, verified, logo_url, bio, created_at")
+      .select(NET_SPALTEN)
       .neq("role", "ADMIN")
       .order("verified", { ascending: false })
       .order("company_name", { ascending: true });
@@ -142,24 +170,86 @@ export function useNetwork() {
     loadMine();
   }, [loadMine]);
 
+  /**
+   * Live, ohne Neuladen.
+   *
+   * Bisher wurde alles genau einmal beim Aufbau der Seite geholt. Eine
+   * Anfrage, die eine Minute spaeter eintraf, war erst nach F5 zu sehen —
+   * und eine Firma, die sich nach dem Aufbau der Seite anmeldete, tauchte
+   * im Verzeichnis gar nicht auf.
+   *
+   * Gehorcht wird auf INSERT und UPDATE, nicht auf DELETE: fuer geloeschte
+   * Zeilen prueft Supabase keine Zeilenregel, ein DELETE ginge also an
+   * jeden Zuhoerer. Wer selbst loescht, laedt ohnehin neu; die Gegenseite
+   * merkt es beim naechsten Blick auf den Tab (siehe unten).
+   */
+  useEffect(() => {
+    if (!isSignedIn) return;
+    const kanal = supabase
+      .channel("netzwerk")
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "connections" }, () => {
+        void loadMine();
+      })
+      .on("postgres_changes", { event: "UPDATE", schema: "public", table: "connections" }, () => {
+        void loadMine();
+      })
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "companies" }, () => {
+        void loadCompanies();
+      })
+      .subscribe();
+    return () => {
+      void supabase.removeChannel(kanal);
+    };
+  }, [isSignedIn, supabase, loadMine, loadCompanies]);
+
+  /**
+   * Ein Netz reisst. Wer den Tab zurueckholt, soll den Stand von jetzt
+   * sehen und nicht den von vorhin — das faengt auch die Loeschungen ab,
+   * auf die oben bewusst nicht gehorcht wird.
+   */
+  useEffect(() => {
+    function frisch() {
+      if (document.visibilityState === "visible") {
+        void loadMine();
+        void loadCompanies();
+      }
+    }
+    document.addEventListener("visibilitychange", frisch);
+    window.addEventListener("focus", frisch);
+    return () => {
+      document.removeEventListener("visibilitychange", frisch);
+      window.removeEventListener("focus", frisch);
+    };
+  }, [loadMine, loadCompanies]);
+
   const connect = useCallback(
     async (targetId: string) => {
-      if (!myCompanyId) return;
+      setFehler(null);
+      if (!myCompanyId) {
+        setFehler("Dein Firmenprofil ist noch nicht angelegt. Schliesse zuerst die Anmeldung ab.");
+        return;
+      }
       const { error } = await supabase.from("connections").insert({
         company_id_a: myCompanyId,
         company_id_b: targetId,
         requested_by: myCompanyId,
         status: "PENDING",
       });
-      if (!error) loadMine();
+      // Frueher stand hier `if (!error) loadMine()` — ein fehlgeschlagener
+      // Versuch tat also nichts und sagte nichts. Wer auf „Vernetzen"
+      // drueckte, sah keinen Unterschied zwischen Erfolg und Fehler.
+      if (error) setFehler(klartext(error.code, error.message));
+      await loadMine();
     },
     [myCompanyId, supabase, loadMine],
   );
 
   const accept = useCallback(
     async (connId: string) => {
+      setFehler(null);
       const { error } = await supabase.from("connections").update({ status: "CONNECTED" }).eq("id", connId);
-      if (!error) loadMine();
+      if (error) setFehler(klartext(error.code, error.message));
+      await loadMine();
     },
     [supabase, loadMine],
   );
@@ -167,13 +257,19 @@ export function useNetwork() {
   /** Ablehnen einer Anfrage — und zugleich das Zurückziehen einer eigenen. */
   const remove = useCallback(
     async (connId: string) => {
+      setFehler(null);
       const { error } = await supabase.from("connections").delete().eq("id", connId);
-      if (!error) loadMine();
+      if (error) setFehler(klartext(error.code, error.message));
+      await loadMine();
     },
     [supabase, loadMine],
   );
 
-  const byId = useMemo(() => new Map(companies.map((c) => [c.id, c])), [companies]);
+  const byId = useMemo(() => {
+    const m = new Map(companies.map((c) => [c.id, c]));
+    for (const [id, c] of Object.entries(partners)) if (!m.has(id)) m.set(id, c);
+    return m;
+  }, [companies, partners]);
 
   const connected = useMemo(
     () =>
@@ -205,7 +301,7 @@ export function useNetwork() {
   const me = myCompanyId ? byId.get(myCompanyId) ?? null : null;
 
   return {
-    companies, conns, myCompanyId, me, loading, isSignedIn,
+    companies, conns, myCompanyId, me, loading, isSignedIn, fehler,
     connected, incoming, outgoing,
     connect, accept, remove, reload: loadMine,
   };
