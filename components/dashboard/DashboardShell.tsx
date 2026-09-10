@@ -47,12 +47,15 @@ import {
   Plus,
   Minus,
   Calculator,
+  ShieldCheck,
 } from "lucide-react";
 import type { Company } from "@/lib/company";
 import { useSupabaseBrowser } from "@/lib/supabase-browser";
 import { useProjects, projectLabel } from "@/lib/projects";
 import ProjectsPanel from "@/components/dashboard/ProjectsPanel";
 import RequestsPanel from "@/components/dashboard/RequestsPanel";
+import MeineGebotePanel from "@/components/dashboard/MeineGebotePanel";
+import LieferantenkontoPanel from "@/components/dashboard/LieferantenkontoPanel";
 import MaterialsPanel from "@/components/dashboard/MaterialsPanel";
 import TendersPanel from "@/components/dashboard/TendersPanel";
 import { useCustomMaterials } from "@/lib/customMaterials";
@@ -146,7 +149,7 @@ const CONTRACTS = [
 ];
 
 const NAV_ALL = [
-  { key: "workspace", label: "Beschaffung", icon: Search },
+  { key: "workspace", label: "Beschaffung", icon: Search, buyerOnly: true },
   { key: "overview", label: "Übersicht", icon: LayoutDashboard },
   { key: "projects", label: "Projekte", icon: Building2, buyerOnly: true },
   { key: "requests", label: "Direktanfragen", icon: Handshake },
@@ -155,8 +158,10 @@ const NAV_ALL = [
   // sie zeigten dieselbe Zahl bei einem leeren Konto wie bei einem vollen.
   // Eine erfundene Zahl ist schlimmer als keine: man richtet sich danach.
   // Sobald es eine echte Quelle gibt, kommt sie hier hin.
-  { key: "orders", label: "Bestellungen", icon: ShoppingCart },
+  { key: "orders", label: "Bestellungen", icon: ShoppingCart, buyerOnly: true },
   { key: "tenders", label: "Ausschreibungen", icon: Gavel, supplierOnly: true },
+  { key: "gebote", label: "Meine Gebote", icon: Gavel, supplierOnly: true },
+  { key: "lieferantenkonto", label: "Lieferantenkonto", icon: ShieldCheck, supplierOnly: true },
   { key: "contracts", label: "SIA-118 Verträge", icon: FileText },
   { key: "reports", label: "Berichte", icon: BarChart3 },
   { key: "settings", label: "Einstellungen", icon: Settings },
@@ -1047,11 +1052,20 @@ export default function DashboardShell({ company }: { company: Company }) {
   // Direktsprung aus dem Profilmenue: /dashboard?view=settings
   const searchParams = useSearchParams();
   const requestedView = searchParams.get("view");
+  // „Beschaffung" ist Besteller-Sache. Ein Werk landete darauf sonst auf
+  // einer Seite, die es gar nicht sehen darf — und suchte den Rest.
   const [view, setView] = useState(
     requestedView && NAV_ALL.some((n) => n.key === requestedView)
       ? requestedView
-      : "workspace",
+      : isSupplier
+        ? "tenders"
+        : "workspace",
   );
+  // Ein Reiter, den diese Rolle nicht hat, zeigt sonst eine leere Flaeche.
+  useEffect(() => {
+    if (!nav.some((n) => n.key === view)) setView(isSupplier ? "tenders" : "workspace");
+  }, [nav, view, isSupplier]);
+
   const supabase = useSupabaseBrowser();
   const { projects, loading: projectsLoading, error: projectsError, reload: reloadProjects } =
     useProjects();
@@ -1330,6 +1344,8 @@ export default function DashboardShell({ company }: { company: Company }) {
               )}
               {view === "orders" && <OrdersPanel companyName={company.company_name} />}
               {view === "tenders" && isSupplier && <TendersPanel />}
+              {view === "gebote" && isSupplier && <MeineGebotePanel />}
+              {view === "lieferantenkonto" && isSupplier && <LieferantenkontoPanel />}
               {view === "contracts" && <ContractsPanel />}
               {view === "reports" && <ReportsPanel role={role} />}
               {view === "settings" && (

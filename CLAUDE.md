@@ -1769,8 +1769,41 @@ Bündel." Sonst sucht er ewig nach dem Haken.
    eine Grenze verschärft, die niemand angefasst hat.
 3. Kapazität
 4. Teil-Gebote und Zuteilung
-5. Lieferantenprüfung
-6. Lieferanten-Dashboard
+5. ~~Lieferantenprüfung~~ — **TEILWEISE GEBAUT**, Migration 37.
+   `lieferantenkonten` mit Antrag, Zulassung und Freifrist;
+   `bietfaehig()` als Rechnung statt Häkchen; `place_bid()` prüft sie
+   statt der Rolle. **Die Rollenprüfung ist raus** — sie war eine
+   Selbstauskunft und hat nichts geschützt. Ein Bauunternehmen mit
+   eigenem Betonwerk darf mit Nachweis bieten, ein selbsternanntes Werk
+   ohne Nachweis nicht.
+
+   Zugelassen wird über `lieferantenkonto_entscheiden()`, die **keinen
+   Grant an authenticated** hat — heute im SQL-Editor:
+   ```sql
+   SELECT lieferantenkonto_entscheiden('<company-uuid>', 'ZUGELASSEN',
+          'D. Richner', 'SN EN 206 geprüft, NOGA 23.63 passt.');
+   ```
+   Offene Anträge: `SELECT * FROM lieferantenkonten WHERE status='BEANTRAGT';`
+
+   **Noch nicht gebaut:** Registerabgleich, Domain-Nachweis,
+   Dokumenten-Upload, die wiederkehrenden Prüfungen, Kapazität und
+   Leistungssperre. `bietfaehig()` ist so gebaut, dass sie dazukommen,
+   ohne dass ein Aufrufer sich ändert.
+
+6. ~~Lieferanten-Dashboard~~ — **ANGEFANGEN.** Erkannt an der Rolle:
+   Beschaffung, Projekte und Bestellungen sind für Werke weg;
+   Ausschreibungen, Meine Gebote und Lieferantenkonto sind dazugekommen.
+   Ein Werk landet auf „Ausschreibungen" statt auf einer Seite, die es
+   nicht sehen darf.
+
+   **Noch offen:** Zugeschlagen (gewonnene Bündel mit Abrufplan),
+   Lieferprofil (Kapazität je Monat, Radius), Abrechnung.
+
+   **Bekannte Grenze:** Ein Werk, das selbst einkauft, kommt im Dashboard
+   nicht an die Beschaffung. Die Fähigkeiten liegen laut Modell
+   nebeneinander, das Dashboard schaltet aber hart nach Rolle. Wenn das
+   erste Werk danach fragt, braucht es einen Umschalter statt einer
+   Rollenweiche.
 7. Abrechnung und Lieferschein-Abgleich
 
 Die Oberfläche zu bauen, bevor die Regel steht, heisst sie zweimal zu

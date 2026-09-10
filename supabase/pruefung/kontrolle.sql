@@ -36,7 +36,10 @@ funktionen AS (
       ('einstellung_zahl',          'einstellung_zahl(text,numeric)',                   'Sätze aus app_settings, Migration 35'),
       ('mindestgebot',              'mindestgebot(uuid)',                               'Mindestgebot je Bündel, Migration 35'),
       ('mengenkurve',               'mengenkurve(uuid)',                                'Menge über die Monate, Migration 36'),
-      ('submit_demand',             'submit_demand(text,text,text,text,text,text,numeric,numeric,uuid,date,date,integer)', 'Bedarf mit Baustelle und Zeitraum, Migration 36')
+      ('submit_demand',             'submit_demand(text,text,text,text,text,text,numeric,numeric,uuid,date,date,integer)', 'Bedarf mit Baustelle und Zeitraum, Migration 36'),
+      ('bietfaehig',                'bietfaehig(uuid)',                                 'Bietfähigkeit als Rechnung, Migration 37'),
+      ('meine_bietfaehigkeit',      'meine_bietfaehigkeit()',                           'die eigene Bietfähigkeit, Migration 37'),
+      ('lieferantenkonto_beantragen','lieferantenkonto_beantragen(text,text[],text)',   'Zulassung beantragen, Migration 37')
     ) AS f(name, sig, zweck)
 ),
 spalten AS (
@@ -83,6 +86,19 @@ austritt AS (
          'Austritt nur in der Sammelphase, Migration 31' AS soll
 ),
 rechte AS (
+  SELECT 'lieferantenkonto_entscheiden: nur Dienstweg' AS was,
+         CASE WHEN to_regprocedure('lieferantenkonto_entscheiden(uuid,text,text,text)') IS NULL THEN 'FEHLT'
+              WHEN has_function_privilege('authenticated',
+                     'lieferantenkonto_entscheiden(uuid,text,text,text)', 'EXECUTE')
+              THEN 'FEHLT' ELSE 'ok' END AS stand,
+         'niemand lässt sich selbst zu, Migration 37' AS soll
+  UNION ALL
+  SELECT 'lieferantenkonten: kein Schreibrecht',
+         CASE WHEN to_regclass('public.lieferantenkonten') IS NULL THEN 'FEHLT'
+              WHEN has_table_privilege('authenticated', 'lieferantenkonten', 'UPDATE')
+              THEN 'FEHLT' ELSE 'ok' END,
+         'Status nur über Funktionen, Migration 37'
+  UNION ALL
   SELECT 'laufende_bindung: nicht für den Browser' AS was,
          CASE WHEN to_regprocedure('laufende_bindung(uuid)') IS NULL THEN 'FEHLT'
               WHEN has_function_privilege('authenticated', 'laufende_bindung(uuid)', 'EXECUTE')

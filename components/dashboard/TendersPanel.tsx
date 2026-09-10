@@ -14,6 +14,7 @@ import {
   Trophy,
 } from "lucide-react";
 import { useSupabaseBrowser } from "@/lib/supabase-browser";
+import { useLieferantenkonto } from "@/lib/lieferant";
 import {
   useBundles,
   useMyBids,
@@ -40,6 +41,10 @@ function chf(v: number, d = 0) {
 export default function TendersPanel() {
   const supabase = useSupabaseBrowser();
   const { bundles, loading, error, reload } = useBundles();
+  /* Ob dieses Werk überhaupt bieten darf. Die Datenbank weist ein
+     Gebot ohne Zulassung ohnehin ab — hier steht der Grund, damit
+     niemand erst einen Preis eintippt und dann eine Absage liest. */
+  const { darf } = useLieferantenkonto();
   const { bids, reload: reloadBids } = useMyBids();
   const [openFor, setOpenFor] = useState<string | null>(null);
   const [price, setPrice] = useState("");
@@ -174,7 +179,12 @@ export default function TendersPanel() {
                 </div>
 
                 <div className="mt-3 border-t border-white/[0.06] pt-3">
-                  {openFor === b.id ? (
+                  {darf && !darf.ok ? (
+                    <p className="flex items-start gap-2 text-[12.5px] leading-relaxed text-white/[0.72]">
+                      <Info className="mt-px h-3.5 w-3.5 shrink-0 text-white/[0.56]" />
+                      {darf.grund}
+                    </p>
+                  ) : openFor === b.id ? (
                     <div className="space-y-2.5">
                       {/* Was verlangt ist, und woraus es besteht. Eine Zahl
                           ohne Herkunft muss man glauben. */}
