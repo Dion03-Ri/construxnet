@@ -578,8 +578,8 @@ sechsundzwanzig Kantone gehören nicht als Wörterband auf die Seite.
     Ein KI-Treffer wird als Alias mit `source: 'AI'` gemerkt, damit er beim
     zweiten Mal gratis ist.
   - Danach: hochgeladene Leistungsverzeichnisse (#25) über dieselbe Route.
-- Migrationen `08`–`28` sind eingespielt. **`29_chat_threads.sql` ist neu
-  und noch NICHT eingespielt** — ohne sie zeigt der Chat keine Gespräche.
+- Migrationen `08`–`29` sind eingespielt. **`30_konto_schliessen.sql` ist
+  neu und noch NICHT eingespielt.**
 
 ## Vor dem Launch — Pflicht
 Diese Punkte müssen erledigt sein, bevor echte Firmen darauf arbeiten:
@@ -667,28 +667,56 @@ Diese Punkte müssen erledigt sein, bevor echte Firmen darauf arbeiten:
       Automatik falsch. **Kann nach dem Start entschieden werden**, solange
       der Text auf `/datenschutz` nicht mehr behauptet als das, was gilt.
 
-   b) **Ein Löschweg auf Verlangen.** Das DSG gibt jedem das Recht, und die
-      Frist läuft ab dem Verlangen — nicht ab dem Tag, an dem man Zeit hat.
-      Es braucht **keine Automatik**: ein aufgeschriebener Ablauf reicht
-      (wer macht es, in welcher Frist, mit welchem SQL). Aber er muss
-      existieren, bevor die erste Firma darauf arbeitet.
-      **PFLICHT VOR DEM START.**
+   b) **Ein Löschweg auf Verlangen — ERLEDIGT** (Migration 30). Kommt ein
+      Begehren per Mail, im Supabase-SQL-Editor:
 
-   c) **Was passiert beim Löschen eines Kontos.** Heute hängen
-      `messages.sender_company_id` und `receiver_company_id` mit
-      `ON DELETE CASCADE` an `companies`. Wer eine Firmenzeile löscht — im
-      Supabase-Editor genügt ein Klick —, löscht damit **den ganzen
-      Verlauf bei BEIDEN Seiten**. Die Gegenseite verliert den Beleg einer
-      Verhandlung, die sie selbst geführt hat. Das widerspricht Migration 21
-      und der Zehnjahresfrist gleichermassen. Richtig wäre anonymisieren
-      statt löschen: die Firmenzeile bleibt als Grabstein stehen, Name und
-      Kontakt gehen raus, die Nachrichten bleiben. **PFLICHT VOR DEM START**
-      — heute gibt es keine Konto-Löschung in der Anwendung, die Falle
-      schnappt erst zu, wenn jemand sie von Hand auslöst. Genau das
-      passiert, sobald der erste Nutzer „löscht mein Konto" schreibt.
+      ```sql
+      SELECT konto_schliessen_intern('<firmen-uuid>');
+      ```
 
-   Zusammen mit dem Anwalt zu klären, gemeinsam mit den `[[…]]`-Stellen in
-   `data/legal.ts` (Punkt 6).
+      Das anonymisiert die Firma und räumt ihr Profil ab. Fristgerecht
+      heisst nach DSG: ohne unnötigen Verzug ab dem Verlangen, nicht ab
+      dem Tag, an dem man Zeit hat.
+
+      **Noch offen:** ein Knopf „Konto schliessen" unter `/konto`. Die
+      Funktion dafür steht (`close_own_company_account()`, jeder
+      Angemeldete darf sie für sich selbst aufrufen) — sie ist bewusst
+      noch nicht verdrahtet: eine Selbstbedienung, die das laufende Abo
+      beim Zahlungsdienst nicht mitkündigt, ist eine halbe Sache.
+      Zusammen mit Stripe bauen.
+
+   c) **Was beim Löschen eines Kontos passiert — ERLEDIGT** (Migration 30).
+      Vorher hingen `messages` und `direct_offers` mit `ON DELETE CASCADE`
+      an `companies`: wer eine Firmenzeile löschte, löschte den Verlauf bei
+      BEIDEN Seiten. Jetzt steht dort `RESTRICT` — ein Löschversuch schlägt
+      laut fehl, statt still zwei Verläufe zu vernichten.
+
+      Der Weg ist stattdessen der von LinkedIn: **anonymisieren**. Das
+      Profil verschwindet (Name, UID, Kontakt, Logo, Standort, Beiträge,
+      Kommentare, Verbindungen, Projekte, eigene Materialien, Abo), die
+      Belege bleiben (Nachrichten, Angebote, Teilnahmen, Gebote, Verträge,
+      Lieferscheine). In den Belegen steht „Ehemaliges Mitglied".
+
+      Eine geschlossene Firma ist nur noch für die sichtbar, die wirklich
+      mit ihr zu tun hatten — das steht in der Zeilenregel auf `companies`
+      (`hat_geschaeft_mit()`) und **nicht** in den Abfragen: `companies`
+      wird an vierundzwanzig Stellen gelesen, und die fünfundzwanzigste
+      vergisst den Filter.
+
+      `clerk_user_id` und `uid_number` werden nicht geleert, sondern auf
+      einen toten Wert gesetzt — beide sind NOT NULL UNIQUE. Das schliesst
+      den Login aus und gibt die echte UID wieder frei, falls dieselbe
+      Firma später neu beitritt.
+
+      **Zwei Dinge bewusst nicht entschieden:** was mit einer laufenden
+      Bündelteilnahme geschieht, wenn jemand mitten darin schliesst (heute
+      bleibt sie stehen und zählt weiter — für den Beleg richtig, für den
+      Betrieb fraglich), und die Kündigung beim Zahlungsdienst.
+
+   Was bleibt, ist Punkt a) — die Frist — und die anwaltliche Durchsicht
+   gemeinsam mit den `[[…]]`-Stellen in `data/legal.ts` (Punkt 6). Der
+   Abschnitt „6a. Wenn du dein Konto schliesst" auf `/datenschutz`
+   beschreibt jetzt, was tatsächlich passiert.
 
 
 ---
