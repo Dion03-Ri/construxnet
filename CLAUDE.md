@@ -1169,6 +1169,391 @@ Entweder vorher schliessen (`/konto`) oder die Zeilen entfernen — Letzteres
 schlägt fehl, sobald Nachrichten daran hängen (`RESTRICT`, Migration 30),
 dann bleibt nur das Schliessen.
 
+# DAS GESCHÄFTSMODELL — ENTSCHIEDEN AM 10.09.2026
+
+Ausdiskutiert mit dem Auftraggeber. **Nichts davon ist gebaut.** Wer hier
+etwas ändert, ändert Vertragsinhalte — nicht einfach Code.
+
+Alle Zahlen unten sind **Einstellungen in `app_settings`**, nicht Konstanten
+im Quelltext. Heute steht die 2.25 an vier Stellen fest verdrahtet
+(`supplier_bids.platform_fee_percent`, die Verträge, die Lieferscheine, und
+`v_fee` in `place_bid()`). Das ist vor dem Bauen einzusammeln — sonst laufen
+sie auseinander, und dann stimmt eine Rechnung nicht mehr mit einem Vertrag
+überein.
+
+## 1. Provision
+
+**Bündel: 2.25 % — als Prozentpunkte auf den Referenzwert**, nicht auf den
+Rechnungsbetrag. Der Lieferant bietet nicht auf den Mindestrabatt, sondern
+auf Mindestrabatt + 2.25 Punkte.
+
+Beispiel, 500 m³, KBOB 160.00/m³, Referenzwert CHF 80'000:
+
+| | | |
+|---|---|---|
+| Mindestrabatt der Mengenstufe | 15 % | Besteller zahlen 136.00/m³ = 68'000 |
+| Der Lieferant bietet | **17.25 %** | er sieht 132.40/m³ = 66'200 |
+| Obtanet | 2.25 % von 80'000 | **1'800** |
+
+Probe: 68'000 − 66'200 = 1'800.
+
+**Direktgeschäfte: 1 %** auf den Auftragswert. Weniger, weil weniger
+geliefert wird — kein Bündel, keine Mengenstufe, keine Ausschreibung.
+
+**Überschuss gehört den Bestellern.** Bietet ein Werk 20 % statt 17.25 %,
+bleibt Obtanet bei 2.25 Punkten; die Besteller bekommen 17.75 %. Obtanets
+Anteil ist fix und damit erklärbar; der Wettbewerb muss beim Besteller
+ankommen, sonst ist die Ausschreibung eine Attrappe.
+
+**Fällig:** Die Forderung entsteht mit dem Zuschlag, fällig ist sie
+**30 Tage nach Lieferbeginn**. Der Anspruch steht fest, das Werk hat Luft.
+
+**Bemessen wird die ZUGESCHLAGENE Menge, nicht die gefahrene.** Das war
+zuerst andersherum vorgeschlagen und ist bewusst gedreht worden: Eine
+Gebühr auf die gefahrene Menge lädt Werk und Besteller zur Absprache ein —
+jeder nicht gemeldete Kubikmeter spart dem Werk Gebühr, und Obtanet sässe
+am Ende einer Kette, deren beide Enden verdienen, wenn sie es kleinrechnen.
+Beim Zuschlag steht die Zahl fest und ist nicht manipulierbar. Juristisch
+ist das auch die saubere Konstruktion: Vermittlungslohn verdient man mit
+dem Abschluss, nicht mit der Erfüllung.
+
+Dazu in die AGB: **Mindestabnahme 90 %** der gemeldeten Menge.
+
+**Der eine Ausnahmefall:** Wird gar nichts geliefert, entfällt die Gebühr.
+Dabei sind zwei Fälle zu trennen, sonst entsteht eine Hintertür:
+
+- **Das Werk WILL nicht liefern** → Vertragsbruch. Schadenersatz, Eintrag,
+  **die Gebühr steht.**
+- **Das Werk KANN nicht liefern** (Konkurs, Werk abgebrannt) → zweitbestes
+  Gebot springt ein; kommt gar nichts zustande, entfällt die Gebühr.
+  „Kann nicht" muss belegt sein, sonst ist es „will nicht".
+
+**Anwaltsliste:** ob ein Vermittlungslohn auf nicht erfüllte Menge in der
+Schweiz haltbar ist.
+
+**Der Besteller sieht die 2.25 % nicht** — er sieht seine 15 %. Der
+Lieferant sieht sie am ausgeschriebenen Bündel. **Aber sie muss einmal in
+den AGB stehen**, wahrheitsgemäss: Obtanet erhält vom Lieferanten eine
+Vermittlungsgebühr. Nicht auf der Preisanzeige, aber nicht nirgends — sonst
+erfährt es der Besteller vom Werk (die beiden chatten hier miteinander) und
+es sieht verheimlicht aus statt selbstverständlich.
+
+## 1b. Lieferantenkonto: Grundgebühr, verrechnet mit Provisionen
+
+**Kein klassisches Abo.** Eine Jahresgebühr, an die jede bezahlte Provision
+angerechnet wird.
+
+| | Provision im Jahr | Grundgebühr | Zahlt insgesamt |
+|---|---|---|---|
+| Werk A — gewinnt Bündel | CHF 3'000 | angerechnet, nichts offen | **3'000** |
+| Werk B — telefoniert nur | CHF 0 | CHF 1'200 | **1'200** |
+| Werk C — ein kleines Bündel | CHF 400 | 800 offen | **1'200** |
+
+Wer mitarbeitet, merkt sie nie. Wer hier zwanzig Kunden einsammelt und
+alles daneben abwickelt, zahlt für den Zugang, den er benutzt.
+
+**Warum das rechtlich geht und ein „wir haben gemerkt, dass du keine Deals
+machst" nicht:** Die Gebühr steht von Anfang an in der Preisliste, jeder
+stimmt ihr bei der Anmeldung zu, und sie ist **immer geschuldet** — die
+Provisionen sind eine Anrechnung darauf, keine Strafe danach. Niemand wird
+beobachtet, niemand einzeln bepreist, es gibt keine Überraschung im
+Nachhinein. Genau das war beim ersten Erklärversuch missverständlich
+formuliert und hat den Auftraggeber zu Recht stutzig gemacht.
+
+**Abrechnung: jährlich, nachschüssig.** Am Jahresende steht fest, wie viel
+Provision angefallen ist; nur die Differenz wird gestellt. Vorschüssig zu
+verrechnen ginge auch, macht aber Gutschriften nötig und ist unnötig
+kompliziert.
+
+**NICHT zum Start.** Im ersten Jahr für Lieferanten nur Provision. Die
+Grundgebühr kommt, wenn genug Bündel laufen, dass sie sich für jedes
+ernsthafte Werk offensichtlich rechnet — dann ist sie eine Formalität. Am
+Tag eins wäre sie eine Hürde und würde genau die Seite bremsen, die zuerst
+gebraucht wird.
+
+**Offen: der Betrag.** CHF 1'200 im Jahr ist ein Vorschlag, keine
+Entscheidung.
+
+Was trotzdem bleibt: Werke, die Kontakte knüpfen und danebendran Geschäfte
+machen, lassen sich nicht daran hindern — erkennen liesse es sich nur durch
+Mitlesen, und das ist ausgeschlossen (Abschnitt 7). Die Grundgebühr sorgt
+nur dafür, dass der Zugang trotzdem etwas kostet. Der wertvollste Teil
+wandert ohnehin nicht ab: gebündelte Nachfrage lässt sich nicht am Telefon
+nachbauen, das Bündel existiert nur hier.
+
+## 2. Mindestgebot
+
+`place_bid()` **weist ein Gebot unter Mindestrabatt + Provision ab.** Heute
+prüft es gar nichts: jeder Preis über null geht durch, und die 2.25 werden
+nur danebengeschrieben. Eine Grenze, die der Browser durchsetzt, ist keine.
+
+## 3. Lieferzeitraum
+
+**Ein Bündel hat heute keinen.** Es gibt `deadline` (bis wann gesammelt
+wird) und die Angebotsfrist — kein Feld dafür, wann geliefert werden soll.
+Drei Folgen: der Besteller weiss nicht, wann er sein Material bekommt; das
+Werk bietet blind auf einen Aufwand, den es nicht kennt (500 m³ in einer
+Woche sind etwas anderes als 500 über ein halbes Jahr); und Kapazität lässt
+sich ohne Zeitraum überhaupt nicht prüfen.
+
+**Der Zeitraum gehört an die TEILNAHME, nicht ans Bündel** — nicht alle im
+Bündel brauchen zur gleichen Zeit. Monatsebene reicht.
+
+Aus den Teilnahmen entsteht die **Mengenkurve des Bündels**:
+
+```
+Mai      140 m³
+Juni     215 m³
+Juli     110 m³
+August    35 m³
+          ─────
+          500 m³
+```
+
+Genau die sieht der Lieferant beim Bieten, und genau dagegen wird seine
+Kapazität geprüft.
+
+**Spannweite höchstens drei Monate** je Bündel (je Materialart
+einstellbar), sonst landet ein Mai-Bedarf beim Frühling des nächsten Jahres
+und kein Werk kann das preisen.
+
+**Die KI ersetzt dieses Feld NICHT.** Sie gruppiert, was dasteht — steht
+nirgends *wann*, würde sie raten. Sie ist der Nutzer der Angabe, nicht ihr
+Ersatz.
+
+**Die Baustelle wird beim Beitritt zur Pflicht.** Heute steht in
+`join_bundle` ein `p_project_id UUID DEFAULT NULL` — man kann beitreten,
+ohne zu sagen, wohin geliefert wird. Für die Zuteilung nach Baustellen
+(Abschnitt 5) ist das tödlich: keine Baustelle, keine Adresse, kein Radius,
+nichts zum Zuteilen.
+
+## 4. Kapazität ist eine Rate, kein Vorrat
+
+Der Denkfehler, den es zu vermeiden gilt: „die Kapazität schrumpft mit
+jedem gewonnenen Bündel" stimmt **nur für den Lieferzeitraum**. Danach ist
+sie wieder da. Als schrumpfende Gesamtzahl gebaut, wäre ein Werk mit
+200 m³ Tagesleistung nach zwei Bündeln „leer", obwohl es monatlich 4'000
+fahren kann.
+
+**Das Werk erklärt eine Menge pro Monat je Material, plus Regionen.** Ein
+Bündel belegt sie in den Monaten seines Zeitraums. Frei = erklärt − belegt.
+
+Lebenslauf einer Belegung:
+
+| Zustand | Wann |
+|---|---|
+| reserviert | beim Gebot |
+| freigegeben | Gebot verliert, Frist verfällt, Rückzug, Bündel scheitert |
+| fest gebucht | beim Zuschlag |
+| abgebaut | Lieferschein für Lieferschein |
+| aufgelöst | wenn das Bündel abgeschlossen ist |
+
+**Prüfung in drei Stufen** — eine harte Reservierung beim Gebot wäre zu
+streng: Ein Werk mit 1'500 m³/Monat könnte nur auf 1'500 m³ bieten, obwohl
+es vielleicht eines von fünf Bündeln gewinnt. Das erstickt den Wettbewerb,
+und ohne Wettbewerb keine 17.25 %.
+
+1. **Beim Gebot:** harte Sperre nur, wenn *dieses eine Bündel allein* die
+   freie Kapazität übersteigt. Auf etwas zu bieten, das man als einzigen
+   Auftrag nicht schaffen würde, ist immer unseriös.
+2. **Beim Gebot, sichtbar:** „Frei im Juni: 400 m³. Deine offenen Gebote:
+   900 m³." Er entscheidet informiert.
+3. **Beim Zuschlag:** harte Prüfung. Reicht es nicht, geht das Bündel ans
+   nächstbeste Gebot und das Werk bekommt einen Eintrag.
+
+**Die Grenze, ehrlich:** Was ein Werk ausserhalb von Obtanet verkauft,
+sieht niemand. Wer 1'500 erklärt und 1'300 am Telefon verkauft, bietet mit
+einer Zahl, die nicht stimmt. Dagegen hilft keine Software — dagegen hilft,
+dass die Erklärung verbindlich ist und die Termintreue mitläuft.
+
+## 5. Teil-Gebote
+
+Ein Werk darf auf einen **Anteil** bieten, zum verlangten Mindestrabatt.
+Das macht ein 2'000-m³-Bündel lieferbar, das kein einzelnes Werk stemmt.
+
+**Aufgeteilt wird nach GANZEN BAUSTELLEN, nicht nach Prozentschnitt durch
+jede Lieferung.** Eine Bodenplatte kommt aus einem Werk — zwei Werke auf
+derselben Etappe heisst zwei Rezepturen, zwei Farbtöne, Fugenprobleme. Kein
+Polier macht das mit. Nebenbei löst die Zuteilung nach Baustellen auch das
+Rosinenpicken: der Lieferradius entscheidet ohnehin, was für ein Werk in
+Frage kommt.
+
+**Das Gebot trägt deshalb zwei Zahlen: Zielanteil und Puffer.**
+
+> „Rund 33 %, ±5 Punkte, zu 17.4 %, in diesen Regionen."
+
+Ganze Baustellen gehen nie glatt auf — 80/110/145/165 m³ ergeben kein
+Drittel. Das System weist ganze Baustellen zu, bis er zwischen 28 % und
+38 % liegt. Bekommt er 36 % statt 33 %, gilt derselbe Rabattsatz; er
+rechnet pro Kubikmeter, die drei Punkte mehr kosten ihn nichts. Er muss dem
+Puffer aber **vorher im Gebot zugestimmt** haben.
+
+**Zugeschlagen wird nur bei 100 % Deckung.** Bleibt eine Baustelle übrig,
+scheitert das Bündel und dieser Besteller erfährt warum. Alles andere wäre
+ein halbes Versprechen.
+
+**Komplett-Vorsprung: 1 Prozentpunkt** (einstellbar). Ein Gebot über die
+volle Menge gewinnt auch dann, wenn die beste Aufteilung bis zu einem Punkt
+besser ist — ein Ansprechpartner, eine Rechnung, eine Rezeptur ist etwas
+wert. Keine absolute Bevorzugung: Sind drei Werke zusammen drei Punkte
+besser, wäre es den Bestellern gegenüber falsch, das Geld liegenzulassen.
+
+**Der Zuschlag ist eine Rechenregel, keine KI-Entscheidung.** Wer verdeckt
+bietet und verliert, muss erfahren können warum; „das Modell fand die
+andere Kombination besser" besteht vor keinem Werk und vor keinem Gericht.
+Gleiche Eingabe, gleiches Ergebnis, und jedem Werk sagbar, welche
+Baustellen es warum bekommen hat. Mit ganzen Baustellen, Puffern und Radien
+ist das ein kleines Zuteilungsproblem — bei realistischen Grössen (bis ~50
+Baustellen, ~10 Werke) exakt und in Millisekunden lösbar.
+
+**Die KI gehört an den ANFANG der Kette** (welche Bedarfe bilden ein
+Bündel), nicht an ihr Ende.
+
+## 6. Wer wann gebunden ist
+
+Dieselbe Regel für beide Seiten, in einem Satz erklärbar:
+
+| | Frei bis | Danach |
+|---|---|---|
+| **Besteller** | Ende der Sammelphase | gebunden (Migration 31) |
+| **Lieferant** | Ende der Angebotsfrist | gebunden |
+
+Und die Unterscheidung, ohne die ein Loch entsteht:
+
+- **Rückzug** — freiwillig, nur vor der Frist. Danach nicht mehr, Punkt.
+- **Ausfall** — unfreiwillig, kann auch nach dem Zuschlag passieren. Dann
+  bleibt das **zweitbeste Gebot als Notausgang** — nicht als Recht des
+  Lieferanten, sondern als Rettung für die gebundenen Besteller. Plus
+  Eintrag, plus Schadenersatzfrage.
+
+Ohne diese Trennung nennt ein Werk seinen Rückzug „Ausfall" und ist raus.
+
+**Heute bindet den Lieferanten nach dem Zuschlag gar nichts.** In der
+Datenbank wird `awarded_supplier_id` gesetzt, und das war's. Liefert er
+nicht, passiert nichts, während die Besteller festsitzen.
+
+## 7. NIEMAND LIEST IN CHATS
+
+**Harte Regel, ohne Ausnahme.** Nachrichteninhalte werden nicht
+ausgewertet — nicht für Gebühren, nicht für Statistik, nicht für
+„intelligente" Funktionen. Das verstösst gegen die Zweckbindung des DSG und
+zerstört das Vertrauen, auf dem eine B2B-Plattform steht.
+
+Stand geprüft am 10.09.2026 — sauber. Jeder Zugriff auf `messages` ist auf
+`current_company_id()` eingegrenzt: die Glocke liest die eigenen
+ungelesenen, `chat_threads`/`chat_history` die eigenen Gespräche, und
+`hat_geschaeft_mit()` liest nur, **ob** zwei Firmen je geschrieben haben —
+kein Inhalt.
+
+Was bleibt, ist der Dienstschlüssel: wer ihn hat, kann im SQL-Editor alles
+lesen. Das lässt sich nicht wegprogrammieren, irgendjemand muss die
+Datenbank betreiben können. Der Schutz ist dort organisatorisch. **Es gibt
+keinen Grund, je eine Abfrage auf `messages` zu schreiben.**
+
+Moderation, falls sie je nötig wird, ist **auf Meldung hin** — nie
+vorsorglich durchsuchend.
+
+## 8. Lieferant oder Bauunternehmen
+
+**Heute kann sich jeder als Lieferant eintragen.** Die Rolle wird bei der
+Anmeldung frei gewählt, die UID nur rechnerisch geprüft (Prüfziffer, nicht
+Register, nicht Eigentum), und `verified` setzt niemand.
+
+Immerhin: die Rolle ist nachträglich nicht vom Browser änderbar (`role`,
+`verified` stehen bewusst nicht in der Schreibliste des Profils), und ohne
+UPDATE-Regel auf `companies` verifiziert sich niemand selbst.
+
+**Was ein falscher Lieferant heute gewinnt:** keine Daten. Die Bündel sind
+für jeden lesbar (nachgestellt: sogar für nicht Angemeldete), Teilnahmen
+und fremde Gebote bleiben verdeckt. **Er gewinnt das Bieten** — er kann ein
+Bündel gewinnen, nicht liefern, und die gebundenen Besteller sitzen fest.
+
+**Drei Fragen, die man nicht vermischen darf:**
+
+| | Frage | Womit |
+|---|---|---|
+| 1 | Gibt es die Firma? | UID-Register des Bundes — automatisch, gratis |
+| 2 | Gehört sie dem, der sie einträgt? | die schwierige. Die UID ist öffentlich |
+| 3 | Ist sie wirklich Lieferant? | Branchennummer (NOGA) kommt nah dran |
+
+Ein Personalausweis hilft bei keiner der drei.
+
+**Die Leiter:**
+
+0. **Selbstauskunft** (heute) — reicht zum Umsehen und zum Bestellen.
+1. **Registerabgleich**, automatisch: Name passt, Status aktiv,
+   Branchennummer gespeichert.
+2. **Domain-Nachweis**: Bestätigung an eine Adresse auf der Firmendomain,
+   die zum Register-/Websiteeintrag passt. Der billigste echte
+   Zugehörigkeitsnachweis. Gegen einen eigenen Mitarbeiter hilft er nicht —
+   verkraftbar.
+3. **Handelsregisterauszug und Zeichnungsberechtigung** — nur für die
+   Lieferantenrolle. Hier wird es ernst: ein Zuschlag ist ein Vertrag.
+4. **Ein Mensch gibt frei.** Erst das setzt `verified`.
+
+**Wiederkehrend geprüft sind drei verschiedene Dinge:**
+
+| Was | Wie oft | Wie |
+|---|---|---|
+| Existiert die Firma noch? | monatlich, automatisch | Register: aktiv, kein Konkurs |
+| Stimmt die Kapazität noch? | vierteljährlich + vor grossen Geboten | er bestätigt selbst — der Klick ist datiert |
+| Liefert er wirklich? | laufend | Termintreue und Abweichungen aus den Lieferscheinen |
+
+Nur das Dritte ist ein echter Beweis. Die Wahrheit über ein Werk steht auf
+seinen Lieferscheinen.
+
+**Bietfähigkeit ist kein Häkchen, sondern eine Rechnung:** freigegeben ∧
+Register aktiv ∧ freie Kapazität im Zeitraum ∧ keine Leistungssperre.
+Durchgesetzt in der Datenbank, nicht in der Oberfläche.
+
+**Die Rolle bleibt Selbstauskunft; die Lieferantenfähigkeit wird vergeben.**
+Alles, was daran hängt, hängt an der Fähigkeit — nie an der Rolle.
+
+Wird eine Freigabe entzogen, **binden laufende Bündel weiter** — dieselbe
+Regel wie beim Kontoschliessen. Man kommt nicht raus, indem man seine
+Verifikation verliert.
+
+**Offen:** die genauen NOGA-Nummern und die Schnittstelle des
+Bundesregisters sind noch nicht verifiziert. Vor dem Bauen nachschlagen,
+nicht aus dem Gedächtnis schreiben.
+
+## 9. Zwei Dashboards
+
+Erkannt an der Rolle: Bauunternehmen → Besteller-Dashboard, Lieferant →
+Lieferanten-Dashboard. Mehr Logik braucht es dafür nicht.
+
+**Gleich für beide:** Startseite, Feed, Netzwerk, KBOB, Nachrichten,
+Firmenprofil, Karte.
+
+**Nur der Lieferant:**
+
+| Seite | Was drauf steht |
+|---|---|
+| Ausschreibungen | Bündel, für die er bieten darf — mit Mengenkurve und „Mindestgebot 17.25 % (15 % Besteller + 2.25 % Obtanet)" |
+| Meine Gebote | abgegeben, gewonnen, verloren, verfallen — sieht er heute nirgends wieder |
+| Zugeschlagen | gewonnene Bündel, Baustellen, Menge, Preis, Abrufplan, Lieferscheine |
+| Lieferprofil | Materialien, Kapazität je Monat, Lieferradius, Regionen |
+| Abrechnung | offene und bezahlte Vermittlungsgebühren, je Bündel nachgerechnet |
+| Direktanfragen | hat er schon |
+
+**Weg bei ihm:** Projekte, Warenkorb, Bündel beitreten, Abo. Statt der
+Abo-Seite: „Kein Abo. Du zahlst 2.25 % Vermittlung auf zugeschlagene
+Bündel." Sonst sucht er ewig nach dem Haken.
+
+## 10. Reihenfolge
+
+1. Provision und Mindestgebot in der Datenbank — eine Quelle, Prüfung in
+   `place_bid`, Einfrieren beim Zuschlag
+2. Lieferzeitraum und Pflicht-Baustelle
+3. Kapazität
+4. Teil-Gebote und Zuteilung
+5. Lieferantenprüfung
+6. Lieferanten-Dashboard
+7. Abrechnung und Lieferschein-Abgleich
+
+Die Oberfläche zu bauen, bevor die Regel steht, heisst sie zweimal zu
+bauen.
+
 # OFFENE AUFTRÄGE DES NUTZERS (Stand: siehe letzten Commit)
 
 Vom Nutzer ausdrücklich auf die Todo-Liste gegeben. Nichts davon ist
