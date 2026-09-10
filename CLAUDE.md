@@ -619,9 +619,53 @@ Diese Punkte müssen erledigt sein, bevor echte Firmen darauf arbeiten:
    mittlere golden hervorgehoben.
 1. **Rabattstufen festlegen** (#27). Die aktuellen sind nachweislich nicht
    haltbar — siehe oben. Ohne belastbare Zahlen darf keine Garantie raus.
-2. **KBOB-Referenz aus einer belegbaren Quelle.** Die Kurve ist heute eine
-   nachgebildete Reihe. Eine Garantie „X % unter KBOB" gegen einen
-   selbstgebauten Index ist angreifbar.
+2. **DER PREISANKER — nachgeschlagen am 10.09.2026, und es ist schlimmer
+   als gedacht.**
+
+   Die KBOB veröffentlicht **Materialpreisindizes**, publiziert monatlich
+   vom BFS auf Basis des Produzenten- und Importpreisindex, Basis 100 (neu
+   Dezember 2025 = 100), für Materialgruppen wie Beton, Zement, Kies,
+   Betonstahl.
+
+   **Es sind Indexwerte, keine Frankenbeträge.** Eine amtliche KBOB-Zahl
+   „Beton C25/30 kostet in Zürich CHF 156 pro m³" gibt es nicht — nicht aus
+   Zugangsgründen, sondern weil sie nicht publiziert wird. Wir haben also
+   für **kein einziges** der 33 Katalogmaterialien einen belegbaren
+   KBOB-Preis und können auch keinen bekommen. Die 33 Zahlen in
+   `data/procurement.ts` sind Schätzungen im Quelltext; `data/kbobData.json`
+   sagt in seinem eigenen Kopf, dass es eine nachgebildete Reihe ist.
+
+   Das wiegt schwerer als vorher, weil Migration 35 den Mindestrabatt UND
+   die Provision am `kbob_reference_price` misst. Mindestgebot,
+   Vermittlungsgebühr und Preisgarantie stehen alle auf derselben
+   unbelegten Zahl.
+
+   **SourceOn hatte es richtig gelöst** (im alten Stand nachgesehen):
+   `bd_market_price: "Regulärer Marktpreis (Richtwert)"` — Richtwert, nicht
+   Index. Dazu `"SourceOn-Provision (2.25%)"` und `"Provision im
+   Mindestrabatt bereits einkalkuliert"`: dasselbe Modell wie heute.
+
+   **Vorschlag: Höhe und Veränderung trennen.**
+
+   | | Quelle | Belegbar |
+   |---|---|---|
+   | Wie hoch ist der Marktpreis? | Median aus veröffentlichten Werks-Preislisten je Material und Region | ja — mit Anzahl Werke und Stand |
+   | Wie verändert er sich? | KBOB-Materialpreisindex | ja — amtlich, monatlich, gratis |
+
+   Betonwerke veröffentlichen ihre Preislisten ohnehin. Ein Median daraus
+   ist eine nachvollziehbare Erhebung, die man vorlegen kann. Zwischen zwei
+   Erhebungen hält der KBOB-Index den Richtwert aktuell — genau dafür ist
+   er gemacht (Teuerungsabrechnung bei öffentlichen Bauverträgen). Später
+   wird der eigene Abschluss-Median der stärkste Anker.
+
+   **Folge fürs Produkt: „KBOB" muss überall dort verschwinden, wo eine
+   Frankenzahl gemeint ist** — der Knopf im Beschaffungs-Dashboard, die
+   Katalogspalte, der Vergleich im Warenkorb. Eine Garantie „X % unter
+   KBOB" gegen eine Zahl, die die KBOB nie publiziert hat, ist angreifbar.
+
+   **Noch am Original zu prüfen:** die genaue Liste der Materialgruppen.
+   `kbob.admin.ch` ist aus der Arbeitsumgebung gesperrt; die Angaben oben
+   stützen sich auf die BFS-Tabellen und das KBOB-Faktenblatt.
 3. **Vorstart-Sperre entfernen** (`COMING_SOON`, `PREVIEW_PASSWORD` in
    Vercel löschen).
 4. **Web-Push** für Nachrichten (siehe Chat).
