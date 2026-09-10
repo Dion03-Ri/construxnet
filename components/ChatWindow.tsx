@@ -25,6 +25,9 @@ import {
   TrendingDown,
   Clock,
   ArrowRight,
+  Archive,
+  ArchiveRestore,
+  ChevronUp,
 } from "lucide-react";
 import type { RealtimeChannel } from "@supabase/supabase-js";
 import { useSupabaseBrowser } from "@/lib/supabase-browser";
@@ -32,6 +35,13 @@ import { fetchMyCompanyId } from "@/lib/myCompany";
 import { SHEET } from "@/lib/ui";
 import { cn } from "@/lib/utils";
 import { chf as chfRaw } from "@/lib/format";
+import {
+  ausThreadZeilen,
+  fensterEinfuegen,
+  sichtbareGespraeche,
+  type ThreadZeile,
+  type Vorschau,
+} from "@/lib/chat";
 const chf = (v: number) => chfRaw(v, 2);
 
 type Company = {
@@ -69,6 +79,9 @@ type Deal = {
   savingsPct: number;
   unit: string;
 };
+
+/** Wie viele Nachrichten ein Fenster umfasst. Die Datenbank kappt bei 200. */
+const FENSTER = 50;
 
 const DEMO_ID = "demo";
 
@@ -196,6 +209,15 @@ export default function ChatWindow({ initialTo }: { initialTo?: string }) {
   const [active, setActive] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState("");
+  /* Die Vorschau in der Liste kommt aus chat_threads() und nicht aus dem
+     Verlauf — sonst müsste man jeden Verlauf laden, nur um zu wissen, was
+     zuletzt geschrieben wurde. Genau das war der alte Fehler. */
+  const [zuletzt, setZuletzt] = useState<Record<string, Vorschau>>({});
+  const [geladen, setGeladen] = useState<Record<string, boolean>>({});
+  const [mehr, setMehr] = useState<Record<string, boolean>>({});
+  const [laedtMehr, setLaedtMehr] = useState(false);
+  const [archiviert, setArchiviert] = useState<Record<string, boolean>>({});
+  const [zeigeArchiv, setZeigeArchiv] = useState(false);
 
   // composer
   const [text, setText] = useState("");
@@ -208,9 +230,40 @@ export default function ChatWindow({ initialTo }: { initialTo?: string }) {
   const [partnerOnline, setPartnerOnline] = useState(false);
   // Der Kanal-Rückruf sieht sonst den Zustand vom Zeitpunkt des Abonnements.
   const activeRef = useRef<string | null>(null);
+  /* Wer schon in der Liste steht. Der Realtime-Rückruf wird einmal
+     angemeldet und sähe sonst den Stand von damals. */
+  const bekannteRef = useRef<Set<string>>(new Set());
+  /* Beim Nachladen älterer Nachrichten darf die Ansicht NICHT ans Ende
+     springen — sonst verliert man genau die Stelle, die man lesen wollte. */
+  const haltePosition = useRef(false);
   const typingTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const presenceRef = useRef<RealtimeChannel | null>(null);
   const typingSentAt = useRef(0);
+
+  /**
+   * Ein Fenster aus einem Gespräch holen.
+   *
+   * Ohne `vor` die neuesten, mit `vor` die nächstälteren. Die Datenbank
+   * liefert absteigend — das ist Absicht: was gekappt wird, sind dann die
+   * ältesten Nachrichten und nicht die neuesten. Hier wird die Reihenfolge
+   * für die Anzeige wieder gedreht.
+   */
+  const ladeVerlauf = useCallback(
+    async (other: string, vor?: string) => {
+      const { data, error } = await supabase.rpc("chat_history", {
+        p_other: other,
+        p_before: vor ?? null,
+        p_limit: FENSTER,
+      });
+      if (error) return false;
+      const roh = (data ?? []) as Msg[];
+      setMsgs((prev) => ({ ...prev, [other]: fensterEinfuegen(prev[other] ?? [], roh, vor) }));
+      setGeladen((p) => ({ ...p, [other]: true }));
+      setMehr((p) => ({ ...p, [other]: roh.length === FENSTER }));
+      return true;
+    },
+    [supabase],
+  );
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -230,23 +283,13 @@ export default function ChatWindow({ initialTo }: { initialTo?: string }) {
     const mineId = await fetchMyCompanyId(supabase);
     setMyId(mineId);
 
-    // connections (CONNECTED) + message counterparties
-    const [{ data: conns }, { data: rows }] = await Promise.all([
-      supabase.from("connections").select("company_id_a, company_id_b, status").eq("status", "CONNECTED"),
-      supabase.from("messages").select("id, sender_company_id, receiver_company_id, content, is_negotiation_offer, offer_amount, created_at, read_at").order("created_at", { ascending: true }),
-    ]);
+    // Eine Zeile je Gespräch, in der Datenbank fertig gerechnet: letzte
+    // Nachricht, Zahl der ungelesenen, letztes Angebot, weggelegt ja/nein.
+    // Vorher wurde dafür der gesamte Nachrichtenbestand der Firma geholt.
+    const { data: threadRows, error: threadErr } = await supabase.rpc("chat_threads");
+    const rows = ((threadRows ?? []) as ThreadZeile[]).filter((r) => r.other_company_id);
 
-    const counterIds = new Set<string>();
-    for (const c of (conns ?? []) as { company_id_a: string; company_id_b: string }[]) {
-      counterIds.add(c.company_id_a === mineId ? c.company_id_b : c.company_id_a);
-    }
-    const allMsgs = (rows ?? []) as Msg[];
-    for (const m of allMsgs) {
-      counterIds.add(m.sender_company_id === mineId ? m.receiver_company_id : m.sender_company_id);
-    }
-    counterIds.delete(mineId ?? "");
-
-    if (counterIds.size === 0) {
+    if (threadErr || rows.length === 0) {
       setDemo(true);
       setThreads(DEMO_THREADS);
       const map: Record<string, Msg[]> = {};
@@ -254,20 +297,22 @@ export default function ChatWindow({ initialTo }: { initialTo?: string }) {
       setMsgs(map);
       setDeals(DEMO_DEALS);
       setUnread(DEMO_UNREAD);
+      setZuletzt({});
+      setArchiviert({});
       setActive(initialTo ?? DEMO_THREADS[0].id);
       setLoading(false);
       return;
     }
 
-    const ids = [...counterIds];
+    const ids = rows.map((r) => r.other_company_id);
     const base = await supabase
       .from("companies")
       .select("id, company_name, logo_url, city, verified, role, canton")
       .in("id", ids);
 
     // Kontaktdaten kommen getrennt und nur fuer bestaetigte Verbindungen
-    // (Migration 23). Genau das sind die Firmen in dieser Liste — wer hier
-    // steht, ist verbunden.
+    // (Migration 23). Wer keine Verbindung hat — etwa eine Direktanfrage —
+    // steht hier in der Liste, aber ohne Telefonnummer.
     const { data: contactRows } = await supabase.rpc("company_contact");
     const contacts = new Map(
       ((contactRows ?? []) as {
@@ -285,38 +330,42 @@ export default function ChatWindow({ initialTo }: { initialTo?: string }) {
         ? { ...c, email: k.email, phone: k.phone, address: k.address, website: k.website }
         : c;
     });
-    const map: Record<string, Msg[]> = {};
-    for (const id of counterIds) map[id] = [];
-    for (const m of allMsgs) {
-      const other = m.sender_company_id === mineId ? m.receiver_company_id : m.sender_company_id;
-      (map[other] ??= []).push(m);
-    }
-    // Deal-Kontext aus letztem Angebot je Thread ableiten.
+
+    const { zuletzt: vorschau, ungelesen: unreadMap, archiviert: archMap, angebote, jungstes } =
+      ausThreadZeilen(rows);
     const dealMap: Record<string, Deal> = {};
-    for (const id of counterIds) {
-      const lastOffer = [...(map[id] ?? [])].reverse().find((m) => m.is_negotiation_offer);
-      if (lastOffer) {
-        dealMap[id] = { material: lastOffer.content.replace(/·.*$/, "").trim() || "Beschaffung", volume: "—", region: "—", phase: "In Verhandlung", savingsPct: 0, unit: "Einheit" };
-      }
-    }
-    // Ungelesen heisst: an mich gerichtet und noch nicht geöffnet.
-    const unreadMap: Record<string, number> = {};
-    for (const m of allMsgs) {
-      if (m.receiver_company_id === mineId && !m.read_at) {
-        unreadMap[m.sender_company_id] = (unreadMap[m.sender_company_id] ?? 0) + 1;
-      }
+    for (const [id, text] of Object.entries(angebote)) {
+      dealMap[id] = {
+        material: text.replace(/·.*$/, "").trim() || "Beschaffung",
+        volume: "—",
+        region: "—",
+        phase: "In Verhandlung",
+        savingsPct: 0,
+        unit: "Einheit",
+      };
     }
 
     setDemo(false);
     setThreads(list);
-    setMsgs(map);
+    setMsgs({});
+    setGeladen({});
+    setMehr({});
     setDeals(dealMap);
     setUnread(unreadMap);
-    const opened = initialTo && counterIds.has(initialTo) ? initialTo : list[0]?.id ?? null;
+    setZuletzt(vorschau);
+    setArchiviert(archMap);
+
+    // Geöffnet wird das jüngste Gespräch, das nicht weggelegt ist — ausser
+    // es wurde eines ausdrücklich angesteuert.
+    const opened = initialTo && ids.includes(initialTo) ? initialTo : jungstes;
     setActive(opened);
-    if (opened) void supabase.rpc("mark_thread_read", { p_other: opened });
+    if (opened) {
+      await ladeVerlauf(opened);
+      void supabase.rpc("mark_thread_read", { p_other: opened });
+      setUnread((prev) => ({ ...prev, [opened]: 0 }));
+    }
     setLoading(false);
-  }, [isSignedIn, userId, supabase, initialTo]);
+  }, [isSignedIn, userId, supabase, initialTo, ladeVerlauf]);
 
   useEffect(() => {
     load();
@@ -343,7 +392,34 @@ export default function ChatWindow({ initialTo }: { initialTo?: string }) {
           const other =
             m.sender_company_id === myId ? m.receiver_company_id : m.sender_company_id;
 
+          // Schreibt jemand zum ersten Mal — eine Direktanfrage einer Firma,
+          // mit der es noch keine Verbindung gibt —, steht sie noch nicht in
+          // der Liste. Dann die Liste neu holen, statt eine Zeile ohne Namen
+          // zu bauen.
+          if (!bekannteRef.current.has(other)) {
+            void load();
+            return;
+          }
+
+          // Die Vorschau in der Liste steht immer, auch wenn der Verlauf
+          // dieses Gesprächs gar nicht geladen ist.
+          setZuletzt((prev) => ({
+            ...prev,
+            [other]: {
+              at: m.created_at,
+              text: m.content,
+              offer: m.is_negotiation_offer,
+              fromMe: m.sender_company_id === myId,
+            },
+          }));
+          // Eine neue Nachricht holt ein weggelegtes Gespräch zurück — genau
+          // so rechnet es auch die Datenbank.
+          setArchiviert((prev) => (prev[other] ? { ...prev, [other]: false } : prev));
+
           setMsgs((prev) => {
+            // Nur anhängen, wenn der Verlauf offen ist. Sonst entstünde ein
+            // Gespräch, das aus einer einzigen Nachricht zu bestehen scheint.
+            if (!(other in prev)) return prev;
             const list = prev[other] ?? [];
             // Die eigene Nachricht steht schon optimistisch drin — sie wird
             // ersetzt statt verdoppelt.
@@ -385,7 +461,7 @@ export default function ChatWindow({ initialTo }: { initialTo?: string }) {
     return () => {
       void supabase.removeChannel(ch);
     };
-  }, [supabase, myId, demo]);
+  }, [supabase, myId, demo, load]);
 
   /**
    * Tippanzeige und Online-Status der Gegenseite.
@@ -430,21 +506,38 @@ export default function ChatWindow({ initialTo }: { initialTo?: string }) {
     activeRef.current = active;
   }, [active]);
 
+  useEffect(() => {
+    bekannteRef.current = new Set(threads.map((t) => t.id));
+  }, [threads]);
+
   const activeCompany = threads.find((t) => t.id === active) ?? null;
   const activeMsgs = active ? msgs[active] ?? [] : [];
   const activeDeal = active ? deals[active] ?? null : null;
 
-  // Threads sortiert nach letzter Aktivität + Suchfilter.
-  const visibleThreads = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    return [...threads]
-      .filter((c) => !q || c.company_name.toLowerCase().includes(q))
-      .sort((a, b) => {
-        const la = (msgs[a.id] ?? []).at(-1)?.created_at ?? "";
-        const lb = (msgs[b.id] ?? []).at(-1)?.created_at ?? "";
-        return lb.localeCompare(la);
-      });
-  }, [threads, msgs, query]);
+  /** Zeitpunkt der letzten Nachricht — aus der Vorschau, ersatzweise aus
+   *  dem geladenen Verlauf (das ist der Fall der Beispiel-Konversationen). */
+  const letzterZeitpunkt = useCallback(
+    (id: string) => zuletzt[id]?.at ?? (msgs[id] ?? []).at(-1)?.created_at ?? "",
+    [zuletzt, msgs],
+  );
+
+  const anzahlArchiv = useMemo(
+    () => threads.filter((c) => archiviert[c.id]).length,
+    [threads, archiviert],
+  );
+
+  // Threads sortiert nach letzter Aktivität + Suchfilter. Weggelegte
+  // Gespräche stehen in einer eigenen Ansicht, nicht dazwischen.
+  const visibleThreads = useMemo(
+    () =>
+      sichtbareGespraeche(threads, {
+        archiviert,
+        zeigeArchiv,
+        suche: query,
+        zeitpunkt: letzterZeitpunkt,
+      }),
+    [threads, archiviert, zeigeArchiv, query, letzterZeitpunkt],
+  );
 
   const totalUnread = useMemo(
     () => Object.values(unread).reduce((s, n) => s + n, 0),
@@ -452,15 +545,52 @@ export default function ChatWindow({ initialTo }: { initialTo?: string }) {
   );
 
   useEffect(() => {
-    scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
+    const el = scrollRef.current;
+    if (!el) return;
+    if (haltePosition.current) {
+      haltePosition.current = false;
+      return;
+    }
+    el.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
   }, [activeMsgs.length, active]);
 
   // Beim Öffnen eines Threads als gelesen markieren.
   function openThread(id: string) {
     setActive(id);
     setUnread((prev) => (prev[id] ? { ...prev, [id]: 0 } : prev));
+    if (demo) return;
+    // Der Verlauf wird erst beim Öffnen geholt, und nur das neueste Fenster.
+    if (!geladen[id]) void ladeVerlauf(id);
     // Auch in der Datenbank vermerken, sonst zählt die Glocke ewig weiter.
-    if (!demo) void supabase.rpc("mark_thread_read", { p_other: id });
+    void supabase.rpc("mark_thread_read", { p_other: id });
+  }
+
+  /** Ältere Nachrichten nachladen — das Fenster wandert nach hinten. */
+  async function aeltereLaden() {
+    if (!active || laedtMehr) return;
+    const aeltest = (msgs[active] ?? []).find((m) => !m.id.startsWith("tmp-"));
+    if (!aeltest) return;
+    const vorher = scrollRef.current?.scrollHeight ?? 0;
+    haltePosition.current = true;
+    setLaedtMehr(true);
+    await ladeVerlauf(active, aeltest.created_at);
+    setLaedtMehr(false);
+    // Die Ansicht um genau das nachwachsen lassen, was oben dazugekommen
+    // ist — dann bleibt dieselbe Nachricht unter dem Auge stehen.
+    requestAnimationFrame(() => {
+      const el = scrollRef.current;
+      if (el) el.scrollTop += el.scrollHeight - vorher;
+    });
+  }
+
+  /** Ein Gespräch weglegen oder zurückholen. Gelöscht wird nichts: der
+   *  Verlauf enthält Angebote, auf die sich beide Seiten berufen. */
+  async function weglegen(id: string, an: boolean) {
+    setArchiviert((prev) => ({ ...prev, [id]: an }));
+    if (an && active === id) setActive(null);
+    if (demo) return;
+    const { error } = await supabase.rpc("chat_archive", { p_other: id, p_on: an });
+    if (error) setArchiviert((prev) => ({ ...prev, [id]: !an }));
   }
 
   /**
@@ -488,6 +618,17 @@ export default function ChatWindow({ initialTo }: { initialTo?: string }) {
 
   function appendLocal(m: Msg) {
     setMsgs((prev) => ({ ...prev, [active!]: [...(prev[active!] ?? []), m] }));
+    // Ohne das stünde in der Liste noch die vorherige Nachricht, bis die
+    // Seite neu geladen wird.
+    setZuletzt((prev) => ({
+      ...prev,
+      [active!]: {
+        at: m.created_at,
+        text: m.content,
+        offer: m.is_negotiation_offer,
+        fromMe: true,
+      },
+    }));
   }
 
   async function send() {
@@ -561,7 +702,9 @@ export default function ChatWindow({ initialTo }: { initialTo?: string }) {
                 </span>
               )}
             </h2>
-            <span className="text-[11px] font-medium text-slate-500">{threads.length} verbunden</span>
+            <span className="text-[11px] font-medium text-slate-500">
+              {visibleThreads.length} {zeigeArchiv ? "weggelegt" : "aktiv"}
+            </span>
           </div>
           <div className="relative mt-3">
             <Search className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-slate-500" />
@@ -572,6 +715,22 @@ export default function ChatWindow({ initialTo }: { initialTo?: string }) {
               className="h-9 w-full rounded-md border border-slate-200 bg-slate-50 pl-9 pr-3 text-[13px] text-slate-900 placeholder:text-slate-500 outline-none focus:border-brand/50 focus:bg-white"
             />
           </div>
+          {/* Weggelegte Gespräche stehen in einer eigenen Ansicht, nicht
+              zwischen den aktiven. Der Umschalter erscheint erst, wenn es
+              etwas wegzulegen gibt — sonst ist er ein Knopf ins Leere. */}
+          {(anzahlArchiv > 0 || zeigeArchiv) && (
+            <button
+              type="button"
+              onClick={() => setZeigeArchiv((v) => !v)}
+              className="mt-2.5 inline-flex items-center gap-1.5 text-[11.5px] font-semibold text-slate-600 transition-colors hover:text-brand-700"
+            >
+              {zeigeArchiv ? (
+                <><ArrowRight className="h-3.5 w-3.5 rotate-180" /> Zurück zu den aktiven</>
+              ) : (
+                <><Archive className="h-3.5 w-3.5" /> Weggelegt ({anzahlArchiv})</>
+              )}
+            </button>
+          )}
           {demo && <p className="mt-2 text-[11px] text-slate-500">Beispiel-Konversationen</p>}
         </div>
         <ul className="min-h-0 flex-1 overflow-y-auto">
@@ -583,7 +742,13 @@ export default function ChatWindow({ initialTo }: { initialTo?: string }) {
             <li className="px-4 py-6 text-center text-[13px] text-slate-500">Keine Firma gefunden.</li>
           ) : (
             visibleThreads.map((c) => {
+              // Die Vorschau kommt aus chat_threads(); nur die Beispiel-
+              // Konversationen haben keine und greifen auf den Verlauf zurück.
+              const v = zuletzt[c.id];
               const last = (msgs[c.id] ?? []).at(-1);
+              const zeit = v?.at ?? last?.created_at ?? null;
+              const vorText = v?.text ?? last?.content ?? null;
+              const istAngebot = v ? v.offer : !!last?.is_negotiation_offer;
               const deal = deals[c.id];
               const un = unread[c.id] ?? 0;
               return (
@@ -609,10 +774,10 @@ export default function ChatWindow({ initialTo }: { initialTo?: string }) {
                           <span className="truncate">{c.company_name}</span>
                           {c.verified && <BadgeCheck className="h-3.5 w-3.5 shrink-0 text-brand" />}
                         </span>
-                        {last && <span className="shrink-0 text-[10px] font-medium text-slate-500">{ago(last.created_at)}</span>}
+                        {zeit && <span className="shrink-0 text-[10px] font-medium text-slate-500">{ago(zeit)}</span>}
                       </span>
                       <span className={cn("mt-0.5 block truncate text-[12px]", un > 0 ? "font-semibold text-slate-700" : "text-slate-500")}>
-                        {last ? (last.is_negotiation_offer ? "💬 Verhandlungs-Angebot" : last.content) : "Neue Konversation"}
+                        {vorText ? (istAngebot ? "Verhandlungs-Angebot" : vorText) : "Neue Konversation"}
                       </span>
                       <span className="mt-1.5 flex items-center gap-2">
                         {deal && (
@@ -674,6 +839,27 @@ export default function ChatWindow({ initialTo }: { initialTo?: string }) {
                   )}
                 </div>
               </div>
+              {/* Weglegen heisst weglegen, nicht löschen: der Verlauf bleibt
+                  für beide Seiten stehen. Schreibt die Gegenseite wieder,
+                  kommt das Gespräch von selbst zurück. */}
+              {!demo && (
+                <button
+                  type="button"
+                  onClick={() => weglegen(activeCompany.id, !archiviert[activeCompany.id])}
+                  title={
+                    archiviert[activeCompany.id]
+                      ? "Zurück in die aktive Liste"
+                      : "Weglegen — der Verlauf bleibt erhalten"
+                  }
+                  className="ml-auto inline-flex shrink-0 items-center gap-1.5 rounded-lg border border-slate-200 px-2.5 py-1.5 text-[11.5px] font-semibold text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900"
+                >
+                  {archiviert[activeCompany.id] ? (
+                    <><ArchiveRestore className="h-3.5 w-3.5" /> Zurückholen</>
+                  ) : (
+                    <><Archive className="h-3.5 w-3.5" /> Weglegen</>
+                  )}
+                </button>
+              )}
             </div>
 
             {/* Deal-Kontext-Ribbon: verknüpft die Konversation mit dem Bündel */}
@@ -705,6 +891,25 @@ export default function ChatWindow({ initialTo }: { initialTo?: string }) {
             )}
 
             <div ref={scrollRef} className="flex-1 space-y-3 overflow-y-auto bg-slate-50 px-4 py-4">
+              {/* Geladen wird immer nur das neueste Fenster. Wer weiter
+                  zurück will, holt es sich — statt dass jeder Aufruf des
+                  Chats den ganzen Verlauf über die Leitung schickt. */}
+              {mehr[active ?? ""] && (
+                <div className="flex justify-center pb-1">
+                  <button
+                    type="button"
+                    onClick={aeltereLaden}
+                    disabled={laedtMehr}
+                    className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3.5 py-1.5 text-[11.5px] font-semibold text-slate-600 transition-colors hover:bg-slate-100 disabled:opacity-60"
+                  >
+                    {laedtMehr ? (
+                      <><Loader2 className="h-3.5 w-3.5 animate-spin" /> lädt …</>
+                    ) : (
+                      <><ChevronUp className="h-3.5 w-3.5" /> Ältere Nachrichten</>
+                    )}
+                  </button>
+                </div>
+              )}
               {activeMsgs.map((m) => {
                 const mine = m.sender_company_id === myId;
                 if (m.is_negotiation_offer) {
