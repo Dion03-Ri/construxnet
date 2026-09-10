@@ -645,23 +645,59 @@ Diese Punkte müssen erledigt sein, bevor echte Firmen darauf arbeiten:
    Index. Dazu `"SourceOn-Provision (2.25%)"` und `"Provision im
    Mindestrabatt bereits einkalkuliert"`: dasselbe Modell wie heute.
 
-   **Vorschlag: Höhe und Veränderung trennen.**
+   **DER MEDIAN AUS WERKS-PREISLISTEN IST VERWORFEN.** Er stand hier
+   kurz als Vorschlag und ist aus zwei Gründen schlecht:
 
-   | | Quelle | Belegbar |
-   |---|---|---|
-   | Wie hoch ist der Marktpreis? | Median aus veröffentlichten Werks-Preislisten je Material und Region | ja — mit Anzahl Werke und Stand |
-   | Wie verändert er sich? | KBOB-Materialpreisindex | ja — amtlich, monatlich, gratis |
+   - **Zirkulär.** Die Werke, deren Preislisten den Median bilden, bieten
+     selbst gegen diesen Median. Auf die Frage „woher kommt die Zahl?"
+     wäre die Antwort „von unseren eigenen Kunden". Der Auftraggeber hat
+     das zu Recht als unseriös zurückgewiesen.
+   - **Preislisten sind aufgeblasen.** Werke geben routinemässig 30–40 %
+     Rabatt auf Liste. Ein Median daraus läge weit über den echten
+     Abschlusspreisen — „15 % unter Liste" wäre der normale Preis mit
+     einem Etikett drauf, und der erste Einkäufer, der das durchschaut,
+     erzählt es weiter.
 
-   Betonwerke veröffentlichen ihre Preislisten ohnehin. Ein Median daraus
-   ist eine nachvollziehbare Erhebung, die man vorlegen kann. Zwischen zwei
-   Erhebungen hält der KBOB-Index den Richtwert aktuell — genau dafür ist
-   er gemacht (Teuerungsabrechnung bei öffentlichen Bauverträgen). Später
-   wird der eigene Abschluss-Median der stärkste Anker.
+   **DER WEG: BFS-Einheitspreise über die CRB.**
 
-   **Folge fürs Produkt: „KBOB" muss überall dort verschwinden, wo eine
-   Frankenzahl gemeint ist** — der Knopf im Beschaffungs-Dashboard, die
-   Katalogspalte, der Vergleich im Warenkorb. Eine Garantie „X % unter
-   KBOB" gegen eine Zahl, die die KBOB nie publiziert hat, ist angreifbar.
+   Das BFS publiziert *Kostenkennwerte für Berechnungselemente*:
+   regionalisierte durchschnittliche **Einheitspreise in Franken** für über
+   100 NPK-Positionen, netto ohne MWST, für die ganze Schweiz und sieben
+   Grossregionen, zweimal jährlich (Juni/Dezember). Zugänglich über
+   `werk-material.online`, betrieben von der CRB zusammen mit dem BFS —
+   über 400 Teilpositionen aus 40+ NPK-Kapiteln.
+
+   | | |
+   |---|---|
+   | Unabhängig | vom Bund erhoben, nicht von den eigenen Kunden |
+   | In Franken | Einheitspreise, nicht Indexpunkte |
+   | Regional | sieben Grossregionen, passt zu den Bündelregionen |
+   | Zitierbar | „Einheitspreis BFS/CRB, Grossregion Zürich, Stand Juni 2026" |
+
+   **Zwei Fragen, die der Auftraggeber mit der CRB klären muss, bevor
+   irgendetwas darauf gebaut wird:**
+
+   1. **Passen die Positionen?** NPK-Positionen sind Bauleistungen, oft
+      inklusive Einbringen und Arbeit — nicht zwingend der reine
+      Materialpreis ab Werk. Ob es „Beton C25/30 ab Werk" gibt oder nur
+      „liefern und einbringen", steht im Katalog.
+   2. **Darf man die Zahlen verwenden?** `werk-material.online` ist ein
+      kostenpflichtiges Produkt der CRB. Sie in einem eigenen kommerziellen
+      Produkt anzuzeigen und zur Grundlage einer Preisgarantie zu machen,
+      braucht sehr wahrscheinlich eine Lizenz. **Diese Frage entscheidet,
+      ob der Weg offen ist.**
+
+   Der KBOB-Materialpreisindex bleibt nützlich — aber nur für die
+   Veränderung zwischen zwei Erhebungen, nicht für die Höhe.
+
+   **Kartellrechtlich**, falls je eigene Zahlen aggregiert werden: nur
+   veröffentlichte Listen, nie ein einzelnes Werk zeigen, Mindestzahl an
+   Quellen, und **niemals Gebote von der Plattform einfliessen lassen** —
+   vertrauliche Gebote von Wettbewerbern zu einer öffentlichen Zahl zu
+   verarbeiten wäre der schwerste Fehler. Die frühere Notiz, der eigene
+   Abschluss-Median sei später der stärkste Anker, ist damit
+   zurückgenommen: nicht ohne anwaltliche Prüfung, Verzögerung und
+   Aggregation. Anwaltsliste.
 
    **Noch am Original zu prüfen:** die genaue Liste der Materialgruppen.
    `kbob.admin.ch` ist aus der Arbeitsumgebung gesperrt; die Angaben oben
