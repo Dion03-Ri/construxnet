@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Loader2, Package, Map as MapIcon, Truck, Info } from "lucide-react";
 import { useSupabaseBrowser } from "@/lib/supabase-browser";
+import { useFrischBeiRueckkehr, useLive } from "@/lib/live";
 import { CANTON_CENTROID } from "@/data/chMap";
 import { cn } from "@/lib/utils";
 
@@ -84,6 +85,9 @@ export default function MapWidgets() {
   useEffect(() => {
     void load();
   }, [load]);
+
+  useLive(supabase, "karte-seitenleiste", ["companies"], load);
+  useFrischBeiRueckkehr(load);
 
   const materials = useMemo(() => {
     const counts = new Map<string, number>();

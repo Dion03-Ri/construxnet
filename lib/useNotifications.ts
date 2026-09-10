@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useFrischBeiRueckkehr, useLive } from "@/lib/live";
 import {
   Gavel,
   UserPlus,
@@ -407,39 +408,16 @@ export function useNotifications() {
    * Bisher wurde genau einmal beim Aufbau der Seite gezaehlt. Eine Anfrage,
    * die danach eintraf, blieb ungezaehlt, bis jemand die Seite neu lud —
    * also genau das „keine Anzeichen", ueber das der Auftraggeber gestolpert
-   * ist. Gehorcht wird auf INSERT; die Zeilenregeln gelten dabei weiter,
-   * es kommt also nur an, was diese Firma ohnehin sehen darf.
+   * ist. Gezaehlt wird jetzt bei jedem Ereignis auf den Tabellen, aus denen
+   * die Meldungen kommen.
    */
-  useEffect(() => {
-    const kanal = supabase
-      .channel("glocke")
-      .on("postgres_changes", { event: "INSERT", schema: "public", table: "connections" }, () => {
-        void load();
-      })
-      .on("postgres_changes", { event: "UPDATE", schema: "public", table: "connections" }, () => {
-        void load();
-      })
-      .on("postgres_changes", { event: "INSERT", schema: "public", table: "messages" }, () => {
-        void load();
-      })
-      .subscribe();
-    return () => {
-      void supabase.removeChannel(kanal);
-    };
-  }, [supabase, load]);
-
-  /** Wer den Tab zurueckholt, soll den Stand von jetzt sehen. */
-  useEffect(() => {
-    function frisch() {
-      if (document.visibilityState === "visible") void load();
-    }
-    document.addEventListener("visibilitychange", frisch);
-    window.addEventListener("focus", frisch);
-    return () => {
-      document.removeEventListener("visibilitychange", frisch);
-      window.removeEventListener("focus", frisch);
-    };
-  }, [load]);
+  useLive(
+    supabase,
+    "glocke",
+    ["connections", "messages", "direct_requests", "direct_offers", "bundle_participations"],
+    load,
+  );
+  useFrischBeiRueckkehr(load);
 
   const unread = useMemo(
     () => (seenAt ? notices.filter((n) => n.at > seenAt).length : notices.length),

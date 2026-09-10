@@ -122,3 +122,71 @@
     opacity: 0.6;
   }
 }
+
+/* --------------------------------------------------------------------
+   Kartennadeln mit Firmennamen (components/map/LeafletMap.tsx)
+
+   Der Kasten des Symbols ist 0×0 und sitzt auf der Koordinate; alles
+   Sichtbare wird von dort aus gezeichnet und darf herausragen. Deshalb
+   `overflow: visible` — sonst schnitte Leaflet Nadel und Schild ab.
+   -------------------------------------------------------------------- */
+.nadel-huelle {
+  overflow: visible;
+}
+
+.nadel {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: block;
+  line-height: 0;
+}
+
+/* Die Spitze der Nadel liegt bei (12,32) im Bild — also 12 nach links und
+   32 nach oben verschieben, damit sie genau auf dem Punkt steht. */
+.nadel svg {
+  position: absolute;
+  left: -12px;
+  top: -32px;
+  filter: drop-shadow(0 2px 3px rgba(15, 23, 42, 0.35));
+}
+
+/* Grobe Standorte blasser, damit man sie nicht mit einer echten Adresse
+   verwechselt. */
+.nadel--grob svg {
+  opacity: 0.6;
+}
+.nadel--grob .nadel-schild {
+  opacity: 0.75;
+}
+
+.nadel-schild {
+  position: absolute;
+  left: 14px;
+  top: -29px;
+  display: block;
+  max-width: 168px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding: 2px 6px 2px 5px;
+  border: 1px solid rgba(15, 23, 42, 0.14);
+  border-left-width: 3px;
+  border-left-style: solid;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.94);
+  color: #0f172a;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.18);
+}
+
+/* Beim Darüberfahren hebt Leaflet die Nadel nach vorn (`riseOnHover`);
+   das Schild wird dann deckend, damit es über den Nachbarn lesbar ist. */
+.leaflet-marker-icon:hover .nadel-schild {
+  background: #ffffff;
+  border-color: rgba(15, 23, 42, 0.28);
+  opacity: 1;
+}

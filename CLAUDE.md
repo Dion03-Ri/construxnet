@@ -1085,6 +1085,58 @@ REVOKEs der Migrationen laufen danach und behalten das letzte Wort
 
 Was im echten Bestand steht, zeigt `supabase/pruefung/verbindungen.sql`.
 
+## Karte: Nadeln mit Namen, nicht Punkte
+
+Ein Punkt sagt „hier ist jemand" und sonst nichts — man muss jeden einzeln
+anklicken. Die Karte trägt jetzt Kartennadeln mit dem Firmennamen daneben
+(`components/map/LeafletMap.tsx`, Gestaltung in `app/globals.css` unter
+`.nadel`).
+
+- Gold = Baustoffwerk, Navy = Bauunternehmen; die Farbe wiederholt sich als
+  Kante am Namensschild.
+- Haken in der Nadel = verifiziert, Kreis = nicht.
+- Blasse Nadel = nur ungefähr verortet (Ort/Kanton statt Adresse).
+- **Namen erst ab Zoomstufe 9.** Über der ganzen Schweiz lägen dreissig
+  Namen übereinander; bis dahin nennt ein Zeiger auf der Nadel die Firma.
+- Die Nadelspitze sitzt auf der Koordinate. Deshalb `iconSize: [0,0]` und
+  `iconAnchor: [0,0]`: ein fester Kasten müsste so breit sein wie der
+  längste Name und würde die Nadel danebenrücken. Dazu gehört
+  `overflow: visible` auf `.nadel-huelle` — sonst schneidet Leaflet ab.
+- Firmennamen gehen als HTML in `divIcon`, also durch `escape()`.
+
+## Alles live — `lib/live.ts`
+
+Der Auftraggeber: „anfragen standorte nachrichten etc sollten in realtime
+passieren und ankommen ohne neuladen". Die Seite lud vorher überall genau
+einmal beim Aufbau. Statt das in jedem Bildschirm einzeln zu flicken, steht
+die Verkabelung an einer Stelle: `useLive(...)` und
+`useFrischBeiRueckkehr(...)`.
+
+Angeschlossen: Netzwerk (`lib/network.ts`), Glocke (`useNotifications`),
+Karte (`SupplierMap`, `MapWidgets`), Bündel (`lib/bundles.ts`),
+Materialanfragen (`lib/directRequests.ts`), Firmenprofil
+(`CompanyConnect`), Vorschläge (`RecommendedPartners`).
+
+In der Publikation stehen: `messages` (21), `connections` + `companies`
+(33), `direct_requests`, `direct_offers`, `bundle_participations`,
+`bundles` (34).
+
+**Zwei Regeln, die dabei gelten und die man nicht aufweichen darf:**
+
+1. **Nur INSERT und UPDATE.** Für gelöschte Zeilen prüft Supabase keine
+   Zeilenregel — ein DELETE geht an jeden Zuhörer. Ohne
+   `REPLICA IDENTITY FULL` trägt es nur den Primärschlüssel und verrät
+   nichts. Deshalb steht auf keiner dieser Tabellen volle
+   Replica-Identität (auf `messages` schon, aus Migration 21 — dort ist es
+   für den Gelesen-Haken nötig und die Zeile geht ohnehin nur an Sender und
+   Empfänger).
+2. **Löschungen fängt der Tab-Wechsel ab** (`visibilitychange`/`focus`).
+   Das ist zugleich das Auffangnetz für abgerissene Verbindungen.
+
+**Noch nicht live:** der Beitragsfeed (`network_posts`, `post_likes`,
+`post_comments`). Bewusst — ein Feed, der einem unter den Händen springt,
+liest sich schlechter als einer, der stehenbleibt.
+
 ## UID-Nummern zum Testen
 
 Die Anmeldung prüft die UID rechnerisch (`lib/uid.ts`, Gewichte 5-4-3-2-7-6-5-4,

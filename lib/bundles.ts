@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useSupabaseBrowser } from "@/lib/supabase-browser";
+import { useFrischBeiRueckkehr, useLive } from "@/lib/live";
 
 export type BundleStatus =
   | "OPEN"
@@ -174,6 +175,17 @@ export function useBundles() {
   useEffect(() => {
     void reload(false);
   }, [reload]);
+
+  /**
+   * Bündel live. Ein neues Bündel, ein Beitritt, ein Zuschlag — das muss
+   * auf der Seite stehen, ohne dass jemand neu lädt. `force` ist dabei
+   * wichtig: sonst antwortete der Zwischenspeicher mit dem alten Stand.
+   */
+  const neuLaden = useCallback(() => {
+    void reload(true);
+  }, [reload]);
+  useLive(supabase, "buendel", ["bundles", "bundle_participations"], neuLaden);
+  useFrischBeiRueckkehr(neuLaden);
 
   const myBundleIds = useMemo(
     () => new Set(mine.map((m) => m.bundle_id)),

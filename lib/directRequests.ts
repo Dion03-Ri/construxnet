@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { useSupabaseBrowser } from "@/lib/supabase-browser";
+import { useFrischBeiRueckkehr, useLive } from "@/lib/live";
 
 export type RequestStatus =
   | "OPEN"
@@ -125,6 +126,14 @@ export function useDirectRequests() {
   useEffect(() => {
     void reload();
   }, [reload]);
+
+  /**
+   * Materialanfragen und Angebote live. Wer eine Anfrage stellt oder ein
+   * Angebot legt, soll das bei der Gegenseite auslösen, ohne dass jemand
+   * die Seite neu lädt.
+   */
+  useLive(supabase, "anfragen", ["direct_requests", "direct_offers"], reload);
+  useFrischBeiRueckkehr(reload);
 
   return { requests, loading, error, reload };
 }

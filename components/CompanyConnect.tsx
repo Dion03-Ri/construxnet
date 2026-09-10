@@ -6,6 +6,8 @@ import { useAuth } from "@clerk/nextjs";
 import { UserPlus, Check, Clock, MessageSquare } from "lucide-react";
 import { useSupabaseBrowser } from "@/lib/supabase-browser";
 import { fetchMyCompanyId } from "@/lib/myCompany";
+import { klartext } from "@/lib/network";
+import { useFrischBeiRueckkehr, useLive } from "@/lib/live";
 
 type ConnState = {
   id: string;
@@ -20,6 +22,7 @@ export default function CompanyConnect({ targetId }: { targetId: string }) {
   const [myId, setMyId] = useState<string | null>(null);
   const [conn, setConn] = useState<ConnState | null>(null);
   const [ready, setReady] = useState(false);
+  const [fehler, setFehler] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     if (!isSignedIn || !userId) {
@@ -59,25 +62,39 @@ export default function CompanyConnect({ targetId }: { targetId: string }) {
     load();
   }, [load]);
 
+  /** Nimmt die Gegenseite die Anfrage an, steht es hier sofort. */
+  useLive(supabase, `profil-${targetId}`, ["connections"], load, isSignedIn);
+  useFrischBeiRueckkehr(load);
+
   async function connect() {
     if (!myId) return;
+    setFehler(null);
     const { error } = await supabase.from("connections").insert({
       company_id_a: myId,
       company_id_b: targetId,
       requested_by: myId,
       status: "PENDING",
     });
-    if (!error) load();
+    // Frueher stand hier `if (!error) load()` — ein Fehlschlag tat nichts
+    // und sagte nichts.
+    if (error) setFehler(klartext(error.code, error.message));
+    await load();
   }
 
   async function accept() {
     if (!conn) return;
+    setFehler(null);
     const { error } = await supabase
       .from("connections")
       .update({ status: "CONNECTED" })
       .eq("id", conn.id);
-    if (!error) load();
+    if (error) setFehler(klartext(error.code, error.message));
+    await load();
   }
+
+  const fehlerzeile = fehler ? (
+    <p className="mt-2 text-[12.5px] leading-relaxed text-rose-300">{fehler}</p>
+  ) : null;
 
   if (!ready) return null;
   if (myId === targetId) {
@@ -120,24 +137,30 @@ export default function CompanyConnect({ targetId }: { targetId: string }) {
   }
   if (conn?.status === "PENDING" && conn.direction === "incoming") {
     return (
-      <button
-        type="button"
-        onClick={accept}
-        className="inline-flex items-center gap-1.5 rounded-lg bg-brand px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-brand-600"
-      >
-        <Check className="h-4 w-4" />
-        Anfrage annehmen
-      </button>
+      <div>
+        <button
+          type="button"
+          onClick={accept}
+          className="inline-flex items-center gap-1.5 rounded-lg bg-brand px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-brand-600"
+        >
+          <Check className="h-4 w-4" />
+          Anfrage annehmen
+        </button>
+        {fehlerzeile}
+      </div>
     );
   }
   return (
-    <button
-      type="button"
-      onClick={connect}
-      className="inline-flex items-center gap-1.5 rounded-lg bg-brand px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-brand-600"
-    >
-      <UserPlus className="h-4 w-4" />
-      Vernetzen
-    </button>
+    <div>
+      <button
+        type="button"
+        onClick={connect}
+        className="inline-flex items-center gap-1.5 rounded-lg bg-brand px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-brand-600"
+      >
+        <UserPlus className="h-4 w-4" />
+        Vernetzen
+      </button>
+      {fehlerzeile}
+    </div>
   );
 }

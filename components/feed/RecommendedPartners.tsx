@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useAuth } from "@clerk/nextjs";
 import { UserPlus, BadgeCheck, Check } from "lucide-react";
 import { useSupabaseBrowser } from "@/lib/supabase-browser";
+import { useFrischBeiRueckkehr, useLive } from "@/lib/live";
 import { fetchMyCompanyId } from "@/lib/myCompany";
 import { SAMPLE_PARTNERS } from "@/data/feedMock";
 import { cn } from "@/lib/utils";
@@ -62,6 +63,9 @@ export default function RecommendedPartners() {
   useEffect(() => {
     load();
   }, [load]);
+
+  useLive(supabase, "vorschlaege", ["companies", "connections"], load);
+  useFrischBeiRueckkehr(load);
 
   async function connect(targetId: string) {
     if (!myId || demo) return;
