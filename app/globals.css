@@ -70,3 +70,55 @@
   background-color: #16181a;
   color: #ffffff;
 }
+
+/* Glanz auf den beiden Karten „Zwei Wege zum besseren Preis".
+
+   Ein sehr flaches Licht liegt schräg über der Karte und wandert einmal
+   durch, wenn der Zeiger darauf steht. Absichtlich kein Schimmern und
+   kein Glas: Glaseffekte sind selbst ein Erkennungszeichen erzeugter
+   Seiten. Das hier soll aussehen wie Licht auf mattem Lack — bei elf
+   Prozent Weiss im hellsten Punkt sieht man es, ohne es zu bemerken.
+
+   Warum eine benannte Regel und keine Klassenkette im Markup: der Verlauf
+   hat fünf Farbstopps mit Kommas und Prozentwerten. Als Tailwind-Klasse
+   wäre das eine Zeile aus achtzig Unterstrichen, die niemand mehr ändert.
+
+   Die Fläche ist grösser als die Karte (`inset: -20%`), damit der Streifen
+   beim Wandern nicht an der eigenen Kante endet. Er sitzt hinter Text und
+   Zeichnung, weil ::before wie das erste Kind gezeichnet wird.
+
+   Wer reduzierte Bewegung eingestellt hat, bekommt das Licht ruhend. Die
+   allgemeine Regel weiter oben nimmt zwar die Dauer weg, aber ohne diese
+   zweite Regel würde der Streifen dann springen statt zu wandern. */
+.glanz::before {
+  content: "";
+  position: absolute;
+  inset: -20%;
+  pointer-events: none;
+  background: linear-gradient(
+    112deg,
+    transparent 34%,
+    rgba(255, 255, 255, 0.05) 45%,
+    rgba(255, 255, 255, 0.11) 50%,
+    rgba(255, 255, 255, 0.05) 55%,
+    transparent 66%
+  );
+  transform: translateX(-22%);
+  opacity: 0.6;
+  transition: transform 1s ease, opacity 0.5s ease;
+}
+/* Nur dort, wo es einen Zeiger gibt. Auf dem Handy loest eine Beruehrung
+   sonst :hover aus und der Streifen bleibt danach stehen, wo er gerade
+   war — ein Lichtfleck, der nicht mehr weggeht. */
+@media (hover: hover) {
+  .glanz:hover::before {
+    transform: translateX(22%);
+    opacity: 1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .glanz:hover::before {
+    transform: translateX(-22%);
+    opacity: 0.6;
+  }
+}
