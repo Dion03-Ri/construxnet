@@ -39,7 +39,12 @@ funktionen AS (
       ('submit_demand',             'submit_demand(text,text,text,text,text,text,numeric,numeric,uuid,date,date,integer)', 'Bedarf mit Baustelle und Zeitraum, Migration 36'),
       ('bietfaehig',                'bietfaehig(uuid)',                                 'Bietfähigkeit als Rechnung, Migration 37'),
       ('meine_bietfaehigkeit',      'meine_bietfaehigkeit()',                           'die eigene Bietfähigkeit, Migration 37'),
-      ('lieferantenkonto_beantragen','lieferantenkonto_beantragen(text,text[],text)',   'Zulassung beantragen, Migration 37')
+      ('lieferantenkonto_beantragen','lieferantenkonto_beantragen(text,text[],text)',   'Zulassung beantragen, Migration 37'),
+      ('kapazitaet_pruefen',        'kapazitaet_pruefen(uuid,uuid)',                    'Kapazität je Monat, Migration 38'),
+      ('kapazitaet_setzen',         'kapazitaet_setzen(text,date,date,numeric,text)',   'Lieferprofil setzen, Migration 39'),
+      ('meine_zuschlaege',          'meine_zuschlaege()',                               'gewonnene Bündel, Migration 39'),
+      ('zuschlag_baustellen',       'zuschlag_baustellen(uuid)',                        'Adressen nur für den Gewinner, Migration 39'),
+      ('withdraw_demand je Baustelle','withdraw_demand(uuid,uuid)',                     'Austritt je Baustelle, Migration 40')
     ) AS f(name, sig, zweck)
 ),
 spalten AS (
@@ -81,11 +86,25 @@ spalten AS (
 ),
 austritt AS (
   SELECT 'withdraw_demand: Phasenprüfung' AS was,
-         CASE WHEN pg_get_functiondef('withdraw_demand(uuid)'::regprocedure) LIKE '%Sammelphase%'
+         CASE WHEN pg_get_functiondef('withdraw_demand(uuid,uuid)'::regprocedure) LIKE '%Sammelphase%'
               THEN 'ok' ELSE 'FEHLT' END AS stand,
          'Austritt nur in der Sammelphase, Migration 31' AS soll
 ),
 rechte AS (
+  -- Die vier Regeln aus Migration 01 lasen `companies.clerk_user_id`, das
+  -- seit Migration 19 gesperrt ist. Sie schlugen mit „permission denied"
+  -- fehl, statt keine Zeilen zu liefern. Migration 41 hat sie ersetzt;
+  -- diese Prüfung sorgt dafür, dass sie nicht zurückkommen.
+  SELECT 'Zeilenregeln ohne clerk_user_id' AS was,
+         CASE WHEN EXISTS (
+                SELECT 1 FROM pg_policies
+                 WHERE schemaname = 'public'
+                   AND tablename IN ('bundle_participations','sia_contracts',
+                                     'subscriptions','supplier_bids')
+                   AND COALESCE(qual, '') LIKE '%clerk_user_id%')
+              THEN 'FEHLT' ELSE 'ok' END AS stand,
+         'eigene Zeilen wieder lesbar, Migration 41' AS soll
+  UNION ALL
   SELECT 'lieferantenkonto_entscheiden: nur Dienstweg' AS was,
          CASE WHEN to_regprocedure('lieferantenkonto_entscheiden(uuid,text,text,text)') IS NULL THEN 'FEHLT'
               WHEN has_function_privilege('authenticated',

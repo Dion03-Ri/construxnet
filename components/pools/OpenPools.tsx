@@ -292,9 +292,27 @@ export default function OpenPools() {
   const { has, toggle } = useSavedPools();
   const { bundles, mine, loading, error, reload } = useBundles();
 
+  /* Seit eine Teilnahme eine Zeile JE BAUSTELLE ist, kann eine Firma
+     mehrere Zeilen im selben Bündel haben. Vorher stand hier `set` — dann
+     zeigte die Seite nur die Menge der zuletzt gelesenen Baustelle statt
+     der eigenen Gesamtmenge. */
   const myVolumes = useMemo(() => {
     const m = new Map<string, number>();
-    for (const p of mine) m.set(p.bundle_id, Number(p.requested_volume));
+    for (const p of mine) {
+      m.set(p.bundle_id, (m.get(p.bundle_id) ?? 0) + Number(p.requested_volume));
+    }
+    return m;
+  }, [mine]);
+
+  /* Für den Austritt: hat die Firma genau EINE Baustelle in diesem Bündel,
+     wird sie mitgegeben. Bei mehreren weist die Datenbank ab und fragt
+     nach — sie darf nicht raten, welche gemeint ist. */
+  const myProjects = useMemo(() => {
+    const m = new Map<string, string[]>();
+    for (const p of mine) {
+      if (!p.project_id) continue;
+      m.set(p.bundle_id, [...(m.get(p.bundle_id) ?? []), p.project_id]);
+    }
     return m;
   }, [mine]);
 
@@ -317,7 +335,12 @@ export default function OpenPools() {
     if (!confirm(frage)) return;
     setAbsageFehler(null);
     setBusy(b.id);
-    const { error: fehler } = await withdrawDemand(supabase, b.id);
+    const eigene = myProjects.get(b.id) ?? [];
+    const { error: fehler } = await withdrawDemand(
+      supabase,
+      b.id,
+      eigene.length === 1 ? eigene[0] : null,
+    );
     setBusy(null);
     if (fehler) setAbsageFehler(fehler);
     reload();

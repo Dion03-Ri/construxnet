@@ -140,10 +140,15 @@ export function useBundles() {
         .neq("status", "CANCELLED"),
     ]);
 
+    // Der Fehler der EIGENEN Teilnahmen wurde hier verschluckt: `p.data ??
+    // []` machte aus einer Absage eine leere Liste. Genau dadurch blieb
+    // eine kaputte Zeilenregel monatelang unbemerkt — auf `/pools` war
+    // „Meine" einfach leer, und nichts wurde rot. Ein Fehler, den niemand
+    // sieht, ist schlimmer als einer, der stört.
     return {
       bundles: b.error ? [] : ((b.data ?? []) as Bundle[]),
       mine: (p.data ?? []) as MyParticipation[],
-      error: b.error?.message ?? null,
+      error: b.error?.message ?? p.error?.message ?? null,
     };
   }, [supabase]);
 
@@ -273,6 +278,39 @@ export async function holeMindestgebot(
   return (zeile as Mindestgebot) ?? null;
 }
 
+/** Die Mengenkurve eines Bündels über die Monate, mit der eigenen Kapazität. */
+export type KapazitaetsZeile = {
+  monat: string;
+  gebraucht: number;
+  erklaert: number;
+  frei_gebucht: number;
+  frei_offen: number;
+};
+
+export async function holeKapazitaetFuer(
+  supabase: ReturnType<typeof useSupabaseBrowser>,
+  bundleId: string,
+): Promise<KapazitaetsZeile[]> {
+  const { data } = await supabase.rpc("meine_kapazitaet_fuer", { p_bundle_id: bundleId });
+  return (data ?? []) as KapazitaetsZeile[];
+}
+
+/** Die Baustellen einer Ausschreibung — grobe Lage, ohne Firmennamen. */
+export type AusschreibungsBaustelle = {
+  lage: string;
+  menge: number;
+  liefer_von: string;
+  liefer_bis: string;
+};
+
+export async function holeAusschreibungsBaustellen(
+  supabase: ReturnType<typeof useSupabaseBrowser>,
+  bundleId: string,
+): Promise<AusschreibungsBaustelle[]> {
+  const { data } = await supabase.rpc("ausschreibung_baustellen", { p_bundle_id: bundleId });
+  return (data ?? []) as AusschreibungsBaustelle[];
+}
+
 /**
  * Gebot abgeben oder nachbessern.
  *
@@ -309,11 +347,15 @@ export function useMyBids() {
   const supabase = useSupabaseBrowser();
   const [bids, setBids] = useState<MyBid[]>([]);
   const [loading, setLoading] = useState(true);
+  const [fehler, setFehler] = useState<string | null>(null);
 
   const reload = useCallback(async () => {
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from("supplier_bids")
       .select("id, bundle_id, list_price_net, lieferantenpreis_net, customer_price_net, is_winning_bid, created_at");
+    // Auch hier nicht stillschweigend leeren: ein Werk, das seine eigenen
+    // Gebote nicht sieht, soll erfahren warum.
+    setFehler(error?.message ?? null);
     setBids((data ?? []) as MyBid[]);
     setLoading(false);
   }, [supabase]);
@@ -322,15 +364,17 @@ export function useMyBids() {
     void reload();
   }, [reload]);
 
-  return { bids, loading, reload };
+  return { bids, loading, fehler, reload };
 }
 
 export async function withdrawDemand(
   supabase: ReturnType<typeof useSupabaseBrowser>,
   bundleId: string,
+  projectId?: string | null,
 ): Promise<{ error?: string }> {
   const { error } = await supabase.rpc("withdraw_demand", {
     p_bundle_id: bundleId,
+    p_project_id: projectId ?? null,
   });
   return error ? { error: error.message } : {};
 }
