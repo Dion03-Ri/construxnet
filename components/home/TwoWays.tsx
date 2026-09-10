@@ -5,24 +5,27 @@ import { BTN_LIGHT, D_MD, EYEBROW, SECTION, SHELL } from "@/lib/ui";
 /**
  * Zwei Wege zum besseren Preis.
  *
- * Aufbau nach dem Vorbild der Robinhood-Karten: dunkler Grund, sehr weiche
- * Ecken, Titel und ein kurzer Satz oben, ein Knopf — und darunter das
- * Motiv über die ganze Breite, bündig an der unteren Kante.
+ * Dunkler Grund, sehr weiche Ecken, Titel und ein kurzer Satz oben, ein
+ * Knopf — und darunter das Motiv.
  *
- * Die beiden Motive sind Strichzeichnungen in Gold auf Schwarz. Sie kamen
- * in verschiedenen Formaten — das Bündel quadratisch, der Handschlag
- * breit. Beide liegen jetzt freigestellt und mittig auf derselben Fläche
- * von 1400 × 760, mit Luft ringsum. Das ist der Grund, warum die zwei
- * Karten exakt gleich hoch sind und keine Zeichnung an einer Kante
- * abgeschnitten wird.
+ * Das Motiv lief frueher randlos ueber die ganze Breite und buendig an
+ * die Unterkante. Es war damit das Lauteste an der Karte und drueckte den
+ * Text nach oben weg. Jetzt steht es auf siebzig Prozent der Breite,
+ * mittig, mit Luft ringsum. Eine Strichzeichnung braucht diese Luft: sie
+ * ist ein Objekt mit Aussenkontur, und wo die Kontur die Bildkante
+ * trifft, sieht es nach Fehler aus.
  *
- * Eine Strichzeichnung braucht diese Luft. Ein Foto darf randlos laufen,
- * eine Zeichnung nicht: sie ist ein Objekt mit Aussenkontur, und wo die
- * Kontur die Bildkante trifft, sieht es nach Fehler aus.
+ * Die beiden Motive kamen in verschiedenen Formaten — das Buendel
+ * quadratisch, der Handschlag breit. Beide liegen freigestellt und mittig
+ * auf derselben Flaeche von 1400 x 760. Das ist der Grund, warum die zwei
+ * Karten exakt gleich hoch sind.
  *
- * Weder Verlauf noch Maske nötig — nach der Schwarzpunkt-Korrektur ist
- * der Hintergrund exakt 0/0/0, und die Karte ist ebenfalls schwarz. Die
- * Bildkante ist damit unsichtbar.
+ * Weder Verlauf noch Maske noetig: nach der Schwarzpunkt-Korrektur ist
+ * der Hintergrund der Zeichnungen exakt 0/0/0, und die Karte ist ebenfalls
+ * schwarz. Die Bildkante ist damit unsichtbar.
+ *
+ * `glanz` ist das Licht, das beim Darueberfahren einmal durch die Karte
+ * wandert. Es steht in app/globals.css, mitsamt der Begruendung.
  */
 
 function Card({
@@ -41,7 +44,7 @@ function Card({
   alt: string;
 }) {
   return (
-    <div className="group relative flex flex-col overflow-hidden rounded-[20px] border border-white/[0.22] bg-black sm:rounded-[20px]">
+    <div className="glanz group relative flex flex-col overflow-hidden rounded-[20px] border border-white/[0.22] bg-black">
       <div className="px-6 pb-2 pt-10 text-center sm:px-10 sm:pt-14">
         <h3 className="font-display text-[26px] font-bold leading-[1.15] tracking-[-0.02em] text-white sm:text-[30px]">
           {title}
@@ -54,9 +57,11 @@ function Card({
         </Link>
       </div>
 
-      {/* Das Motiv, randlos. `mt-auto` drückt es auf die Unterkante, damit
-          beide Karten gleich hoch bleiben, auch wenn ein Text länger ist. */}
-      <div className="mt-auto pt-8 sm:pt-10">
+      {/* `mt-auto` drückt das Motiv nach unten, damit beide Karten gleich
+          hoch bleiben, auch wenn ein Text länger ist. Der seitliche Rand
+          ist in Prozent, nicht in Pixeln: die Zeichnung soll auf jeder
+          Breite denselben Anteil der Karte einnehmen. */}
+      <div className="mt-auto px-[10%] pb-7 pt-7 sm:px-[15%] sm:pb-8 sm:pt-8">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={src}
