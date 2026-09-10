@@ -578,8 +578,8 @@ sechsundzwanzig Kantone gehören nicht als Wörterband auf die Seite.
     Ein KI-Treffer wird als Alias mit `source: 'AI'` gemerkt, damit er beim
     zweiten Mal gratis ist.
   - Danach: hochgeladene Leistungsverzeichnisse (#25) über dieselbe Route.
-- Migrationen `08`–`29` sind eingespielt. **`30_konto_schliessen.sql` ist
-  neu und noch NICHT eingespielt.**
+- Migrationen `08`–`29` sind eingespielt. **`30_konto_schliessen.sql` und
+  `31_bindung.sql` sind neu und noch NICHT eingespielt.**
 
 ## Vor dem Launch — Pflicht
 Diese Punkte müssen erledigt sein, bevor echte Firmen darauf arbeiten:
@@ -708,10 +708,28 @@ Diese Punkte müssen erledigt sein, bevor echte Firmen darauf arbeiten:
       den Login aus und gibt die echte UID wieder frei, falls dieselbe
       Firma später neu beitritt.
 
-      **Zwei Dinge bewusst nicht entschieden:** was mit einer laufenden
-      Bündelteilnahme geschieht, wenn jemand mitten darin schliesst (heute
-      bleibt sie stehen und zählt weiter — für den Beleg richtig, für den
-      Betrieb fraglich), und die Kündigung beim Zahlungsdienst.
+      **Laufende Bündel sperren das Schliessen — ENTSCHIEDEN**
+      (Migration 31). Ein Bündel ist verbindlich: wer mitmacht, bringt eine
+      Menge ein, auf die ein Werk seinen Preis rechnet. `laufende_bindung()`
+      sagt, woran eine Firma hängt; `konto_schliessen_intern()` weist ab,
+      solange etwas läuft — auch auf dem Support-Weg, denn ein Löschbegehren
+      hebt keinen Vertrag auf.
+
+      Dabei kam heraus, dass **`withdraw_demand()` bisher zu jedem Zeitpunkt
+      austreten liess** — auch während die Werke verdeckt boten und sogar
+      nach dem Zuschlag. Jetzt nur noch in der Sammelphase und vor der
+      Frist. In `/pools` erscheint „zurückziehen" nur dort; danach steht
+      „verbindlich", und eine abgelehnte Absage wird sichtbar gemeldet
+      statt still verschluckt.
+
+      Neu ist `bundles.completed_at` — der Lebenslauf kannte kein Ende, und
+      ohne Schlusspunkt wäre jede Firma auf ewig gebunden. Heute von Hand
+      zu setzen, sobald geliefert und abgerechnet ist; künftig durch den
+      Lieferschein-Abgleich (#22).
+
+      **Offen:** die Kündigung beim Zahlungsdienst — und die
+      Verbindlichkeit gehört in die AGB, nicht nur in die Datenbank.
+      Anwaltsliste.
 
    Was bleibt, ist Punkt a) — die Frist — und die anwaltliche Durchsicht
    gemeinsam mit den `[[…]]`-Stellen in `data/legal.ts` (Punkt 6). Der
