@@ -42,6 +42,20 @@ geloeschter Spalte und auf CASCADE zurueckgedrehtem Fremdschluessel
 meldet sie genau diese drei als `FEHLT`. Eine Kontrolle, die immer `ok`
 sagt, waere schlimmer als keine.
 
+## Welche Bündel warten auf den Schlusspunkt?
+
+`offene_buendel.sql` im Supabase-SQL-Editor ausfuehren. Zeigt jedes
+Buendel, das noch als laufend gilt, samt Frist und Zahl der gebundenen
+Firmen. `bundles.completed_at` (Migration 31) setzt heute niemand
+automatisch — solange es fehlt, koennen die Beteiligten ihr Konto nicht
+schliessen und nicht austreten:
+
+```sql
+UPDATE bundles SET completed_at = NOW() WHERE id = '<uuid>';
+```
+
+Spaeter uebernimmt das der Lieferschein-Abgleich (#22).
+
 ## Warum es das gibt
 
 Migration 30 ging beim Auftraggeber nicht durch: sie hängte einen
