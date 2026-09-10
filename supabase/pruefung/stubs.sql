@@ -28,3 +28,26 @@ CREATE OR REPLACE FUNCTION storage.filename(name TEXT) RETURNS TEXT
   LANGUAGE sql IMMUTABLE AS $$ SELECT split_part(name, '/', -1) $$;
 CREATE OR REPLACE FUNCTION storage.extension(name TEXT) RETURNS TEXT
   LANGUAGE sql IMMUTABLE AS $$ SELECT split_part(name, '.', -1) $$;
+
+-- ------------------------------------------------------------
+-- Die Standardrechte, die Supabase mitbringt und ein nacktes Postgres nicht.
+--
+-- Supabase setzt beim Anlegen eines Projekts
+--   ALTER DEFAULT PRIVILEGES IN SCHEMA public
+--     GRANT ALL ON TABLES TO postgres, anon, authenticated, service_role;
+-- Ohne das lief der Prüfstand in „permission denied for table connections",
+-- wo in Supabase längst RLS entscheidet — der Test hätte also einen Fehler
+-- gemeldet, den es dort nicht gibt, und schlimmer: er hätte einen echten
+-- Rechtefehler nicht von diesem Rauschen unterscheiden können.
+--
+-- Wichtig: Was danach WIRKLICH gilt, entscheidet weiterhin die Zeilenregel
+-- (RLS). Diese Freigabe ist nur die Tür; ob jemand durchdarf, sagt die
+-- Regel dahinter. Migrationen, die absichtlich REVOKEn (etwa Migration 32),
+-- laufen NACH dieser Datei und behalten deshalb das letzte Wort.
+-- ------------------------------------------------------------
+ALTER DEFAULT PRIVILEGES IN SCHEMA public
+  GRANT ALL ON TABLES TO anon, authenticated, service_role;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public
+  GRANT ALL ON SEQUENCES TO anon, authenticated, service_role;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public
+  GRANT EXECUTE ON FUNCTIONS TO anon, authenticated, service_role;

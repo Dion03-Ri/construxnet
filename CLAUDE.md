@@ -1038,6 +1038,53 @@ weiterhin unbestaetigt.
 
 ---
 
+## Verbindungsanfragen — vier Fehler, gefunden am 10.09.2026
+
+Der Auftraggeber stellte von einem Konto aus eine Anfrage; beim anderen kam
+nichts an, „keine Anzeichen", und die neue Firma war nicht einmal in der
+Suche zu finden. Die Datenbank war unschuldig — gegen den Prüfstand aus den
+echten Migrationen sieht der Empfänger die Zeile und die Firma. Es waren
+vier Fehler in der Oberfläche und einer in der Publikation:
+
+1. **Anfragen fielen lautlos aus der Liste.** `incoming` in `lib/network.ts`
+   schlug die Gegenseite im geladenen Verzeichnis nach und warf jede Zeile
+   weg, zu der es dort keine Firma gab (`.filter((x) => x.company)`). Das
+   Verzeichnis wird einmal beim Seitenaufbau geholt — meldete sich die
+   Gegenseite danach an, war die Anfrage unsichtbar. Jetzt werden die
+   Firmen der Gegenseite einzeln über ihre ID nachgeladen (`partners`).
+
+2. **Ein misslungenes „Vernetzen" sagte nichts.** `if (!error) loadMine()`
+   — bei einem Fehler passierte schlicht gar nichts. Kein Unterschied
+   zwischen Erfolg und Fehlschlag. Jetzt steht die Meldung im Klartext da;
+   der doppelte Versuch (`23505`) und die fehlende Berechtigung (`42501`)
+   haben eigene Sätze.
+
+3. **Nichts kam live an.** In der Realtime-Publikation stand nur
+   `messages`. Migration 33 nimmt `connections` und `companies` dazu, die
+   Oberfläche hört auf INSERT und UPDATE. **Kein `REPLICA IDENTITY FULL`
+   auf `connections`:** für gelöschte Zeilen prüft Supabase keine
+   Zeilenregel, ein DELETE ginge an jeden Zuhörer — mit voller
+   Replica-Identität stünden dort beide Firmen-IDs. So trägt es nur den
+   Primärschlüssel. Löschungen fängt stattdessen der Blick auf den Tab ab
+   (`visibilitychange`/`focus`).
+
+4. **Die Glocke zählte einmal und dann nie wieder.** `useNotifications`
+   hatte weder Realtime noch einen Takt. Jetzt hört sie mit.
+
+Ausserdem las `ReceivedRequests` dieselbe Frage mit einer eigenen zweiten
+Abfrage — zwei Wahrheiten. Sie liest jetzt aus `useNetwork()`.
+
+**Der Prüfstand hatte eine Lücke, die genau hierhin führte.** `stubs.sql`
+brachte die Supabase-Standardrechte nicht mit (`ALTER DEFAULT PRIVILEGES
+… GRANT ALL ON TABLES TO anon, authenticated, service_role`). Ein Test auf
+`connections` lief deshalb in „permission denied for table", wo in Supabase
+längst RLS entscheidet — ein Fehler, den es dort nicht gibt, und der einen
+echten Rechtefehler überdeckt hätte. Steht jetzt in `stubs.sql`; die
+REVOKEs der Migrationen laufen danach und behalten das letzte Wort
+(gegengeprüft: `kontrolle.sql` meldet weiterhin achtzehnmal `ok`).
+
+Was im echten Bestand steht, zeigt `supabase/pruefung/verbindungen.sql`.
+
 ## UID-Nummern zum Testen
 
 Die Anmeldung prüft die UID rechnerisch (`lib/uid.ts`, Gewichte 5-4-3-2-7-6-5-4,
