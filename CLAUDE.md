@@ -697,12 +697,41 @@ Diese Punkte müssen erledigt sein, bevor echte Firmen darauf arbeiten:
       heisst nach DSG: ohne unnötigen Verzug ab dem Verlangen, nicht ab
       dem Tag, an dem man Zeit hat.
 
-      **Noch offen:** ein Knopf „Konto schliessen" unter `/konto`. Die
-      Funktion dafür steht (`close_own_company_account()`, jeder
-      Angemeldete darf sie für sich selbst aufrufen) — sie ist bewusst
-      noch nicht verdrahtet: eine Selbstbedienung, die das laufende Abo
-      beim Zahlungsdienst nicht mitkündigt, ist eine halbe Sache.
-      Zusammen mit Stripe bauen.
+      **Der Knopf steht** — `/konto`, unter dem Abo
+      (`components/account/KontoSchliessen.tsx`, Migration 32). Er
+      entscheidet nichts selbst: ob geschlossen werden darf, sagt
+      `close_own_company_account()`. Die Liste der laufenden Bündel steht
+      dort nur, damit die Absage einen Grund nennt. Statt „Sind Sie
+      sicher?" verlangt er den Firmennamen — ein Ja-Nein-Fenster klickt
+      man weg, ohne es gelesen zu haben.
+
+      Der frühere Vorbehalt („erst mit Stripe") war keiner: es fliesst
+      heute kein Geld, jede kostenpflichtige Stufe steht auf
+      `PENDING_PAYMENT`, und `konto_schliessen_intern()` räumt die Zeile
+      in `subscriptions` mit ab. **Wenn Stripe kommt, gehört an genau
+      diese Stelle die Kündigung beim Zahlungsdienst** — vor dem Löschen
+      der Zeile, sonst läuft das Abo dort weiter, während das Konto hier
+      weg ist. Eine Sperre („erst kündigen, dann schliessen") wäre der
+      falsche Weg: eine gekündigte Stufe bleibt bis `current_period_end`
+      auf ACTIVE, und ein Löschbegehren nach DSG darf nicht bis zum
+      Laufzeitende warten.
+
+      **Migration 32 zieht dabei eine Lücke aus Migration 31 nach.**
+      `laufende_bindung(uuid)` war an `authenticated` freigegeben und
+      prüfte im Rumpf nicht, wessen Firma abgefragt wird — mit einer
+      beliebigen Firmen-ID kam zurück, an welchen Bündeln sie teilnimmt,
+      samt Titel. Die IDs sind kein Geheimnis (das Verzeichnis ist offen),
+      die Teilnahme schon: sie ist verdeckt, damit kein Werk die Mengen
+      zurückrechnet. Jetzt behält die Fassung mit Parameter nur der
+      Dienstschlüssel, und der Browser bekommt `meine_bindung()` ohne
+      Parameter. Derselbe Zuschnitt wie beim Kontoschliessen in
+      Migration 30, aus demselben Grund: was schützt, ist der fehlende
+      Zugriff, nicht eine Prüfung im Rumpf — `current_user` ist dort der
+      Eigentümer, nicht der Aufrufer.
+
+      Die HINT-Zeile der Fehlermeldung nennt weiterhin
+      `laufende_bindung(...)`. Das ist Absicht: sie richtet sich an den
+      Support-Weg im SQL-Editor, und dort gilt die Freigabe noch.
 
    c) **Was beim Löschen eines Kontos passiert — ERLEDIGT** (Migration 30).
       Vorher hingen `messages` und `direct_offers` mit `ON DELETE CASCADE`
