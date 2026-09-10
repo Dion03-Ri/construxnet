@@ -1260,16 +1260,48 @@ beobachtet, niemand einzeln bepreist, es gibt keine Überraschung im
 Nachhinein. Genau das war beim ersten Erklärversuch missverständlich
 formuliert und hat den Auftraggeber zu Recht stutzig gemacht.
 
+**Das Lieferantenkonto ist die Schranke vor dem Bieten.** Ohne bezahltes
+(oder freigestelltes) Lieferantenkonto bleibt ein Werk auf dem
+**Basiskonto**: umsehen, vernetzen, chatten, Direktanfragen, selber
+einkaufen — aber **nicht bieten**. Das fällt mit der Prüfleiter zusammen:
+
+> geprüft ∧ freigegeben ∧ Lieferantenkonto aktiv = **bietfähig**
+
+Ein Zustand weniger im System, eine Regel weniger zu erklären, und auf die
+Frage „was kostet das?" gibt es eine klare Antwort: nichts, solange du dich
+nur umsiehst.
+
 **Abrechnung: jährlich, nachschüssig.** Am Jahresende steht fest, wie viel
 Provision angefallen ist; nur die Differenz wird gestellt. Vorschüssig zu
 verrechnen ginge auch, macht aber Gutschriften nötig und ist unnötig
 kompliziert.
 
-**NICHT zum Start.** Im ersten Jahr für Lieferanten nur Provision. Die
-Grundgebühr kommt, wenn genug Bündel laufen, dass sie sich für jedes
-ernsthafte Werk offensichtlich rechnet — dann ist sie eine Formalität. Am
-Tag eins wäre sie eine Hürde und würde genau die Seite bremsen, die zuerst
-gebraucht wird.
+**Ein Jahr frei, ab Freischaltung des einzelnen Werks** — nicht ab einem
+gemeinsamen Startdatum. Wer im zehnten Monat dazukommt, soll nicht zwei
+Monate bekommen.
+
+Der Grund liegt im Takt: Ein Bündel sammelt Wochen, dann Ausschreibung,
+dann Zuschlag. Bis ein Werk sein erstes Bündel *gewinnt*, vergehen leicht
+zwei bis drei Monate — und nur, wenn zufällig eines in seinem Material und
+seiner Region läuft. Am Anfang laufen wenige. Bei drei Monaten schickt man
+also eine Rechnung an jemanden, der noch nie etwas bekommen hat. Der zahlt
+nicht, der geht — und in der Schweizer Baustoffbranche reden zwanzig Werke
+miteinander.
+
+Nach einem Jahr ist es umgekehrt: Wer Bündel gewonnen hat, zahlt durch die
+Anrechnung ohnehin nichts extra. Übrig bleibt genau der, den die Gebühr
+treffen soll.
+
+**Gebaut wird das als Datum am Konto** (`frei_bis`), vorbelegt aus einer
+Einstellung. Damit lässt sich später auf drei oder sechs Monate umstellen,
+ohne Auslieferung, und einem einzelnen Werk jederzeit verlängern. Die
+Entscheidung bleibt umkehrbar.
+
+**Gründungskondition:** für die ersten Werke (~20) dauerhaft oder zwei
+Jahre erlassen, offen benannt — „Gründungswerk, ihr seid dabei, bevor es
+sich für euch rechnet." Kostet fast nichts, weil diese Werke am Anfang
+wenig Provision zahlen, und bringt die Ersten, ohne die es keine Zweiten
+gibt.
 
 **Offen: der Betrag.** CHF 1'200 im Jahr ist ein Vorschlag, keine
 Entscheidung.
@@ -1503,7 +1535,8 @@ Nur das Dritte ist ein echter Beweis. Die Wahrheit über ein Werk steht auf
 seinen Lieferscheinen.
 
 **Bietfähigkeit ist kein Häkchen, sondern eine Rechnung:** freigegeben ∧
-Register aktiv ∧ freie Kapazität im Zeitraum ∧ keine Leistungssperre.
+Register aktiv ∧ **Lieferantenkonto aktiv** (Abschnitt 1b) ∧ freie
+Kapazität im Zeitraum ∧ keine Leistungssperre.
 Durchgesetzt in der Datenbank, nicht in der Oberfläche.
 
 **Die Rolle bleibt Selbstauskunft; die Lieferantenfähigkeit wird vergeben.**
