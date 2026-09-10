@@ -33,7 +33,7 @@ die Rollen `anon`/`authenticated`/`service_role`, `auth.jwt()`, das Schema
 ## Ist in Supabase wirklich alles drin?
 
 `kontrolle.sql` im Supabase-SQL-Editor ausfuehren. Liest nur, aendert
-nichts, und gibt achtzehn Zeilen zurueck — alle muessen `ok` sagen.
+nichts, und gibt fünfundzwanzig Zeilen zurueck — alle muessen `ok` sagen.
 Steht irgendwo `FEHLT`, ist die zugehoerige Migration nicht oder nur
 teilweise eingespielt.
 

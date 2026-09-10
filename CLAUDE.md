@@ -1760,7 +1760,13 @@ Bündel." Sonst sucht er ewig nach dem Haken.
    `award_bundle()` friert Menge, Rabatt, Provisionssatz und Betrag ein.
    Nachgerechnet gegen die Beispielzahlen: Besteller 66'800, Werk 65'000,
    Obtanet 1'800.
-2. Lieferzeitraum und Pflicht-Baustelle
+2. ~~Lieferzeitraum und Pflicht-Baustelle~~ — **GEBAUT**, Migration 36.
+   Zeitraum an der Teilnahme (Monatsebene), `mengenkurve()` als Verlauf
+   über die Monate, Spannweite höchstens drei Monate, Baustelle NOT NULL.
+   **Eine Zeile je Baustelle statt je Firma** — sonst hätte eine Firma mit
+   zwei Baustellen im selben Bündel eine davon verloren. Die Plan-Grenze
+   zählt deshalb jetzt `DISTINCT bundle_id`, sonst hätte diese Migration
+   eine Grenze verschärft, die niemand angefasst hat.
 3. Kapazität
 4. Teil-Gebote und Zuteilung
 5. Lieferantenprüfung
