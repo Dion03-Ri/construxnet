@@ -151,8 +151,12 @@ const NAV_ALL = [
   { key: "projects", label: "Projekte", icon: Building2, buyerOnly: true },
   { key: "requests", label: "Direktanfragen", icon: Handshake },
   { key: "materials", label: "Eigene Materialien", icon: Package },
-  { key: "orders", label: "Bestellungen", icon: ShoppingCart, badge: 7 },
-  { key: "tenders", label: "Ausschreibungen", icon: Gavel, badge: 3, supplierOnly: true },
+  // Keine Zahlen an diesen beiden. Hier standen fest verdrahtete 7 und 3 —
+  // sie zeigten dieselbe Zahl bei einem leeren Konto wie bei einem vollen.
+  // Eine erfundene Zahl ist schlimmer als keine: man richtet sich danach.
+  // Sobald es eine echte Quelle gibt, kommt sie hier hin.
+  { key: "orders", label: "Bestellungen", icon: ShoppingCart },
+  { key: "tenders", label: "Ausschreibungen", icon: Gavel, supplierOnly: true },
   { key: "contracts", label: "SIA-118 Verträge", icon: FileText },
   { key: "reports", label: "Berichte", icon: BarChart3 },
   { key: "settings", label: "Einstellungen", icon: Settings },
@@ -1157,7 +1161,8 @@ export default function DashboardShell({ company }: { company: Company }) {
         <div className="no-scrollbar relative flex gap-1.5 overflow-x-auto border-t border-white/[0.12] px-3 py-2">
           {nav.map((n) => {
             const active = view === n.key;
-            const count = n.key === "requests" ? openRequests : n.badge;
+            // Nur „Direktanfragen" trägt eine Zahl, und die ist gezählt, nicht gesetzt.
+            const count = n.key === "requests" ? openRequests : 0;
             return (
               <button
                 key={n.key}
@@ -1171,7 +1176,7 @@ export default function DashboardShell({ company }: { company: Company }) {
               >
                 <n.icon className="h-3.5 w-3.5 shrink-0" />
                 {n.label}
-                {(n.key === "requests" ? openRequests > 0 : !!n.badge) && (
+                {n.key === "requests" && openRequests > 0 && (
                   <span
                     className={cn(
                       "rounded px-1 text-[10px] font-semibold",
@@ -1257,9 +1262,9 @@ export default function DashboardShell({ company }: { company: Company }) {
               >
                 <n.icon className="h-4 w-4 shrink-0" />
                 <span className="flex-1 text-left">{n.label}</span>
-                {(n.key === "requests" ? openRequests > 0 : !!n.badge) && (
+                {n.key === "requests" && openRequests > 0 && (
                   <span className={cn("rounded-md px-1.5 py-0.5 text-[10px] font-semibold", active ? "bg-brand text-navy-900" : "bg-white/10 text-white/[0.72]")}>
-                    {n.key === "requests" ? openRequests : n.badge}
+                    {openRequests}
                   </span>
                 )}
               </button>
