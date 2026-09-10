@@ -18,6 +18,8 @@ import {
   useBundles,
   useMyBids,
   placeBid,
+  holeMindestgebot,
+  type Mindestgebot,
   deadlineLabel,
   type Bundle,
 } from "@/lib/bundles";
@@ -44,6 +46,11 @@ export default function TendersPanel() {
   const [listPrice, setListPrice] = useState("");
   const [busy, setBusy] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
+  /* Was für DIESES Bündel mindestens verlangt ist. Aus der Datenbank
+     geholt statt im Browser gerechnet — die Sätze stehen in
+     `app_settings`, und eine zweite Rechnung hier wäre eine zweite
+     Wahrheit. */
+  const [minimum, setMinimum] = useState<Mindestgebot | null>(null);
 
   const myBid = useMemo(() => {
     const m = new Map<string, (typeof bids)[number]>();
@@ -169,17 +176,43 @@ export default function TendersPanel() {
                 <div className="mt-3 border-t border-white/[0.06] pt-3">
                   {openFor === b.id ? (
                     <div className="space-y-2.5">
+                      {/* Was verlangt ist, und woraus es besteht. Eine Zahl
+                          ohne Herkunft muss man glauben. */}
+                      {minimum && (
+                        <div className="rounded-md border border-brand/25 bg-brand/[0.07] px-3 py-2.5 text-[12.5px] leading-relaxed">
+                          <div className="flex flex-wrap items-baseline justify-between gap-x-4">
+                            <span className="font-semibold text-white">Verlangt für dieses Bündel</span>
+                            <span className="font-semibold text-brand">
+                              höchstens CHF {chf(minimum.max_lieferantenpreis, 2)} / {b.unit}
+                            </span>
+                          </div>
+                          <p className="mt-1 text-white/[0.72]">
+                            {minimum.gesamtrabatt_pct} % unter Referenz — davon{" "}
+                            {minimum.mindestrabatt_pct} % Rabatt für die Besteller und{" "}
+                            {minimum.provision_pct} % Vermittlung Obtanet. Bietest du besser,
+                            geht der Überschuss vollständig an die Besteller; Obtanet bleibt
+                            bei {minimum.provision_pct} %.
+                          </p>
+                        </div>
+                      )}
+
                       <div className="grid grid-cols-2 gap-3">
                         <div>
                           <label className="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-white/[0.56]">
-                            Dein Preis (CHF / {b.unit}) *
+                            Was du erhältst (CHF / {b.unit}) *
                           </label>
                           <input
                             value={price}
                             onChange={(e) => setPrice(e.target.value.replace(/[^0-9.]/g, ""))}
                             inputMode="decimal"
                             autoFocus
-                            placeholder={ref ? `Referenz ${chf(ref, 2)}` : "z. B. 148.50"}
+                            placeholder={
+                              minimum
+                                ? `höchstens ${chf(minimum.max_lieferantenpreis, 2)}`
+                                : ref
+                                  ? `Referenz ${chf(ref, 2)}`
+                                  : "z. B. 148.50"
+                            }
                             className="w-full rounded-md border border-white/[0.16] bg-white/[0.03] px-3 py-2 text-sm text-white outline-none focus:border-brand focus:bg-[#16181a]"
                           />
                         </div>
@@ -200,11 +233,29 @@ export default function TendersPanel() {
                       {typed > 0 && (
                         <div className="rounded-md border border-white/[0.12] bg-white/[0.03] px-3 py-2.5 text-[13px]">
                           <div className="flex items-center justify-between">
-                            <span className="text-white/[0.72]">Auftragswert</span>
+                            <span className="text-white/[0.72]">Du erhältst</span>
                             <b className="text-white">
                               CHF {chf(typed * b.current_volume)}
                             </b>
                           </div>
+                          {minimum && (
+                            <>
+                              <div className="mt-1 flex items-center justify-between">
+                                <span className="text-white/[0.72]">
+                                  Vermittlung Obtanet ({minimum.provision_pct} %)
+                                </span>
+                                <span className="text-white/[0.72]">
+                                  CHF {chf((minimum.kbob * minimum.provision_pct / 100) * b.current_volume)}
+                                </span>
+                              </div>
+                              <div className="mt-1 flex items-center justify-between border-t border-white/[0.12] pt-1">
+                                <span className="text-white/[0.72]">Die Besteller zahlen</span>
+                                <span className="text-white/[0.72]">
+                                  CHF {chf((typed + minimum.kbob * minimum.provision_pct / 100) * b.current_volume)}
+                                </span>
+                              </div>
+                            </>
+                          )}
                           {delta !== null && (
                             <div className="mt-1 flex items-center justify-between">
                               <span className="text-white/[0.72]">gegenüber KBOB-Referenz</span>
@@ -229,10 +280,13 @@ export default function TendersPanel() {
 
                       <p className="flex items-start gap-2 rounded-md bg-white/[0.03] px-3 py-2.5 text-[11.5px] leading-relaxed text-white/[0.72]">
                         <Info className="mt-px h-3.5 w-3.5 shrink-0 text-white/[0.56]" />
-                        Bewertet wird dein Preis gegen den Referenzpreis, nicht
-                        gegen deinen Listenpreis — ein hoher Listenpreis mit
-                        grossem Rabatt bringt also nichts. Nachbessern ersetzt
-                        dein Gebot, es kommt kein zweites dazu.
+                        Trag ein, was du je {b.unit} erhalten willst — die
+                        Vermittlung schlägt Obtanet auf, du musst sie nicht
+                        abziehen. Bewertet wird dein Preis gegen den
+                        Referenzpreis, nicht gegen deinen Listenpreis; ein hoher
+                        Listenpreis mit grossem Rabatt bringt also nichts.
+                        Nachbessern ersetzt dein Gebot, es kommt kein zweites
+                        dazu.
                       </p>
 
                       {formError && (
@@ -267,9 +321,11 @@ export default function TendersPanel() {
                       type="button"
                       onClick={() => {
                         setOpenFor(b.id);
-                        setPrice(mine ? String(mine.customer_price_net) : "");
+                        setPrice(mine?.lieferantenpreis_net ? String(mine.lieferantenpreis_net) : "");
                         setListPrice(mine ? String(mine.list_price_net) : "");
                         setFormError(null);
+                        setMinimum(null);
+                        void holeMindestgebot(supabase, b.id).then(setMinimum);
                       }}
                       className="inline-flex items-center gap-1.5 rounded-md bg-brand px-3.5 py-2 text-[12.5px] font-semibold text-navy-900 transition-colors hover:bg-brand/100"
                     >

@@ -42,6 +42,7 @@ export type MyBid = {
   id: string;
   bundle_id: string;
   list_price_net: number;
+  lieferantenpreis_net: number | null;
   customer_price_net: number;
   is_winning_bid: boolean;
   created_at: string;
@@ -247,24 +248,52 @@ function lesbarerFehler(meldung: string): string {
   return meldung;
 }
 
+/** Was ein Werk für ein Bündel mindestens bieten muss, und woraus es besteht. */
+export type Mindestgebot = {
+  kbob: number;
+  mindestrabatt_pct: number;
+  provision_pct: number;
+  gesamtrabatt_pct: number;
+  max_lieferantenpreis: number;
+  bestellerpreis: number;
+};
+
+export async function holeMindestgebot(
+  supabase: ReturnType<typeof useSupabaseBrowser>,
+  bundleId: string,
+): Promise<Mindestgebot | null> {
+  const { data } = await supabase.rpc("mindestgebot", { p_bundle_id: bundleId });
+  const zeile = Array.isArray(data) ? data[0] : data;
+  return (zeile as Mindestgebot) ?? null;
+}
+
 /**
  * Gebot abgeben oder nachbessern.
+ *
+ * Übergeben wird der Preis, den das WERK je Einheit erhalten will — nicht
+ * der des Bestellers. So denkt ein Werk auch: „ich gebe 17.25 % ab." Den
+ * Bestellerpreis rechnet die Datenbank daraus, indem sie die Provision
+ * aufschlägt; müsste das Werk sie im Kopf abziehen, rechnet irgendwann
+ * eines falsch.
  *
  * Der Listenpreis ist optional und dient nur der Anzeige — bewertet wird
  * gegen den KBOB-Referenzpreis des Bündels. Sonst könnte ein Werk seinen
  * Listenpreis hochsetzen und mit grossem Rabatt gewinnen, ohne billiger
  * zu sein.
+ *
+ * Ein Gebot unter Mindestrabatt + Provision weist die Datenbank ab, mit
+ * einer Meldung, die sagt woran es liegt.
  */
 export async function placeBid(
   supabase: ReturnType<typeof useSupabaseBrowser>,
   bundleId: string,
-  customerPrice: number,
+  lieferantenpreis: number,
   listPrice: number,
 ): Promise<{ error?: string }> {
   const { error } = await supabase.rpc("place_bid", {
     p_bundle_id: bundleId,
+    p_lieferantenpreis: lieferantenpreis,
     p_list_price: listPrice || 0,
-    p_customer_price: customerPrice,
   });
   return error ? { error: error.message } : {};
 }
@@ -278,7 +307,7 @@ export function useMyBids() {
   const reload = useCallback(async () => {
     const { data } = await supabase
       .from("supplier_bids")
-      .select("id, bundle_id, list_price_net, customer_price_net, is_winning_bid, created_at");
+      .select("id, bundle_id, list_price_net, lieferantenpreis_net, customer_price_net, is_winning_bid, created_at");
     setBids((data ?? []) as MyBid[]);
     setLoading(false);
   }, [supabase]);

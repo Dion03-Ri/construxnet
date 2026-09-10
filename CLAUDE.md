@@ -1313,6 +1313,39 @@ nur dafür, dass der Zugang trotzdem etwas kostet. Der wertvollste Teil
 wandert ohnehin nicht ab: gebündelte Nachfrage lässt sich nicht am Telefon
 nachbauen, das Bündel existiert nur hier.
 
+## 1c. Gratis / Pro / Enterprise gelten für ALLE — auch für Lieferanten
+
+Diese Stufen verkaufen **allgemeine Funktionen** der Plattform (KI,
+Auswertungen, Uploads), nicht Besteller-Funktionen. Sie hängen deshalb am
+Konto, nicht an der Rolle.
+
+Zwischenzeitlich stand hier der Vorschlag, Lieferanten von den Stufen
+auszunehmen — begründet damit, dass ihre einzige Grenze `pool_limit` sei
+und ein Werk keinem Bündel beitritt. **Das war falsch, und der Auftraggeber
+hat den Fehler gefunden:** Bekämen Lieferanten alle allgemeinen Funktionen
+gratis, wäre „ich bin Lieferant" der bequemste Weg zu Enterprise ohne zu
+zahlen. Genau das Loch, das die ganze Lieferantenprüfung schliessen soll,
+wäre damit wieder offen.
+
+Es gilt also drei Ebenen, sauber getrennt:
+
+| Ebene | Was sie verkauft | Für wen |
+|---|---|---|
+| **Gratis / Pro / Enterprise** | allgemeine Funktionen; für Besteller zusätzlich die Zahl gleichzeitiger Bündel | alle |
+| **Lieferantenkonto** | Bietfähigkeit | nur geprüfte Werke |
+| **Provision 2.25 %** | je gewonnenes Bündel | nur Werke |
+
+Ein Werk, das auch einkauft, ist in seiner Bestellerrolle ganz normal auf
+Gratis oder Pro. Die Rollen liegen nebeneinander, sie schliessen sich nicht
+aus.
+
+**Die Linie, die nicht überschritten werden darf:** Eine Stufe darf
+**niemals** beeinflussen, wer ein Bündel gewinnt. Heisst „Pro" irgendwann
+bessere Chancen beim Zuschlag, ist die verdeckte Ausschreibung
+korrumpiert — die Besteller merken es, die Werke erzählen es weiter, und
+die Preisgarantie ist wertlos. Stufen dürfen Bequemlichkeit und Reichweite
+verkaufen, nie einen Vorteil im Verfahren.
+
 ## 2. Mindestgebot
 
 `place_bid()` **weist ein Gebot unter Mindestrabatt + Provision ab.** Heute
@@ -1575,8 +1608,13 @@ Bündel." Sonst sucht er ewig nach dem Haken.
 
 ## 10. Reihenfolge
 
-1. Provision und Mindestgebot in der Datenbank — eine Quelle, Prüfung in
-   `place_bid`, Einfrieren beim Zuschlag
+1. ~~Provision und Mindestgebot in der Datenbank~~ — **GEBAUT**,
+   Migration 35. Die Sätze stehen in `app_settings`; `mindestgebot()`
+   sagt, was verlangt ist und woraus es besteht; `place_bid()` nimmt den
+   Preis des WERKS entgegen und weist alles über dem Höchstpreis ab;
+   `award_bundle()` friert Menge, Rabatt, Provisionssatz und Betrag ein.
+   Nachgerechnet gegen die Beispielzahlen: Besteller 66'800, Werk 65'000,
+   Obtanet 1'800.
 2. Lieferzeitraum und Pflicht-Baustelle
 3. Kapazität
 4. Teil-Gebote und Zuteilung
