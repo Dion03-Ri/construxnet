@@ -211,6 +211,38 @@ export default function DatenschutzPage() {
         mehr entfernen.
       </P>
 
+      <H2>6a. Wenn du dein Konto schliesst</H2>
+      <P>
+        Wir löschen dann nicht alles, sondern trennen zwei Dinge — dein Profil und die
+        Belege eines Geschäfts.
+      </P>
+      <UL>
+        <LI>
+          <strong className="font-semibold text-slate-900">Weg ist dein Profil:</strong> Name,
+          UID, Anschrift, Kontaktdaten, Logo, Beschreibung, Standort und Liefergebiete —
+          dazu deine Beiträge samt Reaktionen und Kommentaren, deine Verbindungen, deine
+          Projekte und deine eigenen Materialien. Du bist danach in keinem Verzeichnis,
+          keiner Suche und keiner Empfehlung mehr auffindbar.
+        </LI>
+        <LI>
+          <strong className="font-semibold text-slate-900">Es bleiben die Belege:</strong>{" "}
+          Nachrichten, Angebote, Teilnahmen an Bündeln, Gebote, Verträge und Lieferscheine.
+          Sie gehören nicht nur dir, sondern auch der Firma auf der anderen Seite — sie hat
+          eine Verhandlung geführt und muss belegen können, was vereinbart wurde. Ein Teil
+          davon fällt zudem unter die zehnjährige Aufbewahrungspflicht{" "}
+          <Ref>Art. 958f OR</Ref>.
+        </LI>
+      </UL>
+      <P>
+        In diesen Belegen steht dein Name nicht mehr. Wer einen Verlauf mit dir hat, sieht
+        dort künftig „Ehemaliges Mitglied" — den Wortlaut der Nachrichten selbst können wir
+        nicht ändern, denn er ist für beide Seiten der Nachweis.
+      </P>
+      <P>
+        Zum Schliessen genügt eine E-Mail an <Fill value={LEGAL.email} />. Melde dich auch
+        dann, wenn du nur einzelne Angaben gelöscht haben möchtest.
+      </P>
+
       <H2>7. Deine Rechte</H2>
       <UL>
         <LI>Auskunft darüber, welche Daten wir über dich bearbeiten <Ref>Art. 25 DSG</Ref></LI>
