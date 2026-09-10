@@ -168,6 +168,24 @@ Supabase (server + browser client, `supabaseAdmin` service-role), Leaflet/OSM
   Nachricht umschreiben. Ein Trigger sperrt Inhalt und Beteiligte zusätzlich.
 - Tippanzeige und Online-Status laufen über Broadcast bzw. Presence auf
   einem Kanal je Gesprächspaar. Nichts davon wird gespeichert.
+- **Geladen wird in Fenstern, nicht auf einmal** (Migration 29).
+  `chat_threads()` liefert eine Zeile je Gespräch — letzte Nachricht, Zahl
+  der ungelesenen, letztes Angebot, weggelegt ja/nein —, `chat_history()`
+  ein Fenster von 50 Nachrichten. Vorher holte der Chat bei jedem Öffnen
+  **sämtliche** Nachrichten der Firma, sortiert `ASC`: eine Zeilengrenze
+  hätte die NEUESTEN abgeschnitten, lautlos.
+- **Weglegen statt löschen** (`chat_archive()`). Gilt nur für die eigene
+  Seite, ist umkehrbar, und ein weggelegtes Gespräch kommt von selbst
+  zurück, sobald die Gegenseite schreibt — die Datenbank vergleicht dafür
+  den Zeitpunkt des Vermerks mit der letzten Nachricht.
+  **Ein „Chat leeren" gibt es bewusst nicht:** im Verlauf stehen Angebote,
+  auf die sich beide Seiten berufen. Wer löschen könnte, könnte den Beleg
+  der Gegenseite vernichten. Aus demselben Grund sperrt Migration 21 den
+  Inhalt gesendeter Nachrichten.
+- Die Rechenteile stehen in `lib/chat.ts`, ausserhalb des Bauteils, mit
+  Prüfungen in `lib/__pruefungen/chat.mts` (`npx tsx …`). Grund: was man
+  nicht einzeln aufrufen kann, prüft man auch nicht einzeln — genau dort
+  sass der Fehler oben.
 - **Vor dem Launch, nicht jetzt:** Benachrichtigung, wenn jemand nicht auf
   der Seite ist.
   - **Web-Push** — Service-Worker plus VAPID-Schlüsselpaar, keine laufenden
@@ -560,7 +578,8 @@ sechsundzwanzig Kantone gehören nicht als Wörterband auf die Seite.
     Ein KI-Treffer wird als Alias mit `source: 'AI'` gemerkt, damit er beim
     zweiten Mal gratis ist.
   - Danach: hochgeladene Leistungsverzeichnisse (#25) über dieselbe Route.
-- Migrationen `08`–`20` sind eingespielt; `21_realtime_chat.sql` ist neu.
+- Migrationen `08`–`28` sind eingespielt. **`29_chat_threads.sql` ist neu
+  und noch NICHT eingespielt** — ohne sie zeigt der Chat keine Gespräche.
 
 ## Vor dem Launch — Pflicht
 Diese Punkte müssen erledigt sein, bevor echte Firmen darauf arbeiten:
@@ -631,6 +650,45 @@ Diese Punkte müssen erledigt sein, bevor echte Firmen darauf arbeiten:
      widersprechen, was gilt bei Patt.
    - Sinnvoll erst, wenn echte Bündel zu echten Verträgen geführt haben —
      sonst rät man, wie die Lieferscheine der echten Werke aussehen.
+8. **Aufbewahrung und Löschung — Text und Wirklichkeit zusammenbringen.**
+   `/datenschutz` verspricht heute, Nachrichten und Anfragen würden
+   aufbewahrt, „solange sie für die Abwicklung und den Nachweis eines
+   Geschäfts nötig sind", und **danach gelöscht oder anonymisiert**. Es gibt
+   nichts, was dieses „danach" je auslöst: keinen Aufräumjob, keinen
+   Löschweg, keine Frist. Solange niemand echt darauf arbeitet, schadet das
+   niemandem — mit der ersten echten Firma ist es ein öffentliches
+   Versprechen ohne Deckung.
+
+   Drei getrennte Entscheide, unterschiedlich dringend:
+
+   a) **Welche Frist?** Ein Verlauf, der zu einem Vertrag geführt hat, ist
+      buchhaltungsnah (Art. 958f OR, zehn Jahre). Ein Verlauf, aus dem
+      nichts wurde, ist es nicht. Ohne diese Unterscheidung ist jede
+      Automatik falsch. **Kann nach dem Start entschieden werden**, solange
+      der Text auf `/datenschutz` nicht mehr behauptet als das, was gilt.
+
+   b) **Ein Löschweg auf Verlangen.** Das DSG gibt jedem das Recht, und die
+      Frist läuft ab dem Verlangen — nicht ab dem Tag, an dem man Zeit hat.
+      Es braucht **keine Automatik**: ein aufgeschriebener Ablauf reicht
+      (wer macht es, in welcher Frist, mit welchem SQL). Aber er muss
+      existieren, bevor die erste Firma darauf arbeitet.
+      **PFLICHT VOR DEM START.**
+
+   c) **Was passiert beim Löschen eines Kontos.** Heute hängen
+      `messages.sender_company_id` und `receiver_company_id` mit
+      `ON DELETE CASCADE` an `companies`. Wer eine Firmenzeile löscht — im
+      Supabase-Editor genügt ein Klick —, löscht damit **den ganzen
+      Verlauf bei BEIDEN Seiten**. Die Gegenseite verliert den Beleg einer
+      Verhandlung, die sie selbst geführt hat. Das widerspricht Migration 21
+      und der Zehnjahresfrist gleichermassen. Richtig wäre anonymisieren
+      statt löschen: die Firmenzeile bleibt als Grabstein stehen, Name und
+      Kontakt gehen raus, die Nachrichten bleiben. **PFLICHT VOR DEM START**
+      — heute gibt es keine Konto-Löschung in der Anwendung, die Falle
+      schnappt erst zu, wenn jemand sie von Hand auslöst. Genau das
+      passiert, sobald der erste Nutzer „löscht mein Konto" schreibt.
+
+   Zusammen mit dem Anwalt zu klären, gemeinsam mit den `[[…]]`-Stellen in
+   `data/legal.ts` (Punkt 6).
 
 
 ---
