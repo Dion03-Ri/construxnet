@@ -742,9 +742,16 @@ Diese Punkte müssen erledigt sein, bevor echte Firmen darauf arbeiten:
       statt still verschluckt.
 
       Neu ist `bundles.completed_at` — der Lebenslauf kannte kein Ende, und
-      ohne Schlusspunkt wäre jede Firma auf ewig gebunden. Heute von Hand
-      zu setzen, sobald geliefert und abgerechnet ist; künftig durch den
-      Lieferschein-Abgleich (#22).
+      ohne Schlusspunkt wäre jede Firma auf ewig gebunden. **Setzt heute
+      niemand automatisch.** Was noch offen ist, zeigt
+      `supabase/pruefung/offene_buendel.sql`; abgeschlossen wird mit
+      `UPDATE bundles SET completed_at = NOW() WHERE id = '<uuid>';`.
+      Künftig durch den Lieferschein-Abgleich (#22).
+
+      Ein Knopf dafür im Control Center wäre der bequemere Weg — dort ist
+      aber heute nur eine leere Hülle, und eine ADMIN-Rolle wird nirgends
+      durchgesetzt. Das wäre erst eine Rechteschranke, dann eine Funktion,
+      dann eine Oberfläche. Lohnt sich, sobald es echte Bündel gibt.
 
       **Offen:** die Kündigung beim Zahlungsdienst — und die
       Verbindlichkeit gehört in die AGB, nicht nur in die Datenbank.
