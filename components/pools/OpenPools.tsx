@@ -230,14 +230,26 @@ function PoolRow({
                 >
                   erhöhen
                 </Link>
-                <button
-                  type="button"
-                  onClick={onWithdraw}
-                  disabled={busy}
-                  className="font-semibold text-white/[0.5] transition-colors hover:text-rose-300 disabled:opacity-50"
-                >
-                  {busy ? "…" : "zurückziehen"}
-                </button>
+                {/* Nur solange gesammelt wird. Ab der Ausschreibung ist die
+                    Menge verbindlich; ein Knopf, der immer abgelehnt wird,
+                    ist schlimmer als kein Knopf. */}
+                {b.status === "OPEN" ? (
+                  <button
+                    type="button"
+                    onClick={onWithdraw}
+                    disabled={busy}
+                    className="font-semibold text-white/[0.5] transition-colors hover:text-rose-300 disabled:opacity-50"
+                  >
+                    {busy ? "…" : "zurückziehen"}
+                  </button>
+                ) : (
+                  <span
+                    title="Ab der Ausschreibung ist die Menge verbindlich."
+                    className="font-semibold text-white/[0.34]"
+                  >
+                    verbindlich
+                  </span>
+                )}
               </div>
             </div>
           ) : (
@@ -273,6 +285,10 @@ export default function OpenPools() {
   const [phase, setPhase] = useState<"all" | "OPEN" | "SEALED_BIDDING">("all");
   const [onlyMine, setOnlyMine] = useState(false);
   const [busy, setBusy] = useState<string | null>(null);
+  /* Die Absage kann die Datenbank ablehnen — ab der Ausschreibung ist ein
+     Bündel verbindlich. Ohne diese Zeile bliebe die Tabelle einfach
+     unverändert stehen und niemand wüsste, warum. */
+  const [absageFehler, setAbsageFehler] = useState<string | null>(null);
   const { has, toggle } = useSavedPools();
   const { bundles, mine, loading, error, reload } = useBundles();
 
@@ -294,10 +310,16 @@ export default function OpenPools() {
   );
 
   async function withdraw(b: Bundle) {
-    if (!confirm(`Teilnahme an „${b.material_label ?? b.title}" zurückziehen?`)) return;
+    const frage =
+      `Teilnahme an „${b.material_label ?? b.title}" zurückziehen?\n\n` +
+      "Das geht nur, solange gesammelt wird. Ab der Ausschreibung ist die " +
+      "Menge verbindlich — die Werke rechnen ihren Preis darauf.";
+    if (!confirm(frage)) return;
+    setAbsageFehler(null);
     setBusy(b.id);
-    await withdrawDemand(supabase, b.id);
+    const { error: fehler } = await withdrawDemand(supabase, b.id);
     setBusy(null);
+    if (fehler) setAbsageFehler(fehler);
     reload();
   }
 
@@ -355,6 +377,13 @@ export default function OpenPools() {
           ))}
         </select>
       </div>
+
+      {absageFehler && (
+        <p className="mt-5 flex items-start gap-2 border-l-2 border-rose-400 pl-3 text-[12.5px] leading-relaxed text-rose-300">
+          <Info className="mt-px h-3.5 w-3.5 shrink-0" />
+          <span>{absageFehler}</span>
+        </p>
+      )}
 
       {error && (
         <p className="mt-5 flex items-start gap-2 border-l-2 border-brand pl-3 text-[12.5px] leading-relaxed text-brand">

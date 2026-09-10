@@ -239,6 +239,16 @@ export default function DatenschutzPage() {
         nicht ändern, denn er ist für beide Seiten der Nachweis.
       </P>
       <P>
+        <strong className="font-semibold text-slate-900">
+          Solange ein Bündel läuft, geht das nicht.
+        </strong>{" "}
+        Wer sich an einer Bündelung beteiligt, bringt eine Menge ein, auf die ein Werk
+        seinen Preis rechnet und auf die sich die anderen Beteiligten verlassen. Ab dem
+        Ende der Sammelphase ist sie deshalb verbindlich — ein Konto lässt sich erst
+        schliessen, wenn die laufenden Bündel abgeschlossen sind. Zurückziehen kannst du
+        deine Teilnahme, solange gesammelt wird.
+      </P>
+      <P>
         Zum Schliessen genügt eine E-Mail an <Fill value={LEGAL.email} />. Melde dich auch
         dann, wenn du nur einzelne Angaben gelöscht haben möchtest.
       </P>
