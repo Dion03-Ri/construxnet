@@ -1,0 +1,45 @@
+# Migrationen prüfen, bevor sie in Supabase gehen
+
+```
+bash supabase/pruefung/aufsetzen.sh
+```
+
+Baut eine Wegwerf-Datenbank (PostgreSQL 16, `/tmp/obtanet-pruefung`) und
+spielt **alle** Migrationen aus `supabase/migrations/` der Reihe nach ein.
+Bricht beim ersten Fehler ab und nennt die Datei.
+
+Danach:
+
+```
+psql -h /tmp/obtanet-pruefung -p 5605 -U pgtest -d postgres
+```
+
+Als Firma anmelden — `current_company_id()` liest `auth.jwt() ->> 'sub'`,
+und der Stub holt das aus einer Sitzungsvariablen:
+
+```sql
+BEGIN;
+SET LOCAL ROLE authenticated;
+SET LOCAL "test.jwt" = '{"sub":"user_a"}';
+SELECT * FROM chat_threads();
+COMMIT;
+```
+
+`stubs.sql` ersetzt, was Supabase mitbringt und ein nacktes Postgres nicht:
+die Rollen `anon`/`authenticated`/`service_role`, `auth.jwt()`, das Schema
+`storage` mit den drei Pfadfunktionen, und die Publikation
+`supabase_realtime`.
+
+## Warum es das gibt
+
+Migration 30 ging beim Auftraggeber nicht durch: sie hängte einen
+Fremdschlüssel an `direct_offers.buyer_company_id` — eine Spalte, die es
+nicht gibt. Der Besteller steht auf `direct_requests`, nicht auf dem
+Angebot.
+
+Geprüft war die Migration vorher trotzdem, nur eben gegen ein von Hand
+nachgebautes Schema, in dem ich diese Spalte erfunden hatte. Der Test lief
+gegen eine Fiktion und konnte den Fehler nicht finden.
+
+**Also: keine nachgebauten Schemata mehr.** Die Prüfdatenbank kommt aus
+den echten Migrationen, sonst prüft man seine eigenen Annahmen.

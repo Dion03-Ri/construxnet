@@ -28,8 +28,8 @@ ALTER TABLE companies ADD COLUMN IF NOT EXISTS closed_at TIMESTAMP WITH TIME ZON
 -- ------------------------------------------------------------
 -- 1) Sicherheitsnetz
 --
--- Nachrichten und Direktangebote sind Belege eines Geschäfts und gehören
--- beiden Seiten. RESTRICT heisst: ein Löschversuch auf der Firmenzeile
+-- Nachrichten, Direktanfragen und Direktangebote sind Belege eines
+-- Geschäfts und gehören beiden Seiten. RESTRICT heisst: ein Löschversuch auf der Firmenzeile
 -- schlägt laut fehl, statt still zwei Verläufe zu vernichten. Der Weg
 -- über close_company_account() bleibt offen — er löscht die Zeile nicht.
 --
@@ -46,9 +46,16 @@ ALTER TABLE messages DROP CONSTRAINT IF EXISTS messages_receiver_company_id_fkey
 ALTER TABLE messages ADD CONSTRAINT messages_receiver_company_id_fkey
     FOREIGN KEY (receiver_company_id) REFERENCES companies(id) ON DELETE RESTRICT;
 
-ALTER TABLE direct_offers DROP CONSTRAINT IF EXISTS direct_offers_buyer_company_id_fkey;
-ALTER TABLE direct_offers ADD CONSTRAINT direct_offers_buyer_company_id_fkey
+-- Der Besteller steht auf der Anfrage, nicht auf dem Angebot: ein Angebot
+-- hängt über `request_id` an einer `direct_requests`-Zeile. Beide Seiten
+-- der Anfrage und der bietende Lieferant werden geschützt.
+ALTER TABLE direct_requests DROP CONSTRAINT IF EXISTS direct_requests_buyer_company_id_fkey;
+ALTER TABLE direct_requests ADD CONSTRAINT direct_requests_buyer_company_id_fkey
     FOREIGN KEY (buyer_company_id) REFERENCES companies(id) ON DELETE RESTRICT;
+
+ALTER TABLE direct_requests DROP CONSTRAINT IF EXISTS direct_requests_supplier_company_id_fkey;
+ALTER TABLE direct_requests ADD CONSTRAINT direct_requests_supplier_company_id_fkey
+    FOREIGN KEY (supplier_company_id) REFERENCES companies(id) ON DELETE RESTRICT;
 
 ALTER TABLE direct_offers DROP CONSTRAINT IF EXISTS direct_offers_supplier_company_id_fkey;
 ALTER TABLE direct_offers ADD CONSTRAINT direct_offers_supplier_company_id_fkey
@@ -77,10 +84,10 @@ LANGUAGE sql STABLE SECURITY DEFINER SET search_path = public, pg_temp AS $$
            AND (   (m.sender_company_id   = p_company AND m.receiver_company_id = me.id)
                 OR (m.receiver_company_id = p_company AND m.sender_company_id   = me.id))
     ) OR EXISTS (
-        SELECT 1 FROM direct_offers d, (SELECT current_company_id() AS id) me
+        SELECT 1 FROM direct_requests r, (SELECT current_company_id() AS id) me
          WHERE me.id IS NOT NULL
-           AND (   (d.buyer_company_id    = p_company AND d.supplier_company_id = me.id)
-                OR (d.supplier_company_id = p_company AND d.buyer_company_id    = me.id))
+           AND (   (r.buyer_company_id    = p_company AND r.supplier_company_id = me.id)
+                OR (r.supplier_company_id = p_company AND r.buyer_company_id    = me.id))
     )
 $$;
 
