@@ -55,6 +55,25 @@ Supabase (server + browser client, `supabaseAdmin` service-role), Leaflet/OSM
 - Migrationen sind manuell auszuführen (Supabase SQL): `04`–`07`
   (Kontakt, Lieferanten-Profil, Post-Media-Bucket, `waitlist`).
 
+## Migrationen prüfen, BEVOR sie in Supabase gehen
+
+```
+bash supabase/pruefung/aufsetzen.sh
+```
+
+Baut eine Wegwerf-Datenbank und spielt alle Migrationen der Reihe nach
+ein. Bricht beim ersten Fehler ab und nennt die Datei. Details:
+`supabase/pruefung/README.md`.
+
+**Keine nachgebauten Schemata.** Migration 30 ging beim Auftraggeber nicht
+durch, weil sie einen Fremdschlüssel an `direct_offers.buyer_company_id`
+hängte — eine Spalte, die es nicht gibt: der Besteller steht auf
+`direct_requests`, nicht auf dem Angebot. Geprüft war sie vorher trotzdem,
+nur gegen ein von Hand geschriebenes Testschema, in dem diese Spalte
+erfunden war. Der Test lief gegen eine Fiktion und konnte den Fehler nicht
+finden. Wer eine Tabelle anfasst, liest ihre Migration — oder fragt die
+Prüfdatenbank.
+
 ## Token-Sparen (Nutzer-Wunsch)
 - Immer nur die **wirklich nötigen** Dateien lesen (gezielt via grep), nicht den
   ganzen Baum. Für einfache Edits Modell **Sonnet**, Opus nur für schwere Arbeit.
