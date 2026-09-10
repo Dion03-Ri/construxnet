@@ -205,7 +205,11 @@ export type DemandInput = {
   region: string;
   volume: number;
   kbobPrice: number;
-  projectId: string | null;
+  projectId: string;
+  /** Erster Liefermonat, `YYYY-MM-01`. */
+  lieferVon: string;
+  /** Letzter Liefermonat, `YYYY-MM-01`. */
+  lieferBis: string;
 };
 
 /**
@@ -230,6 +234,8 @@ export async function submitDemand(
     p_volume: input.volume,
     p_kbob_price: input.kbobPrice || null,
     p_project_id: input.projectId,
+    p_liefer_von: input.lieferVon,
+    p_liefer_bis: input.lieferBis,
   });
   if (error) return { error: lesbarerFehler(error.message) };
   return { bundleId: data as string };

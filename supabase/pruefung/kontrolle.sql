@@ -32,7 +32,11 @@ funktionen AS (
       ('close_own_company_account', 'close_own_company_account()',                      'eigenes Konto schliessen, Migration 30'),
       ('hat_geschaeft_mit',         'hat_geschaeft_mit(uuid)',                          'Sichtbarkeit geschlossener Firmen, Migration 30'),
       ('laufende_bindung',          'laufende_bindung(uuid)',                           'woran eine Firma hängt, Migration 31'),
-      ('meine_bindung',             'meine_bindung()',                                  'die eigene Bindung, Migration 32')
+      ('meine_bindung',             'meine_bindung()',                                  'die eigene Bindung, Migration 32'),
+      ('einstellung_zahl',          'einstellung_zahl(text,numeric)',                   'Sätze aus app_settings, Migration 35'),
+      ('mindestgebot',              'mindestgebot(uuid)',                               'Mindestgebot je Bündel, Migration 35'),
+      ('mengenkurve',               'mengenkurve(uuid)',                                'Menge über die Monate, Migration 36'),
+      ('submit_demand',             'submit_demand(text,text,text,text,text,text,numeric,numeric,uuid,date,date,integer)', 'Bedarf mit Baustelle und Zeitraum, Migration 36')
     ) AS f(name, sig, zweck)
 ),
 spalten AS (
@@ -51,6 +55,26 @@ spalten AS (
   SELECT 'chat_thread_prefs',
          CASE WHEN to_regclass('public.chat_thread_prefs') IS NULL THEN 'FEHLT' ELSE 'ok' END,
          'Archiv-Vermerke, Migration 29'
+  UNION ALL
+  SELECT 'bundles.provision_chf',
+         CASE WHEN EXISTS (SELECT 1 FROM information_schema.columns
+                            WHERE table_name='bundles' AND column_name='provision_chf')
+              THEN 'ok' ELSE 'FEHLT' END,
+         'Provision beim Zuschlag eingefroren, Migration 35'
+  UNION ALL
+  SELECT 'bundle_participations.liefer_von',
+         CASE WHEN EXISTS (SELECT 1 FROM information_schema.columns
+                            WHERE table_name='bundle_participations'
+                              AND column_name='liefer_von' AND is_nullable='NO')
+              THEN 'ok' ELSE 'FEHLT' END,
+         'Lieferzeitraum je Teilnahme, Migration 36'
+  UNION ALL
+  SELECT 'bundle_participations.project_id',
+         CASE WHEN EXISTS (SELECT 1 FROM information_schema.columns
+                            WHERE table_name='bundle_participations'
+                              AND column_name='project_id' AND is_nullable='NO')
+              THEN 'ok' ELSE 'FEHLT' END,
+         'Baustelle ist Pflicht, Migration 36'
 ),
 austritt AS (
   SELECT 'withdraw_demand: Phasenprüfung' AS was,

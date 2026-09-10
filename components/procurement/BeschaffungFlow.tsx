@@ -64,6 +64,22 @@ function toPosition(m: ProcMaterial, qty = ""): Position {
   return { key: m.key, id: m.id, label: m.label, sia: m.sia, unit: m.unit, kbobPrice: m.kbobPrice, category: m.category, qty };
 }
 
+/** Monatswert `YYYY-MM` für ein `<input type="month">`, n Monate voraus. */
+function naechsterMonat(n: number): string {
+  const d = new Date();
+  d.setDate(1);
+  d.setMonth(d.getMonth() + n);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+}
+
+/** Wie viele Monate der gewählte Zeitraum umfasst — 0, wenn er verkehrt liegt. */
+function monatsSpanne(von: string, bis: string): number {
+  if (!von || !bis) return 0;
+  const [jv, mv] = von.split("-").map(Number);
+  const [jb, mb] = bis.split("-").map(Number);
+  return (jb - jv) * 12 + (mb - mv) + 1;
+}
+
 export default function BeschaffungFlow({
   initialMaterial,
   initialQty,
@@ -125,6 +141,13 @@ export default function BeschaffungFlow({
   const [region, setRegion] = useState<string>(PROC_REGIONS[0]);
   const [site, setSite] = useState("");
   const [projectId, setProjectId] = useState(initialProject ?? "");
+  /* Lieferzeitraum auf Monatsebene. Ohne ihn kann kein Werk seinen Aufwand
+     rechnen — 500 m³ in einer Woche sind etwas anderes als 500 über ein
+     halbes Jahr — und die Kapazitätsprüfung hätte nichts, wogegen sie
+     prüfen könnte. Vorbelegt auf den nächsten Monat, weil heute niemand
+     Beton für heute bestellt. */
+  const [lieferVon, setLieferVon] = useState(naechsterMonat(1));
+  const [lieferBis, setLieferBis] = useState(naechsterMonat(2));
   const project = projects.find((p) => p.id === projectId) ?? null;
   // Baustelle im Klartext für Zusammenfassung und Übermittlung: entweder
   // das gewählte Projekt oder — wenn noch keins angelegt ist — der Text
@@ -247,7 +270,19 @@ export default function BeschaffungFlow({
     e.target.value = "";
   }
 
-  const canNext = step === 0 ? positions.length > 0 : step === 1 ? totals.filled === positions.length : true;
+  /* Was in Schritt 2 fehlen darf und was nicht. Baustelle und
+     Lieferzeitraum weist die Datenbank ohnehin ab — hier stehen sie, damit
+     der Knopf gar nicht erst klickbar ist und daneben steht, woran es
+     liegt. Eine Fehlermeldung nach dem Absenden ist die schlechtere
+     Auskunft. */
+  const zeitraumOk = monatsSpanne(lieferVon, lieferBis) >= 1 && monatsSpanne(lieferVon, lieferBis) <= 3;
+  const schrittZweiOk = Boolean(projectId) && zeitraumOk;
+  const canNext =
+    step === 0
+      ? positions.length > 0
+      : step === 1
+        ? totals.filled === positions.length && schrittZweiOk
+        : true;
 
   /**
    * Letzter Schritt: jede Position wird eingereicht.
@@ -274,7 +309,9 @@ export default function BeschaffungFlow({
         region,
         volume: qty,
         kbobPrice: p.kbobPrice,
-        projectId: projectId || null,
+        projectId,
+        lieferVon: `${lieferVon}-01`,
+        lieferBis: `${lieferBis}-01`,
       });
       if (res.error) {
         setSubmitting(false);
@@ -612,24 +649,70 @@ export default function BeschaffungFlow({
                       </select>
                     </div>
                     <div>
-                      <label className="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-slate-500">Baustelle (optional)</label>
+                      {/* Die Baustelle ist Pflicht. Ohne Lieferadresse gibt es
+                          später nichts zuzuteilen: ein Bündel wird auf ganze
+                          Baustellen verteilt, jede an genau ein Werk. */}
+                      <label className="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-slate-500">
+                        Baustelle *
+                      </label>
                       {projects.length > 0 ? (
                         <select value={projectId} onChange={(e) => setProjectId(e.target.value)} className="w-full rounded-md border border-slate-300 bg-slate-50 px-3 py-2 text-sm text-slate-900 outline-none focus:border-brand focus:bg-white">
-                          <option value="">Keiner Baustelle zuordnen</option>
+                          <option value="">Bitte wählen …</option>
                           {projects.map((p) => (
                             <option key={p.id} value={p.id}>{projectLabel(p)}</option>
                           ))}
                         </select>
                       ) : (
-                        <input value={site} onChange={(e) => setSite(e.target.value)} placeholder={projectsLoading ? "Wird geladen …" : "z. B. Überbauung Bern-West"} className="w-full rounded-md border border-slate-300 bg-slate-50 px-3 py-2 text-sm text-slate-900 outline-none focus:border-brand focus:bg-white" />
-                      )}
-                      {projects.length === 0 && !projectsLoading && (
-                        <p className="mt-1 text-[11.5px] text-slate-500">
-                          Baustellen legst du im{" "}
-                          <Link href="/dashboard" className="font-semibold text-brand-700 hover:underline">Dashboard unter „Projekte"</Link>{" "}
-                          an — dann kannst du hier direkt auswählen.
+                        <p className="rounded-md border border-slate-300 bg-slate-50 px-3 py-2 text-[13px] leading-relaxed text-slate-600">
+                          {projectsLoading ? (
+                            "Baustellen werden geladen …"
+                          ) : (
+                            <>
+                              Du hast noch keine Baustelle.{" "}
+                              <Link href="/dashboard" className="font-semibold text-brand-700 hover:underline">
+                                Im Dashboard unter „Projekte" anlegen
+                              </Link>{" "}
+                              — ohne Lieferadresse lässt sich kein Bedarf einreichen.
+                            </>
+                          )}
                         </p>
                       )}
+                    </div>
+
+                    {/* Lieferzeitraum. Monatsebene reicht: ein Werk plant seine
+                        Auslastung in Monaten, und ein Besteller weiss im Voraus
+                        selten mehr. */}
+                    <div className="sm:col-span-2">
+                      <label className="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-slate-500">
+                        Lieferzeitraum *
+                      </label>
+                      <div className="flex flex-wrap items-center gap-2">
+                        <input
+                          type="month"
+                          value={lieferVon}
+                          onChange={(e) => {
+                            setLieferVon(e.target.value);
+                            if (e.target.value > lieferBis) setLieferBis(e.target.value);
+                          }}
+                          className="rounded-md border border-slate-300 bg-slate-50 px-3 py-2 text-sm text-slate-900 outline-none focus:border-brand focus:bg-white"
+                        />
+                        <span className="text-sm text-slate-500">bis</span>
+                        <input
+                          type="month"
+                          value={lieferBis}
+                          min={lieferVon}
+                          onChange={(e) => setLieferBis(e.target.value)}
+                          className="rounded-md border border-slate-300 bg-slate-50 px-3 py-2 text-sm text-slate-900 outline-none focus:border-brand focus:bg-white"
+                        />
+                      </div>
+                      <p className={cn(
+                        "mt-1 text-[11.5px] leading-relaxed",
+                        monatsSpanne(lieferVon, lieferBis) > 3 ? "text-rose-600" : "text-slate-500",
+                      )}>
+                        {monatsSpanne(lieferVon, lieferBis) > 3
+                          ? "Höchstens drei Monate pro Bedarf. Reiche spätere Etappen einzeln ein — ein Bündel über ein halbes Jahr kann kein Werk seriös preisen."
+                          : "Wann das Material auf die Baustelle soll. Danach richtet sich, mit welchen anderen Bedarfen gebündelt wird und ob ein Werk die Menge überhaupt fahren kann."}
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -789,6 +872,12 @@ export default function BeschaffungFlow({
               <ChevronLeft className="h-4 w-4" /> Zurück
             </button>
             <div className="flex items-center gap-3">
+              {step === 1 && totals.filled === positions.length && !projectId && (
+                <span className="text-[12.5px] text-slate-500">Wähle zuerst eine Baustelle.</span>
+              )}
+              {step === 1 && totals.filled === positions.length && projectId && !zeitraumOk && (
+                <span className="text-[12.5px] text-slate-500">Der Lieferzeitraum umfasst höchstens drei Monate.</span>
+              )}
               {step === 1 && totals.filled < positions.length && (
                 <span className="text-[12px] text-slate-500">Menge bei allen Positionen nötig</span>
               )}
