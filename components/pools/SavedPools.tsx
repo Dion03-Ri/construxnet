@@ -10,7 +10,7 @@ import {
   ArrowRight,
   Loader2,
 } from "lucide-react";
-import { useBundles, nextStep, deadlineLabel } from "@/lib/bundles";
+import { useBundles, deadlineLabel } from "@/lib/bundles";
 import { useSavedPools } from "@/lib/useSavedPools";
 import { chf } from "@/lib/format";
 import { cn } from "@/lib/utils";
@@ -68,9 +68,6 @@ export default function SavedPools() {
   return (
     <ul className="border-b border-white/[0.12]">
       {saved.map((b) => {
-        const step = nextStep(b.current_volume);
-        const goal = step?.at ?? b.current_volume;
-        const pct = Math.min(100, Math.round((b.current_volume / (goal || 1)) * 100));
         const sealed = b.status === "SEALED_BIDDING";
 
         return (
@@ -113,15 +110,14 @@ export default function SavedPools() {
                   <span className="tabular-nums text-white/[0.72]">
                     {chf(b.current_volume)} {b.unit}
                   </span>
-                  {step && (
-                    <span className="tabular-nums text-white/[0.5]">
-                      Stufe {step.tier} bei {chf(step.at)} {b.unit}
-                    </span>
-                  )}
                 </div>
-                <div className="mt-2 h-[3px] w-full overflow-hidden rounded-full bg-white/[0.10]">
-                  <div className="h-full rounded-full bg-brand" style={{ width: `${pct}%` }} />
-                </div>
+                {/* Kein Balken zur nächsten Stufe mehr: die Schwelle eines
+                    Bündels ist der höchste individuelle Anspruch seiner
+                    Teilnehmer, sie steigt nicht mit mehr Menge. */}
+                <p className="mt-2 text-[11.5px] leading-relaxed text-white/[0.56]">
+                  Garantierte Untergrenze. In der verdeckten Ausschreibung bieten
+                  die Werke darunter.
+                </p>
               </div>
 
               {/* ---------- Garantierter Vorteil ---------- */}
@@ -131,7 +127,7 @@ export default function SavedPools() {
                   <span className="text-[17px]"> %</span>
                 </div>
                 <div className="mt-1.5 whitespace-nowrap text-[10.5px] font-semibold uppercase tracking-[0.1em] text-white/[0.5]">
-                  Stufe {b.current_tier}
+                  mindestens
                 </div>
               </div>
 

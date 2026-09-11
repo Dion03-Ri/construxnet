@@ -8,8 +8,9 @@
  * Kontoseite lesen daraus. Keine dieser Zahlen darf irgendwo im Fliesstext
  * stehen, sonst steht sie beim naechsten Wechsel an zwei Orten.
  *
- * Nicht davon beruehrt: die Rabattstufen der Buendelung (5/9/12/16/20 %)
- * sind weiterhin unbestaetigt — das ist Punkt 0 der Startliste.
+ * Nicht davon beruehrt: die Rabattstaffel der Buendelung. Sie hat mit den
+ * Abos nichts zu tun und steht seit Migration 43 in der Tabelle
+ * `rabattstufen` — nicht im Quelltext.
  */
 
 export type PlanKey = "FREE" | "PRO" | "ENTERPRISE";

@@ -11,7 +11,7 @@ export const metadata = {
 const MODULES = [
   {
     title: "Pools nahe Schwelle",
-    text: "Aktive Pools bei 90–95 % zur nächsten Tier-Stufe.",
+    text: "Bündel kurz vor Ausschreibungsstart — Teilnehmer und Deadline.",
   },
   {
     title: "Gap-Closer Alerts",
@@ -23,7 +23,7 @@ const MODULES = [
   },
   {
     title: "Pool-Verwaltung",
-    text: "Deadlines, Regionen und Tier-Ziele konfigurieren.",
+    text: "Deadlines, Regionen und Mindestteilnehmer konfigurieren.",
   },
 ];
 

@@ -10,8 +10,11 @@ Materialbedarf zu **Smart Pools** und beschaffen günstiger.
 **Smart-Pool-Mechanik (wichtig, korrekt halten):** Mehrere Firmen bündeln Bedarf
 zu grösserem Volumen → Lieferanten geben **verdeckte Angebote (Sealed-Bid)** auf
 das Volumen ab → das beste Angebot ggü. dem **KBOB-Referenzpreis** erhält den
-Zuschlag. Kunden erhalten einen **garantierten Mindestvorteil** (NICHT „alle
-denselben fixen Rabatt"). Quelle: SourceOn `tiers.js` (netto/brutto-Staffel).
+Zuschlag. Lieferanten können auf das ganze Bündel bieten oder auf einen Teil
+der Baustellen. Jede Firma erhält einen **eigenen garantierten Mindestvorteil**
+nach ihrem Bestellwert (NICHT „alle denselben fixen Rabatt", und NICHT einen
+Satz, der aus dem Bündelvolumen folgt). Quelle der Staffel: die Tabelle
+`rabattstufen`, sonst nirgends.
 
 ## Stack
 Next.js 15 (App Router), React 19, TypeScript, Tailwind, Clerk (Auth),
@@ -107,24 +110,42 @@ Prüfdatenbank.
   Bündel (`bundles` + `bundle_participations`). Zusammengeführt wird auf
   Materialnummer + Region; die Datenbank entscheidet, weil zwei gleichzeitige
   Einreichungen sonst zwei Töpfe erzeugen.
-- Rabattstufen stehen an **zwei** Stellen: `PROC_TIERS` in
-  `data/procurement.ts` und `bundle_tier()` in der Datenbank. Ändert sich
-  eine, muss die andere mit.
-- **#27 offen — die aktuellen Stufen (5/9/12/16/20 %) sind NICHT belastbar.**
-  Zwei Gründe, beide gerechnet: die Schwellen zählen Stückzahlen statt Werte,
-  wodurch dieselbe Stufe zwischen CHF 12'000 (Dämmung) und CHF 561'000
-  (Bewehrungsstahl) bedeutet — Faktor 47. Und 20 % sind in keiner
-  Materialgruppe erreichbar; indexnahe Güter wie Stahl und Zement geben nur
-  wenige Prozent her. Solange das so steht, darf keine Garantie live gehen.
-  Der Nutzer recherchiert die realen Werte bei Werken. Die Frage dafür:
-  „Wenn ich Ihnen für ein Quartal garantierte X Einheiten im Umkreis von
-  20 km bringe, mit fixer Disposition und einem Ansprechpartner — wie viel
-  liegt netto unter dem, was ein mittelgrosses Bauunternehmen heute zahlt?"
-- Zwei Punkte, die bei der Festlegung mitentschieden werden müssen: die
-  Plattformgebühr (2,25 %) geht vom garantierten Vorteil ab, das Werk muss
-  also Stufe + Gebühr unter Referenz bieten. Und die Garantie misst gegen
-  den KBOB-Index, der bei uns derzeit eine nachgebildete Reihe ist — eine
-  Garantie gegen einen selbstgebauten Index ist angreifbar.
+- **Die Rabattstaffel steht an genau EINER Stelle: der Tabelle
+  `rabattstufen` (Migration 43).** Vorher waren es vier — `PROC_TIERS` in
+  `data/procurement.ts`, `STEPS` in `lib/bundles.ts`, `TIERS` in
+  `components/BundleEngine.tsx` und `bundle_tier()` in der Datenbank — alle
+  mit anderen Zahlen. Alle drei im Quelltext sind entfernt; der Browser
+  holt die Staffel über `lib/rabatt.ts` (`useRabattstufen`). Die Tabelle ist
+  für `anon` lesbar, weil eine Garantie, die man nicht nachschlagen kann,
+  keine ist; geschrieben wird nur über `service_role`.
+- **Sie rechnet in Franken je Firma, nicht in Stückzahlen und nicht über
+  das Bündel.** Massgebend ist der Bestellwert EINER Firma in EINER
+  Materialkategorie (Menge × Referenzpreis, über alle Positionen dieser
+  Kategorie summiert). Staffel je Kategorie:
+  CHF 5'000 → 4 %, 25'000 → 5 %, 50'000 → 6 %, 100'000 → 7 %,
+  250'000 → 8 %, 500'000 → 9 %, 1'000'000 → 10 %.
+  Unter 5'000 gibt es **keine** Garantie — `mein_mindestrabatt()` gibt dann
+  NULL zurück, und NULL ist etwas anderes als 0 %. Wer das im Frontend
+  gleich behandelt, verspricht „0 % garantiert" statt „noch keine Garantie".
+- **Eine Kategorie ohne Zeilen ist nicht bündelbar** — es gibt keinen
+  Auffangeintrag. `Bewehrung & Stahl` steht bewusst nicht in der Tabelle:
+  indexnahe Güter geben die Staffel nicht her. `submit_demand()` weist
+  solchen Bedarf mit Begründung ab (`kategorie_buendelbar()`).
+- **Die Schwelle eines Bündels ist der HÖCHSTE individuelle Anspruch seiner
+  Teilnehmer**, nicht eine Funktion der Gesamtmenge — plus ein Sockel in
+  Höhe der untersten Stufe der Kategorie, damit ein Bündel aus lauter
+  Kleinbestellern nicht bei 0 landet (`bundle_mindestrabatt()`). Sie steigt
+  also nicht, wenn Menge dazukommt, sondern nur, wenn ein GRÖSSERER
+  Teilnehmer dazukommt. Deshalb gibt es nirgends mehr einen Balken „noch
+  X m³ bis Y %" — der Vorteil aus mehr Menge entsteht in der Ausschreibung,
+  nicht in der Garantie, und lässt sich nicht als Balken versprechen.
+- **Die Provision wird ADDIERT, nicht abgezogen.** `mindestgebot()` rechnet
+  `CEIL((Prozentsatz + 2,25) × 4) / 4` — auf ein Viertelprozent AUFgerundet,
+  nie ab. Der Besteller sieht seinen Prozentsatz, das Werk sieht
+  Prozentsatz + Provision und bietet darunter.
+- Offen bleibt: die Garantie misst gegen den KBOB-Index, der bei uns derzeit
+  eine nachgebildete Reihe ist — eine Garantie gegen einen selbstgebauten
+  Index ist angreifbar. Siehe Punkt 2 der Startliste.
 - Teilnehmerzahl liegt auf dem Bündel (`participant_count`), weil die
   Teilnahmen per RLS verdeckt sind — sichtbar ist die Menge, nie wer sie
   beisteuert.
@@ -617,8 +638,19 @@ Diese Punkte müssen erledigt sein, bevor echte Firmen darauf arbeiten:
    Sobald die Zahlen stehen: Abschnitt zwischen „Der Unterschied in Zahlen"
    und den Pools-/Netzwerk-Karten, drei Säulen im dunklen Register, die
    mittlere golden hervorgehoben.
-1. **RABATTSTUFEN — die SourceOn-Staffel ist geprüft und VERWORFEN
-   (11.09.2026).**
+1. **RABATTSTUFEN — ERLEDIGT (11.09.2026), Migration 43.** Die Staffel
+   steht, einmalig, in `rabattstufen`; die drei Kopien im Quelltext sind
+   weg. Werte, Zuschnitt und Begründung stehen oben unter „Bündeln —
+   Stand". Der Rest dieses Punktes ist die Herleitung — er bleibt stehen,
+   weil die Zahlen noch **hergeleitet und nicht bestätigt** sind: sie sind
+   plausibel gerechnet, aber kein Betonwerk hat sie genannt.
+
+   **Was dafür noch fehlt:** ein Gespräch mit einem Werk. „Wenn ich dir
+   500 m³ mit fester Terminplanung bringe statt fünf Einzelbestellungen —
+   was ist dir das wert?" Die Antwort gehört dann in `rabattstufen`, und
+   zwar nur dort.
+
+   **Die SourceOn-Staffel ist geprüft und VERWORFEN.**
 
    Im alten Stand gefunden (`tiers.js`, „Single Source of Truth"), gestaffelt
    nach Bestellwert in CHF statt nach Menge — das ist der bessere Zuschnitt,
@@ -660,23 +692,21 @@ Diese Punkte müssen erledigt sein, bevor echte Firmen darauf arbeiten:
    ein auffällig grosser Anteil — und Werk und Besteller reden hier
    miteinander.
 
-   **Was fehlt und nicht recherchierbar ist:** die richtigen Zahlen. Sie
-   stehen in keiner öffentlichen Quelle. Sie kommen aus einem Gespräch mit
-   einem Betonwerk: „Wenn ich dir 500 m³ mit fester Terminplanung bringe
-   statt fünf Einzelbestellungen — was ist dir das wert?" Die Antwort ist
-   die Staffel, und sie ist belastbar, weil ein Werk sie gesagt hat.
-
    Die Margendaten sind international, nicht schweizspezifisch — die
-   Grössenordnung stimmt, die Nachkommastelle nicht.
+   Grössenordnung stimmt, die Nachkommastelle nicht. Genau deshalb steht
+   die Staffel in einer Tabelle und nicht im Quelltext: sie wird sich
+   ändern, und dann darf das ein UPDATE sein und kein Deployment.
 
-1b. **Der Zuschnitt der Staffel: nach Bestellwert, nicht nach Menge.**
-   Heute stehen in `submit_demand` die Schwellen 101/201/351 als reine
-   Stückzahlen mit 9/12/16 %. Über Materialien hinweg geht das nicht auf:
-   351 m³ Beton sind ein anderes Geschäft als 351 Dämmplatten. Sobald echte
-   Zahlen da sind, gehört die Staffel auf Franken umgestellt — der Wert
-   liegt bereits vor (Menge × Referenzpreis).
+1b. **Der Zuschnitt der Staffel: nach Bestellwert, nicht nach Menge —
+   umgesetzt in Migration 43.** Vorher standen in `submit_demand` die
+   Schwellen 101/201/351 als reine Stückzahlen mit 9/12/16 %. Über
+   Materialien hinweg ging das nicht auf: 351 m³ Beton sind ein anderes
+   Geschäft als 351 Dämmplatten. Jetzt rechnet die Staffel in Franken, und
+   zwar je Materialkategorie — „Beton" und „Dämmung" haben dieselben
+   Schwellen, aber jede Firma sammelt ihren Bestellwert je Kategorie
+   getrennt.
 
-   **Und an EINE Stelle.** SourceOn hatte die Staffel in zwei Dateien, beide
+   **Und an EINE Stelle — auch das ist erledigt.** SourceOn hatte die Staffel in zwei Dateien, beide
    mit dem Hinweis „MUSS synchron bleiben" — und sie waren es nicht:
    `tiers.js` rechnete `gross = (net + 0.0225) / 1.0225` (Provision auf den
    Bestellwert), `auto-bundle/index.ts` rechnete `net + 0.0225` (Provision
