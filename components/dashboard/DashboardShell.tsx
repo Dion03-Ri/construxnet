@@ -66,7 +66,9 @@ import MaterialsPanel from "@/components/dashboard/MaterialsPanel";
 import TendersPanel from "@/components/dashboard/TendersPanel";
 import { useCustomMaterials } from "@/lib/customMaterials";
 import { useKennzahlen, type Bestellung, type Kennzahl, type KategorieWert } from "@/lib/kennzahlen";
-import { useBundles, deadlineLabel, hoursLeft, type Bundle } from "@/lib/bundles";
+import { useBundles, useMyBids, deadlineLabel, hoursLeft, type Bundle } from "@/lib/bundles";
+import { useZuschlaege, useKapazitaet } from "@/lib/lieferantensicht";
+import { useLieferantenkonto } from "@/lib/lieferant";
 import { useDirectRequests, isLive } from "@/lib/directRequests";
 import { cn } from "@/lib/utils";
 import { matchesMaterial, PROC_CATEGORIES, type ProcMaterial, type ProcCategory } from "@/data/procurement";
@@ -262,85 +264,94 @@ function MyBundles({ limit }: { limit?: number }) {
 /*  Panels                                                                    */
 /* -------------------------------------------------------------------------- */
 
-function OverviewPanel({ role }: { role: "buyer" | "supplier" }) {
-  const isSupplier = role === "supplier";
-  const { bundles, mine } = useBundles();
-  const { kennzahlen } = useKennzahlen(role);
+/** Eine Zeile in „Das braucht deine Aufmerksamkeit". */
+type OffenerPunkt = { icon: typeof Gavel; text: string; href: string; cta: string };
 
-  // Was heute Aufmerksamkeit braucht — aus echten Daten, keine Platzhalter.
-  const myIds = new Set(mine.map((m) => m.bundle_id));
-  const myBundles = bundles.filter((b) => myIds.has(b.id));
-  const soonClosing = myBundles.filter(
-    (b) => b.status === "OPEN" && hoursLeft(b.deadline) < 120,
+function AufmerksamkeitsListe({ punkte }: { punkte: OffenerPunkt[] }) {
+  return (
+    <div className="border-t border-white/[0.12]">
+      <div className="border-b border-white/[0.06] px-5 py-3.5">
+        <h3 className="text-[15px] font-bold text-white">Das braucht deine Aufmerksamkeit</h3>
+        <p className="mt-0.5 text-[12.5px] text-white/[0.72]">
+          Offene Punkte aus Bündeln, Verträgen und Lieferungen.
+        </p>
+      </div>
+      {punkte.length === 0 && (
+        <p className="px-5 py-4 text-[13px] leading-relaxed text-white/[0.56]">
+          Im Moment nichts.
+        </p>
+      )}
+      <ul className="divide-y divide-white/[0.12]">
+        {punkte.map((t) => (
+          <li key={t.text} className="flex items-center gap-3 px-5 py-3">
+            <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-navy-900 text-brand">
+              <t.icon className="h-4 w-4" />
+            </span>
+            <span className="min-w-0 flex-1 text-[13.5px] text-white/[0.72]">{t.text}</span>
+            <Link
+              href={t.href}
+              className="shrink-0 rounded-md border border-white/[0.12] px-3 py-1.5 text-[12.5px] font-semibold text-white/[0.72] transition-colors hover:border-brand/40 hover:text-brand"
+            >
+              {t.cta}
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </div>
   );
-  const inBidding = myBundles.filter((b) => b.status === "SEALED_BIDDING");
-  const awarded = myBundles.filter((b) => b.status === "AWARDED");
+}
 
-  const openTasks = [
-    soonClosing.length > 0 && {
+/**
+ * Die Übersicht des Bestellers.
+ *
+ * Getrennt von der des Werks, weil die beiden Rollen nichts Gemeinsames
+ * zu sehen haben. Vorher war dies BEIDE Übersichten: ein Werk bekam die
+ * Bündel-Teilnahmen eines Bestellers zu sehen — also immer nichts, weil
+ * ein Werk keine hat — und darunter einen Satz ohne Zahl, dass
+ * Ausschreibungen auf sein Gebot warten. Fünf offene Ausschreibungen und
+ * drei laufende eigene Gebote standen nirgends.
+ */
+function BuyerOverview() {
+  const { bundles, mine } = useBundles();
+  const { kennzahlen } = useKennzahlen("buyer");
+
+  const meine = new Set(mine.map((m) => m.bundle_id));
+  const meineBuendel = bundles.filter((b) => meine.has(b.id));
+  const baldZu = meineBuendel.filter((b) => b.status === "OPEN" && hoursLeft(b.deadline) < 120);
+  const inAusschreibung = meineBuendel.filter((b) => b.status === "SEALED_BIDDING");
+  const vergeben = meineBuendel.filter((b) => b.status === "AWARDED");
+
+  const punkte = [
+    baldZu.length > 0 && {
       icon: Clock,
-      text: `${soonClosing.length} deiner Bündel ${soonClosing.length === 1 ? "schliesst" : "schliessen"} in den nächsten Tagen — jede zusätzliche Menge zählt noch`,
+      text: `${baldZu.length} deiner Bündel ${baldZu.length === 1 ? "schliesst" : "schliessen"} in den nächsten Tagen — jede zusätzliche Menge zählt noch`,
       href: "/pools",
       cta: "Bündel ansehen",
     },
-    inBidding.length > 0 && {
+    inAusschreibung.length > 0 && {
       icon: Gavel,
-      text: `${inBidding.length} ${inBidding.length === 1 ? "Bündel ist" : "Bündel sind"} in der Ausschreibung — die Werke bieten verdeckt`,
+      text: `${inAusschreibung.length} ${inAusschreibung.length === 1 ? "Bündel ist" : "Bündel sind"} in der Ausschreibung — die Werke bieten verdeckt`,
       href: "/pools",
       cta: "Stand ansehen",
     },
-    awarded.length > 0 && {
+    vergeben.length > 0 && {
       icon: FileText,
-      text: `${awarded.length} ${awarded.length === 1 ? "Bündel wurde" : "Bündel wurden"} vergeben — Vertrag nach SIA-118 liegt bereit`,
+      text: `${vergeben.length} ${vergeben.length === 1 ? "Bündel wurde" : "Bündel wurden"} vergeben — Vertrag nach SIA-118 liegt bereit`,
       href: "/pools",
       cta: "Ergebnis ansehen",
     },
-  ].filter(Boolean) as { icon: typeof Gavel; text: string; href: string; cta: string }[];
+  ].filter(Boolean) as OffenerPunkt[];
 
   return (
     <div className="space-y-4">
-      {/* Die vier Kennzahlen — dieselbe Quelle wie unter „Berichte". Wo
-          nichts ist, steht ein Strich und keine Null: eine Null liest sich
-          wie ein gemessener Wert. */}
       <div className="grid grid-cols-2 gap-x-6 gap-y-2 lg:grid-cols-4">
         {kennzahlen.map((k) => (
           <KpiCard key={k.label} k={k} />
         ))}
       </div>
 
-      {/* Offene Punkte */}
-      <div className="border-t border-white/[0.12]">
-        <div className="border-b border-white/[0.06] px-5 py-3.5">
-          <h3 className="text-[15px] font-bold text-white">Das braucht deine Aufmerksamkeit</h3>
-          <p className="mt-0.5 text-[12.5px] text-white/[0.72]">
-            Offene Punkte aus Bündeln, Verträgen und Lieferungen.
-          </p>
-        </div>
-        {openTasks.length === 0 && (
-          <p className="px-5 py-4 text-[13px] leading-relaxed text-white/[0.56]">
-            Im Moment nichts. Sobald ein Bündel auf die Frist zuläuft, in die
-            Ausschreibung geht oder vergeben wird, steht es hier.
-          </p>
-        )}
-        <ul className="divide-y divide-white/[0.12]">
-          {openTasks.map((t) => (
-            <li key={t.text} className="flex items-center gap-3 px-5 py-3">
-              <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-navy-900 text-brand">
-                <t.icon className="h-4 w-4" />
-              </span>
-              <span className="min-w-0 flex-1 text-[13.5px] text-white/[0.72]">{t.text}</span>
-              <Link
-                href={t.href}
-                className="shrink-0 rounded-md border border-white/[0.12] px-3 py-1.5 text-[12.5px] font-semibold text-white/[0.72] transition-colors hover:border-brand/40 hover:text-brand"
-              >
-                {t.cta}
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </div>
+      <AufmerksamkeitsListe punkte={punkte} />
 
-      {/* Laufende Bündel — hier kann man noch Menge einbringen */}
       <div className="border-t border-white/[0.12] pt-6">
         <div className="mb-3 flex items-center justify-between">
           <div>
@@ -355,20 +366,120 @@ function OverviewPanel({ role }: { role: "buyer" | "supplier" }) {
         </div>
         <MyBundles limit={3} />
       </div>
-
-      {isSupplier && (
-        <div className="flex items-center gap-3 border-t border-white/[0.12] pt-6">
-          <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-navy-900 text-brand">
-            <Gavel className="h-4 w-4" />
-          </span>
-          <p className="flex-1 text-[13.5px] text-white/[0.72]">
-            Offene Ausschreibungen warten auf dein Gebot.
-          </p>
-          <span className="text-[12.5px] text-white/[0.56]">Reiter „Ausschreibungen"</span>
-        </div>
-      )}
     </div>
   );
+}
+
+/**
+ * Die Übersicht des Baustoffwerks.
+ *
+ * Ein Werk fragt anderes: Worauf kann ich bieten? Worauf habe ich schon
+ * geboten? Was habe ich gewonnen? Und darf ich überhaupt bieten. Deshalb
+ * steht hier nichts von Sammelphasen und nichts von „zusätzlicher Menge".
+ */
+function SupplierOverview() {
+  const { bundles } = useBundles();
+  const { bids } = useMyBids();
+  const { zuschlaege } = useZuschlaege();
+  const { zeilen: kapazitaet } = useKapazitaet();
+  const { konto, darf } = useLieferantenkonto();
+  const { kennzahlen } = useKennzahlen("supplier");
+
+  const beboten = new Set(bids.map((b) => b.bundle_id));
+  const offen = bundles.filter((b) => b.status === "SEALED_BIDDING");
+  const ohneGebot = offen.filter((b) => !beboten.has(b.id));
+  const laufendeGebote = bids.filter((g) => offen.some((b) => b.id === g.bundle_id));
+  const nochNichtGeliefert = zuschlaege.filter((z) => !z.abgeschlossen_am);
+  const knappeFrist = ohneGebot.filter((b) => b.bid_deadline && hoursLeft(b.bid_deadline) < 48);
+
+  const punkte = [
+    // Was den Weg versperrt, steht zuoberst: ohne Zulassung ist alles
+    // andere gegenstandslos.
+    darf && !darf.ok && {
+      icon: ShieldCheck,
+      text: darf.grund,
+      href: "/dashboard",
+      cta: "Lieferantenkonto",
+    },
+    konto?.status === "ZUGELASSEN" && kapazitaet.length === 0 && {
+      icon: Factory,
+      text: "Noch keine Kapazität eingetragen — ohne sie lässt sich kein Gebot prüfen",
+      href: "/dashboard",
+      cta: "Lieferprofil",
+    },
+    knappeFrist.length > 0 && {
+      icon: Clock,
+      text: `${knappeFrist.length} ${knappeFrist.length === 1 ? "Ausschreibung schliesst" : "Ausschreibungen schliessen"} in den nächsten zwei Tagen — noch ohne dein Gebot`,
+      href: "/dashboard",
+      cta: "Ansehen",
+    },
+    laufendeGebote.length > 0 && {
+      icon: Gavel,
+      text: `${laufendeGebote.length} ${laufendeGebote.length === 1 ? "eigenes Gebot liegt" : "eigene Gebote liegen"} in laufenden Ausschreibungen — bis zur Frist noch änderbar`,
+      href: "/dashboard",
+      cta: "Meine Gebote",
+    },
+    nochNichtGeliefert.length > 0 && {
+      icon: Trophy,
+      text: `${nochNichtGeliefert.length} ${nochNichtGeliefert.length === 1 ? "Zuschlag ist" : "Zuschläge sind"} noch offen — Baustellen und Lieferzeitraum stehen bereit`,
+      href: "/dashboard",
+      cta: "Zugeschlagen",
+    },
+  ].filter(Boolean) as OffenerPunkt[];
+
+  return (
+    <div className="space-y-4">
+      <div className="grid grid-cols-2 gap-x-6 gap-y-2 lg:grid-cols-4">
+        {kennzahlen.map((k) => (
+          <KpiCard key={k.label} k={k} />
+        ))}
+      </div>
+
+      <AufmerksamkeitsListe punkte={punkte} />
+
+      <div className="border-t border-white/[0.12] pt-6">
+        <h3 className="text-[15px] font-bold text-white">Offene Ausschreibungen</h3>
+        <p className="mt-0.5 text-[12.5px] text-white/[0.72]">
+          Verdeckt: sichtbar sind Material, Menge und Region — nie fremde Gebote.
+        </p>
+        {offen.length === 0 ? (
+          <p className="mt-3 max-w-xl text-[13px] leading-relaxed text-white/[0.56]">
+            Gerade keine. Sobald eine Sammelphase endet, geht das Bündel in die
+            Ausschreibung und erscheint hier.
+          </p>
+        ) : (
+          <ul className="mt-3 divide-y divide-white/[0.12] border-t border-white/[0.12]">
+            {offen.slice(0, 4).map((b) => (
+              <li key={b.id} className="flex flex-wrap items-center gap-x-4 gap-y-1 py-3">
+                <span className="min-w-0 flex-1 truncate text-[13.5px] font-semibold text-white/90">
+                  {b.material_label ?? b.title}
+                </span>
+                <span className="text-[12.5px] tabular-nums text-white/[0.72]">
+                  {chf(b.current_volume)} {b.unit}
+                </span>
+                <span className="text-[12.5px] text-white/[0.56]">{b.region}</span>
+                <span className="text-[12.5px] text-white/[0.56]">
+                  {deadlineLabel(b.bid_deadline ?? b.deadline)}
+                </span>
+                <span
+                  className={cn(
+                    "text-[10.5px] font-semibold uppercase tracking-[0.12em]",
+                    beboten.has(b.id) ? "text-brand" : "text-white/[0.4]",
+                  )}
+                >
+                  {beboten.has(b.id) ? "geboten" : "offen"}
+                </span>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function OverviewPanel({ role }: { role: "buyer" | "supplier" }) {
+  return role === "supplier" ? <SupplierOverview /> : <BuyerOverview />;
 }
 
 /**
@@ -631,15 +742,58 @@ function ReportsPanel({ role }: { role: "buyer" | "supplier" }) {
   );
 }
 
-function ContractsPanel() {
-  const { vertraege, laden } = useKennzahlen("buyer");
+/*
+ * Die Vertragsseite gilt für beide Rollen — `sia_contracts` zeigt per
+ * Zeilenregel jeder Partei ihre eigenen Verträge. Was NICHT für beide
+ * gilt, ist der Block darüber: „Aktive Pool-Teilnahmen" sind Teilnahmen
+ * eines Bestellers. Ein Werk hat keine; dort stand deshalb bisher eine
+ * leere Liste unter einer Überschrift, die eine Antwort verspricht.
+ */
+function ContractsPanel({ role }: { role: "buyer" | "supplier" }) {
+  const isSupplier = role === "supplier";
+  const { vertraege, laden } = useKennzahlen(role);
+  const { zuschlaege, laden: zuschlaegeLaden } = useZuschlaege();
 
   return (
     <div className="space-y-4">
       <div className="border-t border-white/[0.12] pt-6">
-        <h3 className="text-[15px] font-semibold text-white">Aktive Pool-Teilnahmen</h3>
+        <h3 className="text-[15px] font-semibold text-white">
+          {isSupplier ? "Deine Zuschläge" : "Aktive Pool-Teilnahmen"}
+        </h3>
         <div className="mt-4 space-y-3">
-          <MyBundles />
+          {isSupplier ? (
+            zuschlaegeLaden ? (
+              <p className="text-[13px] text-white/[0.56]">
+                <Loader2 className="mr-2 inline h-4 w-4 animate-spin" /> wird geladen …
+              </p>
+            ) : zuschlaege.length === 0 ? (
+              <p className="max-w-xl text-[13px] leading-relaxed text-white/[0.56]">
+                Noch keine. Wer eine Ausschreibung gewinnt, findet hier den
+                Zuschlag und darunter den Vertrag dazu.
+              </p>
+            ) : (
+              <ul className="divide-y divide-white/[0.12] border-t border-white/[0.12]">
+                {zuschlaege.map((z) => (
+                  <li key={z.bundle_id} className="flex flex-wrap items-center gap-x-4 gap-y-1 py-3">
+                    <span className="min-w-0 flex-1 truncate text-[13.5px] font-semibold text-white/90">
+                      {z.titel}
+                    </span>
+                    <span className="text-[12.5px] tabular-nums text-white/[0.72]">
+                      {chf(Number(z.menge ?? 0))} {z.einheit}
+                    </span>
+                    <span className="text-[12.5px] tabular-nums text-white/[0.72]">
+                      CHF {chf(Number(z.mein_preis ?? 0), 2)}
+                    </span>
+                    <span className="text-[12.5px] text-white/[0.56]">
+                      {z.baustellen} {z.baustellen === 1 ? "Baustelle" : "Baustellen"}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            )
+          ) : (
+            <MyBundles />
+          )}
         </div>
       </div>
 
@@ -984,6 +1138,87 @@ type KbobMaterials = Record<
   { label: string; unit: string; regions: Record<string, { period: string; kbob: number }[]> }
 >;
 
+/**
+ * Die rechte Spalte eines Baustoffwerks.
+ *
+ * Dort stand bis jetzt der Warenkorb: „Zwischensumme (KBOB)",
+ * „Garantierter Mindestvorteil", „Bedarf einreichen". Ein Werk bestellt
+ * aber nichts — es liefert. Der Warenkorb war für diese Rolle nicht nur
+ * nutzlos, er war die falsche Seite des Geschäfts.
+ *
+ * Hier steht stattdessen, was ein Werk vor jedem Gebot wissen muss: darf
+ * ich bieten, bis wann ist das Konto frei, und habe ich Kapazität
+ * hinterlegt.
+ */
+function LieferantenSpalte({ onView }: { onView: (v: string) => void }) {
+  const { konto, darf, laden } = useLieferantenkonto();
+  const { zeilen: kapazitaet } = useKapazitaet();
+  const { bundles } = useBundles();
+  const offen = bundles.filter((b) => b.status === "SEALED_BIDDING").length;
+  const kategorien = new Set(kapazitaet.map((z) => z.material_category)).size;
+
+  return (
+    <div className="border-t border-white/[0.12] pt-5">
+      <h3 className="flex items-center gap-1.5 text-[13px] font-semibold uppercase tracking-wider text-white/[0.72]">
+        <Gavel className="h-3.5 w-3.5" /> Bietstatus
+      </h3>
+
+      {laden ? (
+        <p className="mt-3 text-[12.5px] text-white/[0.56]">
+          <Loader2 className="mr-1.5 inline h-3.5 w-3.5 animate-spin" /> wird geladen …
+        </p>
+      ) : (
+        <>
+          <div className="mt-3 flex items-start gap-2">
+            <ShieldCheck className={cn("mt-0.5 h-4 w-4 shrink-0", darf?.ok ? "text-brand" : "text-white/[0.4]")} />
+            <p className="text-[12.5px] leading-relaxed text-white/[0.72]">
+              {darf?.grund ?? "Kein Lieferantenkonto beantragt."}
+            </p>
+          </div>
+
+          <dl className="mt-4 space-y-2 text-[12.5px]">
+            <div className="flex items-baseline justify-between gap-3">
+              <dt className="text-white/[0.56]">Offene Ausschreibungen</dt>
+              <dd className="tabular-nums font-semibold text-white/90">{offen}</dd>
+            </div>
+            <div className="flex items-baseline justify-between gap-3">
+              <dt className="text-white/[0.56]">Kapazität hinterlegt</dt>
+              <dd className="tabular-nums font-semibold text-white/90">
+                {kategorien === 0 ? "—" : `${kategorien} ${kategorien === 1 ? "Kategorie" : "Kategorien"}`}
+              </dd>
+            </div>
+            {konto?.frei_bis && (
+              <div className="flex items-baseline justify-between gap-3">
+                <dt className="text-white/[0.56]">Kostenlos bis</dt>
+                <dd className="tabular-nums font-semibold text-white/90">
+                  {new Date(konto.frei_bis).toLocaleDateString("de-CH")}
+                </dd>
+              </div>
+            )}
+          </dl>
+
+          <div className="mt-4 flex flex-wrap gap-2">
+            <button
+              type="button"
+              onClick={() => onView("tenders")}
+              className="rounded-md bg-brand px-3 py-1.5 text-[12.5px] font-semibold text-navy-950 transition-colors hover:bg-brand-600"
+            >
+              Ausschreibungen
+            </button>
+            <button
+              type="button"
+              onClick={() => onView("lieferprofil")}
+              className="rounded-md border border-white/[0.12] px-3 py-1.5 text-[12.5px] font-semibold text-white/[0.72] transition-colors hover:border-brand/40 hover:text-brand"
+            >
+              Lieferprofil
+            </button>
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
 function QuickToolsPanel() {
   const [area, setArea] = useState("");
   const [waste, setWaste] = useState("8");
@@ -1313,14 +1548,20 @@ export default function DashboardShell({ company }: { company: Company }) {
           })}
         </nav>
 
-        {!isSupplier && (
-          <div className="relative border-t border-white/[0.12] px-3 py-3">
-            <div className="flex items-start gap-2 rounded-md bg-white/[0.04] p-2.5 text-[11px] text-white/[0.56]">
-              <Lock className="mt-0.5 h-3.5 w-3.5 shrink-0 text-white/[0.56]" />
-              <span>Als Bauunternehmen beschaffst du. Gebote auf Ausschreibungen sind Baustoffwerken vorbehalten.</span>
-            </div>
+        {/* Beide Rollen erfahren, was ihnen verschlossen ist. Stand der
+            Hinweis nur beim Bauunternehmen, suchte ein Werk vergeblich
+            nach der Beschaffung und hielt sie für kaputt statt für eine
+            andere Rolle. */}
+        <div className="relative border-t border-white/[0.12] px-3 py-3">
+          <div className="flex items-start gap-2 rounded-md bg-white/[0.04] p-2.5 text-[11px] text-white/[0.56]">
+            <Lock className="mt-0.5 h-3.5 w-3.5 shrink-0 text-white/[0.56]" />
+            <span>
+              {isSupplier
+                ? "Als Baustoffwerk bietest du. Bedarf einreichen und Bündeln ist Bauunternehmen vorbehalten."
+                : "Als Bauunternehmen beschaffst du. Gebote auf Ausschreibungen sind Baustoffwerken vorbehalten."}
+            </span>
           </div>
-        )}
+        </div>
       </aside>
 
       {/* Mittlere Spalte: Arbeitsbereich */}
@@ -1376,7 +1617,7 @@ export default function DashboardShell({ company }: { company: Company }) {
               {view === "lieferprofil" && isSupplier && <LieferprofilPanel />}
               {view === "abrechnung" && isSupplier && <AbrechnungPanel />}
               {view === "lieferantenkonto" && isSupplier && <LieferantenkontoPanel />}
-              {view === "contracts" && <ContractsPanel />}
+              {view === "contracts" && <ContractsPanel role={role} />}
               {view === "reports" && <ReportsPanel role={role} />}
               {view === "settings" && (
                 <div className="border-t border-white/[0.12] py-8 text-sm text-white/[0.72]">
@@ -1408,15 +1649,20 @@ export default function DashboardShell({ company }: { company: Company }) {
         </div>
       </div>
 
-      {/* Rechte Spalte: Warenkorb, Kosten & Quick Tools */}
+      {/* Rechte Spalte: Besteller sehen den Warenkorb, Werke ihren
+          Bietstatus. Beide den Rechner und die KBOB-Tendenz. */}
       <aside className="space-y-4">
-        <CartPanel
-          cart={cart}
-          onQty={updateQty}
-          onRemove={removeFromCart}
-          projectId={projectId}
-          projectName={projects.find((p) => p.id === projectId)?.name ?? null}
-        />
+        {isSupplier ? (
+          <LieferantenSpalte onView={setView} />
+        ) : (
+          <CartPanel
+            cart={cart}
+            onQty={updateQty}
+            onRemove={removeFromCart}
+            projectId={projectId}
+            projectName={projects.find((p) => p.id === projectId)?.name ?? null}
+          />
+        )}
         <QuickToolsPanel />
       </aside>
     </div>

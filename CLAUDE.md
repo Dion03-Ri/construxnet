@@ -149,6 +149,31 @@ Prüfdatenbank.
 - Teilnehmerzahl liegt auf dem Bündel (`participant_count`), weil die
   Teilnahmen per RLS verdeckt sind — sichtbar ist die Menge, nie wer sie
   beisteuert.
+
+## Die beiden Rollen im Dashboard
+`companies.role` ist `BUYER` oder `SUPPLIER` und entscheidet, was das
+Dashboard zeigt. Die Trennung ist vollständig, nicht kosmetisch — jede
+Seite, die für eine Rolle keine Antwort hat, existiert für sie auch nicht.
+
+| | Bauunternehmen | Baustoffwerk |
+|---|---|---|
+| Nur hier | Beschaffung, Projekte, Bestellungen | Ausschreibungen, Meine Gebote, Zugeschlagen, Lieferprofil, Abrechnung, Lieferantenkonto |
+| Übersicht | Bündel vor der Frist, in Ausschreibung, vergeben | Zulassung, fehlende Kapazität, knappe Fristen, eigene Gebote, offene Zuschläge |
+| Rechte Spalte | Warenkorb mit Mindestvorteil | Bietstatus: darf ich bieten, Kapazität, Freifrist |
+| Verträge | eigene Bündel-Teilnahmen + SIA-Verträge | eigene Zuschläge + SIA-Verträge |
+| Beide | Übersicht, Direktanfragen, Eigene Materialien, Verträge, Berichte, Einstellungen, Rechner |
+
+Zwei Fallen, beide schon einmal zugeschnappt:
+- **Eine Übersicht für beide.** Sie war aus Bündel-Teilnahmen gebaut, die
+  ein Werk nicht hat — ein Werk sah deshalb immer „nichts", auch bei fünf
+  laufenden Ausschreibungen und drei eigenen Geboten.
+- **Der Warenkorb in der rechten Spalte.** Ein Werk bestellt nichts. Er war
+  nicht nur nutzlos, er zeigte die falsche Seite des Geschäfts.
+
+Wer eine gemeinsame Seite baut, prüft zuerst: beantwortet sie für BEIDE
+Rollen dieselbe Frage? Wenn nicht, sind es zwei Seiten. Und beide Rollen
+bekommen einen Hinweis, was ihnen verschlossen ist — sonst hält man eine
+fehlende Rolle für einen Fehler.
 - Ausschreibung, Gebote und Zuschlag laufen (`place_bid()`, `award_bundle()`).
   Bewertet wird gegen den KBOB-Referenzpreis des Bündels, nicht gegen den
   selbst deklarierten Listenpreis — sonst gewinnt, wer seinen Listenpreis
@@ -797,6 +822,36 @@ Diese Punkte müssen erledigt sein, bevor echte Firmen darauf arbeiten:
    **Noch am Original zu prüfen:** die genaue Liste der Materialgruppen.
    `kbob.admin.ch` ist aus der Arbeitsumgebung gesperrt; die Angaben oben
    stützen sich auf die BFS-Tabellen und das KBOB-Faktenblatt.
+2b. **AUSSCHREIBUNGEN NACH REGION FILTERN (offen, vom Nutzer angemeldet
+   am 11.09.2026).** Heute sieht jedes Baustoffwerk JEDE laufende
+   Ausschreibung — ein Werk in Thun bekommt Zürcher Bündel vorgelegt, auf
+   die es nie bieten wird. Bei drei Bündeln ist das eine Kleinigkeit, bei
+   dreihundert ist die Liste unbrauchbar.
+
+   Die Bausteine liegen bereit und müssen nur verbunden werden:
+   - `companies.supply_regions` (Mehrfachauswahl) und
+     `companies.delivery_radius_km` werden im Onboarding erfasst und unter
+     `/profile/edit` bearbeitet — heute liest sie niemand.
+   - `bundles.region` ist gesetzt, `PROC_REGIONS` in `data/procurement.ts`
+     ist die gemeinsame Liste.
+   - Die Baustellen eines Bündels sind vor dem Zuschlag verdeckt
+     (`zuschlag_baustellen` gibt sie nur dem Gewinner). Ein Filter darf
+     also nur auf `bundles.region` rechnen, NICHT auf Adressen — sonst
+     verrät die Trefferzahl, wo die Baustellen liegen.
+
+   Zuschnitt, wenn es gebaut wird:
+   - Vorauswahl auf die eigenen Regionen, aber **umschaltbar**. Wer den
+     Radius punktuell überschreitet, soll das selbst entscheiden; ein
+     harter Ausschluss kostet Gebote und damit Wettbewerb.
+   - Die Zahl der ausgeblendeten Bündel sichtbar lassen („4 weitere
+     ausserhalb deiner Regionen"). Ein Filter, der stillschweigend
+     ausblendet, wird für einen leeren Markt gehalten.
+   - Kilometer erst, wenn Bündel einen Ort haben. Der Radius in
+     Kilometern braucht Koordinaten; die Region reicht für den Anfang und
+     ist ohne weitere Daten zu haben.
+   - Dasselbe gilt für die Gegenrichtung: ein Bauunternehmen sieht unter
+     `/pools` ebenfalls alle Bündel. Dort ist es weniger dringend, weil man
+     nur beitreten kann, was die eigene Baustelle betrifft.
 3. **Vorstart-Sperre entfernen** (`COMING_SOON`, `PREVIEW_PASSWORD` in
    Vercel löschen).
 4. **Web-Push** für Nachrichten (siehe Chat).
