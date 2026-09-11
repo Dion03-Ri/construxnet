@@ -1810,10 +1810,45 @@ Bündel." Sonst sucht er ewig nach dem Haken.
    `award_bundle()` vermerkt am übergangenen Gebot, WARUM — sonst wäre der
    Zuschlag für das günstigere Werk unerklärlich.
 
-4. Teil-Gebote und Zuteilung — **NOCH OFFEN.** `place_bid` nimmt
-   `p_anteil_pct` und `p_puffer_pct` schon entgegen und weist alles unter
-   100 % ab, damit ein Teilgebot nicht versehentlich das ganze Bündel
-   gewinnt.
+4. ~~Teil-Gebote und Zuteilung~~ — **GEBAUT**, Migration 42.
+
+   Ein Gebot trägt Zielanteil und Puffer („rund 33 %, ±6 Punkte").
+   Zugeteilt werden **ganze Baustellen** — eine Bodenplatte kommt aus
+   einem Werk. `zuteilungen` hält fest, wer welche beliefert; der
+   UNIQUE-Index auf `participation_id` ist die eigentliche Garantie.
+
+   **Ein Teilgebot ohne Puffer wird abgewiesen.** Ganze Baustellen ergeben
+   nie genau einen Prozentwert; ohne Puffer würde das Werk wortlos
+   übergangen.
+
+   **Der Zuschlag ist eine Rechenregel**, gierig: günstigste Werke zuerst,
+   grösste Baustellen zuerst, danach die Prüfung auf Untergrenze und volle
+   Deckung. Gleiche Eingabe, gleiches Ergebnis, jedem Werk erklärbar.
+
+   **Komplett-Vorsprung von einem Prozentpunkt** (einstellbar): Ein Werk,
+   das allein alles kann, gewinnt auch dann, wenn die Aufteilung bis zu
+   einem Punkt günstiger wäre. Keine absolute Bevorzugung — sind mehrere
+   Werke deutlich günstiger, bekommen die Besteller das Geld.
+
+   **Ein Konstruktionsfehler, der beim Testen herauskam:** Gebote, die NUR
+   das ganze Bündel nehmen (Untergrenze 100 %), dürfen nicht in der
+   gierigen Verteilung mitlaufen. Sie nehmen Baustellen an, erreichen ihre
+   Untergrenze nie, fliegen raus — und was sie angenommen hatten, ist dann
+   unverteilt. Im Test scheiterte deshalb ein Bündel, das ein einzelnes
+   Werk problemlos hätte fahren können. Sie werden jetzt getrennt als
+   Alleinanbieter geprüft.
+
+   **Ehrlich zur Grenze:** Die gierige Zuteilung ist nachvollziehbar und
+   immer gleich, aber NICHT beweisbar die billigste aller Kombinationen —
+   bei ungünstigen Mengenverhältnissen kann eine andere Verteilung ganzer
+   Baustellen knapp besser sein. Ein exaktes Verfahren wäre ein
+   Rucksackproblem mit Nebenbedingungen. **Das gehört in die
+   AGB-Formulierung:** zugeschlagen wird nach einem veröffentlichten
+   Verfahren, nicht „zum bestmöglichen Preis".
+
+   Die Lieferantensichten lesen seither aus `zuteilungen` statt aus
+   `bundles.awarded_supplier_id` — bei einer Aufteilung ist das Feld leer,
+   und dann sähe kein beteiligtes Werk seinen eigenen Zuschlag.
 5. ~~Lieferantenprüfung~~ — **TEILWEISE GEBAUT**, Migration 37.
    `lieferantenkonten` mit Antrag, Zulassung und Freifrist;
    `bietfaehig()` als Rechnung statt Häkchen; `place_bid()` prüft sie
