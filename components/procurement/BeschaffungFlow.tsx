@@ -34,7 +34,6 @@ import {
   PROC_CATEGORIES,
   PROC_REGIONS,
   DELIVERY_WINDOWS,
-  tierForVolume,
   matchesMaterial,
   type ProcMaterial,
   type ProcCategory,
@@ -42,6 +41,7 @@ import {
 
 import { cn } from "@/lib/utils";
 import { chf } from "@/lib/format";
+import { useRabattstufen } from "@/lib/rabatt";
 
 
 const STEPS = ["Materialien", "Mengen & Lieferung", "Smart Pool", "Übersicht"];
@@ -186,26 +186,52 @@ export default function BeschaffungFlow({
 
   const selectedKeys = useMemo(() => new Set(positions.map((p) => p.key)), [positions]);
 
-  /** Kalkulation je Position — Tier hängt an der Menge der einzelnen Position. */
+  // Die Staffel steht in der Datenbank und gilt je Materialkategorie.
+  // Massgebend ist der Bestellwert dieser Firma in dieser Kategorie, nicht
+  // die Stückzahl einer einzelnen Position: wer 6 m³ C25/30 und 6 m³ C30/37
+  // bestellt, hat 12 m³ Beton bestellt.
+  const { meinMindestrabatt, buendelbar, einstieg, laden: stufenLaden } = useRabattstufen();
+
+  /** Bestellwert je Kategorie über alle Positionen hinweg. */
+  const wertJeKategorie = useMemo(() => {
+    const m = new Map<string, number>();
+    for (const p of positions) {
+      m.set(p.category, (m.get(p.category) ?? 0) + (Number(p.qty) || 0) * p.kbobPrice);
+    }
+    return m;
+  }, [positions]);
+
+  /** Kalkulation je Position. */
   const lines = useMemo(
     () =>
       positions.map((p) => {
         const qty = Number(p.qty) || 0;
-        const tier = tierForVolume(qty);
-        const discount = pool ? tier.discount : 0;
+        const kategorieWert = wertJeKategorie.get(p.category) ?? 0;
+        // null heisst „keine eigene Garantie" und ist etwas anderes als 0 %:
+        // entweder liegt der Bestellwert unter der Einstiegsschwelle, oder
+        // die Kategorie lässt sich gar nicht bündeln.
+        const garantie = pool ? meinMindestrabatt(p.category, kategorieWert) : null;
+        const discount = garantie ?? 0;
         const unitPrice = p.kbobPrice * (1 - discount / 100);
         return {
           pos: p,
           qty,
-          tier,
+          kategorieWert,
+          garantie,
           discount,
           unitPrice,
           cost: unitPrice * qty,
           savings: (p.kbobPrice - unitPrice) * qty,
+          /** Was in dieser Kategorie fehlt, bis die Garantie greift. */
+          bisEinstieg: garantie == null ? (einstieg(p.category) ?? 0) - kategorieWert : 0,
+          bündelbar: buendelbar(p.category),
         };
       }),
-    [positions, pool],
+    [positions, pool, wertJeKategorie, meinMindestrabatt, buendelbar, einstieg],
   );
+
+  /** Kalkulationszeile zu einer Position — für die Anzeige im Formular. */
+  const zeileZu = useMemo(() => new Map(lines.map((l) => [l.pos.key, l])), [lines]);
 
   const totals = useMemo(
     () => ({
@@ -627,6 +653,40 @@ export default function BeschaffungFlow({
                             <Trash2 className="h-4 w-4" />
                           </button>
                         </div>
+                        {/* Die Garantie steht direkt unter der Menge: wer 10 m³
+                            Beton eintippt, sieht auf der Stelle, was für Beton
+                            in dieser Grössenordnung zugesichert ist — und was
+                            noch fehlt, wenn es noch nicht reicht. */}
+                        {pool && !stufenLaden && (Number(p.qty) || 0) > 0 && (() => {
+                          const l = zeileZu.get(p.key);
+                          if (!l) return null;
+                          if (!l.bündelbar) {
+                            return (
+                              <p className="mt-2 border-t border-slate-100 pt-2 text-[11.5px] text-slate-500">
+                                Für {p.category} gibt es keine Mengengarantie — diese Kategorie wird
+                                einzeln verhandelt.
+                              </p>
+                            );
+                          }
+                          if (l.garantie == null) {
+                            return (
+                              <p className="mt-2 border-t border-slate-100 pt-2 text-[11.5px] text-slate-500">
+                                Noch CHF {chf(l.bisEinstieg)} in {p.category}, dann greift die
+                                Mengengarantie.
+                              </p>
+                            );
+                          }
+                          return (
+                            <p className="mt-2 flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1 border-t border-slate-100 pt-2 text-[11.5px]">
+                              <span className="text-slate-500">
+                                {p.category} · Bestellwert CHF {chf(l.kategorieWert)}
+                              </span>
+                              <span className="font-semibold text-brand-700">
+                                mind. {l.garantie} % garantiert · CHF {chf(l.unitPrice, 2)}/{p.unit}
+                              </span>
+                            </p>
+                          );
+                        })()}
                       </div>
                     ))}
                   </div>
@@ -758,18 +818,31 @@ export default function BeschaffungFlow({
                         <div key={l.pos.key} className="flex items-center justify-between gap-3 rounded-lg border border-slate-200 px-3.5 py-2.5">
                           <div className="min-w-0">
                             <div className="truncate text-[13.5px] font-semibold text-slate-900">{l.pos.label}</div>
-                            <div className="text-[11px] text-slate-500">{chf(l.qty)} {l.pos.unit} · Stufe {l.tier.tier}</div>
+                            <div className="text-[11px] text-slate-500">
+                              {chf(l.qty)} {l.pos.unit} · {l.pos.category} CHF {chf(l.kategorieWert)}
+                            </div>
                           </div>
-                          <div className="text-right">
-                            <div className="text-[15px] font-bold text-brand-700">{l.discount} %</div>
-                            <div className="text-[11px] text-slate-500">mind. CHF {chf(l.savings)}</div>
+                          <div className="shrink-0 text-right">
+                            {l.garantie != null ? (
+                              <>
+                                <div className="text-[15px] font-bold text-brand-700">{l.garantie} %</div>
+                                <div className="text-[11px] text-slate-500">mind. CHF {chf(l.savings)}</div>
+                              </>
+                            ) : !l.bündelbar ? (
+                              <div className="text-[11px] text-slate-500">nicht bündelbar</div>
+                            ) : (
+                              <div className="text-[11px] text-slate-500">
+                                ab CHF {chf(einstieg(l.pos.category) ?? 0)} in {l.pos.category}
+                              </div>
+                            )}
                           </div>
                         </div>
                       ))}
                       <p className="flex items-start gap-2 pt-1 text-[11.5px] leading-relaxed text-slate-500">
                         <Gavel className="mt-0.5 h-3.5 w-3.5 shrink-0 text-brand" />
-                        Garantierter Mindestwert — das beste Sealed-Bid-Angebot kann darüber liegen. Die
-                        Rabattstufen werden aktuell überarbeitet.
+                        Garantierter Mindestwert. Er richtet sich nach deinem Bestellwert in der
+                        jeweiligen Materialkategorie. In der verdeckten Ausschreibung bieten die Werke
+                        darunter — mehr ist möglich, weniger nicht.
                       </p>
                     </div>
                   )}
@@ -804,8 +877,14 @@ export default function BeschaffungFlow({
                             <td className="px-2 py-2.5 text-right tabular-nums text-slate-600">CHF {chf(l.pos.kbobPrice)}</td>
                             {pool && (
                               <td className="px-3.5 py-2.5 text-right">
-                                <span className="font-semibold text-brand-700">{l.discount} %</span>
-                                <div className="text-[11px] text-slate-500">CHF {chf(l.savings)}</div>
+                                {l.garantie != null ? (
+                                  <>
+                                    <span className="font-semibold text-brand-700">{l.garantie} %</span>
+                                    <div className="text-[11px] text-slate-500">CHF {chf(l.savings)}</div>
+                                  </>
+                                ) : (
+                                  <span className="text-[11px] text-slate-500">keine Mengengarantie</span>
+                                )}
                               </td>
                             )}
                           </tr>

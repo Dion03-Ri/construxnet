@@ -71,22 +71,19 @@ export function deadlineLabel(deadline: string): string {
   return `noch ${Math.round(h / 24)} Tage`;
 }
 
-/**
- * Wie viel fehlt bis zur nächsten Rabattstufe?
+/*
+ * Hier stand eine Rabattstaffel in Stückzahlen (101/201/351/501 → 9/12/16/20 %).
+ * Sie ist entfallen: die Staffel steht seit Migration 43 in `rabattstufen`,
+ * rechnet in Franken je Firma und ist über `lib/rabatt.ts` zu holen.
  *
- * Dieselbe Staffel wie in data/procurement.ts und in der Datenbank.
- * Steht die Menge schon auf der höchsten Stufe, gibt es kein Nächstes.
+ * Und der Fortschritt „noch 51 m³ bis mind. 12 %" ist damit nicht nur
+ * veraltet, sondern falsch geworden: Die Schwelle eines Bündels ist der
+ * HÖCHSTE individuelle Anspruch seiner Teilnehmer. Sie steigt nicht,
+ * wenn Menge dazukommt — nur wenn ein GRÖSSERER Teilnehmer dazukommt.
+ * Der Vorteil aus mehr Menge entsteht in der Ausschreibung, nicht in der
+ * Garantie, und lässt sich deshalb nicht als Balken versprechen.
  */
-const STEPS = [
-  { at: 101, tier: 2, discount: 9 },
-  { at: 201, tier: 3, discount: 12 },
-  { at: 351, tier: 4, discount: 16 },
-  { at: 501, tier: 5, discount: 20 },
-];
 
-export function nextStep(volume: number) {
-  return STEPS.find((s) => volume < s.at) ?? null;
-}
 
 /**
  * Offene Bündel und die eigenen Teilnahmen.

@@ -1,4 +1,4 @@
-// Beschaffungs-Stammdaten (Material, SIA-Spezifikation, KBOB-Referenz, Tier-Logik).
+// Beschaffungs-Stammdaten (Material, SIA-Spezifikation, KBOB-Referenz).
 // Bewusst eigenständig, damit der Bedarfs-Flow die BundleEngine-Logik nicht verändert.
 
 export type ProcCategory =
@@ -145,20 +145,13 @@ export function matchesMaterial(m: ProcMaterial, query: string): boolean {
   );
 }
 
-export type Tier = { tier: number; min: number; max: number | null; discount: number };
-
-// Gestaffelter Volumenrabatt (5 Stufen, deckungsgleich mit der BundleEngine-Kurve).
-export const PROC_TIERS: Tier[] = [
-  { tier: 1, min: 0, max: 100, discount: 5 },
-  { tier: 2, min: 101, max: 200, discount: 9 },
-  { tier: 3, min: 201, max: 350, discount: 12 },
-  { tier: 4, min: 351, max: 500, discount: 16 },
-  { tier: 5, min: 501, max: null, discount: 20 },
-];
-
-export function tierForVolume(volume: number): Tier {
-  return [...PROC_TIERS].reverse().find((t) => volume >= t.min) ?? PROC_TIERS[0];
-}
+/*
+ * Hier stand die Rabattstaffel: `Tier`, `PROC_TIERS`, `tierForVolume` —
+ * eine zweite Staffel im Quelltext neben der in der Datenbank. Sie
+ * rechnete in Stückzahlen statt in Franken und war damit seit Migration 43
+ * schlicht falsch. Die gültige Staffel steht in `rabattstufen` und ist
+ * über `lib/rabatt.ts` zu holen.
+ */
 
 export const PROC_REGIONS = [
   "Zürich",

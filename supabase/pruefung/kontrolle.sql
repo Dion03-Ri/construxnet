@@ -154,10 +154,79 @@ rechte AS (
                      to_regprocedure('laufende_bindung(uuid)'), 'EXECUTE')
               THEN 'FEHLT' ELSE 'ok' END AS stand,
          'fremde Firmen nicht abfragbar, Migration 32' AS soll
+),
+
+-- ---------------------------------------------------------------------------
+-- Die Rabattstaffel (Migration 43)
+--
+-- Sie stand bis zuletzt an drei Stellen im Quelltext und einmal in der
+-- Datenbank, alle vier mit anderen Zahlen. Jetzt gibt es nur noch die
+-- Tabelle. Die Prüfungen hier fragen deshalb nicht „stimmen die Zahlen",
+-- sondern: ist die Tabelle da, ist sie lesbar, ist sie schreibgeschützt,
+-- und rechnen die Funktionen darauf.
+-- ---------------------------------------------------------------------------
+staffel AS (
+  SELECT 'rabattstufen: Tabelle vorhanden' AS was,
+         CASE WHEN to_regclass('public.rabattstufen') IS NULL
+              THEN 'FEHLT' ELSE 'ok' END AS stand,
+         'einzige Quelle der Staffel, Migration 43' AS soll
+  UNION ALL
+  SELECT 'rabattstufen: öffentlich lesbar' AS was,
+         CASE WHEN to_regclass('public.rabattstufen') IS NULL THEN 'FEHLT'
+              WHEN has_table_privilege('anon',
+                     COALESCE(to_regclass('public.rabattstufen'),
+                              'app_settings'::regclass), 'SELECT')
+              THEN 'ok' ELSE 'FEHLT' END AS stand,
+         'eine Garantie, die man nicht nachschlagen kann, ist keine' AS soll
+  UNION ALL
+  SELECT 'rabattstufen: kein Schreibrecht' AS was,
+         CASE WHEN to_regclass('public.rabattstufen') IS NULL THEN 'FEHLT'
+              WHEN has_table_privilege('authenticated',
+                     COALESCE(to_regclass('public.rabattstufen'),
+                              'app_settings'::regclass), 'UPDATE')
+                OR has_table_privilege('authenticated',
+                     COALESCE(to_regclass('public.rabattstufen'),
+                              'app_settings'::regclass), 'INSERT')
+              THEN 'FEHLT' ELSE 'ok' END AS stand,
+         'niemand staffelt sich seinen eigenen Rabatt' AS soll
+  UNION ALL
+  -- Ohne Zeilen kann keine Kategorie gebündelt werden. Eine leere Tabelle
+  -- wäre technisch heil und fachlich tot.
+  SELECT 'rabattstufen: Staffel befüllt' AS was,
+         CASE WHEN to_regclass('public.rabattstufen') IS NULL THEN 'FEHLT'
+              WHEN (SELECT count(*) FROM rabattstufen) = 0 THEN 'FEHLT'
+              ELSE 'ok' END AS stand,
+         'mindestens eine bündelbare Kategorie' AS soll
+  UNION ALL
+  -- Kein Auffangeintrag ohne Kategorie: eine Kategorie ohne eigene Zeilen
+  -- darf NICHT stillschweigend einen Rabatt erben.
+  SELECT 'rabattstufen: kein blinder Auffangwert' AS was,
+         CASE WHEN to_regclass('public.rabattstufen') IS NULL THEN 'FEHLT'
+              WHEN EXISTS (SELECT 1 FROM rabattstufen
+                            WHERE material_category IS NULL
+                               OR btrim(material_category) = '')
+              THEN 'FEHLT' ELSE 'ok' END AS stand,
+         'nicht gestaffelt heisst nicht bündelbar' AS soll
+  UNION ALL
+  SELECT 'mein_mindestrabatt vorhanden' AS was,
+         CASE WHEN to_regprocedure('mein_mindestrabatt(text,numeric)') IS NULL
+              THEN 'FEHLT' ELSE 'ok' END AS stand,
+         'Garantie je Firma und Kategorie, Migration 43' AS soll
+  UNION ALL
+  SELECT 'kategorie_buendelbar vorhanden' AS was,
+         CASE WHEN to_regprocedure('kategorie_buendelbar(text)') IS NULL
+              THEN 'FEHLT' ELSE 'ok' END AS stand,
+         'Bedarf ohne Staffel wird abgewiesen, Migration 43' AS soll
+  UNION ALL
+  SELECT 'bundle_mindestrabatt vorhanden' AS was,
+         CASE WHEN to_regprocedure('bundle_mindestrabatt(uuid)') IS NULL
+              THEN 'FEHLT' ELSE 'ok' END AS stand,
+         'Schwelle = höchster individueller Anspruch, Migration 43' AS soll
 )
 SELECT stand, was, soll FROM schluessel
 UNION ALL SELECT stand, was, soll FROM funktionen
 UNION ALL SELECT stand, was, soll FROM spalten
 UNION ALL SELECT stand, was, soll FROM austritt
 UNION ALL SELECT stand, was, soll FROM rechte
+UNION ALL SELECT stand, was, soll FROM staffel
 ORDER BY stand DESC, was;

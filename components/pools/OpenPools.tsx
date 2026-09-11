@@ -17,7 +17,6 @@ import {
 } from "lucide-react";
 import {
   useBundles,
-  nextStep,
   withdrawDemand,
   type Bundle,
 } from "@/lib/bundles";
@@ -106,11 +105,6 @@ function PoolRow({
   busy: boolean;
 }) {
   const cd = useCountdown(b.deadline);
-  const step = nextStep(b.current_volume);
-  // Der Fortschrittsbalken misst gegen die nächste Stufe, nicht gegen ein
-  // fernes Endziel: sichtbar ist, was als Nächstes erreichbar ist.
-  const goal = step?.at ?? b.current_volume;
-  const pct = Math.min(100, Math.round((b.current_volume / (goal || 1)) * 100));
   const sealed = b.status === "SEALED_BIDDING";
 
   return (
@@ -184,24 +178,17 @@ function PoolRow({
             <span className="tabular-nums text-white/[0.72]">
               {chf(b.current_volume)} {b.unit}
             </span>
-            {step && (
-              <span className="tabular-nums text-white/[0.5]">
-                Stufe {step.tier} bei {chf(step.at)} {b.unit}
-              </span>
-            )}
           </div>
-          <div className="mt-2 h-[3px] w-full overflow-hidden rounded-full bg-white/[0.10]">
-            <div className="h-full rounded-full bg-brand" style={{ width: `${pct}%` }} />
-          </div>
-          {step && (
-            <p className="mt-2 text-[11.5px] text-white/[0.56]">
-              Noch{" "}
-              <b className="font-semibold tabular-nums text-white/[0.72]">
-                {chf(step.at - b.current_volume)} {b.unit}
-              </b>{" "}
-              bis mind. {step.discount} %.
-            </p>
-          )}
+          {/* Kein Fortschrittsbalken mehr zur „nächsten Stufe". Die Schwelle
+              eines Bündels ist der höchste individuelle Anspruch seiner
+              Teilnehmer — sie steigt nicht mit mehr Menge, sondern nur mit
+              einem grösseren Teilnehmer. Ein Balken, der etwas anderes
+              verspricht, wäre eine Attrappe. Was mehr Menge bringt,
+              entsteht in der Ausschreibung. */}
+          <p className="mt-2 text-[11.5px] leading-relaxed text-white/[0.56]">
+            Garantierte Untergrenze. In der verdeckten Ausschreibung bieten die
+            Werke darunter.
+          </p>
         </div>
 
         {/* ---------- Garantierter Vorteil ---------- */}
@@ -211,7 +198,7 @@ function PoolRow({
             <span className="text-[17px]"> %</span>
           </div>
           <div className="mt-1.5 whitespace-nowrap text-[10.5px] font-semibold uppercase tracking-[0.1em] text-white/[0.5]">
-            Stufe {b.current_tier}
+            mindestens
           </div>
         </div>
 
@@ -455,7 +442,7 @@ export default function OpenPools() {
             )}
           >
             <span>Bündel</span>
-            <span>Volumen bis zur nächsten Stufe</span>
+            <span>Volumen</span>
             <span className="text-right">Vorteil</span>
             <span />
             <span />

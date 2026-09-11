@@ -31,7 +31,7 @@ export const SAMPLE_POSTS: MockPost[] = [
     post_type: "MATERIAL_OFFER",
     title: "Freie Kapazität: Beton C25/30 – Raum Zürich, Q4",
     content:
-      "Wir haben kurzfristig ~600 m³ Transportbeton C25/30 (Cl 0.20, Dmax 32) frei. Lieferradius Limmattal ≤ 25 km. Interessierte Bauunternehmen können einen Smart Pool starten – aktueller Tier-Rabatt bereits bei 12 %.",
+      "Wir haben kurzfristig ~600 m³ Transportbeton C25/30 (Cl 0.20, Dmax 32) frei. Lieferradius Limmattal ≤ 25 km. Interessierte Bauunternehmen können ein Bündel starten.",
     region: "Zürich",
     likes_count: 34,
     comments_count: 8,

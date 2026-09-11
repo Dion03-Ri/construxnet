@@ -65,10 +65,11 @@ import LieferantenkontoPanel from "@/components/dashboard/LieferantenkontoPanel"
 import MaterialsPanel from "@/components/dashboard/MaterialsPanel";
 import TendersPanel from "@/components/dashboard/TendersPanel";
 import { useCustomMaterials } from "@/lib/customMaterials";
-import { useBundles, nextStep, deadlineLabel, hoursLeft, type Bundle } from "@/lib/bundles";
+import { useBundles, deadlineLabel, hoursLeft, type Bundle } from "@/lib/bundles";
 import { useDirectRequests, isLive } from "@/lib/directRequests";
 import { cn } from "@/lib/utils";
-import { matchesMaterial, PROC_CATEGORIES, tierForVolume, type ProcMaterial, type ProcCategory } from "@/data/procurement";
+import { matchesMaterial, PROC_CATEGORIES, type ProcMaterial, type ProcCategory } from "@/data/procurement";
+import { useRabattstufen } from "@/lib/rabatt";
 import kbobData from "@/data/kbobData.json";
 import { chf } from "@/lib/format";
 
@@ -176,7 +177,7 @@ const NAV_ALL = [
   { key: "settings", label: "Einstellungen", icon: Settings },
 ];
 
-type CartItem = { key: string; id: string; label: string; unit: string; kbobPrice: number; qty: number };
+type CartItem = { key: string; id: string; label: string; unit: string; kbobPrice: number; qty: number; category: ProcCategory };
 
 /* -------------------------------------------------------------------------- */
 /*  Kleinteile                                                                */
@@ -202,13 +203,14 @@ function KpiCard({ k }: { k: Kpi }) {
 /**
  * Eine eigene Bündel-Teilnahme.
  *
- * Der Balken misst gegen die nächste erreichbare Stufe, nicht gegen ein
- * fernes Endziel — sichtbar ist, was als Nächstes drin liegt.
+ * Früher stand hier ein Balken „noch X m³ bis Stufe Y". Den gibt es nicht
+ * mehr: die garantierte Untergrenze eines Bündels ist der höchste
+ * individuelle Anspruch seiner Teilnehmer, nicht eine Funktion der
+ * Gesamtmenge. Mehr Menge macht das Bündel für die Werke attraktiver —
+ * was dabei herausspringt, entscheidet die verdeckte Ausschreibung, nicht
+ * eine Staffel.
  */
 function PoolRow({ b, myVolume }: { b: Bundle; myVolume: number }) {
-  const step = nextStep(b.current_volume);
-  const goal = step?.at ?? b.current_volume;
-  const pct = Math.min(100, Math.round((b.current_volume / (goal || 1)) * 100));
 
   return (
     <Link href="/pools" className="block rounded-lg border border-white/[0.12] p-4 transition-colors hover:border-brand/40">
@@ -232,11 +234,9 @@ function PoolRow({ b, myVolume }: { b: Bundle; myVolume: number }) {
         </span>
       </div>
 
-      <div className="mt-3 flex items-center gap-3">
-        <div className="h-2 flex-1 overflow-hidden rounded-full bg-white/10">
-          <div className="h-full rounded-full bg-brand" style={{ width: `${pct}%` }} />
-        </div>
-        <span className="inline-flex items-center gap-1.5 text-[10.5px] font-semibold uppercase tracking-[0.12em] text-brand">Stufe {b.current_tier} · mind. {b.current_discount_pct}%</span>
+      <div className="mt-3 flex items-center justify-between gap-3">
+        <span className="text-[11px] text-white/[0.56]">Garantierte Untergrenze</span>
+        <span className="inline-flex items-center gap-1.5 text-[10.5px] font-semibold uppercase tracking-[0.12em] text-brand">mind. {b.current_discount_pct}%</span>
       </div>
 
       <div className="mt-1.5 flex flex-wrap items-center justify-between gap-x-3 text-[11px] text-white/[0.72]">
@@ -247,10 +247,8 @@ function PoolRow({ b, myVolume }: { b: Bundle; myVolume: number }) {
           <span className="font-semibold text-brand">
             Zuschlag CHF {chf(b.awarded_price, 2)}/{b.unit}
           </span>
-        ) : step ? (
-          <span>noch {chf(step.at - b.current_volume)} {b.unit} bis mind. {step.discount}%</span>
         ) : (
-          <span>höchste Stufe erreicht</span>
+          <span>{b.participant_count} {b.participant_count === 1 ? "Firma" : "Firmen"} im Bündel</span>
         )}
       </div>
     </Link>
@@ -888,8 +886,23 @@ function CartPanel({
   if (projectId) handoff.set("projekt", projectId);
   const href = `/beschaffung${handoff.toString() ? `?${handoff}` : ""}`;
 
+  // Die Staffel kommt aus der Datenbank, nicht aus dem Quelltext, und sie
+  // gilt je Materialkategorie. Massgebend ist der Bestellwert dieser Firma
+  // in dieser Kategorie — nicht die Stückzahl und nicht das Bündelvolumen.
+  const { meinMindestrabatt, laden: stufenLaden } = useRabattstufen();
+
+  const wertJeKategorie = new Map<string, number>();
+  for (const c of cart) {
+    wertJeKategorie.set(c.category, (wertJeKategorie.get(c.category) ?? 0) + c.qty * c.kbobPrice);
+  }
+  /** Garantierter Prozentsatz für eine Position, oder null ohne Garantie. */
+  function garantieFuer(c: CartItem): number | null {
+    return meinMindestrabatt(c.category, wertJeKategorie.get(c.category) ?? 0);
+  }
+
   const subtotal = cart.reduce((s, c) => s + c.qty * c.kbobPrice, 0);
-  const savings = cart.reduce((s, c) => s + c.qty * c.kbobPrice * (tierForVolume(c.qty).discount / 100), 0);
+  const savings = cart.reduce((s, c) => s + c.qty * c.kbobPrice * ((garantieFuer(c) ?? 0) / 100), 0);
+  const ohneGarantie = cart.some((c) => garantieFuer(c) === null);
 
   return (
     <div className="border-t border-white/[0.12] pt-5">
@@ -925,6 +938,23 @@ function CartPanel({
                 </div>
                 <span className="text-[12px] font-semibold tabular-nums text-white/[0.72]">CHF {chf(c.qty * c.kbobPrice)}</span>
               </div>
+              {/* Der garantierte Mindestrabatt steht direkt an der Position:
+                  wer 10 m³ Beton eingibt, sieht sofort, was für Beton in
+                  dieser Grössenordnung zugesichert ist. */}
+              {!stufenLaden && (
+                <div className="mt-1.5 flex items-baseline justify-between gap-2 text-[11px]">
+                  {garantieFuer(c) != null ? (
+                    <>
+                      <span className="text-brand">mind. {garantieFuer(c)} % garantiert</span>
+                      <span className="tabular-nums text-white/[0.56]">
+                        − CHF {chf((c.qty * c.kbobPrice * (garantieFuer(c) as number)) / 100)}
+                      </span>
+                    </>
+                  ) : (
+                    <span className="text-white/[0.4]">noch keine Mengengarantie</span>
+                  )}
+                </div>
+              )}
             </div>
           ))}
         </div>
@@ -936,9 +966,15 @@ function CartPanel({
           <span className="font-medium text-white/90">CHF {chf(subtotal)}</span>
         </div>
         <div className="flex items-center justify-between text-[13px] text-brand">
-          <span>Geschätzter Mindestvorteil</span>
+          <span>Garantierter Mindestvorteil</span>
           <span className="font-semibold">− CHF {chf(savings)}</span>
         </div>
+        {ohneGarantie && (
+          <p className="text-[11px] leading-relaxed text-white/[0.4]">
+            Für einzelne Positionen greift die Mengengarantie noch nicht. In der
+            verdeckten Ausschreibung bieten die Werke trotzdem darunter.
+          </p>
+        )}
         <div className="flex items-center justify-between border-t border-white/[0.06] pt-1.5 text-sm">
           <span className="font-semibold text-white">Zielpreis (indikativ)</span>
           <span className="font-bold text-white">CHF {chf(subtotal - savings)}</span>
@@ -1128,7 +1164,7 @@ export default function DashboardShell({ company }: { company: Company }) {
     setCart((prev) => {
       const existing = prev.find((c) => c.key === m.key);
       if (existing) return prev.map((c) => (c.key === m.key ? { ...c, qty: c.qty + 1 } : c));
-      return [...prev, { key: m.key, id: m.id, label: m.label, unit: m.unit, kbobPrice: m.kbobPrice, qty: 1 }];
+      return [...prev, { key: m.key, id: m.id, label: m.label, unit: m.unit, kbobPrice: m.kbobPrice, qty: 1, category: m.category }];
     });
   }
   function updateQty(key: string, qty: number) {
