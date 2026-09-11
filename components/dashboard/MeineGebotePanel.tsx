@@ -1,8 +1,9 @@
 "use client";
 
-import { useMemo } from "react";
-import { Gavel, Loader2 } from "lucide-react";
-import { useBundles, useMyBids } from "@/lib/bundles";
+import { useMemo, useState } from "react";
+import { AlertTriangle, Gavel, Loader2 } from "lucide-react";
+import { gebotZurueckziehen, useBundles, useMyBids } from "@/lib/bundles";
+import { useSupabaseBrowser } from "@/lib/supabase-browser";
 import { cn } from "@/lib/utils";
 
 /**
@@ -28,8 +29,25 @@ function datum(iso: string) {
 }
 
 export default function MeineGebotePanel() {
-  const { bids, loading } = useMyBids();
-  const { bundles } = useBundles();
+  const supabase = useSupabaseBrowser();
+  const { bids, loading, fehler, reload } = useMyBids();
+  const { bundles, reload: reloadBundles } = useBundles();
+  const [busy, setBusy] = useState<string | null>(null);
+  const [absageFehler, setAbsageFehler] = useState<string | null>(null);
+
+  async function zurueckziehen(bundleId: string, titel: string) {
+    if (!confirm(
+      `Gebot für „${titel}" zurückziehen?\n\n` +
+      "Das geht nur, solange die Angebotsfrist läuft. Ab dem Zuschlag ist ein Gebot verbindlich.",
+    )) return;
+    setAbsageFehler(null);
+    setBusy(bundleId);
+    const res = await gebotZurueckziehen(supabase, bundleId);
+    setBusy(null);
+    if (res.error) setAbsageFehler(res.error);
+    await reload();
+    await reloadBundles();
+  }
 
   const zeilen = useMemo(() => {
     const nach = new Map(bundles.map((b) => [b.id, b]));
@@ -67,6 +85,13 @@ export default function MeineGebotePanel() {
         die Ausschreibung ist verdeckt, und das bleibt sie auch nach dem Zuschlag.
       </p>
 
+      {(fehler || absageFehler) && (
+        <p className="mt-4 flex items-start gap-2 border-l-2 border-rose-400/60 py-2 pl-4 text-[13px] text-rose-300">
+          <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />
+          {absageFehler ?? fehler}
+        </p>
+      )}
+
       <ul className="mt-6 border-t border-white/[0.12]">
         {zeilen.map(({ gebot, buendel }) => {
           const entschieden = buendel?.status === "AWARDED" || buendel?.status === "FAILED";
@@ -83,7 +108,27 @@ export default function MeineGebotePanel() {
                 <div className="mt-0.5 text-[12px] text-white/[0.56]">
                   {buendel?.region ? `${buendel.region} · ` : ""}
                   geboten am {datum(gebot.created_at)}
+                  {gebot.anteil_pct < 100 && (
+                    <>
+                      {" · "}
+                      <span className="text-white/[0.72]">
+                        Teilgebot {gebot.anteil_pct} % ±{gebot.puffer_pct}
+                      </span>
+                    </>
+                  )}
                 </div>
+                {!entschieden && (
+                  <button
+                    type="button"
+                    onClick={() =>
+                      zurueckziehen(gebot.bundle_id, buendel?.material_label ?? buendel?.title ?? "Bündel")
+                    }
+                    disabled={busy === gebot.bundle_id}
+                    className="mt-1.5 text-[12px] font-semibold text-white/[0.5] transition-colors hover:text-rose-300 disabled:opacity-50"
+                  >
+                    {busy === gebot.bundle_id ? "…" : "zurückziehen"}
+                  </button>
+                )}
               </div>
 
               <div className="text-[13px] lg:text-right">

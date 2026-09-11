@@ -348,6 +348,23 @@ export async function placeBid(
   return error ? { error: error.message } : {};
 }
 
+/**
+ * Gebot zurückziehen.
+ *
+ * Dieselbe Regel wie beim Besteller: frei bis zur eigenen Frist, danach
+ * gebunden. Ein Rückzug nach dem Zuschlag ist kein Rückzug, sondern ein
+ * Vertragsbruch — die Datenbank weist ihn ab. Die reservierte Kapazität
+ * wird dabei freigegeben, sonst blockierte ein zurückgezogenes Gebot
+ * weiter Monate, die längst wieder frei sind.
+ */
+export async function gebotZurueckziehen(
+  supabase: ReturnType<typeof useSupabaseBrowser>,
+  bundleId: string,
+): Promise<{ error?: string }> {
+  const { error } = await supabase.rpc("gebot_zurueckziehen", { p_bundle_id: bundleId });
+  return error ? { error: error.message } : {};
+}
+
 /** Die eigenen Gebote. Fremde liefert die Datenbank grundsätzlich nicht. */
 export function useMyBids() {
   const supabase = useSupabaseBrowser();

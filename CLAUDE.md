@@ -1870,14 +1870,33 @@ Bündel." Sonst sucht er ewig nach dem Haken.
    Leistungssperre. `bietfaehig()` ist so gebaut, dass sie dazukommen,
    ohne dass ein Aufrufer sich ändert.
 
-6. ~~Lieferanten-Dashboard~~ — **ANGEFANGEN.** Erkannt an der Rolle:
-   Beschaffung, Projekte und Bestellungen sind für Werke weg;
-   Ausschreibungen, Meine Gebote und Lieferantenkonto sind dazugekommen.
-   Ein Werk landet auf „Ausschreibungen" statt auf einer Seite, die es
-   nicht sehen darf.
+6. ~~Lieferanten-Dashboard~~ — **GEBAUT.** Erkannt an der Rolle:
+   Beschaffung, Projekte und Bestellungen sind für Werke weg. Sechs
+   Seiten:
 
-   **Noch offen:** Zugeschlagen (gewonnene Bündel mit Abrufplan),
-   Lieferprofil (Kapazität je Monat, Radius), Abrechnung.
+   | Seite | Was sie kann |
+   |---|---|
+   | Ausschreibungen | Mindestgebot mit Aufschlüsselung, Mengenkurve über die Monate mit eigener Kapazität, Baustellen als PLZ-Gebiet, Voll- und Teilgebot |
+   | Meine Gebote | abgegeben, gewonnen, verloren; Teilgebote mit Anteil und Puffer; **Zurückziehen**, solange die Frist läuft |
+   | Zugeschlagen | gewonnene Bündel, eigene Baustellen mit voller Adresse, Menge, Preis |
+   | Lieferprofil | Kapazität je Material und Monat |
+   | Abrechnung | Vermittlung je Bündel, fällig 30 Tage nach Lieferbeginn |
+   | Lieferantenkonto | Antrag, Stand, Begründung |
+
+   `gebot_zurueckziehen()` stand seit Migration 38 in der Datenbank und
+   war **nirgends verdrahtet** — beim Durchsehen aufgefallen. Ein Werk
+   konnte ein Gebot abgeben und nicht mehr zurücknehmen, obwohl die Regel
+   es erlaubt. Jetzt in „Meine Gebote", mit Freigabe der reservierten
+   Kapazität.
+
+   **Noch offen am Dashboard:** Lieferradius und Regionen im Lieferprofil
+   (heute im Firmenprofil vergraben), und ein Abrufplan je Baustelle statt
+   der Gleichverteilung über die Monate.
+
+   **Bekannte Grenze:** Ein Werk, das selbst einkauft, kommt im Dashboard
+   nicht an die Beschaffung. Laut Modell liegen die Fähigkeiten
+   nebeneinander, das Dashboard schaltet aber hart nach Rolle. Wenn das
+   erste Werk danach fragt, braucht es einen Umschalter.
 
    **Bekannte Grenze:** Ein Werk, das selbst einkauft, kommt im Dashboard
    nicht an die Beschaffung. Die Fähigkeiten liegen laut Modell
