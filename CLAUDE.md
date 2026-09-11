@@ -617,8 +617,73 @@ Diese Punkte müssen erledigt sein, bevor echte Firmen darauf arbeiten:
    Sobald die Zahlen stehen: Abschnitt zwischen „Der Unterschied in Zahlen"
    und den Pools-/Netzwerk-Karten, drei Säulen im dunklen Register, die
    mittlere golden hervorgehoben.
-1. **Rabattstufen festlegen** (#27). Die aktuellen sind nachweislich nicht
-   haltbar — siehe oben. Ohne belastbare Zahlen darf keine Garantie raus.
+1. **RABATTSTUFEN — die SourceOn-Staffel ist geprüft und VERWORFEN
+   (11.09.2026).**
+
+   Im alten Stand gefunden (`tiers.js`, „Single Source of Truth"), gestaffelt
+   nach Bestellwert in CHF statt nach Menge — das ist der bessere Zuschnitt,
+   weil eine Franken-Staffel über alle Materialien gilt:
+
+   | Bestellwert | Netto-Rabatt |
+   |---|---|
+   | ab 1'000'000 | 28 % |
+   | 500'000–999'999 | 24 % |
+   | 250'000–499'999 | 20 % |
+   | 100'000–249'999 | 16 % |
+   | 50'000–99'999 | 13 % |
+   | 25'000–49'999 | 10 % |
+   | 5'000–24'999 | 7 % |
+   | 500–4'999 | 5 % |
+
+   **Die Zahlen sind unmöglich.** Marktrecherche zur Transportbetonbranche:
+   EBITDA-Marge unabhängiger Werke 3.5–6 %, bei grossen integrierten 6–9 %,
+   Median-Nettomarge ~4.2 %, Bruttomarge 15–25 %, Materialkosten ~56 % der
+   Herstellkosten. 28 % Rabatt ist mehr als die gesamte BRUTTOmarge; schon
+   16 % frisst sie bei den meisten auf. Kein Werk kann das bieten.
+
+   Dazu ein Schweizer Detail: **die publizierten Preislisten sind bereits
+   Unternehmerpreise**, keine aufgeblasenen Endkundenlisten — bei Beton
+   Baumeli steht ausdrücklich, dass Skonto und weitere Rabatte nicht möglich
+   sind. Die frühere Notiz in diesem Dokument, Preislisten im Baustoffhandel
+   seien mit 30–40 % Rabatt aufgeblasen, gilt für andere Branchen und ist
+   hiermit zurückgenommen.
+
+   **Woher die Ersparnis wirklich kommt** — nicht aus der Marge, sondern aus
+   Kosten, die durch die Bündelung wegfallen: Kleinmengenzuschläge (real,
+   z. B. CHF 50 pro Fuhre unter 1 m³), planbare Auslastung, weniger Fahrten
+   je m³, vermiedene Winterzuschläge, ein Verkaufsvorgang statt fünf. Das ist
+   belegbar und **einstellig**. Dort gehört die Staffel hin.
+
+   **FOLGE FÜRS PROVISIONSMODELL, mitzudenken:** Bei einem Gesamtrabatt von
+   17.25 % nimmt Obtanet 13 % des Zugeständnisses. Bei 7.25 % sind es 31 %.
+   Werden die Stufen einstellig, ist eine feste Provision von 2.25 Punkten
+   ein auffällig grosser Anteil — und Werk und Besteller reden hier
+   miteinander.
+
+   **Was fehlt und nicht recherchierbar ist:** die richtigen Zahlen. Sie
+   stehen in keiner öffentlichen Quelle. Sie kommen aus einem Gespräch mit
+   einem Betonwerk: „Wenn ich dir 500 m³ mit fester Terminplanung bringe
+   statt fünf Einzelbestellungen — was ist dir das wert?" Die Antwort ist
+   die Staffel, und sie ist belastbar, weil ein Werk sie gesagt hat.
+
+   Die Margendaten sind international, nicht schweizspezifisch — die
+   Grössenordnung stimmt, die Nachkommastelle nicht.
+
+1b. **Der Zuschnitt der Staffel: nach Bestellwert, nicht nach Menge.**
+   Heute stehen in `submit_demand` die Schwellen 101/201/351 als reine
+   Stückzahlen mit 9/12/16 %. Über Materialien hinweg geht das nicht auf:
+   351 m³ Beton sind ein anderes Geschäft als 351 Dämmplatten. Sobald echte
+   Zahlen da sind, gehört die Staffel auf Franken umgestellt — der Wert
+   liegt bereits vor (Menge × Referenzpreis).
+
+   **Und an EINE Stelle.** SourceOn hatte die Staffel in zwei Dateien, beide
+   mit dem Hinweis „MUSS synchron bleiben" — und sie waren es nicht:
+   `tiers.js` rechnete `gross = (net + 0.0225) / 1.0225` (Provision auf den
+   Bestellwert), `auto-bundle/index.ts` rechnete `net + 0.0225` (Provision
+   auf den Referenzwert). Bei net 16 % ergab das 18 % gegen 18.25 %. Der
+   Kalkulator zeigte dem Kunden also etwas anderes, als beim Bündeln
+   ausgeschrieben wurde. Obtanet hat die zweite Variante geerbt — die vom
+   Auftraggeber bestätigte.
 2. **DER PREISANKER — nachgeschlagen am 10.09.2026, und es ist schlimmer
    als gedacht.**
 
