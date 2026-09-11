@@ -51,7 +51,7 @@ export default function BundleEnginePanel() {
             </span>
           </div>
           <p className="mt-1 truncate text-[12.5px] text-white/[0.56]">
-            Simuliere, wie dein Materialbedarf das Poolvolumen und deinen Rabatt bewegt.
+            Alle Stufen auf einen Blick — und was bei deinem Bestellwert garantiert ist.
           </p>
         </div>
         <span className="hidden shrink-0 items-center gap-1.5 text-[12.5px] font-semibold text-white/[0.72] transition-colors group-hover:text-brand sm:inline-flex">

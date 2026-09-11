@@ -1,5 +1,6 @@
 import Link from "next/link";
 import SiteFooter from "@/components/SiteFooter";
+import { StaffelUebersicht } from "@/components/rabatt/Staffel";
 import { ArrowRight } from "lucide-react";
 import {
   BTN_GOLD,
@@ -156,6 +157,57 @@ export default function SoFunktioniertEsPage() {
                 </li>
               ))}
             </ol>
+          </div>
+        </div>
+      </section>
+
+      {/* ==================== Die Garantie ==================== */}
+      {/* Die Seite erklärte den Ablauf und die Referenz, aber nie die
+          Zahlen. Wer wissen wollte, was ihm zugesichert wird, fand es
+          nirgends — und eine Garantie, die man nicht nachschlagen kann,
+          ist keine. Die Tabelle kommt aus `rabattstufen`, derselben
+          Quelle, aus der die Datenbank rechnet; sie kann deshalb nicht
+          von der Wirklichkeit abweichen. */}
+      <section className="border-t border-white/[0.12]">
+        <div className={cn(SHELL, SECTION_TIGHT)}>
+          <div className="grid gap-10 lg:grid-cols-[minmax(0,320px)_minmax(0,1fr)] lg:gap-20">
+            <div>
+              <span className={EYEBROW}>Die Garantie</span>
+              <h2 className={cn(D_MD, "mt-5 text-white")}>Was dir zugesichert ist</h2>
+              <p className={cn(LEAD, "mt-6 text-white/[0.72]")}>
+                Der Mindestvorteil richtet sich nach <b className="font-semibold text-white">deinem
+                eigenen Bestellwert</b> in einer Materialkategorie — nicht nach der Grösse des
+                Bündels. Wer viel bestellt, bekommt mehr zugesichert als wer wenig bestellt, auch
+                wenn beide im selben Bündel liegen.
+              </p>
+            </div>
+
+            <div className="max-w-[680px]">
+              <StaffelUebersicht />
+
+              <div className="mt-8 space-y-4 border-t border-white/[0.08] pt-7 text-[14px] leading-[1.65] text-white/[0.72]">
+                <p>
+                  <b className="font-semibold text-white">Das ist die Untergrenze, nicht der Preis.</b>{" "}
+                  In der verdeckten Ausschreibung bieten die Werke darunter — mehr ist möglich,
+                  weniger nicht. Wird die Untergrenze nicht erreicht, löst sich das Bündel auf und
+                  niemand ist gebunden.
+                </p>
+                <p>
+                  <b className="font-semibold text-white">Unterhalb der ersten Schwelle sichern wir
+                  nichts zu.</b> Der Bedarf geht trotzdem ins Bündel und in die Ausschreibung — nur
+                  ohne zugesicherten Prozentsatz.
+                </p>
+                <p>
+                  <b className="font-semibold text-white">Nicht jede Kategorie ist gestaffelt.</b>{" "}
+                  Indexnahe Güter wie Bewehrungsstahl geben eine Mengenstaffel nicht her; dort wird
+                  einzeln verhandelt statt etwas zugesichert, das kein Werk halten kann.
+                </p>
+                <p>
+                  Gemessen wird gegen den Referenzpreis, der bei deiner Anfrage festgehalten wurde —
+                  nicht gegen den Stand am Liefertag.
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </section>

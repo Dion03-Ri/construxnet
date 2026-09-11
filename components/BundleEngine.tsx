@@ -31,12 +31,27 @@ import {
 import { cn } from "@/lib/utils";
 import { chf as chfRaw } from "@/lib/format";
 import { useRabattstufen } from "@/lib/rabatt";
+import { Staffel } from "@/components/rabatt/Staffel";
 const chf = (value: number, decimals = 2) => chfRaw(value, decimals);
 
 /* -------------------------------------------------------------------------- */
 /*  Business config                                                            */
 /* -------------------------------------------------------------------------- */
 
+/*
+ * Die Vermittlungsgebühr — die EINZIGE Zahl auf dieser Seite, die noch im
+ * Quelltext steht.
+ *
+ * In der Datenbank liegt sie in `app_settings` unter `provision_pct` und
+ * wird über `einstellung_zahl()` gelesen. Diese Tabelle ist für den
+ * Browser gesperrt (RLS, keine SELECT-Regel), und das soll sie bleiben —
+ * dort stehen auch Schalter, die niemanden etwas angehen. Eine Zeile
+ * davon öffentlich zu machen, ist eine eigene Migration und eine eigene
+ * Entscheidung.
+ *
+ * Bis dahin: wer `provision_pct` ändert, muss diese Zahl mitändern.
+ * Siehe Startliste, Punkt 2c.
+ */
 const PLATFORM_FEE_PCT = 2.25;
 
 /*
@@ -350,6 +365,20 @@ export default function BundleEngine() {
                 Höchste Stufe erreicht: {calc.garantie}% garantiert.
               </p>
             ) : null}
+          </div>
+
+          {/* Die ganze Staffel als Liste.
+              Die Kurve zeigt den Verlauf, aber nicht die Zahlen: an der
+              Achse standen drei Beschriftungen für sieben Stufen. Wer
+              wissen will, was es überhaupt gibt, liest es hier nach. */}
+          <div className="mt-6">
+            <div className="mb-1.5 flex items-baseline justify-between gap-3">
+              <div className="text-[10px] font-semibold uppercase tracking-wider text-white/[0.56]">
+                Alle Stufen · {category}
+              </div>
+              <div className="text-[11px] text-white/[0.56]">nach deinem Bestellwert</div>
+            </div>
+            <Staffel kategorie={category} bestellwert={bestellwert} ton="dunkel" />
           </div>
         </div>
 

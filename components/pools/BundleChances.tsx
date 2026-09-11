@@ -1,6 +1,10 @@
+"use client";
+
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 
+import { useBundles } from "@/lib/bundles";
+import { chf } from "@/lib/format";
 import { cn } from "@/lib/utils";
 
 /**
@@ -16,31 +20,51 @@ import { cn } from "@/lib/utils";
  */
 
 export type PoolChance = {
+  id: string;
   material: string;
   region: string;
   vol: string;
   /** Füllstand des Bündels in Prozent. */
   pct: number;
-  /** Garantierter Mindestvorteil in Prozent. */
+  /** Garantierte Untergrenze in Prozent. */
   disc: number;
 };
 
-export const POOL_CHANCES: PoolChance[] = [
-  { material: "Beton C25/30", region: "Zürich", vol: "230 m³", pct: 77, disc: 12 },
-  { material: "Armierungsstahl B500B", region: "Bern", vol: "48 t", pct: 80, disc: 12 },
-  { material: "Koffer-/Wandkies 0/45", region: "Nordwestschweiz", vol: "320 t", pct: 96, disc: 20 },
-];
-
+/*
+ * Hier standen drei erfundene Bündel: Beton Zürich −12 %, Armierungsstahl
+ * Bern −12 %, Kies Nordwestschweiz −20 %. Zwei Dinge stimmten daran nicht.
+ * Die Sätze gibt es nicht — die Staffel reicht bis 10 %, nicht bis 20 %;
+ * und Bewehrungsstahl ist gar nicht bündelbar. Ein Kunde, der das auf
+ * seiner Startseite liest und danach ein echtes Bündel mit 6 % sieht,
+ * hält die Plattform für den Rückschritt, nicht die Attrappe für falsch.
+ *
+ * Jetzt kommen die Zeilen aus `bundles`. Ist keines offen, steht das da.
+ */
 export default function BundleChances({
-  pools = POOL_CHANCES,
   className,
   wide = false,
 }: {
-  pools?: PoolChance[];
   className?: string;
   /** Breite Form: Angaben nebeneinander statt untereinander. */
   wide?: boolean;
 }) {
+  const { bundles, loading } = useBundles();
+
+  // Die vollsten zuerst: wo am meisten liegt, lohnt sich das Mitmachen am
+  // ehesten. „Füllstand" misst gegen die Zielmenge des Bündels.
+  const pools: PoolChance[] = bundles
+    .filter((b) => b.status === "OPEN")
+    .sort((a, b) => b.current_volume - a.current_volume)
+    .slice(0, 3)
+    .map((b) => ({
+      id: b.id,
+      material: b.material_label ?? b.title,
+      region: b.region,
+      vol: `${chf(b.current_volume)} ${b.unit}`,
+      pct: b.target_volume > 0 ? Math.min(100, Math.round((b.current_volume / b.target_volume) * 100)) : 0,
+      disc: Number(b.current_discount_pct),
+    }));
+
   return (
     <div className={cn("border-t border-white/[0.12]", className)}>
       <div className="flex items-baseline justify-between pb-3 pt-5">
@@ -50,13 +74,19 @@ export default function BundleChances({
         <span className="text-[11px] text-white/[0.56]">deine Region</span>
       </div>
 
-      {wide ? (
+      {loading || pools.length === 0 ? (
+        <p className="border-t border-white/[0.12] py-5 text-[13px] leading-relaxed text-white/[0.56]">
+          {loading
+            ? "Bündel werden geladen …"
+            : "Gerade ist kein Bündel in der Sammelphase. Wer einen Bedarf meldet, eröffnet eines."}
+        </p>
+      ) : wide ? (
         <ul className="border-t border-white/[0.12]">
           {pools.map((p) => (
-            <li key={p.material}>
+            <li key={p.id}>
               <Link
                 href="/pools"
-                className="grid grid-cols-[minmax(0,1fr)_5rem] items-center gap-x-6 gap-y-2 border-b border-white/[0.12] py-3.5 transition-colors hover:bg-white/[0.03] lg:grid-cols-[15rem_20rem_minmax(0,1fr)_auto]"
+                className="grid grid-cols-[minmax(0,1fr)_5.5rem] items-center gap-x-6 gap-y-2 border-b border-white/[0.12] py-3.5 transition-colors hover:bg-white/[0.03] lg:grid-cols-[15rem_20rem_minmax(0,1fr)_auto]"
               >
                 <span className="truncate text-[14px] font-semibold text-white">{p.material}</span>
 
@@ -76,8 +106,8 @@ export default function BundleChances({
                 {/* Der Rest hängt rechts am Rand statt in der Mitte zu
                     schweben; feste Zellenbreiten halten die Zahlen der drei
                     Zeilen untereinander. */}
-                <span className="col-start-2 row-start-1 text-right text-[14px] font-bold tabular-nums text-brand lg:hidden">
-                  −{p.disc} %
+                <span className="col-start-2 row-start-1 whitespace-nowrap text-right text-[13px] font-bold tabular-nums text-brand lg:hidden">
+                  mind. {p.disc} %
                 </span>
                 <span className="hidden lg:col-start-4 lg:flex lg:items-baseline lg:justify-end lg:gap-9">
                   <span className="w-[11rem] truncate text-right text-[12px] text-white/[0.56]">
@@ -86,8 +116,8 @@ export default function BundleChances({
                   <span className="w-[4.5rem] text-right text-[12px] tabular-nums text-white/[0.56]">
                     {p.pct} % voll
                   </span>
-                  <span className="w-[3.5rem] text-right text-[14px] font-bold tabular-nums text-brand">
-                    −{p.disc} %
+                  <span className="w-[5.5rem] whitespace-nowrap text-right text-[13.5px] font-bold tabular-nums text-brand">
+                    mind. {p.disc} %
                   </span>
                 </span>
               </Link>
@@ -97,12 +127,12 @@ export default function BundleChances({
       ) : (
         <ul className="divide-y divide-white/[0.12] border-t border-white/[0.12]">
           {pools.map((p) => (
-            <li key={p.material}>
+            <li key={p.id}>
               <Link href="/pools" className="-mx-2 block rounded-lg px-2 py-3.5 transition-colors hover:bg-white/[0.05]">
                 <div className="flex items-center justify-between gap-2">
                   <span className="truncate text-[13px] font-semibold text-white">{p.material}</span>
-                  <span className="shrink-0 text-[13px] font-bold tabular-nums text-brand">
-                    −{p.disc} %
+                  <span className="shrink-0 whitespace-nowrap text-[13px] font-bold tabular-nums text-brand">
+                    mind. {p.disc} %
                   </span>
                 </div>
                 <div className="mt-1 text-[11.5px] text-white/[0.56]">
