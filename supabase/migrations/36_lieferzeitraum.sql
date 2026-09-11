@@ -63,7 +63,25 @@ COMMENT ON COLUMN bundles.liefer_von IS
 -- ausschliesslich Testbündel sind.
 --
 -- Reihenfolge wegen der Fremdschlüssel: erst was am Bündel hängt.
+--
+-- NACHGEBESSERT am 11.09.2026. Beim Auftraggeber scheiterte diese
+-- Migration an genau dieser Stelle:
+--
+--   ERROR: update or delete on table "bundles" violates foreign key
+--   constraint "delivery_notes_bundle_id_fkey" on table "delivery_notes"
+--
+-- `delivery_notes` zeigt ohne Kaskade auf `bundles` — anders als
+-- `supplier_bids` oder `gap_closer_alerts`, die mit ON DELETE CASCADE
+-- hängen. Hier stand die Tabelle schlicht nicht in der Liste; im
+-- Prüfstand fiel es nicht auf, weil dort keine Lieferscheine lagen.
+-- Reproduziert, dann behoben.
+--
+-- Die Migration ist ab jetzt wiederholbar: jeder Schritt verträgt einen
+-- zweiten Durchlauf. Wer sie nach einem Fehlschlag erneut ausführt, soll
+-- nicht erst aufräumen müssen.
 -- ------------------------------------------------------------
+DELETE FROM delivery_notes       WHERE bundle_id IS NOT NULL;
+DELETE FROM gap_closer_alerts    WHERE bundle_id IS NOT NULL;
 DELETE FROM sia_contracts        WHERE bundle_id IS NOT NULL;
 DELETE FROM supplier_bids        WHERE bundle_id IS NOT NULL;
 DELETE FROM bundle_participations;
@@ -75,9 +93,22 @@ DELETE FROM bundles;
 ALTER TABLE bundle_participations ALTER COLUMN project_id SET NOT NULL;
 ALTER TABLE bundle_participations ALTER COLUMN liefer_von SET NOT NULL;
 ALTER TABLE bundle_participations ALTER COLUMN liefer_bis SET NOT NULL;
-ALTER TABLE bundle_participations
-    ADD CONSTRAINT bundle_participations_zeitraum_check
-    CHECK (liefer_bis >= liefer_von);
+-- `ADD CONSTRAINT` kennt kein IF NOT EXISTS. Ohne die Abfrage bräche ein
+-- zweiter Lauf hier ab — und ein zweiter Lauf ist genau das, was nach
+-- einem Fehlschlag passiert.
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_constraint
+         WHERE conrelid = 'bundle_participations'::regclass
+           AND conname  = 'bundle_participations_zeitraum_check'
+    ) THEN
+        ALTER TABLE bundle_participations
+            ADD CONSTRAINT bundle_participations_zeitraum_check
+            CHECK (liefer_bis >= liefer_von);
+    END IF;
+END
+$$;
 
 -- ------------------------------------------------------------
 -- 4) Die Mengenkurve
