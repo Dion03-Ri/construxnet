@@ -139,6 +139,15 @@ Prüfdatenbank.
   Teilnehmer dazukommt. Deshalb gibt es nirgends mehr einen Balken „noch
   X m³ bis Y %" — der Vorteil aus mehr Menge entsteht in der Ausschreibung,
   nicht in der Garantie, und lässt sich nicht als Balken versprechen.
+- **Die Staffel wird als LISTE gezeigt, nicht nur als Satz.** Sieben
+  Stufen lassen sich nicht in „mind. 5 %" zusammenfassen: wer den Satz
+  liest, weiss nicht, was es sonst noch gibt und was dafür fehlt.
+  `components/rabatt/Staffel.tsx` rendert sie aus der Tabelle — `Staffel`
+  für eine Kategorie mit hervorgehobener erreichter Stufe,
+  `StaffelUebersicht` für erklärende Seiten (fasst Kategorien mit
+  gleicher Staffel zusammen, heute also alle fünf in einer Tabelle).
+  Eingebaut im Rabatt-Rechner, im Beschaffungsformular und unter
+  `/so-funktioniert-es`.
 - **Die Provision wird ADDIERT, nicht abgezogen.** `mindestgebot()` rechnet
   `CEIL((Prozentsatz + 2,25) × 4) / 4` — auf ein Viertelprozent AUFgerundet,
   nie ab. Der Besteller sieht seinen Prozentsatz, das Werk sieht
@@ -852,6 +861,21 @@ Diese Punkte müssen erledigt sein, bevor echte Firmen darauf arbeiten:
    - Dasselbe gilt für die Gegenrichtung: ein Bauunternehmen sieht unter
      `/pools` ebenfalls alle Bündel. Dort ist es weniger dringend, weil man
      nur beitreten kann, was die eigene Baustelle betrifft.
+2c. **Die Vermittlungsgebühr steht an zwei Stellen (klein, aber es ist
+   derselbe Fehler wie bei der Staffel).** In der Datenbank liegt sie in
+   `app_settings.provision_pct` und wird über `einstellung_zahl()`
+   gelesen; im öffentlichen Rechner steht `PLATFORM_FEE_PCT = 2.25` in
+   `components/BundleEngine.tsx`. Wer den einen Wert ändert, muss den
+   anderen mitändern — und merkt es nicht, wenn er es vergisst.
+
+   `app_settings` ist für den Browser gesperrt (RLS an, keine
+   SELECT-Regel), und das soll so bleiben: dort stehen auch Schalter wie
+   `plan_limits`, die niemanden etwas angehen. Der saubere Weg ist eine
+   Migration, die GENAU diese eine Zeile öffentlich lesbar macht — etwa
+   eine Sicht `oeffentliche_einstellungen` mit einer weissen Liste von
+   Schlüsseln — nicht die Tabelle.
+
+   Solange die Gebühr bei 2,25 % bleibt, ist es ein Zettel, kein Problem.
 3. **Vorstart-Sperre entfernen** (`COMING_SOON`, `PREVIEW_PASSWORD` in
    Vercel löschen).
 4. **Web-Push** für Nachrichten (siehe Chat).

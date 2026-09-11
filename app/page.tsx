@@ -240,7 +240,7 @@ export default function Home() {
                 sagt, in Worten. */}
             <dl className="mt-12 lg:hidden">
               {[
-                ["Je grösser das Bündel, desto höher der Rabatt", "Auch kleine Bestellungen profitieren: dass es überhaupt einen Rabatt gibt, hängt am Bündel — wie hoch er ausfällt, an deiner Menge."],
+                ["Dein Bestellwert bestimmt deinen Mindestvorteil", "Dass es überhaupt eine Ausschreibung gibt, hängt am Bündel. Was dir darin zugesichert ist, hängt an deinem eigenen Bestellwert — nicht an der Grösse des Bündels."],
                 ["Gemessen am KBOB-Referenzpreis", "Kein Prospektversprechen, sondern eine Grösse, die sich nachrechnen lässt."],
                 ["Der Mindestvorteil steht vorher fest", "Wird er bis zur Frist nicht erreicht, löst sich das Bündel auf. Es entsteht keine Verpflichtung."],
               ].map(([t, d], i) => (

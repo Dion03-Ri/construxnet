@@ -42,6 +42,7 @@ import {
 import { cn } from "@/lib/utils";
 import { chf } from "@/lib/format";
 import { useRabattstufen } from "@/lib/rabatt";
+import { Staffel } from "@/components/rabatt/Staffel";
 
 
 const STEPS = ["Materialien", "Mengen & Lieferung", "Smart Pool", "Übersicht"];
@@ -388,7 +389,7 @@ export default function BeschaffungFlow({
           . Referenz <span className="font-semibold text-slate-900">{reference}</span>.
           Wo für Material und Region schon ein offenes Bündel lief, ist deine
           Menge dazugekommen — sonst ist ein neues entstanden. Unter Smart Pools
-          siehst du, wie viel bis zur nächsten Rabattstufe fehlt.
+          siehst du den Stand und deine garantierte Untergrenze.
         </p>
         <div className="mt-6 flex flex-wrap justify-center gap-2">
           <Link href="/pools" className="inline-flex items-center gap-1.5 rounded-md bg-brand px-4 py-2 text-sm font-semibold text-navy-950 transition-colors hover:bg-brand/100">
@@ -802,8 +803,10 @@ export default function BeschaffungFlow({
                       <span className="mt-1 block text-[13px] leading-relaxed text-slate-600">
                         Jede Position wird mit gleichen Bedarfen deiner Region zu einem grösseren Volumen
                         zusammengelegt. Die Baustoffwerke geben darauf verdeckte Angebote (Sealed-Bid) ab —
-                        das beste Angebot gegenüber dem KBOB-Referenzpreis erhält den Zuschlag. Je grösser
-                        das gebündelte Volumen, desto höher der garantierte Netto-Mindestvorteil.
+                        das beste Angebot gegenüber dem KBOB-Referenzpreis erhält den Zuschlag. Dein
+                        garantierter Mindestvorteil richtet sich nach deinem eigenen Bestellwert, nicht
+                        nach der Grösse des Bündels; die Grösse macht das Bündel für die Werke
+                        interessanter, und das zeigt sich im Angebot.
                       </span>
                     </span>
                   </button>
@@ -844,6 +847,31 @@ export default function BeschaffungFlow({
                         jeweiligen Materialkategorie. In der verdeckten Ausschreibung bieten die Werke
                         darunter — mehr ist möglich, weniger nicht.
                       </p>
+
+                      {/* Die ganze Staffel, je Kategorie im Warenkorb.
+                          Ein einzelner Satz „mind. 5 %" beantwortet nicht,
+                          was es sonst noch gäbe und was dafür fehlt. Bei
+                          sieben Stufen gehört die Liste dazu. */}
+                      <div className="space-y-4 pt-2">
+                        {[...new Set(positions.map((p) => p.category))].map((kat) => (
+                          <div key={kat}>
+                            <div className="flex items-baseline justify-between gap-3 border-b border-slate-200 pb-1.5">
+                              <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">
+                                Staffel · {kat}
+                              </span>
+                              <span className="text-[11.5px] tabular-nums text-slate-500">
+                                dein Bestellwert CHF {chf(wertJeKategorie.get(kat) ?? 0)}
+                              </span>
+                            </div>
+                            <Staffel
+                              kategorie={kat}
+                              bestellwert={wertJeKategorie.get(kat) ?? 0}
+                              ton="hell"
+                              className="mt-1"
+                            />
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   )}
                 </div>
