@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { AlertTriangle, Loader2 } from "lucide-react";
 import { useKapazitaet } from "@/lib/lieferantensicht";
 import { PROC_CATEGORIES, type ProcCategory } from "@/data/procurement";
@@ -64,6 +65,16 @@ export default function LieferprofilPanel() {
         <p className="mt-2 max-w-2xl text-[12.5px] leading-relaxed text-white/[0.56]">
           Was hier steht, ist verbindlich: auf diese Zahl rechnet ein Besteller seinen
           Preis. Unter eine bereits zugeschlagene Menge kannst du nicht zurück.
+        </p>
+        {/* Wer „Lieferprofil" liest, sucht hier auch Regionen und Radius.
+            Die stehen im Firmenprofil — ohne diesen Hinweis sucht man sie
+            an der falschen Stelle und hält sie für nicht vorhanden. */}
+        <p className="mt-2 max-w-2xl text-[12.5px] leading-relaxed text-white/[0.56]">
+          Liefergebiet, Radius und die Materialien, die du überhaupt führst, stehen im{" "}
+          <Link href="/profile/edit" className="font-semibold text-brand hover:underline">
+            Firmenprofil
+          </Link>
+          .
         </p>
       </div>
 
