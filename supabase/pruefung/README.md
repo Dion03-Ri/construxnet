@@ -69,3 +69,17 @@ gegen eine Fiktion und konnte den Fehler nicht finden.
 
 **Also: keine nachgebauten Schemata mehr.** Die Prüfdatenbank kommt aus
 den echten Migrationen, sonst prüft man seine eigenen Annahmen.
+
+## Die Kontrollabfrage stürzt nicht ab, wenn etwas fehlt
+
+Sie meldet dann `FEHLT`. Das klingt selbstverständlich, war es aber nicht:
+`'tabelle'::regclass` und `'funktion(...)'::regprocedure` werfen einen
+Fehler, wenn das Objekt nicht existiert — und zwar beim Planen, also bevor
+ein umschliessendes `CASE` greifen kann. Die Abfrage brach deshalb genau
+dann ab, wenn man sie am nötigsten braucht: bei einer nicht eingespielten
+Migration.
+
+Geprüft wird jetzt über `to_regclass` / `to_regprocedure` (die NULL liefern)
+und über den Systemkatalog. Nachgestellt mit einer Datenbank, der die
+Migrationen 36 bis 42 fehlen: neununddreissig Zeilen, davon etliche `FEHLT`,
+kein Abbruch.

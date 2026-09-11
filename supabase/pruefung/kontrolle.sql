@@ -79,12 +79,21 @@ spalten AS (
               THEN 'ok' ELSE 'FEHLT' END,
          'Lieferzeitraum je Teilnahme, Migration 36'
   UNION ALL
+  -- `'zuteilungen'::regclass` wirft, wenn die Tabelle fehlt — und zwar
+  -- BEVOR das CASE greift: PostgreSQL wertet den Cast beim Planen aus.
+  -- Genau daran ist die Abfrage beim Auftraggeber abgebrochen, solange
+  -- Migration 42 noch nicht eingespielt war. Eine Kontrollabfrage, die
+  -- bei einer fehlenden Migration abstürzt statt FEHLT zu melden, ist
+  -- genau dann nutzlos, wenn man sie braucht. Deshalb über den Katalog
+  -- statt über den Cast.
   SELECT 'zuteilungen: eine Baustelle, ein Werk',
-         CASE WHEN to_regclass('public.zuteilungen') IS NULL THEN 'FEHLT'
-              WHEN NOT EXISTS (
-                SELECT 1 FROM pg_constraint
-                 WHERE conrelid = 'zuteilungen'::regclass AND contype = 'u')
-              THEN 'FEHLT' ELSE 'ok' END,
+         CASE WHEN EXISTS (
+                SELECT 1 FROM pg_constraint c
+                  JOIN pg_class t ON t.oid = c.conrelid
+                  JOIN pg_namespace n ON n.oid = t.relnamespace
+                 WHERE n.nspname = 'public' AND t.relname = 'zuteilungen'
+                   AND c.contype = 'u')
+              THEN 'ok' ELSE 'FEHLT' END,
          'eine Baustelle kann nicht zwei Werke bekommen, Migration 42'
   UNION ALL
   SELECT 'bundle_participations.project_id',
@@ -95,8 +104,13 @@ spalten AS (
          'Baustelle ist Pflicht, Migration 36'
 ),
 austritt AS (
+  -- `::regprocedure` wirft bei fehlender Funktion, statt NULL zu liefern.
+  -- `to_regprocedure` gibt NULL zurück — und nur wenn dabei etwas
+  -- herauskommt, wird der Rumpf überhaupt geholt.
   SELECT 'withdraw_demand: Phasenprüfung' AS was,
-         CASE WHEN pg_get_functiondef('withdraw_demand(uuid,uuid)'::regprocedure) LIKE '%Sammelphase%'
+         CASE WHEN to_regprocedure('withdraw_demand(uuid,uuid)') IS NULL THEN 'FEHLT'
+              WHEN pg_get_functiondef(to_regprocedure('withdraw_demand(uuid,uuid)'))
+                   LIKE '%Sammelphase%'
               THEN 'ok' ELSE 'FEHLT' END AS stand,
          'Austritt nur in der Sammelphase, Migration 31' AS soll
 ),
@@ -118,19 +132,26 @@ rechte AS (
   SELECT 'lieferantenkonto_entscheiden: nur Dienstweg' AS was,
          CASE WHEN to_regprocedure('lieferantenkonto_entscheiden(uuid,text,text,text)') IS NULL THEN 'FEHLT'
               WHEN has_function_privilege('authenticated',
-                     'lieferantenkonto_entscheiden(uuid,text,text,text)', 'EXECUTE')
+                     to_regprocedure('lieferantenkonto_entscheiden(uuid,text,text,text)'),
+                     'EXECUTE')
               THEN 'FEHLT' ELSE 'ok' END AS stand,
          'niemand lässt sich selbst zu, Migration 37' AS soll
   UNION ALL
+  -- Auch hier: `has_table_privilege` wirft bei fehlender Tabelle. Das
+  -- CASE schützt davor NICHT, weil beide Zweige geplant werden. Über den
+  -- Katalog gehen und den Rechtetest nur dann stellen.
   SELECT 'lieferantenkonten: kein Schreibrecht',
          CASE WHEN to_regclass('public.lieferantenkonten') IS NULL THEN 'FEHLT'
-              WHEN has_table_privilege('authenticated', 'lieferantenkonten', 'UPDATE')
+              WHEN has_table_privilege('authenticated',
+                     COALESCE(to_regclass('public.lieferantenkonten'),
+                              'app_settings'::regclass), 'UPDATE')
               THEN 'FEHLT' ELSE 'ok' END,
          'Status nur über Funktionen, Migration 37'
   UNION ALL
   SELECT 'laufende_bindung: nicht für den Browser' AS was,
          CASE WHEN to_regprocedure('laufende_bindung(uuid)') IS NULL THEN 'FEHLT'
-              WHEN has_function_privilege('authenticated', 'laufende_bindung(uuid)', 'EXECUTE')
+              WHEN has_function_privilege('authenticated',
+                     to_regprocedure('laufende_bindung(uuid)'), 'EXECUTE')
               THEN 'FEHLT' ELSE 'ok' END AS stand,
          'fremde Firmen nicht abfragbar, Migration 32' AS soll
 )
