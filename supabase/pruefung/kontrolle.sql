@@ -44,7 +44,9 @@ funktionen AS (
       ('kapazitaet_setzen',         'kapazitaet_setzen(text,date,date,numeric,text)',   'Lieferprofil setzen, Migration 39'),
       ('meine_zuschlaege',          'meine_zuschlaege()',                               'gewonnene Bündel, Migration 39'),
       ('zuschlag_baustellen',       'zuschlag_baustellen(uuid)',                        'Adressen nur für den Gewinner, Migration 39'),
-      ('withdraw_demand je Baustelle','withdraw_demand(uuid,uuid)',                     'Austritt je Baustelle, Migration 40')
+      ('withdraw_demand je Baustelle','withdraw_demand(uuid,uuid)',                     'Austritt je Baustelle, Migration 40'),
+      ('bundle_zuteilen',           'bundle_zuteilen(uuid)',                            'Zuteilung ganzer Baustellen, Migration 42'),
+      ('baustelle_kurve',           'baustelle_kurve(uuid)',                            'Menge einer Baustelle je Monat, Migration 42')
     ) AS f(name, sig, zweck)
 ),
 spalten AS (
@@ -76,6 +78,14 @@ spalten AS (
                               AND column_name='liefer_von' AND is_nullable='NO')
               THEN 'ok' ELSE 'FEHLT' END,
          'Lieferzeitraum je Teilnahme, Migration 36'
+  UNION ALL
+  SELECT 'zuteilungen: eine Baustelle, ein Werk',
+         CASE WHEN to_regclass('public.zuteilungen') IS NULL THEN 'FEHLT'
+              WHEN NOT EXISTS (
+                SELECT 1 FROM pg_constraint
+                 WHERE conrelid = 'zuteilungen'::regclass AND contype = 'u')
+              THEN 'FEHLT' ELSE 'ok' END,
+         'eine Baustelle kann nicht zwei Werke bekommen, Migration 42'
   UNION ALL
   SELECT 'bundle_participations.project_id',
          CASE WHEN EXISTS (SELECT 1 FROM information_schema.columns

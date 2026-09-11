@@ -44,6 +44,8 @@ export type MyBid = {
   list_price_net: number;
   lieferantenpreis_net: number | null;
   customer_price_net: number;
+  anteil_pct: number;
+  puffer_pct: number;
   is_winning_bid: boolean;
   created_at: string;
 };
@@ -333,11 +335,15 @@ export async function placeBid(
   bundleId: string,
   lieferantenpreis: number,
   listPrice: number,
+  anteilPct = 100,
+  pufferPct = 0,
 ): Promise<{ error?: string }> {
   const { error } = await supabase.rpc("place_bid", {
     p_bundle_id: bundleId,
     p_lieferantenpreis: lieferantenpreis,
     p_list_price: listPrice || 0,
+    p_anteil_pct: anteilPct,
+    p_puffer_pct: pufferPct,
   });
   return error ? { error: error.message } : {};
 }
@@ -352,7 +358,7 @@ export function useMyBids() {
   const reload = useCallback(async () => {
     const { data, error } = await supabase
       .from("supplier_bids")
-      .select("id, bundle_id, list_price_net, lieferantenpreis_net, customer_price_net, is_winning_bid, created_at");
+      .select("id, bundle_id, list_price_net, lieferantenpreis_net, customer_price_net, anteil_pct, puffer_pct, is_winning_bid, created_at");
     // Auch hier nicht stillschweigend leeren: ein Werk, das seine eigenen
     // Gebote nicht sieht, soll erfahren warum.
     setFehler(error?.message ?? null);

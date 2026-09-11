@@ -53,6 +53,12 @@ export default function TendersPanel() {
   const [openFor, setOpenFor] = useState<string | null>(null);
   const [price, setPrice] = useState("");
   const [listPrice, setListPrice] = useState("");
+  /* Teilgebot: Zielanteil und Puffer. Ganze Baustellen ergeben nie
+     genau einen Prozentwert — ohne Puffer wäre ein Teilgebot fast
+     immer unerfüllbar, und das Werk würde wortlos übergangen. */
+  const [teilgebot, setTeilgebot] = useState(false);
+  const [anteil, setAnteil] = useState("50");
+  const [puffer, setPuffer] = useState("10");
   const [busy, setBusy] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
   /* Was für DIESES Bündel mindestens verlangt ist. Aus der Datenbank
@@ -81,7 +87,14 @@ export default function TendersPanel() {
     if (!(p > 0) || busy) return;
     setBusy(true);
     setFormError(null);
-    const res = await placeBid(supabase, b.id, p, Number(listPrice) || 0);
+    const res = await placeBid(
+      supabase,
+      b.id,
+      p,
+      Number(listPrice) || 0,
+      teilgebot ? Number(anteil) || 0 : 100,
+      teilgebot ? Number(puffer) || 0 : 0,
+    );
     setBusy(false);
     if (res.error) {
       setFormError(res.error);
@@ -90,6 +103,7 @@ export default function TendersPanel() {
     setOpenFor(null);
     setPrice("");
     setListPrice("");
+    setTeilgebot(false);
     reloadBids();
     reload();
   }
@@ -348,6 +362,59 @@ export default function TendersPanel() {
                           )}
                         </div>
                       )}
+
+                      {/* Teilgebot. Ein Bündel wird auf GANZE Baustellen
+                          verteilt — eine Bodenplatte kommt aus einem Werk.
+                          Der Anteil ist deshalb ein Ziel, kein Schnitt. */}
+                      <div className="rounded-md border border-white/[0.12] bg-white/[0.03] px-3 py-2.5">
+                        <label className="flex cursor-pointer items-start gap-2 text-[12.5px] leading-relaxed text-white/[0.72]">
+                          <input
+                            type="checkbox"
+                            checked={teilgebot}
+                            onChange={(e) => setTeilgebot(e.target.checked)}
+                            className="mt-0.5 h-3.5 w-3.5 shrink-0 accent-[#D99000]"
+                          />
+                          <span>
+                            <b className="font-semibold text-white">Nur einen Teil übernehmen</b> — du
+                            bekommst dann ganze Baustellen zugeteilt, nicht einen Schnitt durch jede
+                            Lieferung.
+                          </span>
+                        </label>
+
+                        {teilgebot && (
+                          <div className="mt-3 flex flex-wrap items-end gap-4">
+                            <label className="text-[11px] font-semibold uppercase tracking-wider text-white/[0.56]">
+                              Zielanteil %
+                              <input
+                                value={anteil}
+                                onChange={(e) => setAnteil(e.target.value.replace(/[^0-9]/g, ""))}
+                                inputMode="numeric"
+                                className="mt-1 block w-24 rounded-md border border-white/[0.16] bg-white/[0.03] px-3 py-2 text-sm text-white outline-none focus:border-brand focus:bg-[#16181a]"
+                              />
+                            </label>
+                            <label className="text-[11px] font-semibold uppercase tracking-wider text-white/[0.56]">
+                              Puffer ± Punkte
+                              <input
+                                value={puffer}
+                                onChange={(e) => setPuffer(e.target.value.replace(/[^0-9]/g, ""))}
+                                inputMode="numeric"
+                                className="mt-1 block w-24 rounded-md border border-white/[0.16] bg-white/[0.03] px-3 py-2 text-sm text-white outline-none focus:border-brand focus:bg-[#16181a]"
+                              />
+                            </label>
+                            <p className="flex-1 text-[11.5px] leading-relaxed text-white/[0.56]">
+                              Du erklärst dich einverstanden, zwischen{" "}
+                              <b className="font-semibold text-white/[0.8]">
+                                {Math.max(Number(anteil) - Number(puffer), 0)} %
+                              </b>{" "}
+                              und{" "}
+                              <b className="font-semibold text-white/[0.8]">
+                                {Math.min(Number(anteil) + Number(puffer), 100)} %
+                              </b>{" "}
+                              zu übernehmen — zum selben Preis je {b.unit}.
+                            </p>
+                          </div>
+                        )}
+                      </div>
 
                       <p className="flex items-start gap-2 rounded-md bg-white/[0.03] px-3 py-2.5 text-[11.5px] leading-relaxed text-white/[0.72]">
                         <Info className="mt-px h-3.5 w-3.5 shrink-0 text-white/[0.56]" />

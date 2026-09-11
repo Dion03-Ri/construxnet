@@ -29,6 +29,7 @@ export type Zuschlag = {
   zugeschlagen_am: string | null;
   abgeschlossen_am: string | null;
   baustellen: number;
+  geteilt: boolean;
 };
 
 export type ZuschlagBaustelle = {
