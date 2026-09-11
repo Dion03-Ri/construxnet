@@ -65,6 +65,7 @@ import LieferantenkontoPanel from "@/components/dashboard/LieferantenkontoPanel"
 import MaterialsPanel from "@/components/dashboard/MaterialsPanel";
 import TendersPanel from "@/components/dashboard/TendersPanel";
 import { useCustomMaterials } from "@/lib/customMaterials";
+import { useKennzahlen, type Bestellung, type Kennzahl, type KategorieWert } from "@/lib/kennzahlen";
 import { useBundles, deadlineLabel, hoursLeft, type Bundle } from "@/lib/bundles";
 import { useDirectRequests, isLive } from "@/lib/directRequests";
 import { cn } from "@/lib/utils";
@@ -87,73 +88,21 @@ const C = {
 /*  Daten                                                                     */
 /* -------------------------------------------------------------------------- */
 
-type Kpi = { label: string; value: string; delta: number };
+/*
+ * Hier standen die erfundenen Zahlen des Dashboards: KPIS („CHF 4.2
+ * Mio.", „1'847 Bestellungen", „13.8 % Ersparnis"), MONTH_VOL,
+ * SPEND_TOP/SPEND_REST, vier ORDERS mit PDF-Knopf und drei CONTRACTS.
+ *
+ * Sie standen bei JEDEM Konto — auch bei einem frisch angelegten, das
+ * noch nichts bestellt hat. Das ist schlimmer als eine leere Seite: eine
+ * leere Seite sagt „hier ist noch nichts", eine erfundene Zahl sagt „so
+ * steht es um dich". Und beim Testen liess sich nicht mehr unterscheiden,
+ * ob eine Bestellung angekommen ist oder ob man die Attrappe ansieht.
+ *
+ * Alles kommt jetzt aus `lib/kennzahlen.ts`, also aus echten Zeilen.
+ */
 
-const KPIS: Record<"buyer" | "supplier", Kpi[]> = {
-  buyer: [
-    { label: "Beschaffungsvolumen (12 Mt.)", value: "CHF 4.2 Mio.", delta: 12.4 },
-    { label: "Bestellungen (12 Mt.)", value: "1'847", delta: 8.1 },
-    { label: "Ø Ersparnis (Pools)", value: "13.8 %", delta: 2.3 },
-    { label: "Offene Ausschreibungen", value: "7", delta: -1.2 },
-  ],
-  supplier: [
-    { label: "Zugesprochenes Volumen (12 Mt.)", value: "CHF 3.7 Mio.", delta: 9.6 },
-    { label: "Gewonnene Zuschläge (12 Mt.)", value: "24", delta: 6.4 },
-    { label: "Aktive Gebote", value: "12", delta: 4.1 },
-    { label: "Plattform-Gebühr (Jahr)", value: "CHF 82'400", delta: -0.8 },
-  ],
-};
-
-// Monatlich (nicht wöchentlich) — realistische Bestellfrequenz.
-const MONTH_VOL = [
-  { m: "Jan", v: 280 }, { m: "Feb", v: 340 }, { m: "Mär", v: 310 }, { m: "Apr", v: 420 },
-  { m: "Mai", v: 390 }, { m: "Jun", v: 460 }, { m: "Jul", v: 430 }, { m: "Aug", v: 510 },
-  { m: "Sep", v: 480 }, { m: "Okt", v: 540 }, { m: "Nov", v: 500 }, { m: "Dez", v: 360 },
-]; // Tausend CHF
-
-/** Ausgaben nach Kategorie — Top 5 plus Sammelposten, Details im Fenster. */
-const SPEND_TOP = [
-  { name: "Beton", amount: 412_000 },
-  { name: "Bewehrungsstahl", amount: 268_000 },
-  { name: "Kies & Aushub", amount: 154_000 },
-  { name: "Zement & Bindemittel", amount: 96_000 },
-  { name: "Dämmung", amount: 61_000 },
-];
-const SPEND_REST = [
-  { name: "Belag & Asphalt", amount: 38_000 },
-  { name: "Mauerwerk", amount: 24_000 },
-  { name: "Entwässerung & Rohre", amount: 17_000 },
-  { name: "Holz", amount: 12_000 },
-  { name: "Bauchemie", amount: 7_400 },
-];
-
-type Order = {
-  id: string;
-  /** Obtanet-Materialnummer, z. B. OB-BET-001. */
-  materialId: string;
-  material: string;
-  sia: string;
-  qty: number;
-  unit: string;
-  unitPrice: number;
-  amount: number;
-  date: string;
-  status: string;
-  contract: string | null;
-};
-
-const ORDERS: Order[] = [
-  { id: "OBT-1543", materialId: "OB-BET-001", material: "Beton C25/30", sia: "SN EN 206 · C25/30 · XC3", qty: 1000, unit: "m³", unitPrice: 145.2, amount: 145_200, date: "12.02.2026", status: "In Arbeit", contract: "OBT-2026-0142" },
-  { id: "OBT-1521", materialId: "OB-BST-001", material: "Bewehrungsstahl B500B", sia: "SN EN 10080 · B500B", qty: 68, unit: "t", unitPrice: 1107.35, amount: 75_300, date: "03.02.2026", status: "In Arbeit", contract: "OBT-2026-0098" },
-  { id: "OBT-1498", materialId: "OB-KAR-001", material: "Koffer-/Wandkies 0/45", sia: "SN 670 119 · 0/45", qty: 721, unit: "t", unitPrice: 33.15, amount: 23_900, date: "24.01.2026", status: "Abgeschlossen", contract: "OBT-2026-0119" },
-  { id: "OBT-1466", materialId: "OB-BET-001", material: "Transportbeton C25/30", sia: "SN EN 206 · C25/30", qty: 421, unit: "m³", unitPrice: 145.2, amount: 61_100, date: "09.01.2026", status: "Abgeschlossen", contract: null },
-];
-
-const CONTRACTS = [
-  { no: "OBT-2026-0142", material: "Beton C25/30", vol: "180 m³", price: "145.20", status: "Aktiv" },
-  { no: "OBT-2026-0119", material: "Koffer-/Wandkies 0/45", vol: "300 t", price: "33.15", status: "Abgeschlossen" },
-  { no: "OBT-2026-0098", material: "Bewehrungsstahl B500B", vol: "42 t", price: "1'108.00", status: "Aktiv" },
-];
+type Order = Bestellung;
 
 const NAV_ALL = [
   { key: "workspace", label: "Beschaffung", icon: Search, buyerOnly: true },
@@ -183,19 +132,25 @@ type CartItem = { key: string; id: string; label: string; unit: string; kbobPric
 /*  Kleinteile                                                                */
 /* -------------------------------------------------------------------------- */
 
-function KpiCard({ k }: { k: Kpi }) {
-  const up = k.delta >= 0;
+/*
+ * Der Vergleich „ggü. Vorjahr" ist weg. Er stand fest verdrahtet an jeder
+ * Kachel — auch an einem Konto, das noch kein Vorjahr hat. Sobald zwölf
+ * Monate echte Zeilen da sind, kann er zurückkommen; bis dahin steht
+ * lieber nichts als ein Pfeil, der etwas behauptet.
+ */
+function KpiCard({ k }: { k: Kennzahl }) {
   return (
     <div className="border-t border-white/[0.12] pt-5">
       <div className="text-[13px] font-medium text-white/[0.72]">{k.label}</div>
       <div className="mt-1.5 flex items-end justify-between gap-2">
         <div className="text-2xl font-bold tracking-tight text-white">{k.value}</div>
-        <span className={cn("inline-flex items-center gap-0.5 text-[11px] font-semibold", up ? "text-brand" : "text-rose-500")}>
-          {up ? <ArrowUpRight className="h-3 w-3" /> : <ArrowDownRight className="h-3 w-3" />}
-          {Math.abs(k.delta)}%
-        </span>
+        {k.delta != null && (
+          <span className={cn("inline-flex items-center gap-0.5 text-[11px] font-semibold", k.delta >= 0 ? "text-brand" : "text-rose-500")}>
+            {k.delta >= 0 ? <ArrowUpRight className="h-3 w-3" /> : <ArrowDownRight className="h-3 w-3" />}
+            {Math.abs(k.delta)}%
+          </span>
+        )}
       </div>
-      <div className="mt-1 text-[11px] text-white/[0.56]">ggü. Vorjahr</div>
     </div>
   );
 }
@@ -310,6 +265,7 @@ function MyBundles({ limit }: { limit?: number }) {
 function OverviewPanel({ role }: { role: "buyer" | "supplier" }) {
   const isSupplier = role === "supplier";
   const { bundles, mine } = useBundles();
+  const { kennzahlen } = useKennzahlen(role);
 
   // Was heute Aufmerksamkeit braucht — aus echten Daten, keine Platzhalter.
   const myIds = new Set(mine.map((m) => m.bundle_id));
@@ -343,6 +299,15 @@ function OverviewPanel({ role }: { role: "buyer" | "supplier" }) {
 
   return (
     <div className="space-y-4">
+      {/* Die vier Kennzahlen — dieselbe Quelle wie unter „Berichte". Wo
+          nichts ist, steht ein Strich und keine Null: eine Null liest sich
+          wie ein gemessener Wert. */}
+      <div className="grid grid-cols-2 gap-x-6 gap-y-2 lg:grid-cols-4">
+        {kennzahlen.map((k) => (
+          <KpiCard key={k.label} k={k} />
+        ))}
+      </div>
+
       {/* Offene Punkte */}
       <div className="border-t border-white/[0.12]">
         <div className="border-b border-white/[0.06] px-5 py-3.5">
@@ -351,6 +316,12 @@ function OverviewPanel({ role }: { role: "buyer" | "supplier" }) {
             Offene Punkte aus Bündeln, Verträgen und Lieferungen.
           </p>
         </div>
+        {openTasks.length === 0 && (
+          <p className="px-5 py-4 text-[13px] leading-relaxed text-white/[0.56]">
+            Im Moment nichts. Sobald ein Bündel auf die Frist zuläuft, in die
+            Ausschreibung geht oder vergeben wird, steht es hier.
+          </p>
+        )}
         <ul className="divide-y divide-white/[0.12]">
           {openTasks.map((t) => (
             <li key={t.text} className="flex items-center gap-3 px-5 py-3">
@@ -422,7 +393,7 @@ function printOrder(o: Order, companyName: string) {
   const row = (k: string, v: string) =>
     `<tr><td style="padding:6px 0;color:#64748B">${k}</td><td style="padding:6px 0;text-align:right;font-weight:600">${v}</td></tr>`;
   w.document.write(`<!doctype html><html lang="de"><head><meta charset="utf-8">
-<title>Bestellung ${esc(o.id)}</title>
+<title>Bestellung ${esc(o.nummer)}</title>
 <style>
   *{box-sizing:border-box} body{font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:#0F172A;margin:0;padding:48px}
   h1{font-size:22px;margin:0 0 2px} .sub{color:#64748B;font-size:13px;margin-bottom:28px}
@@ -436,18 +407,18 @@ function printOrder(o: Order, companyName: string) {
 </style></head><body>
 <div class="head">
   <div><img src="${window.location.origin}/logo-dunkel.png" alt="Obtanet" style="height:26px;width:auto;display:block"><div class="sub" style="margin:6px 0 0">Schweizer Baubranche</div></div>
-  <div style="text-align:right"><h1>Bestellung ${esc(o.id)}</h1><div class="sub" style="margin:0">${esc(o.date)} · ${esc(o.status)}</div></div>
+  <div style="text-align:right"><h1>Bestellung ${esc(o.nummer)}</h1><div class="sub" style="margin:0">${esc(o.datum)} · ${esc(o.status)}</div></div>
 </div>
 <div class="box"><div class="lbl">Besteller</div><div style="font-weight:600">${esc(companyName)}</div></div>
 <div class="box"><div class="lbl">Position</div><table>
-  ${row("Materialnummer", esc(o.materialId))}
+  ${o.materialId ? row("Materialnummer", esc(o.materialId)) : ""}
   ${row("Material", esc(o.material))}
   ${row("Spezifikation", esc(o.sia))}
-  ${row("Menge", `${chf(o.qty)} ${esc(o.unit)}`)}
-  ${row("Preis pro Einheit", `CHF ${chf(o.unitPrice, 2)}`)}
+  ${row("Menge", `${chf(o.menge)} ${esc(o.einheit)}`)}
+  ${o.einzelpreis != null ? row("Preis pro Einheit", `CHF ${chf(o.einzelpreis, 2)}`) : ""}
 </table>
-<div class="total"><span>Bestellwert</span><span>CHF ${chf(o.amount)}</span></div></div>
-${o.contract ? `<div class="box"><div class="lbl">Vertrag</div><table>${row("SIA-118-Vertrag", esc(o.contract))}</table></div>` : ""}
+${o.betrag != null ? `<div class="total"><span>Bestellwert</span><span>CHF ${chf(o.betrag)}</span></div>` : ""}</div>
+${o.vertrag ? `<div class="box"><div class="lbl">Vertrag</div><table>${row("SIA-118-Vertrag", esc(o.vertrag))}</table></div>` : ""}
 <div class="foot">
   Erzeugt über Obtanet am ${new Date().toLocaleDateString("de-CH")}.<br>
   Preisbasis ist der KBOB-Referenzpreis; massgebend ist der zugehörige SIA-118-Vertrag.
@@ -459,11 +430,36 @@ ${o.contract ? `<div class="box"><div class="lbl">Vertrag</div><table>${row("SIA
 }
 
 function OrdersPanel({ companyName }: { companyName: string }) {
+  const { bestellungen, laden } = useKennzahlen("buyer");
+
+  if (laden) {
+    return (
+      <div className="border-t border-white/[0.12] pt-6 text-[13px] text-white/[0.56]">
+        <Loader2 className="mr-2 inline h-4 w-4 animate-spin" /> Bestellungen werden geladen …
+      </div>
+    );
+  }
+
+  if (bestellungen.length === 0) {
+    return (
+      <div className="border-t border-white/[0.12] pt-6">
+        <h3 className="text-[15px] font-bold text-white">Bestellungen</h3>
+        <p className="mt-2 max-w-xl text-[13px] leading-relaxed text-white/[0.56]">
+          Noch keine. Eine Bestellung entsteht, wenn ein Bündel, an dem du
+          beteiligt bist, einem Werk zugeschlagen wird — bis dahin steht der
+          Bedarf unter „Beschaffung".
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div className="border-t border-white/[0.12] pt-6">
       <div className="mb-3 flex items-center justify-between">
         <h3 className="text-[15px] font-bold text-white">Bestellungen</h3>
-        <span className="rounded-md border border-white/[0.12] px-2.5 py-1 text-xs text-white/[0.72]">letzte 60 Tage</span>
+        <span className="rounded-md border border-white/[0.12] px-2.5 py-1 text-xs text-white/[0.72]">
+          {bestellungen.length} {bestellungen.length === 1 ? "Zuschlag" : "Zuschläge"}
+        </span>
       </div>
       <div className="overflow-x-auto">
         <table className="w-full text-left text-[13px]">
@@ -478,16 +474,18 @@ function OrdersPanel({ companyName }: { companyName: string }) {
             </tr>
           </thead>
           <tbody className="divide-y divide-white/[0.12]">
-            {ORDERS.map((o) => (
-              <tr key={o.id}>
-                <td className="py-2.5 font-semibold text-white/90">{o.id}</td>
+            {bestellungen.map((o) => (
+              <tr key={o.bundleId}>
+                <td className="py-2.5 font-semibold text-white/90">{o.nummer}</td>
                 <td className="py-2.5 text-white/[0.72]">
                   {o.material}
-                  <div className="font-mono text-[10.5px] tracking-tight text-brand-700">{o.materialId}</div>
-                  <div className="text-[11px] text-white/[0.56]">{chf(o.qty)} {o.unit}</div>
+                  {o.materialId && <div className="font-mono text-[10.5px] tracking-tight text-brand-700">{o.materialId}</div>}
+                  <div className="text-[11px] text-white/[0.56]">{chf(o.menge)} {o.einheit}</div>
                 </td>
-                <td className="py-2.5 text-right tabular-nums text-white/[0.72]">CHF {chf(o.amount)}</td>
-                <td className="hidden py-2.5 text-white/[0.72] sm:table-cell">{o.date}</td>
+                <td className="py-2.5 text-right tabular-nums text-white/[0.72]">
+                  {o.betrag != null ? `CHF ${chf(o.betrag)}` : "—"}
+                </td>
+                <td className="hidden py-2.5 text-white/[0.72] sm:table-cell">{o.datum}</td>
                 <td className="py-2.5">
                   <span className={cn("inline-flex items-center gap-1.5 text-[10.5px] font-semibold uppercase tracking-[0.12em]", o.status === "Abgeschlossen" ? "text-white/[0.5]" : "text-brand")}>{o.status}</span>
                 </td>
@@ -510,100 +508,48 @@ function OrdersPanel({ companyName }: { companyName: string }) {
   );
 }
 
-/** Ausgaben nach Kategorie — Top 5, Rest als Sammelposten mit Detailfenster. */
-function SpendByCategory() {
-  const [showAll, setShowAll] = useState(false);
-  const restTotal = SPEND_REST.reduce((a, b) => a + b.amount, 0);
-  const rows = [...SPEND_TOP, { name: "Sonstige", amount: restTotal }];
-  const max = Math.max(...rows.map((r) => r.amount));
+/**
+ * Ausgaben nach Materialkategorie — aus zugeschlagenen Bündeln.
+ *
+ * Vorher standen hier zehn feste Kategorien mit festen Beträgen, dazu ein
+ * Fenster „alle Kategorien". Echte Kategorien sind wenige: nur die, in
+ * denen diese Firma tatsächlich einen Zuschlag hat. Für fünf Zeilen
+ * braucht es weder einen Sammelposten noch ein Fenster.
+ */
+function SpendByCategory({ zeilen }: { zeilen: KategorieWert[] }) {
+  if (zeilen.length === 0) {
+    return (
+      <div className="border-t border-white/[0.12] pt-6">
+        <h3 className="text-[14px] font-bold text-white">Ausgaben nach Kategorie</h3>
+        <p className="mt-2 text-[12.5px] text-white/[0.56]">
+          Noch keine zugeschlagenen Bündel.
+        </p>
+      </div>
+    );
+  }
+
+  const max = Math.max(...zeilen.map((r) => r.amount));
 
   return (
-    <>
-      <div className="border-t border-white/[0.12] pt-6">
-        <div className="flex items-center justify-between">
-          <h3 className="text-[14px] font-bold text-white">Ausgaben nach Kategorie</h3>
-          <span className="text-[11.5px] text-white/[0.56]">letzte 12 Monate</span>
-        </div>
-        <ul className="mt-3 space-y-2">
-          {rows.map((r) => {
-            const isRest = r.name === "Sonstige";
-            const body = (
-              <>
-                <div className="flex items-baseline justify-between text-[13px]">
-                  <span className={cn("font-medium", isRest ? "text-white/[0.72]" : "text-white/[0.72]")}>
-                    {r.name}
-                    {isRest && <span className="ml-1 text-[11px] text-white/[0.56]">({SPEND_REST.length} Kategorien)</span>}
-                  </span>
-                  <span className="tabular-nums text-white/[0.72]">CHF {chf(r.amount)}</span>
-                </div>
-                <div className="mt-1 h-1.5 w-full overflow-hidden rounded-full bg-white/10">
-                  <div
-                    className={cn("h-full rounded-full", isRest ? "bg-slate-300" : "bg-brand")}
-                    style={{ width: `${(r.amount / max) * 100}%` }}
-                  />
-                </div>
-              </>
-            );
-            return isRest ? (
-              <li key={r.name}>
-                <button
-                  type="button"
-                  onClick={() => setShowAll(true)}
-                  className="w-full rounded-md px-1 py-1 text-left transition-colors hover:bg-white/[0.05]"
-                >
-                  {body}
-                  <span className="mt-1 inline-flex items-center gap-1 text-[11.5px] font-semibold text-brand">
-                    Alle Kategorien anzeigen <ChevronRight className="h-3 w-3" />
-                  </span>
-                </button>
-              </li>
-            ) : (
-              <li key={r.name} className="px-1">{body}</li>
-            );
-          })}
-        </ul>
+    <div className="border-t border-white/[0.12] pt-6">
+      <div className="flex items-center justify-between">
+        <h3 className="text-[14px] font-bold text-white">Ausgaben nach Kategorie</h3>
+        <span className="text-[11.5px] text-white/[0.56]">zugeschlagen</span>
       </div>
-
-      {showAll && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setShowAll(false)} />
-          <motion.div
-            initial={{ opacity: 0, scale: 0.97, y: 8 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            transition={{ duration: 0.16 }}
-            className="relative w-full max-w-md overflow-hidden rounded-xl border border-white/[0.12] bg-[#16181a] shadow-2xl"
-          >
-            <div className="flex items-center justify-between border-b border-white/[0.12] px-5 py-3.5">
-              <h3 className="text-[15px] font-bold text-white">Alle Kategorien</h3>
-              <button
-                type="button"
-                onClick={() => setShowAll(false)}
-                className="rounded-md p-1.5 text-white/[0.56] transition-colors hover:bg-white/[0.07] hover:text-white/[0.72]"
-                aria-label="Schliessen"
-              >
-                <X className="h-4 w-4" />
-              </button>
+      <ul className="mt-3 space-y-2">
+        {zeilen.map((r) => (
+          <li key={r.name} className="px-1">
+            <div className="flex items-baseline justify-between gap-3 text-[13px]">
+              <span className="min-w-0 truncate font-medium text-white/[0.72]">{r.name}</span>
+              <span className="shrink-0 tabular-nums text-white/[0.72]">CHF {chf(r.amount)}</span>
             </div>
-            <ul className="max-h-[60vh] divide-y divide-white/[0.12] overflow-y-auto">
-              {[...SPEND_TOP, ...SPEND_REST]
-                .sort((a, b) => b.amount - a.amount)
-                .map((r) => (
-                  <li key={r.name} className="flex items-center justify-between px-5 py-2.5 text-[13px]">
-                    <span className="text-white/[0.72]">{r.name}</span>
-                    <span className="tabular-nums font-medium text-white">CHF {chf(r.amount)}</span>
-                  </li>
-                ))}
-            </ul>
-            <div className="flex items-center justify-between border-t border-white/[0.12] bg-white/[0.03] px-5 py-3 text-[13px]">
-              <span className="font-semibold text-white">Total</span>
-              <span className="font-bold tabular-nums text-white">
-                CHF {chf([...SPEND_TOP, ...SPEND_REST].reduce((a, b) => a + b.amount, 0))}
-              </span>
+            <div className="mt-1 h-1.5 w-full overflow-hidden rounded-full bg-white/10">
+              <div className="h-full rounded-full bg-brand" style={{ width: `${(r.amount / max) * 100}%` }} />
             </div>
-          </motion.div>
-        </div>
-      )}
-    </>
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 }
 
@@ -619,55 +565,75 @@ function ReportStat({ label, value, hint }: { label: string; value: string; hint
 }
 
 function ReportsPanel({ role }: { role: "buyer" | "supplier" }) {
-  const total = MONTH_VOL.reduce((a, b) => a + b.v, 0) * 1000;
+  const { kennzahlen, monatsVolumen, nachKategorie, laden } = useKennzahlen(role);
   const isSupplier = role === "supplier";
+  const total = monatsVolumen.reduce((a, b) => a + b.v, 0) * 1000;
+  const hatVerlauf = monatsVolumen.some((m) => m.v > 0);
+
+  if (laden) {
+    return (
+      <div className="border-t border-white/[0.12] pt-6 text-[13px] text-white/[0.56]">
+        <Loader2 className="mr-2 inline h-4 w-4 animate-spin" /> Berichte werden geladen …
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-4">
-      {/* Die drei Kennzahlen, die vorher in der Übersicht standen */}
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-        <ReportStat
-          label={isSupplier ? "Zugesprochenes Volumen" : "Beschaffungsvolumen"}
-          value={`CHF ${chf(total)}`}
-          hint="letzte 12 Monate"
-        />
-        <ReportStat label="Bestellungen" value="1'847" hint="letzte 12 Monate" />
-        <ReportStat label="Ø Mindestvorteil" value="13.8 %" hint="über alle Bündel" />
+      {/* Dieselben Kennzahlen wie in der Übersicht — eine Quelle, damit
+          nicht zwei Seiten dieselbe Frage verschieden beantworten. */}
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        {kennzahlen.map((k) => (
+          <ReportStat key={k.label} label={k.label} value={k.value} hint="alle Zuschläge" />
+        ))}
       </div>
 
-      {/* Das einzige grosse Diagramm */}
       <div className="border-t border-white/[0.12] pt-6">
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="text-[15px] font-bold text-white">Beschaffungsvolumen</h3>
+            <h3 className="text-[15px] font-bold text-white">
+              {isSupplier ? "Zugesprochenes Volumen" : "Beschaffungsvolumen"}
+            </h3>
             <p className="mt-0.5 text-[12.5px] text-white/[0.72]">Monatlich, letzte 12 Monate</p>
           </div>
-          <span className="rounded-md border border-white/[0.12] px-2.5 py-1 text-xs text-white/[0.72]">12 Monate</span>
+          <span className="rounded-md border border-white/[0.12] px-2.5 py-1 text-xs text-white/[0.72]">
+            CHF {chf(total)}
+          </span>
         </div>
-        <div className="mt-4 h-60">
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={MONTH_VOL} margin={{ top: 8, right: 4, left: -16, bottom: 0 }}>
-              <CartesianGrid vertical={false} stroke={C.slateLight} strokeDasharray="3 3" />
-              <XAxis dataKey="m" tickLine={false} axisLine={false} tick={{ fontSize: 11, fill: C.slate }} />
-              <YAxis tickFormatter={(v) => `${v}k`} tickLine={false} axisLine={false} tick={{ fontSize: 11, fill: C.slate }} />
-              <Tooltip
-                cursor={{ fill: "rgba(217,144,0,0.06)" }}
-                formatter={(v: number) => [`CHF ${chf(v * 1000)}`, "Volumen"]}
-                contentStyle={{ borderRadius: 8, border: "1px solid #E2E8F0", fontSize: 12 }}
-              />
-              <Bar dataKey="v" radius={[4, 4, 0, 0]} fill={C.brand} maxBarSize={28} />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
+        {hatVerlauf ? (
+          <div className="mt-4 h-60">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={monatsVolumen} margin={{ top: 8, right: 4, left: -16, bottom: 0 }}>
+                <CartesianGrid vertical={false} stroke={C.slateLight} strokeDasharray="3 3" />
+                <XAxis dataKey="m" tickLine={false} axisLine={false} tick={{ fontSize: 11, fill: C.slate }} />
+                <YAxis tickFormatter={(v) => `${v}k`} tickLine={false} axisLine={false} tick={{ fontSize: 11, fill: C.slate }} />
+                <Tooltip
+                  cursor={{ fill: "rgba(217,144,0,0.06)" }}
+                  formatter={(v: number) => [`CHF ${chf(v * 1000)}`, "Volumen"]}
+                  contentStyle={{ borderRadius: 8, border: "1px solid #E2E8F0", fontSize: 12 }}
+                />
+                <Bar dataKey="v" radius={[4, 4, 0, 0]} fill={C.brand} maxBarSize={28} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        ) : (
+          /* Ein Balkendiagramm aus zwölf Nullen sieht aus wie ein Fehler.
+             Solange nichts zugeschlagen ist, steht hier ein Satz. */
+          <p className="mt-3 max-w-xl text-[12.5px] leading-relaxed text-white/[0.56]">
+            Noch kein Verlauf. Sobald ein Bündel zugeschlagen ist, erscheint es
+            hier im Monat des Zuschlags.
+          </p>
+        )}
       </div>
 
-      {/* Nebenschauplatz, bewusst kleiner gehalten */}
-      <SpendByCategory />
+      {!isSupplier && <SpendByCategory zeilen={nachKategorie} />}
     </div>
   );
 }
 
 function ContractsPanel() {
+  const { vertraege, laden } = useKennzahlen("buyer");
+
   return (
     <div className="space-y-4">
       <div className="border-t border-white/[0.12] pt-6">
@@ -689,32 +655,48 @@ function ContractsPanel() {
             statt dass ihr das zu zweit aushandelt.
           </p>
         </div>
-        <div className="mt-3 overflow-x-auto">
-          <table className="w-full text-left text-[13px]">
-            <thead>
-              <tr className="text-[11px] uppercase tracking-wider text-white/[0.56]">
-                <th className="pb-2 font-medium">Vertrag</th>
-                <th className="pb-2 font-medium">Material</th>
-                <th className="hidden pb-2 font-medium sm:table-cell">Menge</th>
-                <th className="pb-2 font-medium">CHF/Einheit</th>
-                <th className="pb-2 text-right font-medium">Status</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-white/[0.12]">
-              {CONTRACTS.map((c) => (
-                <tr key={c.no}>
-                  <td className="py-2.5 font-medium text-white/90">{c.no}</td>
-                  <td className="py-2.5 text-white/[0.72]">{c.material}</td>
-                  <td className="hidden py-2.5 text-white/[0.72] sm:table-cell">{c.vol}</td>
-                  <td className="py-2.5 tabular-nums text-white/[0.72]">{c.price}</td>
-                  <td className="py-2.5 text-right">
-                    <span className={cn("inline-flex items-center gap-1.5 text-[10.5px] font-semibold uppercase tracking-[0.12em]", c.status === "Aktiv" ? "text-brand" : "text-white/[0.5]")}>{c.status}</span>
-                  </td>
+        {laden ? (
+          <p className="mt-3 text-[13px] text-white/[0.56]">
+            <Loader2 className="mr-2 inline h-4 w-4 animate-spin" /> Verträge werden geladen …
+          </p>
+        ) : vertraege.length === 0 ? (
+          /* Kein Beispielvertrag als Platzhalter. Wer hier drei erfundene
+             Nummern sieht, hält das Verfahren für erprobt, obwohl noch
+             kein einziger Zuschlag durchgelaufen ist. */
+          <p className="mt-3 max-w-xl text-[13px] leading-relaxed text-white/[0.56]">
+            Noch keine. Ein Vertrag entsteht mit dem Zuschlag — vorher gibt es
+            nichts zu unterschreiben.
+          </p>
+        ) : (
+          <div className="mt-3 overflow-x-auto">
+            <table className="w-full text-left text-[13px]">
+              <thead>
+                <tr className="text-[11px] uppercase tracking-wider text-white/[0.56]">
+                  <th className="pb-2 font-medium">Vertrag</th>
+                  <th className="pb-2 font-medium">Material</th>
+                  <th className="hidden pb-2 font-medium sm:table-cell">Menge</th>
+                  <th className="pb-2 font-medium">CHF/Einheit</th>
+                  <th className="pb-2 text-right font-medium">Status</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody className="divide-y divide-white/[0.12]">
+                {vertraege.map((c) => (
+                  <tr key={c.id}>
+                    <td className="py-2.5 font-medium text-white/90">{c.nummer}</td>
+                    <td className="py-2.5 text-white/[0.72]">{c.material}</td>
+                    <td className="hidden py-2.5 tabular-nums text-white/[0.72] sm:table-cell">
+                      {chf(c.menge)} {c.einheit}
+                    </td>
+                    <td className="py-2.5 tabular-nums text-white/[0.72]">{chf(c.preis, 2)}</td>
+                    <td className="py-2.5 text-right">
+                      <span className={cn("inline-flex items-center gap-1.5 text-[10.5px] font-semibold uppercase tracking-[0.12em]", c.status === "Aktiv" ? "text-brand" : "text-white/[0.5]")}>{c.status}</span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
     </div>
   );
